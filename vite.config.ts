@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 10:40:11
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-01 15:02:53
+ * @ Modifier time: 2023-11-01 15:47:04
  * @ Description: vite 构建文件
  */
 
@@ -112,6 +112,7 @@ export default defineConfig(({ mode }) => {
         '#': path.resolve(__dirname, 'types'),
         '@comp': path.resolve(__dirname, 'src/components'),
         '@views': path.resolve(__dirname, 'src/views'),
+        '@pages': path.resolve(__dirname, 'src/pages'),
         '@types': path.resolve(__dirname, 'src/types'),
         '@store': path.resolve(__dirname, 'src/store'),
         '@api': path.resolve(__dirname, 'src/api/module'),

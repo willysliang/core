@@ -4,6 +4,9 @@ import HelloWorld from '@comp/HelloWorld.vue'
 
 <template>
   <div>
+    <router-view v-slot="{ Component }">
+      <component :is="Component" />
+    </router-view>
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
     </a>

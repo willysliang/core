@@ -39,6 +39,7 @@
       "#/*": ["types/*"],
       "@comp/*": ["src/components/*"],
       "@views/*": ["src/views/*"],
+      "@pages/*": ["src/pages/*"],
       "@types/*": ["src/types/*"],
       "@store/*": ["src/store/*"],
       "@api/*": ["src/api/module/*"],
