@@ -1,0 +1,31 @@
+<meta charset="UTF-8" />
+<!-- 禁止缩放 -->
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, user-scalable=0"
+/>
+<!-- 使用edge而不是ie -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- 针对多内核浏览器，使用webkit内核 -->
+<meta name="renderer" content="webkit" />
+<meta name="keywords" content="willylsiang@qq.com" />
+<meta name="description" itemprop="description" content="willylsiang@qq.com" />
+
+<!-- 升级不安全的协议 -->
+<% if (PROJ_ENV == 'production' || PROJ_ENV == 'staging') { %>
+<meta
+  http-equiv="Content-Security-Policy"
+  content="upgrade-insecure-requests"
+/>
+<% } %>
+
+<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- 提前和目前服务器进行连接，包括DNS解析，和TCP三次握手 -->
+<!-- <link rel="preconnect" href="" crossorigin="anonymous" />
+<link rel="preload" href="" as="script" crossorigin /> -->
+
+<title><%= PROJ_TITLE %></title>
+
+<base href="/willys/" />

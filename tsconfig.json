@@ -1,0 +1,61 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "noImplicitAny": false,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    
+    // "allowJs": true, // 允许在ts中使用普通 JS 代码
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+    /** 文件类 */
+    "sourceMap": true,
+    "importHelpers": true,
+    "declaration": true, // 在编译时自动生成单独的类型声明文件
+    "jsx": "preserve",
+
+    /* 别名地址 */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "#/*": ["types/*"],
+      "@comp/*": ["src/components/*"],
+      "@views/*": ["src/views/*"],
+      "@types/*": ["src/types/*"],
+      "@store/*": ["src/store/*"],
+      "@api/*": ["src/api/module/*"],
+      "@utils/*": ["src/utils/*"],
+    },
+  },
+  "types": ["vite/client", "**/*.d.ts"],
+  "include": [
+    "src/**/*.ts", 
+    "src/**/*.d.ts", 
+    "src/**/*.tsx", 
+    "src/**/*.vue", 
+    "types/**/*.d.ts",
+    "types/**/*.ts",
+    "config/**/*.ts",
+    "vite.config.ts",
+  ],
+  "exclude": ["node_modules", "tests/server/**/*.ts", "dist", "**/*.js", "./public"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

@@ -1,0 +1,130 @@
+/* 溢出省略号 @param {Number} 行数 */
+@mixin text-ell($rowCount: 1) {
+  @if $rowCount <=1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: $rowCount;
+    -webkit-box-orient: vertical;
+  }
+}
+
+/** 滚动条 */
+@mixin scrollbar($color: #b66000) {
+  -webkit-overflow-scrolling: touch;
+
+  /* Firefox隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    width: p2r(2);
+    background-color: transparent;
+    border-radius: p2r(4);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    width: p2r(2);
+    background-color: $color;
+    border-radius: p2r(4);
+  }
+}
+
+/** 背景渐变色 */
+@mixin colorGradient($color1, $color2, $default, $type: 'l2r') {
+  $dir: right;
+  $deg: 0;
+
+  @if $type== 't2b' {
+    $dir: bottom;
+    $deg: -90deg;
+  } @else if $type== 'lt2rb' {
+    $dir: right bottom;
+    $deg: -45deg;
+  }
+
+  background: $default;
+  background: linear-gradient($deg, $color1 0%, $color2 100%);
+  background: linear-gradient($deg, $color1 0%, $color2 100%);
+  background: linear-gradient($deg, $color1 0%, $color2 100%);
+  background: linear-gradient($deg, $color1 0%, $color2 100%);
+  background: linear-gradient(to $dir, $color1, $color2);
+}
+
+/** 通用四状态按钮 */
+@mixin btn($type: '') {
+  transition: all 0.3s;
+  cursor: pointer;
+  &:hover {
+    @if $type == 'brightness' {
+      filter: brightness(1.2);
+    } @else {
+      opacity: 0.8;
+    }
+  }
+  &:active {
+    @if $type == 'brightness' {
+      filter: brightness(0.8);
+    } @else {
+      opacity: 0.6;
+    }
+  }
+  &.disabled {
+    @if $type == 'brightness' {
+      filter: brightness(0.6);
+    } @else {
+      opacity: 0.4;
+    }
+    cursor: not-allowed;
+  }
+}
+
+/** 通用四状态按钮 */
+@mixin imgBtn($w, $h, $urlNormal, $urlHover: '', $urlPress: '', $urlDis: '') {
+  @include wh-bg($w, $h, $urlNormal);
+  transition: all 0.3s;
+  cursor: pointer;
+  &:hover {
+    @if ($urlHover == '') {
+      filter: brightness(1.2);
+    } @else {
+      @include wh-bg($w, $h, $urlHover);
+    }
+  }
+  &:active {
+    @if ($urlPress == '') {
+      filter: brightness(0.8);
+    } @else {
+      @include wh-bg($w, $h, $urlPress);
+    }
+  }
+  &.disabled {
+    @if $urlDis == '' {
+      filter: brightness(0.6);
+    } @else {
+      background-image: url($urlDis);
+      filter: none;
+    }
+    cursor: not-allowed;
+  }
+}
+
+%flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+%fullScreen {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 9999;
+}
