@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 10:40:11
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-01 15:47:04
+ * @ Modifier time: 2023-11-01 16:31:05
  * @ Description: vite 构建文件
  */
 
@@ -20,6 +20,8 @@ import fs from 'fs'
 import path from 'path'
 /** 获取 git 分支名 */
 import { execSync } from 'child_process'
+/** 顶层 await */
+import topLevelAwait from 'vite-plugin-top-level-await'
 
 /**
  * eslint 相关
@@ -133,6 +135,12 @@ export default defineConfig(({ mode }) => {
        * vue 解析核心
        */
       vue(),
+      topLevelAwait({
+        // The export name of top-level await promise for each chunk module
+        promiseExportName: '__tla',
+        // The function to generate import names of top-level await promise in each chunk module
+        promiseImportName: (i) => `__tla_${i}`,
+      }),
       ViteEjsPlugin({
         /** 项目运行模式 */
         PROJ_ENV: importMetaEnv.VITE_PROJ_ENV,
