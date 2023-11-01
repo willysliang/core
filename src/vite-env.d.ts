@@ -6,6 +6,7 @@
 interface ImportMetaEnv {
   /** 环境类型：开发环境、预发布环境、生产环境 */
   readonly VITE_PROJ_ENV: 'development' | 'staging' | 'production'
+  VITE_BASE_PATH: string
   // 更多环境变量...
 }
 
