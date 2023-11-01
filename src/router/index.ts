@@ -2,11 +2,15 @@
  * @ Author: willy
  * @ Create Time: 2023-11-01 15:26:01
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-01 16:21:55
+ * @ Modifier time: 2023-11-01 16:35:21
  * @ Description: 路由入口
  */
 
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHashHistory,
+  type RouteRecordRaw,
+} from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -33,7 +37,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.VITE_BASE_PATH),
+  history: createWebHashHistory(import.meta.env.VITE_BASE_PATH),
   scrollBehavior() {
     return {
       top: 0,

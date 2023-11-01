@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 10:40:11
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-01 16:31:05
+ * @ Modifier time: 2023-11-01 16:37:27
  * @ Description: vite 构建文件
  */
 
@@ -84,7 +84,7 @@ export default defineConfig(({ mode }) => {
     // cacheDir: 'node_modules/.pnpm/.vite', // 存储缓存文件的目录。此目录下会存储预打包的依赖项或 vite
     build: {
       target: 'es2020', // es2020 支持 import.meta 语法
-      outDir: 'dist', // 指定输出路径
+      outDir: 'core', // 指定输出路径
       assetsInlineLimit: 4096, // 小于此阈值的导入或引用资源将内联为 base64 编码
       cssCodeSplit: true, // 启用 CSS 代码拆分
       cssTarget: '', // 允许用户为 CSS 的压缩设置一个不同的浏览器 target 与 build.target 一致
