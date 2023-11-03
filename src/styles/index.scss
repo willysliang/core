@@ -1,1 +1,74 @@
-@import './reset.scss';
+@import './funs.scss';
+@import './theme.scss';
+
+body {
+  /* 格子背景色 */
+  background-image: linear-gradient(
+      90deg,
+      rgb(50 0 0 / 5%) 3%,
+      rgb(0 0 0 / 0%) 3%
+    ),
+    linear-gradient(360deg, rgb(50 0 0 / 5%) 3%, rgb(0 0 0 / 0%) 3%);
+  background-size: p2r(20) p2r(20);
+  background-repeat: repeat;
+  background-position: center center;
+
+  /** 滚动条 */
+  overflow-y: auto;
+  @include scrollbar();
+
+  // 字体大小
+  font-size: 62.5%;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+body {
+  font-size: 62.5%; /*px换算成rem*/
+}
+
+@media (min-width: 1440px) {
+  body {
+    font-size: 63.75%;
+  }
+}
+
+@media (min-width: 1600px) {
+  body {
+    font-size: 73.125%;
+  }
+}
+
+@media (min-width: 1680px) {
+  body {
+    font-size: 77%;
+  }
+}
+
+@media (min-width: 1920px) {
+  body {
+    font-size: 87.9375%;
+  }
+}
+
+@media (min-width: 2560px) {
+  body {
+    font-size: 116.875%;
+  }
+}
+
+@media (min-width: 3440px) {
+  body {
+    font-size: 157.5%;
+  }
+}
+
+@media (min-width: 3840px) {
+  body {
+    font-size: 176%;
+  }
+}

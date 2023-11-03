@@ -19,8 +19,12 @@
     "prettier": "prettier --write"
   },
   "dependencies": {
+    "@icon-park/vue-next": "^1.4.2",
+    "amfe-flexible": "^2.2.1",
+    "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
     "pinia": "^2.1.7",
+    "postcss-pxtorem": "^6.0.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5"
   },
@@ -44,10 +48,14 @@
     "prettier-plugin-xml": "^0.1.0",
     "sass": "^1.69.5",
     "stylelint": "^15.11.0",
+    "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-prettier-scss": "^1.0.0",
+    "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-config-standard-scss": "^11.0.0",
     "stylelint-config-standard-vue": "^1.0.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.7.0",
+    "stylelint-order": "^6.0.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-checker": "^0.6.2",

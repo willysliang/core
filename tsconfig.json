@@ -44,6 +44,7 @@
       "@store/*": ["src/store/*"],
       "@api/*": ["src/api/module/*"],
       "@utils/*": ["src/utils/*"],
+      "@img/*": ["src/assets/*"],
     },
   },
   "types": ["vite/client", "**/*.d.ts"],
