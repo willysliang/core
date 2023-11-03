@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 10:40:11
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-01 16:37:27
+ * @ Modifier time: 2023-11-02 20:29:48
  * @ Description: vite 构建文件
  */
 
@@ -34,6 +34,12 @@ import checkerEslint from 'vite-plugin-checker'
  */
 /** vite 打包压缩 gzip */
 import viteCompression from 'vite-plugin-compression'
+
+/**
+ * postcss 解析
+ */
+import autoprefixer from 'autoprefixer'
+import postCssPxToRem from 'postcss-pxtorem'
 
 /** 读取 package.json 文件内容 */
 const packageJSON = JSON.parse(
@@ -119,11 +125,32 @@ export default defineConfig(({ mode }) => {
         '@store': path.resolve(__dirname, 'src/store'),
         '@api': path.resolve(__dirname, 'src/api/module'),
         '@utils': path.resolve(__dirname, 'src/utils'),
+        '@img': path.resolve(__dirname, 'src/assets'),
       },
       //  导入时想要忽略的扩展名列表 导入时想要省略的扩展名列表。不建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响 IDE 和类型支持
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
     },
     css: {
+      postcss: {
+        plugins: [
+          autoprefixer({
+            overrideBrowserslist: [
+              'Android 4.1',
+              'iOS 7.1',
+              'Chrome > 31',
+              'ff > 31',
+              'ie >= 8',
+            ],
+          }),
+          postCssPxToRem({
+            // 自适应，px>rem转换
+            rootValue: 75, // 75表示750设计稿，37.5表示375设计稿
+            propList: ['*'], // 需要转换的属性，这里选择全部都进行转换
+            selectorBlackList: ['.willy', '.px', 'body', 'html'], // 过滤掉 willy- 开头的 class，不进行rem转换
+            exclude: '/node_modules', // 忽略包文件转换rem
+          }),
+        ],
+      },
       preprocessorOptions: {
         scss: {
           additionalData: '@import "src/styles/var.scss";',

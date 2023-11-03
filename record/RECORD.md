@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 18:48:47
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-01 15:04:16
+ * @ Modifier time: 2023-11-03 12:00:37
  * @ Description: 日志记录
 ---
 
@@ -24,6 +24,10 @@
 
 
 # 更新记录
+
+
+## 2023年11月3日11点59分
+  - feat: 样式提取 & blog首页
 
 ## 2023年11月1日15点03分
   - workflow(github): 自动化构建项目
