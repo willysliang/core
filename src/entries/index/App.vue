@@ -2,12 +2,16 @@
  * @ Author: willy
  * @ Create Time: 2023-11-01 16:25:03
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-03 11:50:33
+ * @ Modifier time: 2023-11-06 20:39:27
  * @ Description: APP 主入口
  -->
 
 <script setup lang="ts">
 import { useAppIndexStore } from '@store/app/index'
+import { useReadPathFiles } from '@/hooks/useReadPathFiles'
+
+const { fileMap } = useReadPathFiles()
+console.log(fileMap)
 
 const { name } = useAppIndexStore()
 </script>

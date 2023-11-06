@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 18:48:47
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-03 12:00:37
+ * @ Modifier time: 2023-11-06 20:39:40
  * @ Description: 日志记录
 ---
 
@@ -25,6 +25,9 @@
 
 # 更新记录
 
+
+## 2023年11月6日20点39分
+  - feat: 获取 blog 文件夹的 md 文件
 
 ## 2023年11月3日11点59分
   - feat: 样式提取 & blog首页

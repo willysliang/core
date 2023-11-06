@@ -43,7 +43,7 @@ module.exports = {
     'func-call-spacing': 'off', // 函数存在意外空格
     'space-before-function-paren': 'off',
     '@typescript-eslint/triple-slash-reference': 'off', // 引用路径
-    // '@typescript-eslint/no-non-null-assertion': 'off', // 可使用断言
+    '@typescript-eslint/no-non-null-assertion': 'off', // 可使用断言
     // '@typescript-eslint/no-var-requires': 'off', // 可使用 require
   },
 }
