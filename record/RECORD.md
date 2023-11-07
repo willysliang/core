@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 18:48:47
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-07 19:41:50
+ * @ Modifier time: 2023-11-07 19:48:07
  * @ Description: 日志记录
 ---
 
@@ -31,6 +31,7 @@
       - $ pnpm i @kangc/v-md-editor highlight.js
       - 隐藏了编辑区域和操作区域
   - docs(all): 上传 blog
+  - docs(README): 删除冗余且引起报错的信息
 
 ## 2023年11月6日20点39分
   - feat: 获取 blog 文件夹的 md 文件
