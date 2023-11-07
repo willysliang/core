@@ -20,11 +20,14 @@
   },
   "dependencies": {
     "@icon-park/vue-next": "^1.4.2",
+    "@kangc/v-md-editor": "^2.3.17",
     "amfe-flexible": "^2.2.1",
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
+    "highlight.js": "^11.9.0",
     "pinia": "^2.1.7",
     "postcss-pxtorem": "^6.0.0",
+    "prismjs": "^1.29.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5"
   },

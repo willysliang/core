@@ -1,12 +1,12 @@
 # willys-core 核心库
 
-# 基建
+## 基建
 - git message 提交校验
 - 项目打包校验项目格式是否正确，不合规则中断打包
 - git 提交预先校验所提交内容，不合规则终端提交
 
 
-# 博客(网站入口) index.html
+## 博客(网站入口) index.html
 - 自动读取项目中设定目录的 md 文档转化为 html 内容
 - 自动打包 Html 文件然后上传到 github.io 上
 - 开发成类似 vuepress 的页面，可配置显示
@@ -15,7 +15,7 @@
     - 右边 md 文档的标题
 
 
-# 工具库 case.html
+## 工具库 case.html
 - utils 的工具类收集
     - 内容转换 format
 
