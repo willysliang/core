@@ -1,0 +1,13 @@
+{
+  "name": "willys",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "willysliang <willysliang@qq.com>",
+  "license": "ISC",
+  "description": "willysliang说明",
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willysliang/blog.git"
+  }
+}

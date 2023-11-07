@@ -10,7 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 core
-blog
 dist-ssr
 *.local
 

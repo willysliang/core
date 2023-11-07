@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 18:48:47
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-07 19:05:46
+ * @ Modifier time: 2023-11-07 19:41:50
  * @ Description: 日志记录
 ---
 
@@ -30,6 +30,7 @@
       - [v-md-editor](https://ckang1229.gitee.io/vue-markdown-editor/zh/)
       - $ pnpm i @kangc/v-md-editor highlight.js
       - 隐藏了编辑区域和操作区域
+  - docs(all): 上传 blog
 
 ## 2023年11月6日20点39分
   - feat: 获取 blog 文件夹的 md 文件

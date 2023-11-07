@@ -1,0 +1,2440 @@
+---
+ * @ Author: willysliang
+ * @ Create Time: 2022-08-21 16:16:54
+ * @ Modified by: willysliang
+ * @ Modified time: 2023-03-29 15:00:48
+ * @ Description: JavaScript
+---
+
+## JavaScript
+
+## JS理念
+
+> ```bash
+> ### JS 是什么？
+> - 解析执行，轻量级解析型，一行一行解析的。
+> - 是一种运行在客户端的脚本语言，不需编译，运行过程中由js解释器(js引擎)逐行进行解释并执行；
+> - js来源：借鉴了c语言、java语言等 --> (简化式)函数式编程 +（简化式）面向对象编程；
+> - ES6既是一个历史名词，也是泛指5.1版本后的js的下一个标准。
+> 
+> 
+> ### JS 的组成
+> JS严格意义上来说分为：语言标准部分（ESCMAScript）+ 宿主环境部分。
+> 	- 在浏览器中，宿主环境包括 DOM + BOM 等。
+> 	- 在 Nod 中，宿主环境包括一些文件、数据库、网络、操作系统的交互等。
+> 1. ECMAScript(js语法规范)：包括变量、表达式、运算符、函数、if语句、for语句等。
+> 2. BOM:文档对象模型(Document object Model)：onload页面加载事件、window顶级对象；定时器；location、history
+> 3. DOM:浏览器对象模型(Browser Object Model)：获取页面元素、注册事件；属性、样式操作；节点属性、节点层级；动态创建元素
+> 
+> 
+> ### JS 引入方式
+> 1. 行内式
+> 2. 内嵌式
+> 3. 外部引入式
+> 
+> 
+> ### JS 的特点
+> - 解释性：C语言为编译性
+> - 基于对象：什么是对象
+> - 事件驱动：onclick、onmouseover、onmouseout
+> - 跨平台性：只跟浏览器有关
+> - 安全性：不允许访问硬盘，不能对网络文件进行修改和删除
+> 
+> 
+> ### JS 全局函数
+> - 6个编码相关：`escape()、unescape()、encodeURL()、decodeURL()、encodeURLComponent()、decodeURLComponent()`
+> - 2个数据处理：`Number()、String()`
+> - 4个数字相关：`isFinite()、isNaN()、parseInt()、parseFloat()`
+> - 1个特殊：`eval()`
+> ```
+
+### 抽象语法树`AST`
+
+- 抽象语法和抽象语法树就是**源代码的抽象语法结构的树状表现形式**
+- 浏览器通过`javascript Parser`解析器将js代码转化为抽象语法树来进行下一步的分析等其他操作。所以将js转化为抽象语法树更利于程序的分析。
+- 常用的`javascript Parser`：esprima、traceur、acorn、shift。
+
+**抽象语法树的作用**
+
+- 代码语法的检查，代码风格的检查，代码的格式化，代码的高亮，代码错误提示，代码自动补全等等
+
+  > 如：JSLint、JSHint 对代码错误或风格的检查，发现一些潜在的错误
+  > IDE的错误提示，格式化，高亮，自动补全等等
+  > 代码的混淆压缩
+  > 如：UglifyJS2等
+
+- 优化变更代码，改变代码结构达到想要的结构
+
+  > 代码打包工具webpack，rollup等等
+  > CommonJS、AMD、CMD、UMD等代码规范之间的转化
+  > CoffeeScript、TypeScript、JSX等转化为原生Javascript
+
+### 一次js请求的缓存处理
+
+- `DNS`缓存：短时间内多次访问某个网站，在限定时间内，不用多次访问DNS服务器
+- `CDN`缓存：内容分发网络，就近节点获取
+- 浏览器缓存：浏览器在用户磁盘上，对最新请求过的文档进行了存储
+- 服务器缓存：将需要频繁访问的Web页面和对象保存在离用户更近的系统中，当再次访问这些对象时加快访问速度。
+
+## JS在浏览器的运行机制
+
+### 进程与线程
+
+> ```bash
+> ## 进程与线程
+> CPU -> 进程 -> 线程
+> 
+> ### 进程
+> - CPU 是计算机的核心，承担所有的计算任务。
+> - 进程是 CPU 资源分配的最小单位。
+> - 进程包括运行中的程序和程序中所使用的内存和系统资源。
+> - CPU 可以有很多进程，但 CPU 所拥有的资源空间是固定的，CPU 给每个进行分配资源空间，分出去的资源空间越多就会导致平均分配的内存不足而导致卡顿。每个进程之间是相互独立的，CPU 在运行一个进程时，其他的进程处于非运行状态，CPU 使用 `时间片轮转调度法` 来实现同时运行多个进程。
+> 
+> 
+> ### 线程
+> - 线程是 CPU 调度的最小单位。
+> - 线程是建立在进程的基础上的一次程序运行单位，线程是程序中的一个执行流，一个进程可以有多个线程。
+> - 一个进程中只有一个执行流称作单线程，即程序执行时，所走的程序路径按照连续顺序排下来，前面的必须处理好，后面的才会执行。
+> - 一个进程中有多个执行流称作多线程，即一个程序中可以同时运行多个不同的线程来行执行不同的任务。
+> 	
+> 
+> ### 进程和线程的区别
+> - 进程是操作系统分配资源的最小单位，线程是程序执行的最小单位。
+> 		（CPU 分配足够多资源给一个应用，应用可调用多个线程执行任务，但分配给应用的运行内存是有限的，当线程运行过多就会因为运行内存不足导致卡顿）
+> - 一个进程由一个或多个线程组成，线程可以理解为是一个进程中代码的不同执行路线。
+> - 进程之间相互独立，但同一进程下的各个线程间共享程序的内存空间（包括代码段、数据集、堆等）及一些进程级的程序（如打开文件和信号）
+> - 调度和切换：线程上下文切换比进程上下文切换要快得多。
+> 
+> 
+> ### 多进程和多线程
+> 1. 多进程：
+> - 多进程指的是在同一时间里，同一个计算机系统中如果允许两个或两个以上的进程处于运行状态。
+> - 多线程的好处：如在网易云听歌的同时打开编辑器敲代码，编辑器和网易云的进程之间不会相互干扰。
+> 
+> 2. 多线程：
+> - 多线程是指程序中包含多个执行流，即一个程序中可以同时运行多个不同的线程来行执行不同的任务。
+> 
+> 
+> 
+> ### JS 为什么是单线程
+> JS 的单线程与它的用途有关。作为浏览器脚本语言，JavaScript 的主要用途是与用户互动，以及操作DOM。这决定了它只能是单线程，否则会带来很复杂的同步问题。比如，假定 JS 同时有两个线程，一个线程在某个 DOM 节点上添加内容，另一个线程删除了这个节点，这时浏览器就不确定以哪个线程为准。
+> 为了利用多核CPU的计算能力，HTML5 提出 WebWorker 标准，允许 JS 脚本创建多个线程，但是子线程是完全受主线程控制，而且不得操作 DOM。所以这个标准并没有改变 JavaScript 是单线程的本质。
+> ```
+
+### 浏览器
+
+> ```bash
+> ## 浏览器
+> ### 浏览器是多进程的
+> - 浏览器是多线程的，如Chrome浏览器，我们每打开一个 Tab 页就会产生一个进程，每个进程又有很多线程，都会占用内部才能，这也以为这内存等资源消耗会很大，因此当Chrome运行时间长了就会导致电脑会越来越卡。
+> - 浏览器需要多进程的原因：如果浏览器是单线程，当某个Tab页、插件崩溃，就影响了整个浏览器，影响用户体验感
+> 
+> 
+> ### 浏览器包含的进程
+> 1. Browser 进程
+>     - 浏览器的主进程（负责协调、主控），该进程只有一个。
+>     - 负责浏览器界面显示，与用户交互。如页面的前进、后退等。
+>     - 负责各个页面的管理，创建和销毁其他进程。
+>     - 将渲染(Renderer)进程得到的内存中的 Bitmap(位图)，绘制到用户界面上。
+>     - 网络资源的管理、下载等。
+> 
+> 2. 第三方插件进程
+> 		- 每种类型的插件对应一个进程，当使用该插件时才创建。
+> 
+> 3. GPU 进程
+> 		- 该进程也只有一个，用于 3D 绘制等等。
+> 
+> 4. 渲染进程（重点）
+>     - 浏览器内核（Renderer进程，其内部是多线程）。
+>     - 每个 Tab 页面都有一个渲染进程，互不影响。
+>     - 主要作为页面渲染、脚本执行、事件处理等。
+> 
+> 
+> ### 渲染进程 Renderer 的主要进程
+> #### GUI 渲染线程
+> - 负责渲染浏览器界面，解析HTML、CSS、构建DOM树和RenderObject树，布局和绘制等。
+>     1. 解析html代码（HTML代码本质是字符串）转化为浏览器认识的节点，生成 DOM树（DOM Tree）
+>     2. 解析 CSS，生成 CSS规则树（CSSOM）
+>     3. 把 DOM Tree 和 CSSOM 结合，生成渲染树（Rendering Tree）
+> - 当修改元素的尺寸等，页面就会回流(Reflow)。
+> - 当修改如一些元素的颜色或背景色，页面就会重绘(Repaint)。
+> - 当页面需要 Repaint 和 Reflow 时， GUI 线程执行，绘制页面。
+> - 回流(Reflow)比重绘(Repaint)的成本要高，我们要尽量避免 Reflow 和 Repaint。
+> - GUI 渲染线程与 JS 引擎线程是互斥的
+> 		- 当 JS 引擎执行时 GUI 线程会被挂起（相当于被冻结）。
+> 		- GUI 更新会被保存在一个队列中等到 JS 引擎空闲时立即被执行。
+> 
+> 
+> #### JS 引擎线程
+> - JS 引擎就是 JS 内核，负责处理 JavaScript 脚本程序（例如 V8 引擎）
+> - JS 引擎线程负责解析 JavaScript 脚本，运行代码。
+> - JS 引擎一直等待任务队列中任务的到来，然后加以处理。
+> 		- 浏览器同时只能有一个 JS 引擎线程在运行 JS 程序，所以js是单向成运行的。
+> 		- 浏览器一个Tab页(renderer进程)中无论什么时候都只有一个 JS 线程在运行 JS 程序。
+> - GUI 渲染线程与 JS 引擎线程是互斥的，JS 引擎线程会阻塞 GUI 渲染线程。
+> 		- 就是我们常遇到的 JS 执行时间过长，造成页面渲染不连贯，导致页面渲染加载阻塞（页面加载缓慢）
+> 		- 例如浏览器渲染时遇到 script 标签，就会停止 GUI 的渲染，然后 JS 引擎线程开始工作，执行里面的js代码，等js执行完毕，JS 引擎线程停止工作，GUI 继续渲染下面的内容。如果js执行时间太长就会造成页面卡顿的情况。
+> 
+> 
+> #### 事件触发线程
+> - 属于浏览器而不是 JS 引擎，用来控制事件循环，并且管理着一个事件队列（task queue）
+> - 当js执行碰到事件绑定和一些异步操作（如setTimeOut，也可来自浏览器内核的其他线程，如鼠标点击、AJAX异步请求等），会走事件触发线程将对应的事件添加到对应的线程中（比如定时器操作，便把定时器事件添加到定时器线程），等异步事件有结果，便把它们的回调操作添加到事件队列，等待 JS 引擎线程空闲时来处理。
+> - 当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待 JS 引擎的处理。
+> - 因为 JS 是单线程的，所以这些待处理队列中的事件都得排队等待 JS 引擎处理。
+> 
+> 
+> #### 定时触发器线程
+> - setInterval 与 setTimeout 所在的线程。
+> - 浏览器定时计数器并不是由 JavaScript 引擎计数的（因为 JS 引擎是单线程的，如果处于阻塞线程状态，就会影响计时的准确）
+> - 通过单独线程来计时并触发定时（计时完毕后，添加到事件触发线程的事件队列中，等待 JS 引擎空闲后执行），这个线程就是定时触发器线程，也叫定时器线程。
+> - W3C 在 HTML 标准中规定，规定要求 setTimeout 中低于 4ms 的时间间隔计算为 4ms。
+> 
+> 
+> #### 异步 http 请求线程
+> - 在XMLHttpRequest 在连接后是通过浏览器新开一个线程请求。
+> - 将检测到状态变更时。如果设置有回调函数，异步线程就产生状态变更事件，将整个回调再放入事件队列中，再由 JavaScript 引擎执行。
+> - 简单说就是当执行一个 http 异步请求时，就把异步请求事件添加到异步请求线程，等收到响应（准确说应该是http状态变化），再把回调函数添加到事件队列，等待 JS 引擎线程来执行。
+> ```
+>
+
+### 事件循环 Event Loop
+
+> ```bash
+> ## 事件循环 Event Loop
+> JS 分为同步任务和异步任务。
+> 同步任务都在主线程（JS引擎线程）上执行，会形成一个执行栈；
+> 主线程之外，事件触发线程管理着一个任务队列，只要异步任务有了运行结果，就在任务队列之中放一个事件回调；
+> 一旦执行栈中的所有同步任务执行完毕（也就是JS引擎线程空闲），系统就会读取任务队列，将可运行的异步任务（任务队列中的事件回调，只要任务队列中有事件回调，就说明可以执行）添加到执行栈中，开始执行。
+> 
+> 
+> 
+> ### 执行说明
+> 浏览器上的所有线程的工作都很单一且独立，非常符合单一原则。
+> - '定时触发线程' 只管理定时器，且只关注定时不关心结果，定时结束就把回调扔给事件触发线程。
+> - '异步http请求线程' 只管理异步请求，同样不关心结果，请求结束就把回调扔给事件触发线程。
+> - '事件触发线程' 只关心异步回调入事件队列。
+> - 'JS引擎线程' 只会执行栈中的事件，执行栈中的代码执行完毕，就会读取事件队列中的事件并添加到执行栈中继续执行，这样反反复复的执行事件就是事件循环(Event Loop)
+> 
+> 
+> 
+> ### 执行顺序
+> JS是按照顺序从上往下执行的，可以先理解为这段代码的执行环境就是主线程，也就是当前执行栈。
+> 1. 首先，执行 `console.log('同步任务1')`
+> 2. 接着执行到 setTimeout 时，会移交给'定时器线程'，通知定时器线程 0s 后将 setTimeoutCallback 这个回调交给'事件触发线程'处理，在 0s 后事件触发线程会受到 setTimeoutCallback 这个回调并把它加入到 '事件触发线程' 所管理的事件队列中等待执行。
+> 3. 接着执行 http 请求，会移交给 '异步http请求线程' 发送网络请求，请求成功后将 httpCallback 这个回调交由事件触发线程处理， '事件触发线程' 收到 httpCallback 这个回调后把它加入到 '事件触发线程' 所管理的事件队列中等待执行。
+> 4. 再接着执行 `console.log('同步任务2')`
+> 5. 至此主线程执行栈中执行完毕，'JS引擎线程' 已经空闲，开始向 '事件触发线程' 发起询问，询问'事件触发线程'的事件队列中是否有需要执行的回调函数，如果有将'事件队列'中的回调事件加入执行栈中，开始执行回调，如果事件队列中没有回调，'JS引擎线程'会一直发起询问，直到有为止。
+> ```
+>
+> ```bash
+> ### 事件执行案例
+> let setTimeoutCallback = function () {
+> 	console.log('定时器回调')
+> }
+> let httpCallback = function () {
+> 	console.log('http请求回调')
+> }
+> console.log('同步任务1')
+> setTimeout(setTimeoutCallback, 0)
+> Promise.resolve().then(httpCallback)
+> console.log('同步任务2')
+> ```
+>
+> ![image-20230220184442313](./image/image-20230220184442313.png)
+
+### 宏任务 & 微任务
+
+> ```bash
+> ### 浏览器事件循环`Event Loop`
+> 1. 不同的任务源会被分配到不同的`Task`队列中，任务源分为微任务(task)和宏任务(jobs)
+> 2. 首先 '执行同步代码'，这属于宏任务(`script、setTimeout、setInterval、setImmediate、I/O、UI rendering`)
+> 3. 当执行完所有'同步代码'后，执行栈为空，查询是否有异步代码需要执行
+> 4. '执行所有微任务'(`process.nextTick、promise、MutationObserver`)
+> 5. 当执行完所有微任务后，如有必要，会'渲染页面'
+> 6. 然后开始下一轮`Event Loop`，'执行宏任务的异步代码'，即`setTimeout、setInterval`中的回调事件。
+> 
+> 
+> #### 宏任务（macrotask）
+> - 在 ECMAScript 中，macrotask 也被称为 task。
+> - 我们可以将每次执行栈执行的代码当做是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行），每一个宏任务会从头到尾执行完毕，不会执行其他。
+> - 由于 'JS引擎线程' 和 'GUI渲染线程' 是互斥关系，浏览器为了能够使 '宏任务' 和 'DOM任务' 有序进行，会在一个 '宏任务' 执行结果后，在下一个 '宏任务' 执行前，'GUI渲染线程' 开始工作，对页面进行渲染。
+> - 执行顺序：'宏任务 -> GUI渲染 -> 宏任务 -> ...'
+> - 常见的宏任务：'主代码块、setTimeout、setInterval、Node的setImmediate()、浏览器的requestAnimationFrame'。
+> 
+> 
+> #### 微任务（maicrotask）
+> - ES6新引入Promise标准，同时浏览器实现上多了一个`maicrotask`微任务概念，在ECMAScript中，`maicrotask` 也称为 `jobs`。
+> - 当'宏任务'结束后，会执行渲染，然后执行下一个'宏任务'，而'微任务'可以理解成在当前'宏任务'执行后立即执行的任务。
+> - 当一个'宏任务'执行完，会在渲染前，将执行期间所产生的所有'微任务'都执行完。
+> - 执行顺序：'宏任务 -> 微任务 -> GUI渲染 -> 宏任务 -> ...'
+> - 常见微任务：'Promise.then()、catch、Promise.finally、Object.observe、MutationObserver、Node的process.nextTick()'
+> 
+> 
+> #### 宏任务微任务注意点
+> - 浏览器会先执行一个宏任务，紧接着执行当前执行栈产生的微任务，再进行渲染，然后再执行下一个宏任务。
+> - 微任务和宏任务不在一个任务队列。
+> - 例如 setTimeout 是一个宏任务，它的事件回调在宏任务队列；Promise.then() 是一个微任务，它的事件回调在微任务队列，二者并不是一个任务队列。
+> - 以 Chrome 为例，有关渲染的都是在渲染进程中执行，渲染进程中的任务（DOM树构建、jS解析等）需要主线程执行的任务都会在主线程中执行，而浏览器维护了一套事件循环机制，主线程上的任务都会放到消息队列中执行，主线程会循环消息队列，并从头部取出任务进行执行，如果执行过程中产生其他任务需要主线程执行的，渲染进程中的其他线程会把该任务塞入到消息队列的尾部，消息队列中的任务都是宏任务。
+> - 微任务的产生：当执行到 script 脚本时，JS 引擎会为全局创建一个执行上下文，在该执行上下文中维护了一个微任务队列，当遇到微任务，就会把微任务回调放在微任务队列，当所有的js代码执行完毕，在退出全局上下文之前引擎会去检查该队列，有回调就执行，没有就退出执行上下文。这就是微任务要早于宏任务的原因，即是说每个宏任务都有一个微任务队列（由于定时器是浏览器的API，所以定时器是宏任务，在js中遇x到定时器也是放在浏览器的队列中）。
+> ```
+>
+> ![image-20211017214635189](./image/image-20211017214635189.png)
+>
+> ```js
+> console.log('script start')
+> async function async1() {
+>   await async2()
+>   console.log('async1 end')
+> }
+> async function async2() {
+>   console.log('async2 end')
+> }
+> async1()
+> setTimeout(function () {
+>   console.log('setTimeout')
+> }, 0)
+> new Promise(resolve => {
+>   console.log('Promise')
+>   resolve()
+> }).then(function () {
+>   console.log('promise1')
+> }).then(function () {
+>   console.log('promise2')
+> })
+> console.log('script end')
+> 
+> /* 
+> script start
+> async2 end
+> Promise
+> script end
+> promise1
+> promise2
+> async1 end
+> setTimeout */
+> ```
+
+### 完整的事件循环 Event Loop
+
+> ```bash
+> ## 完整的事件循环 Event Loop
+> 1. 首先，整体的 script 作为第一个宏任务开始执行时，会把所有代码分为 '同步任务、异步任务' 两部分。
+> 2. 同步任务会直接进入主线程依次执行。
+> 3. 异步任务会再分为宏任务和微任务。
+> 	3.1. 宏任务进入到 EventTable 中，并在里面注册回调函数，每当指定的事件完成时，Event Table 会将整个函数移到 Event Queue 中。
+> 	3.2 微任务会进入到另一个 EventTable 中，并在里面注册回调函数，每当指定事件完成时，EventTable 会将整个函数移交到 Event Queue 中。
+> 4. 当主线程内的任务执行完毕，主线程为空时，会检查微任务的 Event Queue，如果有任务，就全部执行，如果没有就执行下一个宏任务。
+> 5. 上述事件过程会不断重复（例如进入下一个 script 标签执行），这就是 Event Loop。
+> 
+> 
+> 
+> ### 关于 Promise
+> - 如 `new Promise(() => ()).then()`
+> 		- 前面的 `new Promise()` 这一部分是一个构造函数，这是一个同步任务。
+> 		- 后面的 `.then()` 才是一个异步任务。
+> 		
+>       new Promise((resolve) => {
+>         console.log(1)
+>         resolve()
+>       }).then(() => {
+>         console.log(2)
+>       })
+>       console.log(3)
+>       // 会输出：1 3 2
+> 
+> 
+> 
+> ### 关于 async/await 函数
+> - async/await 本质上是基于 Promise 的一些封装，而 Promise 是属于微任务的一种。
+> 		所以在使用 await 关键字与 Promise.then() 效果类似。
+> 		await 关键字之前的代码，相当于 new Promise() 的同步代码，await 以后的代码相当于 Promise.then() 的异步。
+> 
+>     setTimeout(() => console.log(1))
+>     async function test() {
+>       console.log(2)
+>       await Promise.resolve()
+>       console.log(3)
+>     }
+>     test()
+>     console.log(4)
+>     // 会输出： 2 4 3 1
+> ```
+>
+> ![image-20230221095738520](./image/image-20230221095738520.png)
+
+### NodeJS中的运行机制
+
+> ```bash
+> ## NodeJS 中的运行机制
+> - 虽然 NodeJS 中的 JavaScript 运行环境也是 V8 引擎，也是单线程，但还是有些与浏览器中的表现是不一样的。
+> - nodejs 与浏览器的区别是，nodejs 的宏任务分好几种类型，而这号几种又有不同的任务队列，而不同的任务队列又有顺序区别，而微任务是穿插在每一种宏任务之间的。
+> - 在 node 环境下，process.nextTick 的优先级高于 Promise，可以简单理解为在宏任务结束后会先执行微任务队列中的 nextTickQueue 部分，然后才执行微任务中的 Promise 部分。
+> - 浏览器和 Node 环境下，microtask 任务队列的执行时机不同
+>     - Node 端，microtask 在事件循环的各个阶段之间执行
+>     - 浏览器端，microtask 在事件循环的 macrotask 执行完之后执行
+> 
+> 
+> ### NodeJS 的 EventLoop
+> 1. node 会执行所有类型为 timers 的 MacroTask，然后执行所有的 MicroTask（NextTick例外）
+> 2. 进入 poll 阶段，执行几乎所有 MacroTask，然后执行所有的 MicroTask。
+> 3. 再执行所有类型为 check 的 MacroTask，然后执行所有的 MicroTask。
+> 4. 再执行所有类型为 close callbacks 的 MacroTask，然后执行所有的 MicroTask。
+> 5. 至此，完成一个 Tick，回到 timers 阶段，不断的进行循环执行。
+> 
+> 
+> ### 浏览器中的 EventLoop
+> 1. 先执行一个 MacroTask，然后执行所有的 MicroTask。
+> 2. 再执行一个 MacroTask，然后执行所有的 MrcroTask。
+> 3. 不断地循环执行上述的过程。
+> 
+> 
+> ### NodeJS 的执行过程
+> 外部输入数据 –> 轮询阶段(poll) –> 检查阶段(check) –> 关闭事件回调阶段(close callback) –> 定时器检测阶段(timers) –> I/O事件回调阶段(I/O callbacks) –> 闲置阶段(idle, prepare) –> 轮询阶段（按照该顺序反复运行）…
+> - timers 阶段：这个阶段执行 timer（setTimeout、setInterval）的回调
+> - I/O callbacks 阶段：处理一些上一轮循环中的少数未执行的 I/O 回调
+> - idle, prepare 阶段：仅 node 内部使用
+> - poll 阶段：获取新的 I/O 事件, 适当的条件下 node 将阻塞在这里
+> - check 阶段：执行 setImmediate() 的回调
+> - close callbacks 阶段：执行 socket 的 close 事件回调
+> ```
+>
+> ![img](./image/2019-01-14-006.png)
+>
+> ```bash
+> ### 浏览器与nodejs 事件循环执行案例
+> setTimeout(()=>{
+>   console.log('timer1')
+>   Promise.resolve().then(function() {
+>     console.log('promise1')
+>   })
+> }, 0)
+> setTimeout(()=>{
+>   console.log('timer2')
+>   Promise.resolve().then(function() {
+>     console.log('promise2')
+>   })
+> }, 0)
+> 
+> 
+> ### 浏览器端运行结果：timer1 => promise1 => timer2 => promise2
+> 
+> 
+> ### Node 端运行结果：timer1 => timer2 => promise1 => promise2
+> 全局脚本（main()）执行，将 2 个 timer 依次放入 timer 队列，main()执行完毕，调用栈空闲，任务队列开始执行；
+> 首先进入 timers 阶段，执行 timer1 的回调函数，打印 timer1，并将 promise1.then 回调放入 microtask 队列，同样的步骤执行 timer2，打印 timer2；
+> 至此，timer 阶段执行结束，event loop 进入下一个阶段之前，执行 microtask 队列的所有任务，依次打印 promise1、promise2
+> ```
+>
+> **浏览器处理结果**
+>
+> ![img](./image/2019-01-14-007.gif)
+>
+> **Nodejs处理结果**
+>
+> ![img](./image/2019-01-14-008.gif)
+
+### 浏览器渲染原理
+
+> ```bash
+> ## 浏览器渲染原理
+> ### 浏览器渲染流程
+> - 解析html -> 构建DOM树/CSS Rule Tree -> 构建render树 -> 布局render树 -> 绘制render树
+> 
+> 
+> ### 浏览器解析过程
+> 1. DOM Tree：浏览器会将HTML解析成一个DOM树，
+> 		DOM 树的构建过程是一个深度遍历过程：当前节点的所有子节点都构建好后才会去构建当前节点的下一个兄弟节点。
+> 2. CSS rule tree：将CSS解析成树形的数据结构
+> 3. Render Tree: 根据DOM树和CSSOM来构造Render Tree
+>     此时浏览器已经能知道网页中有哪些节点、各个节点的CSS定义以及他们的从属关系；
+>     但并不知道节点的位置，需要依靠接下来的layout。
+> 4. layout：计算出每个节点在屏幕中的位置(宽高、颜色等)
+> 5. 绘制(painting)：即遍历render树，并使用UI后端层绘制每个节点到页面上
+> 注意：上述这个过程是逐步完成的，为了更好的用户体验，渲染引擎将会尽可能早的将内容呈现到屏幕上，并不会等到所有的html都解析完成之后再去构建和布局render树。它是解析完一部分内容就显示一部分内容，同时，可能还在通过网络下载其余内容。
+> ```
+>
+> **webkit的流程**
+>
+> ![image-20210914235451051](./image/image-20210914235451051.png)
+>
+> **Geoko的流程**
+>
+> ![image-20210914235521432](./image/image-20210914235521432.png)
+
+### 重绘和回流(重排)
+
+> ```bash
+> ## 重绘 和 回流(重排)
+> ### 1. 重绘(repaint)
+> 重绘(repaint)：不会影响页面布局的操作，重新绘制到屏幕上的过程称为重绘。
+>    - 如改变某个元素的背景色、文字颜色、边框颜色等不影响它周围或内部布局的属性时，即元素的几何尺寸没有变。
+>    - DOM改动
+>    - CSS改动
+> 
+> 
+> ### 2. 回流/重排(reflow)
+> 回流(reflow)：布局的改变(某个部位改变)导致需要倒回去重新渲染，这个回退的过程叫回流
+>    - 增加、删除、修改DOM节点时，会导致 Reflow 或 Repaint。
+>    - 移动DOM的位置，或是加个动画时。
+>    - 修改CSS样式时（宽高、display 为none等，都是通过css样式来修改的）
+>    - 当用户Resize窗口时（移动端没有这个问题），或是滚动时，有可能会触发（具体要看浏览器的规则）
+>    - 修改网页的默认字体时。
+> 注意：回流必将引起重绘，重绘不一定会引起回流
+> 
+> 
+> ### 引起重排的原因
+> 1. 添加或者删除可见的DOM元素；
+> 2. 元素位置、尺寸、内容改变；
+> 3. 浏览器页面初始化；
+> 4. 浏览器窗尺寸改变，重排一定引起重绘，重绘不一定引起重排。
+> 
+> 
+> ### 减少重绘和重排的方法
+> 1. 不在布局信息改变时做 DOM 查询。
+> 2. 使用 `cssText` 或者 `className` 一次性改变属性。
+> 3. 使用 `fragment`。
+> 4. 对于多次重排的元素，如动画，使用绝对定位脱离文档流，让他的改变不影响到其他元素。
+> ```
+
+## 脚本标签 script
+
+> ```bash
+> ## 脚本 script
+> 		`<script type="text/javascript" src="" async></script>`
+>    // async:异步		defer：
+>    // 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
+> 
+> 当浏览器看到普通脚本标签声明时，它执行以下步骤：
+>     - 暂停 HTML 文档解析器
+>     - 创建新请求以下载脚本
+>     - 在脚本完全下载后立即执行脚本
+>     - 执行结束后，继续解析 HTML 文档
+> 
+> 
+> ### async 和 defer
+> async 与 defer 的作用是让浏览器知道脚本可以与文档解析器过程并行下载，从而不阻塞页面的渲染。
+> async 与 defer 的区别是脚本会在不同的时刻执行。
+> 
+> 1. async 异步执行
+>     下载 async 脚本后，浏览器将暂停文档解析器，执行脚本并继续解析文档。
+>         1. 解析文档
+>         2. 下载脚本
+>         3. 暂停解析
+>         4. 执行脚本
+>         5. 恢复解析
+>      async 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），
+>      但它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说非常适合。
+> 
+> 2. defer 延时执行
+>     只有当解析器完成其工作时，才会执行 defer 脚本。
+>         1. 解析脚本
+>         2. 下载脚本
+>         3. 执行脚本
+>     注意：这个过程中，文档是不会停止解析的。
+> 
+> 
+> ### aync 与 defer 的区别
+> async 脚本在完全下载后立即执行，加载和渲染后续文档元素的过程将和 JS 脚本的加载与执行并行进行（异步），因此它们的执行顺序可能与页面中显示的顺序不同（即不管声明顺序如何，只要它加载完成该脚本就会立刻执行）。
+> defer 脚本保证执行顺序。它是等到页面渲染完毕，所有脚本下载完成，在 `DOMContentLoaded` 事件前按照脚本在文档中的顺序执行。
+> ```
+
+### DOMContentLoaded 事件
+
+> ```bash
+> ## DOMContentLoaded 事件
+> 当初始HTML文档已完全加载和解析时，将触发DOMContentLoaded事件，而不需要等待样式表，图像和子框架页面加载（事件可以用来检测HTML页面是否完全加载完毕(fully-loaded)）。
+> 
+> 
+> ### DOMContentLoaded 执行时机
+> #### 1. 普通脚本/sync（等待脚本执行完后再执行DOMContentLoaded）
+> 	HTML加载解析 -> 遇到普通脚本 -> 加载&执行脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
+> 
+> 
+> #### 2. 异步加载脚本/async（衡量HTML加载解析的速度来执行DOMContentLoaded）
+> 	HTML加载解析 -> 遇到async脚本 -> (HTML&async脚本)并行加载解析 ->
+> 		- 若HTML解析完后async脚本也已加载完毕 -> 停止HTML解析 -> 执行async脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
+> 		- 若HTML解析完后async脚本还未加载完成 -> DOMContentLoaded事件
+> 
+> 
+> #### 3. 延时加载脚本/defer（等待脚本执行完后再执行DOMContentLoaded）
+> 	HTML加载解析&defer脚本加载 
+> 			- 若HTML解析完后defer脚本也已加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
+> 			- 若HTML解析完后async脚本还未加载完成 -> defer脚本加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
+> ```
+>
+> ![image-20230329111340256](./image/image-20230329111340256.png)
+>
+> #### 对于不同声明的脚本，DOMContentLoaded 的触发时机
+>
+> ##### sync / 普通 js
+>
+> - 文档解析的过程中，如果遇到 script 脚本，就会停止页面的解析进行下载，当脚本都执行完毕后，才会继续解析页面。
+>
+> ![image-20230329112327704](./image/image-20230329112327704.png)
+>
+> ##### async / 异步加载脚本
+>
+> - async 脚本会在加载完毕后执行。
+> - async 脚本的加载不计入 `DOMContentLoaded` 事件统计，就存在下面两种情况会发生。
+>
+> 1. HTML 还没有被解析完的时候，async 脚本已经加载完毕，那么 HTML 就会停止解析，去执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329112729627](./image/image-20230329112729627.png)
+>
+> 2. HTML 解析完之后，async 脚本还未加载完成，那么在HTML解析完毕后就触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329112749177](./image/image-20230329112749177.png)
+>
+> ##### defer / 延时加载脚本
+>
+> - 文档解析时，遇到设置了 defer 的脚本，就会在后台进行下载，但是并不会阻止文档的渲染，当页面解析和渲染完毕后，会等到所有的 defer 脚本加载完毕并按照顺序执行完毕才会触发 `DOMContentLoaded` 事件。此时就存在两种情况会发生：
+>
+> 1. HTML还没被解析完的时候，defer 脚本已经加载完毕，此时会等待 HTML 解析完成后执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329113352649](./image/image-20230329113352649.png)
+>
+> 2. HTML 解析完之后，defer 脚本才加载完，此时会先等待 defer 脚本执行完毕后，才会触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329113418206](./image/image-20230329113418206.png)
+
+### DOMContentLoaded和load的区别
+
+> ```bash
+> ## DOMContentLoaded 和 load 的区别
+> DOMContentLoaded：在 interactive 触发
+> 	当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完成加载。
+> 
+> load：在 complete 触发
+> 	当一个资源及其依赖资源已完成加载时，将触发load事件。
+> 
+> 
+> ### document.readyState
+> document.readyState 属性描述了文档的加载状态。一个文档的 readyState 可以是以下值之一：
+> 	- loading：加载，此时 document 仍在加载
+> 	- interactive：互动，此时文档已经完成加载，文档已被解析，但是诸如图像、样式表和iframe之类的子资源仍在加载。
+> 	- complete：完成，此时 T 文档和所有子资源已完成加载。状态表示 load 事件即将被触发。
+> ```
+>
+> ![20190128102028682](./image/20190128102028682.gif)
+
+## DOM
+
+> ```bash
+> ## DOM
+> - DOM 为文档提供了结构化表示，并定义了如何通过脚本来访问文档结构。
+> - DOM 的目的是为了能让 js 操作 html 元素而制定的一个规范。
+> - DOM 就是由节点组成的；所有的节点都是Object。
+> - DOM对象与标签的区别
+>     - 元素标签(位于文档)对应的元素节点(位于Dom节点书上)。
+>     - 区别是 DOM 里面的元素节点是个对象，拥有属性和方法；而元素标签仅仅是标签而已。
+>   
+>   
+> ### DOM作用
+>   - 找对象（元素节点）
+>   - 设置元素的属性值
+>   - 设置元素的样式
+>   - 动态创建和删除元素
+>   - 事件的触发响应：事件源、事件、事件的驱动程序
+> 
+> - 节点元素：父（parent）、子（child）和同胞（sibling）
+> - 元素的属性（包括对应标签的属性）
+>     - 非表单元素的属性：id、src、title、href、alt
+>     - 表单元素的属性：name、value、type、disabled、checked、selected
+>     - 超链接-->取消默认行为的执行 ：return false;
+> 
+> 
+> ### DOM节点属性
+> 1. nodeName	--> nodeName 属性规定节点的名称，仅只读
+>     - 文档节点（文档）：整个 HTML 文档就是一个文档节点；nodeName 始终是 #document
+>     - 元素节点（标签）：HTML标签；nodeName 与标签名相同
+>     - 属性节点（属性）：元素的属性；nodeName 与属性名相同
+>     - 文本节点（文本）：HTML标签中的文本内容(包括标签之间的空格、换行)；nodeName始终是 #text
+>   
+> 2. nodeValue 	-->  nodeValue 属性规定节点的值
+>     - 元素节点的 nodeValue 是 undefined 或 null
+>     - 文本节点的 nodeValue 是文本本身
+>     - 属性节点的 nodeValue 是属性值
+> 
+> 3. NodeType
+>     - 元素：1
+>     - 属性：2
+>     - 文本：3
+>     - 注释：8
+>     - 文档：9
+> ```
+>
+> ![JS_DOM节点关系表](./image/JS_DOM%E8%8A%82%E7%82%B9%E5%85%B3%E7%B3%BB%E8%A1%A8.png)
+
+### DOM方法
+
+> ```bash
+> ### DOM 方法
+> 1. get(获取)
+> 2. set(设置)
+> 3. remove(移除)
+> 4. create(创建)
+> 5. insert(插入)
+> 6. replace(替代)
+> 7. append(添加)
+> 
+> 
+> - getElementById(id) - 获取带有指定 id 的节点（元素）
+> - appendChild(node) - 插入新的子节点（元素）
+> - removeChild(node) - 删除子节点（元素）
+> - createAttribute() - 创建属性节点
+> - 要复制的节点.cloneNode(true)--复制节点
+> ```
+
+### DOM属性
+
+> ```bash
+> ### DOM 属性
+> - innerHTML - 节点（元素）的文本值
+> - parentNode - 节点（元素）的父节点
+> - childNodes - 节点（元素）的子节点
+> - attributes - 节点（元素）的属性节点
+> 
+> 
+> 因为不可以直接输出自定义的属性，所以有了以下方法
+>     - 获取标签对应的属性：getAttribute(“”); //属性可以是自定义，也可以是本身已有的
+>     - 设置标签属性的值setAttribute(“属性名”，“属性值”);
+>     - 移除标签属性 removeAttribute(“属性名”);
+> ```
+
+### DOM访问
+
+> ```bash
+> ### DOM 访问
+> - 通过Id获取单个标签：document.getElementById，返回Object类型
+> - 通过类名获取标签：document.getElementByClassName，返回一个数组
+> - 通过标签名获取标签：document.getElementsByTagName，返回一个数组
+> - H5中query查询Selector选择器：querySelctor()
+> - 查询所有选择器：querySelctorAll(标签名/类名/id名等等)
+> 
+> 注意：因为id是单数，所以不用s，name等可以多个，为复数，所以需要s
+> ```
+>
+> ```js
+> // 元素的节点访问
+> 节点.parentNode						：获取父元素
+> 
+> 节点.previousSibling			 ：上一个兄弟节点		
+> 节点.nextSibling					：下一个兄弟节点
+> 节点.previousElementSibling：上一个兄弟元素（处理兼容： 节点.previousElementSibling || 节点）
+> 节点.nextElementSibling		：下一个兄弟元素（处理兼容问题： 节点.nextElementSibling || 节点）
+> 
+> 节点.firstChild						：获取第一个子节点		
+> 节点.lastChild						：最后的子节点
+> 节点.firstElementChild		：获取第一个子元素（处理兼容问题：节点.firstElementChild || 节点）
+> 节点.lastElementChild			：最后的子元素		（处理兼容问题：节点.lastElementChild || 节点）
+> 
+> 节点自己.parentNode.children[index] ：获取随意的兄弟节点
+> 节点.childNodes						：获取所有子节点
+> 节点.children							：获取所有子元素
+> 
+> document.body							:获取body节点
+> document.documentElement	:获取html节点
+> ```
+
+### DOM修改（操作样式）
+
+> **操作样式：**设置类样式class 、设置行内样式style
+>
+> ```js
+> let list = document.getElementsByTagName('li')[0];
+> list.style.color = "lightgray";
+> list.className = 'list';
+> console.log(list['src'], list['className'])
+> ```
+>
+> **动态创建元素**（innerHTML、document.write、inerText）:动态创建元素优点-->提高网页性能，降低流量使用
+>
+> **注意：通过`attribute`和设置`style`只能通过获取id标签来更改**
+>
+> - **innerHTML 和 innerText 区别**
+>   - innerHTML 返回的是标签内的html内容，包含里层的html标签
+>   - inerText 返回的是标签的文本值，不包含html标签
+>   - innerHTML 和 innerText，如果两个都写，下面的内容会把上面的内容覆盖
+>
+> - **document.write()**      //比如弹出新框的在线客服
+>   - 当页面加载时，会产生输出流，这个输出流在页面加载完毕时关闭
+>   - 如果输出流关闭后执行document.write()，它会开启一个新的输出流，页面会被覆盖
+>   - 使用建议：使用document.write只可以在页面加载中，可以使用在弹出新窗口时
+>
+> - **innerHTML**
+>   - 在设置时会覆盖原来的内容，但是可以通过+=去解决
+>
+> - **inerHTML 和 document.write 区别**
+>   - innerHTML 是将内容写入某个DOM节点，不会导致页面全部重绘
+>   - document.write 是直接将内容写入页面的内容流，会导致页面全部重绘
+> - `document.createElement()`
+> - 动态操作表格
+>   - rows (只读，table和textarea能用)
+>   - insertRow(index) (只有table能调用)
+>   - deleteRow(index) (只有table能调用)
+>   - cells (只读，table和textarea能用)
+>   - insertCell(index) (只有tr能调用)
+>   - deleteCell(index) (只有tr能调用)
+
+#### 提取非行间样式
+
+> ```js
+>window.onload = function () {
+>   let div = document.getElementsByTagName("div")[0];
+>   let style = getAttr(div, 'width')
+>   console.log(style)
+> }
+> 
+> // 获取class或id 标签的指定样式
+>function getAttr(obj, attr) {
+>   let style;
+>  if (obj.currentStyle) {   //当有这个属性的时候currentStyle(即在IE中时)
+>     style = obj.currentStyle[attr]; //兼容IE
+>  }
+>   else {
+>     style = getComputedStyle(obj, false)[attr]; //主流浏览器
+>   }
+>   return style;
+>}
+> ```
+
+#### 替换内容问题
+
+> - 变量名.replace(“被替换内容”,“替换内容”);
+>- 替换类名：`变量名.className = 变量名.className.replace(“被替者”,“替换者”);` //只是替换了replace的内容，class中定义的其他类名还是存在的，
+> - 比如class="aa bb cc"，当你relpace("aa","dd")，其他两个bb,cc的类名仍然存在
+
+#### 定义选择到框内的状态
+
+> - 形如：input[type=text] 选择input标签中的文本类型的
+>- Checkbox的checked 为选中状态
+> - 取反则是为非：!   形如：获取的变量.checked=!获取的变量.checked
+
+#### 从 DOM 元素中移除所有子元素
+
+```bash
+## 从 Dom 元素中移除所有子元素
+给定 DOM 中的一个项目列表，使用 `querySelector()` 获取它，如下所示：
+	const item = document.querySelector('.ele')
+
+1. 最快的解决方案是：
+	item.innerHTML = ''
+
+2. 另一个解决方案是，创建一个循环，检查 `firstChild` 属性是否存在，然后将其删除：
+	while (item.firstChild) {
+  	item.removeChild(item.firstChild)
+	}
+当所有子元素都被移除时，循环结束。
+```
+
+
+
+### DOM事件
+
+> ```bash
+> ## DOM 事件
+> 1. 鼠标拖拽事件
+>     - `onmousedown`：当鼠标在被拖拽元素上按下时，开始拖拽；
+>     - `onmousemove`：当鼠标移动时被拖拽元素跟随鼠标移动；
+>     - `onmouseup`：当鼠标松开时，被拖拽元素固定在当前位置。
+>     - `oncontextmenu`：鼠标右键点击事件。
+> 
+> 2. 鼠标移动事件
+>     - `onmousewheel`：鼠标滚轮滚动的事件，会在滚轮滚动时触发。但火狐不支持该属性
+>     - `DOMMouseScroll`：在火狐中使用该方法来绑定滚动事件。该事件需要通过addEventListener()函数来绑定。
+> 
+> 3. 键盘事件
+>     - `onkeydown`：按键被按下时触发
+>     - `onkeyup`：按键被松开时触发
+>     - 注意：若持续按着某键不放，该`onkeydown`事件会持续触发。此时松开键盘，`onkeyup`事件会执行一次。
+> 
+> 
+> - 其他事件
+>     - onclick：点击事件
+>     - onfocus：获取聚焦事件 
+>     - onblur：失去焦点事件
+>     - onload用户进入页面
+>     - onunload用户离开页面
+> ```
+>
+> #### 动态创建列表
+>
+> ```js
+> // 动态创建列表
+> const box = document.getElementById('box')
+> // 创建 ul，在内存中创建一个 DOM 对象
+> const ul = document.createElement('ul')
+> // 把 ul 对象添加到 box 中
+> box.appendChild(ul)
+> 
+> // 遍历数组，生成 li
+> for (let i = 0; i < data.length; i++) {
+>   // 创建 li，在内存中创建一个孤立的 DOM 元素
+>   const li = document.createElement(li)
+>   // 把元素添加到 ul 中（添加到 DOM 树上）
+>   ul.appendChild(li)
+>   // 设置 li 中的内容
+>   setInnerText(li, data[i].key)
+>   
+>   li.onmouseover = function () {
+>     this.style.backgroundColor = 'lightgray'
+>   }
+>   li.onmouseout = function () {
+>     this.style.backgroundColor = ''
+>   }
+> }
+> ```
+
+#### 事件
+
+> ```bash
+> ## 事件
+> 事件三要素：'事件源(触发的事件的元素标签) -> 事件名称(click) -> 事件处理程序(function：对样式和html的操作)'。
+> 
+> onload && onunload
+> - 页面加载完毕时执行(DOM元素加载完毕，当外部文件加载完毕)：`onload = function () {}`
+> - 当页面关闭时执行：`onunload = function () {}`
+> 
+> mouseover && mouseenter
+> - onmouseover/onmouseout：鼠标经过时自身触发事件，经过其子元素时也触发该事件。
+> - onmouseenter/onmouseleave：鼠标经过时自身触发事件，经过其子元素时不触发该事件。
+> 
+> 
+> ### 事件优先级
+> - ` event.stopImmediatePropagation();`
+> - `addEventListener`给某按钮同时注册了事件A、事件B。此时，如果单击按钮，就会依次执行事件A和事件B。
+> 		现在要求：单击按钮时，只执行事件A，不执行事件B。该怎么做呢？
+> 		此时可以在事件A的响应函数中加入 `stopImmediatePropagation` 方法
+> 
+> 
+> ### addEventListener
+> - `element.addEventListener('事件名', callback, target)`
+> 		- 参数1：事件名的字符串（注意：没有 on 前缀）
+> 		- 参数2：回调函数（当事件触发时，该函数会被执行）
+> 		- 参数3：true表示捕获阶段触发，false表示冒泡阶段触发（不写默认为false）
+> - 一个元素的一个事件，可以绑定多个响应函数，不存在响应函数被覆盖的情况。
+> 		执行顺序是：事件被触发时，响应函数会按照函数的绑定顺序执行。
+> - addEventListener() 中的 this 是绑定事件的对象。
+> - addEventListener() 不支持 IE8 及以下的浏览器，在 IE8 中可以使用 attachEvent 来绑定事件。
+> 
+> 
+> 
+> ### attachEvent
+> - `element.attachEvent('事件名', callback)`
+> 		- 参数1：事件名的字符串（注意：有 on 前缀）
+> 		- 参数2：回调函数（当事件触发时，该函数会被执行）
+> - 一个元素的一个事件，可以绑定多个响应函数。不存在响应函数被覆盖的情况。
+> 		注意：执行顺序是，后绑定的先执行。
+> - attachEvent() 中的 this，是 window
+> ```
+>
+
+#### DOM元素事件执行顺序
+
+> ```bash
+> ## DOM 元素事件执行顺序
+> HTML 页面上 DOM 元素的事件执行顺序一般有三个阶段：
+> 	1. 事件捕获
+> 	2. 事件触发
+> 	3. 事件冒泡
+> 
+> DOM 标准事件流触发的先后顺序为：先捕获再冒泡，即当触发 DOM 事件时，会进行事件捕获，捕获事件源之后通过事件传播进行事件冒泡。
+> 而在 '浏览器中默认执行的是事件冒泡'，即我们一般 '观察不到事件捕获阶段'，比如 onclick 等事件。
+> 如果想要观察到事件的捕获阶段，那需要借助 addEventListener 接口来实现。
+> 
+> 
+> ### addEventListener
+> - `element.addEventListener(type, listener, useCapture)`
+> 		- type：事件类型（事件名称，注意：没有 on 前缀）
+> 		- listener：事件触发实际执行的匿名函数（当事件触发时，该函数会被执行）
+> 		- useCapture：是否在事件捕获阶段执行（不写默认为false）
+> 
+> #### 关于 listener 中的 this 和 target
+> - 当一个 EventListener 在 EventTarget 正在处理事件时被注册到 EventTarget 上，它不会被立即触发，但可能在事件流后面的事件触发阶段被触发，例如可能在捕获阶段添加，然后在冒泡阶段被触发。
+> - 通常来说 this 的值是触发事件的元素的引用，当使用 addEventListener() 为一个元素注册事件时，句柄里的 this 值是该元素的引用。其与传递给句柄的 event 参数的 currentTarget 属性的值一致。
+> ```
+>
+> ```html
+> <div id="parent">
+>   <div id="child" class="child"> 点我 </div>
+> </div>
+> 
+> <script>
+>   document.getElementById('parent').addEventListener('click', function (e) {
+>     alert(`冒泡: parent 事件触发, this指向:` + this.id + ', 触发的id为:' + e.target.id)
+>   })
+>   document.getElementById('child').addEventListener('click', function (e) {
+>     alert(`冒泡: child 事件触发，this指向:` + this.id + ', 触发的id为:' + e.target.id)
+>   })
+> 
+>   document.getElementById('parent').addEventListener('click', function (e) {
+>     alert(`捕获: parent 事件触发,this指向:` + this.id + ', 触发的id为:' + e.target.id)
+>   }, true)
+>   document.getElementById('child').addEventListener('click', function (e) {
+>     alert(`捕获: child 事件触发,this指向:` + this.id + ', 触发的id为:' + e.target.id)
+>   }, true)
+> </script>
+> 
+> <!--
+>   输入的结果：
+>     1. 捕获: parent 事件触发,this指向:parent, 触发的id为:child
+>     2. 捕获: child 事件触发,this指向:child, 触发的id为:child
+>     3. 冒泡: child 事件触发，this指向:child, 触发的id为:child
+>     4. 冒泡: parent 事件触发, this指向:parent, 触发的id为:child
+> -->
+> ```
+>
+> ![image-20230330174649406](./image/image-20230330174649406.png)
+
+#### 兼容性事件封装
+
+> ```js
+> // 浏览器兼容性写法
+> var EventUtil = {
+>   addHandler: function (element, type, handler) {
+>     if (element.addEventListener) {
+>       element.addEventListener(type, handler, false);
+>     } else if (element.attachEvent) {
+>       element.attachEvent("on" + type, handler);
+>     } else {
+>       element["on" + type] = handler;
+>     }
+>   }
+> };
+> 
+> // 当浏览器窗口被调整到一个新的高度或宽度时，就会触发resize事件
+> EventUtil.addHandler(window, "resize", function () {
+>   console.log("Resized");
+> });
+> ```
+>
+> - 注意：该事件会触发两次，比如浏览器全屏显示，如果使用screen.availHeight重布局屏幕会闪两次。因为resize方法会进2次.而且每次screen.availHeight都不一样（解决方法：设置延迟）
+>
+> ```js
+> window.onresize = function () {
+>   let res = null;
+>   if(res) clearTimeout(res)
+>   res = setTimeout(() => {
+>     console.log("resize triggered");
+>     res = null;
+>   }, 20);
+> };
+> ```
+
+#### 自定义事件
+
+> ```js
+> var myEvent = new Event('clickTest');
+> element.addEventListener('clickTest', function () {
+>   console.log('smyhvae');
+> });
+> 
+> setTimeout(function () {
+>   element.dispatchEvent(myEvent); //注意，参数是写事件对象 myEvent，不是写 事件名 clickTest
+> }, 1000);
+> ```
+
+#### DOM实例对象`event`
+
+> ````bash
+> ## DOM 实例对象 event
+> - Event对象代表事件的状态，包含了与当前事件相关的一切信息。比如事件在其中发生的元素、键盘按键的状态、鼠标的位置、鼠标按钮的状态。
+>     - 获取键盘按下或弹起的按键
+>     - 获取鼠标的位置坐标
+>     - 获取出发改事件的元素
+>     - 获取事件名称
+>     - 获取事件当前的传播阶段
+>     - 获取事件生成的日期时间
+>     - 事件句柄(Event Handlers)
+>     
+>     
+> - 经典应用：商品的放大镜，鼠标光点追踪
+> ````
+>
+> ```js
+> let event = event || window.event;   //获取事件信息的兼容性写法
+> 
+> // 事件信息event 常见的属性
+> altKey			：返回当事件被触发时,"alt"键是否被按下
+> shiftKey		：返回当事件被触发时,"shift"键是否被按下
+> ctrlKey			：返回当事件被触发时,"ctrl"键是否被按下
+> metaKey			：返回当事件被触发时,"meta"键是否被按下
+> 
+> button			：返回当事件被触发时,哪个鼠标按钮被点击
+> relatedTarget：返回与事件的目标节点相关的结点
+> 
+> clientX			：返回当事件被触发时,鼠标指针的水平坐标
+> clinetY			：返回当事件被触发时,鼠标指针的垂直坐标
+> screenX			：返回当某事件被触发时,鼠标指针的水平坐标
+> screenY			：返回当某事件被触发时,鼠标指针的垂直坐标
+> ```
+>
+> #### 【典例】通过 ctrl + enter 键提交信息
+>
+> ```html
+> <!-- 通过 ctrl + enter 键提交信息 -->
+> <textarea id="text_comment" cols="60" rows="5"></textarea>
+> <div id="div_show"><p>CTRL + 回车 提交</p>
+>   <script>
+>     // ctrl + enter 提交
+>     let txt = document.getElementById('text_comment');
+>     let board = document.getElementById('div_show')
+>     txt.onkeydown = function (ev) {
+>       let ev = ev || event;
+>       if (ev.keyCode === 13 && ev.ctrlKey) {
+>         var oP = document.createElement('p');
+>         oP.innerHTML = txt.value;
+>         txt.value = '';
+>         if (board.children.length > 0) {
+>           board.insertBefore(oP, board.children[0])
+>         } else {
+>           board.appendChild(oP);
+>         }
+>       }
+>     }
+>   </script>
+> ```
+
+#### DOM事件流
+
+> ````bash
+> ## DOM 事件流
+> 事件传播的三个阶段：事件捕获 -> 目标 -> 事件冒泡
+> 
+> 1. 捕获阶段
+> 事件从祖先元素往子元素查找（DOM树结构），直到捕获到事件目标 target。在这个过程中，默认情况下，事件相应的监听函数时不会被触发的。
+> 捕获阶段事件依次传递的顺序是：'window -> document -> html -> body -> 父元素 -> 子元素 -> 目标元素'。
+> 
+> 
+> 2. 事件目标
+> 当到达目标元素后，执行目标元素该事件相应的处理函数。如果没有绑定监听函数，那就不执行。
+> 
+> 
+> 3. 事件冒泡
+> 事件从事件目标 target 开始，从子元素往祖先元素向上冒泡，直到页面的最顶级标签。
+> 冒泡指的是：'子元素的事件被触发时，父元素的同样的事件也会被触发'。取消冒泡就是取消这种机制。
+> 冒泡的顺序是：'div -> body -> html -> document -> window'。
+> 
+> 注意：
+> 以下事件不冒泡（即事件不会往父元素那里传递）：'blur、focus、load、unload、onmouseenter、onmouseleave'。
+> ````
+
+#### 阻止事件冒泡 & 阻止默认事件
+
+> ```bash
+> ### 阻止事件冒泡
+> 停止事件冒泡的方法：
+> 	1. `event.stopPropagation()`
+> 	2. `event.cancelBubble = true`
+> 
+> 
+> 在事件结尾添加该方法，此方法阻止事件向 document 上蔓延（否则触发事件后，会冒泡到最后一层document上）
+> 注意：当调用这个方法时，默认事件仍然会执行（如点击一个超链接，这个链接仍然会被打开）
+> 
+> 
+> ### 阻止默认事件
+> 阻止默认事件的默认方法：`event.preventDefault()`
+> 调用此方法链接不会被打开，但是会发生事件冒泡，冒泡会传递到上一层的父元素。
+> 
+> ### 阻止浏览器默认事件
+> 阻止浏览器的默认事件：在函数末尾添加 `return false`
+> 在函数结尾处增加语句 `return false;`。这个方法比较暴力，它会同时阻止事件冒泡和阻止默认事件；
+> 写上次行代码，链接不会被打开，事件也不会传递到上一层的父元素，可以理解为 `return false` 等于同时调用 `event.stopPropagation()` 和 `event.preventDefault()`。
+> ```
+> 
+>```js
+> /** 阻止事件冒泡 */
+>document.getElementById('box3').onclick = function (event) {
+>   event = event || window.event
+> 	if (event && event.stopPropagation) {
+>     event.stopPropagation()
+>   }  else {
+>     event.cancelBubble = true
+>   }
+> }
+> ```
+
+#### 事件委托
+
+> ```bash
+> ## 事件委托
+> ### 事件委托的原理：
+> 不给每个子节点单独设置事件监听器，而是设置在其父节点上，然后利用冒泡原理设置每个子节点。
+> 
+> 
+> ### 事件委托的应用： 
+> 给 ul 注册点击事件，然后利用事件对象的 target（`event.target`） 来找到当前点击的 li ，然后事件冒泡到 ul 上， ul 有注册事件，就会触发事件监听器。
+> 
+> 
+> ### 事件委托的好处：
+> 只操作了一次 DOM，提高了程序的性能。
+> 当该触发改事件的同一种标签过多，会过于消耗性能和内存。所以把触发事件绑定到该标签的父层，减少了事件绑定的次数，然后利用冒泡机制，在执行事件函数时利用冒泡机制再去匹配判断目标元素。
+> 
+> 
+> ### 为什么要事件委托？
+> 在 JavaScript 中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能，因为 '需要不断地操作 DOM'，那么引起 '浏览器重绘和回流' 的可能也就更多，页面交互的时间也就变得越长，这就是为什么要 '减少 DOM 操作的原因'。
+> 每一个事件处理函数都是一个对象，若存在许多的事件处理函数，内存就会被多占用一部分。如果使用事件委托，就会将所有的操作放到 JS 程序中，'只对它的父级（如果它只有一个父级）这一个对象进行操作，此时与 DOM 的操作就只需要交互一次，这样就能大大减少与 DOM 的交互次数，以此来提高性能'。
+> ```
+>
+> ```html
+> <ul id="parent-list" style="background-color: #bfa;">
+>   <li><p>我是p元素</p></li>
+>   <li><a href="javascript:;" class="link">超链接一</a></li>
+>   <li><a href="javascript:;" class="link">超链接二</a></li>
+>   <li><a href="javascript:;" class="link">超链接三</a></li>
+> </ul>
+> 
+> <script>
+>   window.onload = function () {
+>     document.getElementById('parent-list').addEventListener('click', function (event) {
+>       event = event || window.event
+>       // e.target 表示：触发事件的对象
+>       // 如果触发事件的对象是我们期望的元素，则执行否则不执行
+>       if (event.target && event.target.className === 'link') {
+>         console.log('我是ul的单击响应函数')
+>       }
+>     }, false)
+>   }
+> </script>
+> ```
+
+#### 触发事件
+
+```bash
+## 触发事件
+
+### 输入触发事件
+  1. 用于文本框和文本区域（input/textarea 标签）
+      - ele.focus()
+      - ele.blur()
+
+  2.  对于表单元素（form 标签）
+      - formEle.reset()
+      - formEle.submit()
+
+  3. 对于任何元素
+      - ele.click()
+
+
+### 触发原生事件
+const trigger = function(element, eventName) {
+	const ele = document.createEvent('HTMLEvents')
+	ele.initEvent(eventName, true, false)
+	element.dispatchEvent(e)
+}
+trigger(ele, 'mousedown')
+
+
+
+### 触发自定义事件
+const e = document.createEvent('CustomEvent')
+e.initCustomEvent('hello', true, true, { message: 'Hello World' })
+ele.dispatchEvent(e) // 触发事件
+```
+
+
+
+### offset、scroll、client
+
+#### 垂直计算
+
+> - 常见高
+>
+>   - 网页可见区域高：document.body.clientHeight
+>
+>   - 网页正文全文高：document.body.scrollHeight
+>
+>   - 网页可见区域高（包括边线的高）：document.body.offsetHeight
+>
+>   - 网页被卷去的高：document.body.scrollTop
+>
+>   - 屏幕分辨率高：window.sreen.height
+>
+>   - > 注意：clientHeight 和 offsetHeight 属性和元素的滚动、位置无关；
+>     >
+>     > 它代表元素的高度，对于inline的元素这个属性一直是0，单位px，只读元素
+>
+> - **clientHeight/clientWidth = 内容宽高+padding**。包括padding，但不包括border、水平滚动条、margin的高度。
+>
+> - **offsetHeight/offsetWidth = 内容宽高+padding+border**。包括padding、border、水平滚动条，但不包括margin的高度。
+>
+> - **滚动条情况：**当本元素的子元素比本元素高且overflow=scroll时，本元素会scroll。
+>
+> - **scrollHeight/scrollWidth = 内容宽高** 
+>
+>   - scrollHeight代表包括当前不可见部分的元素的高度，而可见部分的高度是clientHeight，所以**scrollHeight>=clientHeight**，
+>   - 当没有滚动条时scrollHeight==clientHeight恒成立。单位px，只读元素。
+>
+> ![image-20200920125228504](./image/image-20200920125228504.png)![image-20200920125235120](./image/image-20200920125235120.png)
+
+#### 水平计算
+
+> - **scrollTop/scrollLeft:** 
+>
+>   - 获取垂直/水平滚动条滚动的距离
+>
+>   - 代表在有滚动条时，滚动条向下滚动的距离也就是元素顶部被遮住部分的高度。
+>
+>   - 在没有滚动条时scrollTop==0恒成立。单位px，可读可设置。
+>
+>   - > 当 scrollHeight - scrollTop == clientHeight 时，垂直滚动条抵达底部
+>     >
+>     > 当 scrollWidth - scrollLeft == clientWidth 时，水平滚动条抵达底部
+>
+> - **offsetTop/offsetLeft:** 
+>
+>   - 当前元素相对于其**定位父元素**的垂直/水平偏移量(获取的相对于offsetParent的距离)
+>
+>   - 当前元素顶部距离最近父元素(offsetParent)顶部/左边的距离，和滚动条无关。单位px，只读元素。
+>
+>   - > 从父元素的padding开始计算，父元素的border不算在内
+>     >
+>     > 注意：当父元素存在定位时，offsetLeft == style.left  (抛除去px的值)
+>
+> - **offsetParent/parentNode**:离所定义节点最近脱离文档流的父元素(position定义为absolute、relative、fixed)，如果没有脱离文档流的父元素，则offsetParent获取的是body
+>
+> ![image-20210916173138280](./image/image-20210916173138280.png)
+>
+> - offsetTop/offsetLeft：
+>   - 调用者：任意元素。(盒子为主)
+>   - 作用：距离父系盒子中带有定位的距离。
+>
+> - scrollTop/scrollLeft：
+>   - 调用者：document.body.scrollTop（window调用）(盒子也可以调用，但必须有滚动条)
+>   - 作用：浏览器无法显示的部分（被卷去的部分）。
+> - clientY/clientX：
+>   - 调用者：event
+>   - 作用：鼠标距离浏览器可视区域的距离（左、上）。
+
+##### 自制滚动条
+
+> 1. 先把系统滚动条隐藏
+>
+> 2. 根据内容大小设置滚动条高度（设置的滚动条内容高度越高，滚动条越小）
+>
+> 3. 当拖动滚动条时候，移动内容（滚动条跟着鼠标走）
+>
+> ```html
+> <!DOCTYPE html>
+> <html>
+> <head>
+>   <meta charset="UTF-8">
+>   <title>自定义滚轮事件</title>
+>   <style type="text/css">
+>     * {
+>       padding: 0;
+>       margin: 0;
+>     }
+>     #wrap {
+>       height: 500px;
+>       width: 300px;
+>       position: relative;
+>       /*超出隐藏*/
+>       overflow: hidden;
+>       margin: 100px auto 0;
+>       border: 3px solid black;
+>     }
+> 
+>     #content {
+>       width: 300px;
+>       /*不需要设置高度，可被图片撑开*/
+>       position: absolute;
+>       left: 0;
+>       top: 0;
+>       border: 1px solid red;
+>     }
+>     #content>div {
+>       width: 294px;
+>       /*去除图片间的间隙*/
+>       vertical-align: top;
+>       height: 500px;
+>       border: 1px solid red;
+>       text-align: center;
+>       font-size: 100px;
+>       line-height: 500px;
+>     }
+>     #sliderWrap {
+>       height: 100%;
+>       width: 16px;
+>       background-color: greenyellow;
+>       position: absolute;
+>       right: 0;
+>       top: 0;
+>     }
+>     #slider {
+>       width: 10px;
+>       height: 50px;
+>       background-color: blue;
+>       position: absolute;
+>       left: 3px;
+>       top: 0px;
+>       border-radius: 10px;
+>     }
+>   </style>
+> </head>
+> <body>
+>   <div id="wrap">
+>     <div id="content">
+>       <div>1 </div>
+>       <div>2</div>
+>       <div>3</div>
+>       <div>4</div>
+>       <div>5</div>
+>     </div>
+>     <!--右侧滚动条部分-->
+>     <div id="sliderWrap">
+>       <div id="slider"></div>
+>     </div>
+>   </div>
+> </body>
+> <script type="text/javascript">
+>   var wrapDiv = document.getElementById("wrap");
+>   var contentDiv = document.getElementById("content");
+>   var sliderWrap = document.getElementById("sliderWrap");
+>   var slider = document.getElementById("slider");
+>   //设置比例 
+>   //clientHeight - 不包括border 
+>   var scale = wrapDiv.clientHeight / contentDiv.clientHeight;
+>   //设置滑块的高度 
+>   var h1 = sliderWrap.clientHeight * scale;
+>   //为了合理设置高度，设置滑块的最小高度 
+>   if (h1 < 50) {
+>     h1 = 50;
+>   } else if (scale >= 1) {
+>     //说明当前内容能过完全显示在可视区域内，不需要滚动条 
+>     sliderWrap.style.display = "none";
+>   }
+>   //设置滑块的高度 
+>   slider.style.height = h1 + "px";
+>   //设置y轴的增量 
+>   var y = 0;
+>   //为wrap添加滚轮事件 
+>   wrapDiv.onmousewheel = function (e) {
+>     console.log(h1)
+>     var event1 = event || e
+>     if (event.wheelDelta < 0) {
+>       //滑动条向下滚动 
+>       y += 10;
+>     } else if (event.wheelDelta > 0) {
+>       //滑动条向上滚动 
+>       y -= 10;
+>     }
+>     //y变化时说明在滚动，此时使滚动条发生滚动，以及设置content内容部分滚动 
+>     //判断极端情况，滑块不能划出屏幕 
+>     if (y <= 0) {
+>       //滑块最多滑到顶部 
+>       y = 0;
+>     }
+>     if (y >= sliderWrap.clientHeight - slider.clientHeight) {
+>       //滑块最多滑到最底部 
+>       y = sliderWrap.clientHeight - slider.clientHeight;
+>     }
+>     //更新滑块的位置 
+>     slider.style.top = y + "px";
+>     scale = wrapDiv.clientHeight / contentDiv.clientHeight;
+>     contentDiv.style.top = - y / scale + "px";
+>   }
+> </script>
+> </html>
+> ```
+
+## BOM
+
+![image-20210916201824135](./image/image-20210916201824135.png)
+
+### window
+
+#### 输出日志/对话框
+
+- 控制台打印日志：`console.log()`
+
+- 浏览器警示框：`window.alert(); `
+
+- 浏览器输入框：`window.prompt(); `->用于显示可提示用户进行输入的对话框
+
+- 浏览器确认框：`window.confirm(); `->判断用户是否确定输入数据（函数返回值是布尔型的，点击确定，返回值为true，点击取消返回值为false）
+
+- > window下的内置对象可以省略`window`前缀
+
+```js
+prompt("请输入您的姓名"); //接受用户输入的信息
+
+// 1、浏览器控制台打印出信息.输出获取元素对应的标签内容
+console.log(x);
+
+// 2、可以显示一个对象的所有属性和方法
+console.dir(x);
+
+// 3、typeof不能获取对象的具体类型,获取对象类型始终返回object
+console.log(typeof x); 
+
+// 4、认为构造函数就是对象的类型
+console.log(arr.constructor);	
+
+//5、会计算里边运行代码所需事件
+console.time(x);-->在里边运行的代码-->console.timeEnd(x);	
+```
+
+```js
+//函数返回值是布尔型的，点击确定，返回值为true，点击取消返回值为false
+// 1、主要用于删除单挑信息确认
+function del() { 
+ var msg = "您真的确定要删除吗？\n\n请确认！"; 
+ if (confirm(msg)==true){ 
+ 	return true; 
+ }else{return false;} 
+}
+
+// 2、JS删除确认框
+<a href="javascript:if(confirm('确定删除吗?'))location='jb.php?id='">删除</a>
+
+// 3、主要用于批量的确认提示
+<input
+  name="Submit"
+  type="submit"
+  class="inputedit"
+  value="删除"
+  onclick="{
+      if(confirm('确定纪录吗?')){
+        this.document.formname.submit();
+        return true;
+      }
+      return false;
+    }"
+/>
+<input
+  name="按钮" 
+  type="button" 
+  ID="ok" 
+  onclick="{
+    if(confirm('确定删除吗?')){
+      window.location='Action.asp?Action=Del&TableName=Item&ID=<%=ID%>';
+      return true;
+    }
+    return false;
+  }" 
+  value="删除栏目"
+/>
+```
+
+#### 窗口
+
+> ```bash
+> ## 窗口
+> ### 打开窗口：`window.open(url,target,param)`
+>     - url：要打开的地址。
+>     - target：新窗口的位置。可以是：`_blank` 、`_self`、 `_parent` 父框架
+>     - 返回值：新窗口的句柄
+>     - param：新窗口的一些设置(多个参数用逗号隔开)
+>         - name：新窗口的名称，可以为空
+>         - features：属性控制字符串，在此控制窗口的各种属性，属性之间以逗号隔开。
+>         - fullscreen= { yes/no/1/0 } 是否全屏，默认no
+>         - channelmode= { yes/no/1/0 } 是否显示频道栏，默认no
+>         - toolbar= { yes/no/1/0 } 是否显示工具条，默认no
+>         - location= { yes/no/1/0 } 是否显示地址栏，默认no。（有的浏览器不一定支持）
+>         - directories = { yes/no/1/0 } 是否显示转向按钮，默认no
+>         - status= { yes/no/1/0 } 是否显示窗口状态条，默认no
+>         - menubar= { yes/no/1/0 } 是否显示菜单，默认no
+>         - scrollbars= { yes/no/1/0 } 是否显示滚动条，默认yes
+>         - resizable= { yes/no/1/0 } 是否窗口可调整大小，默认no
+>         - width=number 窗口宽度（像素单位）
+>         - height=number 窗口高度（像素单位）
+>         - top=number 窗口离屏幕顶部距离（像素单位）
+>         - left=number 窗口离屏幕左边距离（像素单位）
+>     
+> 
+> ### 关闭窗口：window.close()
+> 
+> 
+> ### 新窗口
+>     - 新窗口.moveTo(5,5)
+>     - 新窗口.moveBy()
+>     - 新窗口.resizeTo()
+>     - window.resizeBy()
+> ```
+
+#### 错误捕获
+
+> ```bash
+> ## 页面错误捕获
+> 
+> ### 即时错误
+> - `window.onerror = function(msg, url, row, col, error) { ... }`
+> 		- msg 为异常基本信息
+> 		- source 为发生异常 JavaScript 文件的 url
+> 		- row 为发生错误的行号
+> - 添加监听错误事件：`window.addEventListener("error", callbackFn)`
+> - 注意：window.onerror 只能捕获即时运行错误（即只能捕获到在 window 发生的即时错误）。
+> 
+> 
+> 
+> ### 跨域 js 的运行错误
+> - window.onerror 默认无法捕获 '跨域' 的 js 运行错误；
+> - 需要在 window.onerror 的基础之上，做如下操作：
+> 		- 在引入第三方的跨域文件里，加入如下响应头：`Access-Control-Allow-Origin:*;` 以表示允许跨域。
+> 		- 引入第三方跨域文件时，在 `<script>` 标签中增加 `crossOrigin` 属性。
+> 		- 因为无法获取出错的文件名和错误信息，所以需要把 '堆栈' 信息作为 msg 打印出来。
+> 		
+> 
+> 
+> ### Object.onerror
+> - window.onerror 只能捕获即时运行错误，无法捕获资源加载错误。
+> 	原理是：资源加载错误，并不会向上冒泡，Object.onerror 捕获后就会终止(不会冒泡到window)，所以 window.onerror 并不能捕获资源加载错误。
+> 
+> 1. 方式1：`Object.onerror`。
+> 	img标签、script标签等节点都可以添加 onerror 事件来捕获资源加载的错误。
+> 
+> 2.方式2：`performance.getEntries`。
+> 	可以获取所有已加载资源的加载时长，通过这种方式可以间接拿到没有加载的资源错误。
+> 
+> 	举例：
+> 		1. 浏览器打开一个网站，按 F12 在控制台下输入 `performance.getEntries().forEach(item => { console.log(item.name) })`
+> 				- `performance.getEntries()` 返回的是数组，打印出来的资源是已经成功加载的资源。
+> 		2. 再输入 `document.getElementsByTagName('img')` 就会显示所有 '需要加载' 的 img 集合。
+> 		3. 于是，`document.getElementsByTagName('img')` 获取的资源数组减去通过 `performance.getEntries()` 获取的资源数组，剩下的就是没有成功加载的，这种方式可以 '间接' 捕获到资源加载错误。
+> ```
+
+### 定时器
+
+#### 定时器类别
+
+> **1.  定时器setTimeout**
+>
+> ```js
+> //设置定时器：
+> var timer = setTimeout(function () {
+>    location.href = 'http://www.baidu.com'//location：跳转网页
+>   }, 5000); 	// 5秒以后跳转
+> 
+> //清除定时器：
+> clearTimeout(timer);
+> ```
+>
+> **2.  间隔定时器setInterval**
+>
+> ```js
+> // 间隔时间内做
+> var timerId = setInterval(function () {
+>   var date = new Date();
+>   console.log(date);
+> }, 1000);		//隔1秒做这个实践
+> clearInterval(timerId);
+> ```
+>
+> **3.  倒计时定时器**
+>
+> ```js
+> getInterval(start,end)
+> setInterval(函数，时间)
+> ```
+
+#### 定时器执行的原理，先后顺序
+
+> 1. setTimeout允许设置一个超时对象，超时后执行这个对象，但是只执行一次，无周期
+>2. setInternval允许设置一个超时对象，超时后执行这个对象，周期等于超时对象指定的时间，周期为无限循环
+> 
+> ```js
+> setTimeout("alert('定时器!')", 0);
+>    alert("测试");		//运行先出现测试，然后再出现定时器
+> ```
+> 
+> 原因:：JS是单线程的，会先阻塞等待定时器执行完后再执行下面的语句，
+> 
+> 异步机制：浏览器的多线程—>对于浏览器来说，JS的执行只不过是在浏览器众多现成中的一条，称之为JS引擎线程，而浏览器其他线程则是通过JS引擎在执行过程到某个特定的功能后指定给浏览器的对应线程。
+>
+> JS引擎线程先执行回调函数块，然后执行点击事件回调，接着是执行定时器的线程，最后再执行其他的线程。
+>
+> JS先读取到 setTimeout 定时器，此时会执行浏览器的线程，然后跳过定时器继续执行，就看到弹出框的内容为测试，然后因为定时器的时间为0，所以一执行定时器线程就会即可将弹出框为定时器字样的任务添加到主线程（JS引擎线程）的队列之后，等待JS引擎的调用，此时看到的结果是先弹出测试，然后再弹出定时器
+> 
+> 注意：在 HTML5 规范中，规定定时器的定时时间不能小于4ms，如果是小于4ms，则默认为4ms
+> 
+>   ![JS_DOM_线程执行](./image/JS_DOM_%E7%BA%BF%E7%A8%8B%E6%89%A7%E8%A1%8C.png)
+
+#### setTimeout倒计时为什么会出现误差？
+
+> setTimeout() 只是将事件插入了 “任务队列”，必须等当前代码（执行栈）执行完，主线程才会去执行它指定的回调函数。要是当前代码消耗时间很长，也有可能要等很久，所以并没办法保证回调函数一定会在 setTimeout() 指定的时间执行。所以， setTimeout() 的第二个参数表示的是最少时间，并非是确切时间。
+>
+> HTML5标准规定了 setTimeout() 的第二个参数的最小值不得小于4毫秒，如果低于这个值，则默认是4毫秒。在此之前。老版本的浏览器都将最短时间设为10毫秒。另外，对于那些DOM的变动（尤其是涉及页面重新渲染的部分），通常是间隔16毫秒执行。这时使用 `requestAnimationFrame()` 的效果要好于 `setTimeout()`。
+
+#### 定时器用作耗时代码的优化
+
+> - 假设在某个页面中要渲染50万个节点，此时若是直接渲染会因占用过多的内存，从而导致浏览器出现了卡死的状态；使得用户(体验感不好)误以为是页面卡死而直接关闭浏览器或者杀死进程
+>- 此时可以利用定时器来优化这个问题。首先把50万个节点分成若干组，然后通过setInterval来进行循环。既不阻塞JS引擎线程的运行，又提高渲染的消耗时间，从而达到最终的优化渲染。
+> - 在定时器执行结束时要调用clearInterval / clearTimeout 方法来清除定时器，以免定时器之间互相干扰。
+
+### requestAnimationFrame 动画帧
+
+> ```bash
+> ## requestAnimationFrame
+> - `window.requestAnimationFrame()` 告诉浏览器你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行。
+> - `window.requestAnimationFrame(callback)` 的执行时机是在 '浏览器下一次重绘前' 调用 RAF 的回调函数获取最新的动画计算结果。
+> 
+> 1. 说明
+> - requestAnimationFrame 简称 RAF,它是浏览器全局对象window的一个方法。
+> - RAF 主要是按照显示器的刷新频率（60Hz 或者 75Hz）对页面进行重绘，大概按照这个刷新频率同步重绘页面，就是大概 1s 最多重绘 60 次或者 75 次的频次，'按照 60 Hz 计算每次重绘大概 16.67ms 重绘一次'，如果 setInterval 设置的频率低于 16.67ms，会造成 '过渡绘制' 的问题，如果高于 16.67ms，有可能会出现 '掉帧' 的情况。
+> - request 会把每一帧中的所有 DOM 操作几种起来，在一次重绘或回流中就完成（这点与虚拟DOM类似），并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，这样就不会出现过度渲染的问题，保证了流畅的需求以及浏览器的完美渲染。
+> 
+> 
+> 2. 与 setTimeout 的对比
+> 相比于 setTimeout 的在固定时间后执行对应的动画函数，RAF 用于指示浏览器在下一次重新绘制屏幕图像时, 执行其提供的回调函数。
+> 这也是rAF的最大优势：它能够保证我们的动画函数的每一次调用都对应着一次屏幕重绘，从而避免setTimeout通过时间定义动画频率，与屏幕刷新频率不一致导致的丢帧。
+> 
+> 
+> 3. 用法
+> - `window.requestAnimationFrame(callback)`
+>   - 「参数：callback」下一次重绘之前更新动画帧所调用的函数(即上面所说的回调函数)。该回调函数会被传入DOMHighResTimeStamp参数，该参数与performance.now()的返回值相同，它表示requestAnimationFrame()开始去执行回调函数的时刻。
+>   - 「返回值」一个 long 整数，请求 ID ，是回调列表中唯一的标识。是个非零值，没别的意义。你可以传这个值给 window.cancelAnimationFrame() 以取消回调函数。
+> 
+> 	- DOMHighResTimeStamp 指的是一个double类型，用于存储毫秒级的时间值。这种类型可以用来描述离散的时间点或者一段时间（两个离散时间点之间的时间差）。
+> 	- performance.now()方法返回一个精确到毫秒的DOMHighResTimeStamp 。
+> 	
+> 	
+> 4. requestAnimationFrame的好处
+> 相比于setTimeout的在固定时间后执行对应的动画函数，requestAnimationFrame用于指示浏览器在下一次重新绘制屏幕图像时, 执行其提供的回调函数。
+> - 「使浏览器画面的重绘和回流与显示器的刷新频率同步」它能够保证我们的动画函数的每一次调用都对应着一次屏幕重绘，从而避免setTimeout通过时间定义动画频率，与屏幕刷新频率不一致导致的丢帧。
+> - 「节省系统资源，提高性能和视觉效果」在页面被置于后台或隐藏时，会自动的停止，不进行函数的执行，当页面激活时，会重新从上次停止的状态开始执行，因此在性能开销上也会相比setTimeout小很多。
+> ```
+>
+> ```html
+> <div id="div" style="width:100px; height:100px; background-color:#000; position: absolute;left:0; top:0;"></div>
+> 
+> <script type="text/javascript">
+>   let divEle = document.getElementById("div");
+>   const distance = 1500; // 需要移动的距离
+>   const timeCount = 3000; // 需要使用的时间
+> 
+>   function handler( time ) {
+>     // time为rAF返回的毫秒级时间单位，当time的大于timeCount的值则停止
+>     // time理论上是从 1 开始到timeCount定义的3000，
+>     if(time > timeCount) {
+>       time = timeCount;
+>     }
+>     // 这句代码的作用是 time理论上是从 1 至 3000
+>     // 当到达3000的时候，time * distance / timeCount得到的一定是distance的值1500
+>     divEle.style.left = time * distance / timeCount;
+>     window.requestAnimationFrame( handler ); // 循环调用，渲染完成会停止
+>   }
+> 
+>   window.requestAnimationFrame( handler );
+> </script>
+> ```
+>
+> #### 兼容写法
+>
+> ```js
+> (function() {
+>   var lastTime = 0;
+>   var vendors = ['webkit', 'moz']; // 浏览器前缀
+>   // 当window.requestAnimationFrame不存在时执行for循环，添加前缀
+>   for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+>     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+>     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
+>       window[vendors[x] + 'CancelRequestAnimationFrame'];
+>   }
+> 
+>   //当添加前缀后依旧不存在，则使用setTimeout替代
+>   if (!window.requestAnimationFrame) {
+>     window.requestAnimationFrame = function(callback, element) {
+>       var currTime = new Date().getTime();
+>       var timeToCall = Math.max(0, 16.7 - (currTime - lastTime));
+>       var id = window.setTimeout(function() {
+>         callback(currTime + timeToCall);
+>       }, timeToCall);
+>       lastTime = currTime + timeToCall;
+>       return id;
+>     };
+>   }
+>   if (!window.cancelAnimationFrame) {
+>     window.cancelAnimationFrame = function(id) {
+>       clearTimeout(id);
+>     };
+>   }
+> }());
+> ```
+
+#### 为什么不使用 setTimeout？
+
+> ```bash
+> ## 为什么不使用 setTimeout ?
+> setTimeout 通过设定一个时间间隔来不断的更新屏幕图像，从而完成动图。
+> 它的优点是可控性高，可以进行编码式的动图效果实现。
+> 
+> 
+> ### setTimeout 的缺点
+> 1. 造成无用的函数运行开销
+> 即是过度绘制，同时因为更新图像的频率和屏幕的刷新重绘制不掉不一致，会产生丢帧，在低性能的显示器动画看起来就会卡顿。
+> 
+> 2. 当页面标签或浏览器置于后台不可见时，仍然会执行，造成资源浪费
+> 
+> 3. API 本身达不到毫秒级的精确
+> 如果使用 setTimeout 或 setInterval 那么需要我们制定时间。假设给予 （1000/60）理论上就可以完成 60 帧速率的动画。所以事实是浏览器可以 '强制规定时间间隔的下限(clamping th timeout interval)'，一般浏览器所允许的时间在 5~10ms，也就是说即使给了某个小于10的数，可能也要等待 10ms。
+> 
+> 4. 浏览器不能完美执行
+> 当动画使用 10ms 的 setTimeout 绘制动画时，将会看到一个时序不匹配。
+> 我们的显示屏一般是「16.7ms（即60FPS）的显示频率」，下图的第一行代表大多数监视器上显示的「16.7ms显示频率」，下图的第二行代表「10ms的典型setTimeout」。由于在显示刷新间隔之前发生了另一个绘制请求，因此无法绘制每次的第三个绘制（红色箭头指示）。这种透支会导致动画断断续续，「因为每三帧都会丢失」。计时器分辨率的降低也会对电池寿命产生负面影响，并降低其他应用程序的性能。
+> 如果使用requestAnimationFrame可以解决setTimeout的丢帧问题，因为它使应用程序时通知（且仅当）的浏览器需要更新页面显示，渲染时间由系统处理。因此，应用程序与浏览器绘画间隔完全一致，并且仅使用适当数量的资源。
+> ```
+>
+> ![c186eeb339b240dd96053c2ccaf2a49e_tplv-k3u1fbpfcp-zoom-in-crop-mark_4536_0_0_0](./image/c186eeb339b240dd96053c2ccaf2a49e_tplv-k3u1fbpfcp-zoom-in-crop-mark_4536_0_0_0.webp)
+
+### 全局方法
+
+#### eval() 和 Function() 构造函数
+
+> ```bash
+> ## eval() 和 Function() 构造函数
+> eval() 和 Function() 构造函数都可以动态地执行 JS 代码。
+> eval() 函数可以将字符串作为 JS 代码执行，可以用于计算动态生成的算数表达式、解析 JSON 数据、动态生成函数等。
+> Function() 构造函数可以动态地创建函数，可以用于动态生成函数，或者在运行时根据不同的条件生成不同的函数。
+> 注意：eval() 和 Function 构造函数可能存在安全风险，因此开发中应该避免使用它们，以确保代码的安全性和可维护性。
+> ```
+>
+> ```js
+> /** eval() 函数 */
+> const x = 1
+> const y = 2
+> const result = eval('x + y') // result = 3
+> 
+> 
+> /** Function 构造函数 */
+> const add = new Function('x', 'y', 'return x + y')
+> const result = add(1, 2) // result = 3
+> ```
+
+### location 对象
+
+```bash
+## location 对象
+- `location.href = 'https://xxx'`：获取当前页面的 url 路径（或者设置 url 路径）
+- `location.reload()`：用于重新加载当前页面，主要作用是刷新当前页面数据
+- `location.assign(str)`：用来跳转到其他的页面
+- `location.replace()`：使用一个新的页面替换当前页面，调用完毕也会跳转页面。但不会生成历史记录，不能使用``history.back()`返回本来的页面
+
+- hash 返回url中#后面的内容，包含#
+- host 主机名，包括端口
+- hostname 主机名
+- pathname url中的路径部分
+- protocol 协议 一般是http、https
+- search 查询字符串
+```
+
+
+
+### **history对象**  
+
+```bash
+## history 对象
+- 作用：抑制页面后退back()/抑制页面前进forward()   //使后退   /前进按钮失效
+- `history.length`：默认为1，获取浏览器历史列表中的 url 数量
+- `history.back()`：用来回退到上一个页面，`window.history.back()`
+- `history.forward()`：用来跳转下一个页面
+- `history.go( int n)`：加载 history 列表中的某个具体页面(负数为后退，正数为前进，数字为前进/后退数)
+
+
+
+- back()      加载 history 列表中的前一个 URL    
+- forward()     加载 history 列表中的下一个 URL window.history.forward()
+- go()        加载 history 列表中的某个具体页面 window.history.go(-1) 
+
+
+### 添加/修改记录
+1. History.pushState()方法用于在历史中添加一条记录。
+`window.history.pushState({page:1}, 'title', '?page=1')`
+
+2. History.replaceState()方法用来修改 History 对象的当前记录
+`history.replaceState({page:1}, 'title', '?page=2')`
+
+    state：一个与指定历史记录相关联的状态对象，当popstate事件触发时，会把该对象传入回调函数。如果不需要用到，可以传null。
+    title：页面的标题。但当前大多数浏览器都不支持或忽略这个值。可以传null。
+    url：添加或修改的history的网址。为了安全性，必须保持与当前URL同一个域。 
+
+pushState添加一个最新的历史记录，而replaceState则是把当前的页面的历史记录替换掉。
+他们最大的特点是添加或替换历史记录后，浏览器地址栏会变成你传的地址，而页面并不会重新载入或跳转。
+
+```
+
+#### popState 事件
+
+```bash
+### popState 事件
+当活动历史记录条目更改时会触发 popState 事件。如果被激活的历史记录条目是通过 `history.pushState()` 的调用创建时，或受到对 `history.replaceState()` 调用的影响，popState 事件的 state 属性包含历史条目的状态对象的副本。
+
+注意：调用 history.pushState() 或 history.replaceState() 方法都不会触发 popState 事件。只有在做出浏览器动作时才会触发改事件（如用户点击浏览器的回退按钮、或在 JS 中调用 history.back() 或 history.forward() 方法）
+
+不同的浏览器在加载页面时处理 popState 事件的形式存在差异。页面加载时 Chrome 和 Safari 通常会触发（emit）popState 事件，但 FireFox 则不会触发。
+```
+
+![image-20200921181305551](./image/image-20200921181305551.png)
+
+### **Navigator对象**
+
+-->包含有关浏览器的信息
+
+```js
+navigator.userAgent			//浏览器F12中network的（request-Headers）最底下。
+navigator.appCodeName 		//返回浏览器的代码名
+navigator.appName 			//返回浏览器的名称
+navigator.appVersion 		//返回浏览器的平台和版本信息  
+navigator.cookieEnabled 	//返回指明浏览器中是否启用 cookie 的布尔值  
+navigator.platform 			//返回运行浏览器的操作系统平台  
+navigator.userAgent 		//返回由客户机发送服务器的user-agent 头部的值 
+navigator.javaEnabled() 	//指定是否在浏览器中启用Java  
+navigator.taintEnabled() 	//规定浏览器是否启用数据污点(data tainting) 
+```
+
+## 方法/类型
+
+- toSource()返回该对象的源代码。 
+- toString()把逻辑值转换为字符串，并返回结果。 
+- valueOf() 返回 Boolean 对象的原始值。
+- tagName返回元素的标签名    // document.children[0].tagName;//会返回HTML
+
+- **NaN属性：-->用于引用特殊的非数字值**(Not a Number，表示不是一个数字)
+  - isNaN() 来判断一个值是否是数字。原因是 NaN 与所有值都不相等，包括它自己
+  - isNaN(x)-->true:代表不是数字；false:代表是数字
+- **转义字符**
+  - （在输出字符串时候要是想带上引号，需要运用到转义字符）
+  - \" -->转双引号			\' -->转单引号		 \r -->回车符			\n -->换行符
+
+### void关键字
+
+```js
+void 0 === undefined     // 一般用void 0替代undefined，除了防止被重写，还可减少字节
+
+javascript:void()    // void会执行()里面的语句或表达式，返回值为undefined
+
+javascript:void(0)   // 为执行js函数，0表示不执行函数，返回数值为undefined
+
+javascript:void fun()  //此为执行fun函数，括号内可传参
+```
+
+### new
+
+| 调用new的过程  |      自己实现new       |           new操作符具体干了什么            |
+| :------------: | :--------------------: | :----------------------------------------: |
+| 新生成一个对象 |     创建一个空对象     |   创建一个空对象，并且this变量引用该对象   |
+|   链接到原型   |      获取构造函数      |             继承了该函数的原型             |
+|    绑定this    |    设置空对象的原型    |     属性和方法被加入到this的引用对象中     |
+|   返回新对象   | 绑定this并执行构造函数 | 新创建的对象由this所引用，最后隐式返回this |
+
+```js
+function create() {
+  //创建一个空对象
+  let obj = new Object();
+  //获取构造函数
+  let Constructor = [].shift.call(arguments);
+  //链接到原型
+  obj.__proto__ = Constructor.prototype;
+  //绑定this值
+  let result = Constructor.apply(obj, arguments);//使用apply，将构造函数中的this指向新对象，这样新对象就可以访问构造函数中的属性和方法
+  //返回新对象
+  return typeof result === "object" ? result : obj;//如果返回值是一个对象就返回该对象，否则返回构造函数的一个实例对象
+}
+```
+
+### 运算规则
+
+- 运算的优先级：`括号 > 字符串 > 数字 > 布尔`
+- 如`'[3]' + (1 + 1 + true + null + 'ccc' + 1 + 1 + true + null) =  "[3]3ccc11truenull"`
+- 通过typeof运算符来确定JS变量的数据类型
+
+
+
+### 字符串String
+
+- 数字0、NaN、空字符串""、false、undefined、null都会被识别为false。
+- undefined：未定义或未初始化的变量，都为undefined。
+- undefined和null的区别：如果变量为null，说明变量存在，只不过值是空值null。
+
+![image-20210331160948708](./image/image-20210331160948708.png)
+
+### 数据类型转换
+
+- **转换为字符串类型：**x.toString()或String(x)
+  - String(100 + 23)  // 从表达式中的数值返回字符串
+  - (100 + 23).toString()
+- **转换为数字类型：**Number(x)、paseIntI(x)、paseFloat(x)
+  - Number(x)：通过该方法转化的数字类型保留原来值的内容
+  - paseIntI(x)：通过该方法只能保留整数部分（返回的是一个整数）
+  - paseFloat(x)：可以保留原来值内容，如果是非数字的字符串，直接保留数字部分
+- **转换为布尔类型：**Boolean(x)
+
+### 隐式转换
+
+![image-20210915145032445](./image/image-20210915145032445.png)
+
+![img](./image/153802557624752e85feeed.png)
+
+![jsé¢è¯é¢å¤§åââéå¼ç±»åè½¬æ¢](./image/15380256636038c4d44912e.png)
+
+![img](./image/1538025799063ed1e9da3cf.png)
+
+### 包装对象
+
+- 包装对象指的是与数值、字符串、布尔值分别相对应的`Number`、`String`、`Boolean`三个原生对象。这三个原生对象可以把原始类型的值变成（包装成）对象，包装对象的目的是使得原始类型的值也有办法调用自己的方法
+- 注意：三个对象作为构造函数使用（带有`new`）时，可以将原始类型的值转为对象；作为普通函数使用时（不带有`new`），可以将任意类型的值，转为原始类型的值
+
+```js
+// 用 new 关键字
+var v1 = new Number(123);
+var v2 = new String('abc');
+var v3 = new Boolean(true);
+console.log(typeof v1, v1 === 123)  //object false
+console.log(typeof v2, v2 === 'abc')  //object false
+console.log(typeof v3, v3 === true)  //object false
+new Number(123).valueOf()  // 123
+new String('abc').valueOf() // "abc"
+new Boolean(true).valueOf() // true
+new Number(123).toString() // "123"
+new String('abc').toString() // "abc"
+new Boolean(true).toString() // "true"
+
+// 不用 new 关键字
+var v4 = Number('123')
+console.log(typeof v4, v4 === 123)  // number true
+```
+
+## 观察器
+
+### IntersectionObserver 相交节点观察器
+
+> ```bash
+> ## IntersectionObserver API
+> IntersectionObserver API 是异步的，不随着目标元素的滚动同步触发。 即只有线程空闲下来，才会执行观察器。这意味着，这个观察器的优先级非常低，只在其他任务执行完，浏览器有了空闲才会执行。
+> 
+> 
+> ## IntersectionObserverEntry对象提供目标元素的信息，一共有六个属性。
+> time：可见性发生变化的时间，是一个高精度时间戳，单位为毫秒
+> target：被观察的目标元素，是一个 DOM 节点对象
+> rootBounds：根元素的矩形区域的信息，getBoundingClientRect()方法的返回值，如果没有根元素（即直接相对于视口滚动），则返回null
+> boundingClientRect：目标元素的矩形区域的信息
+> intersectionRect：目标元素与视口（或根元素）的交叉区域的信息
+> intersectionRatio：目标元素的可见比例，即intersectionRect占boundingClientRect的比例，完全可见时为1，完全不可见时小于等于0
+> 
+> 
+> ## options 
+> root: null, // 指定与目标元素相交的根元素，默认null为视口
+> threshold: [] // [0, 0.5, 1] 当目标元素和根元素相交的面积占目标元素面积的百分比到达或跨过某些指定的临界值时就会触发回调函数
+> rootMagin：'' // "100px 0" 与margin类型写法，指定与跟元素相交时的延时加载
+> 
+> 
+> ## 实例方法
+> - observe()
+> 	- 观察某个目标元素，一个观察者实例可以观察任意多个目标元素。
+> 	- 注意：这不是事件，没有冒泡。所以不能只调用一次 observe 方法就能观察一个页面里的所有 img 元素
+> - unobserve()
+> 	- 取消对某个目标元素的观察，延迟加载通常都是一次性的，observe 的回调里应该直接调用 unobserve() 那个元素.
+> - disconnect()
+> 	- 取消观察所有已观察的目标元素
+> - takeRecords()
+>     在浏览器内部，当一个观察者实例在某一时刻观察到了若干个相交动作时，它不会立即执行回调，它会调用 window.requestIdleCallback() （目前只有 Chrome 支持）来异步的执行我们指定的回调函数，而且还规定了最大的延迟时间是 100 毫秒，相当于浏览器会执行：
+>     requestIdleCallback(() => {
+>       if (entries.length > 0) {
+>         callback(entries, observer)
+>       }
+>     }, { timeout: 100 })
+> ```
+>
+> #### 图片滚动底部懒加载
+>
+> ```vue
+> <template>
+>   <img
+>     v-for="(item, index) in imgUrl"
+>     :key="index"
+>     ref="imgRef"
+>     :src="systemNotfound"
+>     :data-src="imgUrl[index]"
+>     class="h-96"
+>   />
+> </template>
+> 
+> <script setup lang="ts">
+> import { onMounted, ref } from 'vue'
+> import { systemNotfound } from '@/assets/images'
+> 
+> const imgRef = ref([])
+> const imgUrl = ref([
+>   'https://img2.baidu.com/it/u=617579813,2960860841&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+>   'https://img2.baidu.com/it/u=1003272215,1878948666&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+>   'https://img1.baidu.com/it/u=2995157981,91041597&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=750',
+>   'https://img2.baidu.com/it/u=1395980100,2999837177&fm=253&fmt=auto&app=120&f=JPEG?w=1200&h=675',
+>   'https://img0.baidu.com/it/u=925843206,3288141497&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=769',
+>   'https://img1.baidu.com/it/u=1300668939,1504410366&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=858',
+>   'https://img0.baidu.com/it/u=4008146120,512111027&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
+>   'https://img1.baidu.com/it/u=3622442929,3246643478&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
+>   'http://t13.baidu.com/it/u=230088816,2918366315&fm=224&app=112&f=JPEG?w=250&h=500',
+>   'https://img2.baidu.com/it/u=3038223445,2416689412&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+> ])
+> 
+> onMounted(() => {
+>   const options = {
+>     root: null,
+>     // 这里是一个数组可以指定多个比例类似[0.25, 0.5, 0.75, 1]
+>     threshold: [0], // 交会处
+>     rootMargin: '0px', // 对视口进行收缩和扩张
+>   }
+>   const lazyIntersection = new IntersectionObserver((entires) => {
+>     // entires为监听的节点数组对象
+>     entires.forEach((item: any) => {
+>       // isIntersecting是当前监听元素交叉区域是否在可视区域指定的阈值内返回的是一个布尔值
+>       if (item.isIntersecting) {
+>         item.target.src = item.target?.getAttribute('data-src')
+>         // 这里资源加载后就停止进行观察
+>         lazyIntersection.unobserve(item.target)
+>       }
+>     })
+>   }, options)
+> 
+>   /** observe用来观察指定的DOM节点 */
+>   imgRef.value.forEach((item) => {
+>     lazyIntersection.observe(item)
+>   })
+> })
+> </script>
+> ```
+
+### MutationObserver 节点元素变化监听器
+
+> ```bash
+> ## MutationObserver 节点元素变化监听器
+> - Mutation Observer 提供了监视对 DOM 树所做更改的能力。它被设计为旧的 Mutation Events 功能的替代品，该功能是 DOM3 Events 规范的一部分。
+> - 即是说这是一个 DOM 元素变化的监听器，当被观察的目标 DOM 发生改变时就可以执行指定的逻辑。
+> 
+> 
+> ## MutationObserver 的应用场景（防删除 DOM 水印）
+> - MutationObserver 主要在需要监听用户是否违规操作 DOM 的场景。
+> - 以水印为例，监听用户是否私自把页面的水印 DOM 进行删除，如果触发了事件则对水印进行恢复。
+> - 常规的页面水印是通过一个 DOM 元素来生成顶层的固定水印，如果用户有一定的网页知识可通过开发者工具来删除水印，这时就可以使用 MutationObserver 来监听 DOM 的操作。
+> ### 代码的实现
+> - 我们可在加载完水印之后创建一个监听器，并且监听了 body 元素（因为常规的水印元素是body的直接子元素，如果直接监听刚才的水印元素，删除这个元素并不会触发监听器）
+> - 首先根据 mutation 的 removedNodes 字段判断是否进行了删除操作，如果是删除操作再根据是否有下一个相邻节点来判断节点恢复的位置，如果存在相邻节点就在其前面插入被删除的节点，否则直接在末尾追加。
+> 
+> 
+> ## 实例方法
+> - MutationObserver是一个构造函数，他的实例会有 disconnect、observe和 takeRecords 三个方法
+> 
+> ### 1. constructor
+> 构造函数接收一个函数，用于在 DOM 变化时执行，该函数有两个参数：一个是描述所有被触发改动的 MutationRecord 对象数组，另一个是调用该函数的 MutationObserver 对象。
+> 
+> ### 2. observe
+> - mutationObserver.observe(target[, options])
+> 	- target: DOM 树中的一个要观察变化的DOM Node（可能是一个Element），或者是被观察的子节点树的根节点。
+> 	- options: 一个可选的 MutationObserverInit 对象，此对象的配置项描述了 DOM 的哪些变化应该提供给当前观察者的 callback
+> 		- attributes设为 true 以观察受监视元素的属性值变更。默认值为 false。
+> 		- attributeFilter要监视的特定属性名称的数组。如未包含此属性，则对所有属性的更改都会触发变动通知。无默认值。
+> 		- characterData设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化。无默认值
+> 		- childList设为 true 以监视目标节点（如果 subtree 为 true，则包含子孙节点）添加或删除新的子节点。默认值为 false。
+> 		- subtree的其他值也会作用于此子树下的所有节点，而不仅仅只作用于目标节点。默认值为 false。
+> 
+> ### 3. disconnect
+> 阻止 MutationObserver 实例继续接收的通知，直到再次调用其 observe() 方法，该观察者对象包含的回调函数都不会再被调用。
+> 
+> ### 4. takeRecords
+> 返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表，使变更队列保持为空。
+> DOM 变化之后并不是立即通知执行回调，而是等主线程代码执行完毕再通知，所以 takeRecords 可以将通知提前拦截。
+> ```
+>
+> ```js
+> const DOMHandle = (mutationList, observer) => {
+> 	mutationList.forEach(mutation => {
+> 		switch(mutation.type) {
+> 			case 'childList':
+>         // 从树上添加或移除一个或多个的子节点
+>         console.log('结点变更')
+>         break
+> 			case 'attributes':
+>         // mutation.target 中某节点的一个属性值被更改
+>         console.log('属性变更')
+>         break
+> 		}
+> 	})
+> }
+> 
+> const observer = new MutationObserver(DOMHandler)
+> const node1 = document.getElementById('box')
+> observer.observe(node1, { attributes: true })
+> node1.setAttribute('name', 'willy') // 属性变更
+> 
+> observer.disconnect()
+> node1.setAttribute('name', 'cilly') // 调用之后再元素版本修改属性都不会再次出发之前的回调
+> 
+> 
+> const node2 = document.getElementById('app')
+> observer.observe(node2, {attributes: true})
+> node.setAttribute('name', 'king')
+> const notices = observer.takeRecords()  // 拦截 DOM 更改的回调
+> console.log(notice)
+> ```
+>
+> ### 【实例】防删除 DOM 元素水印
+>
+> ```html
+><ul>
+>   <li>测试删除 DOM 是否能恢复</li>
+>   <li>1</li>
+>   <li>2</li>
+>   <li>3</li>
+>   <li>4</li>
+>   <li>5</li>
+> </ul>
+> 
+> <script>
+> 	window.onload = () => {
+>     loadMark(settings) // 加载水印
+> 
+>     // DOMHandler 在 typescript 中属于 MutationCallback
+>     const DOMHandler = (mutationList, observer) => {
+>       console.log(mutationList)
+>       mutationList.forEach((mutation) => {
+>         const { target, nextSibling, removedNodes } = mutation
+>         // 如果列表不为空，说明触发操作的动作是删除
+>         if (mutation.removedNodes.length) {
+>           if (nextSibling) {
+>             // 如果存在下一个相邻子节点执行插入
+>             console.log('恢复被删除的节点')
+>             target.insertBefore(removedNodes[0], nextSibling)
+>           } else {
+>             // 直接添加到 target 的末尾
+>             target.appendChild(removedNodes[0])
+>           }
+>         }
+>       })
+>     }
+> 
+>     const observer = new MutationObserver(DOMHandler)
+>     const node = document.body
+>     observer.observe(node, { attributes: true, childList: true, subtree: true })
+>   }
+> </script>
+> ```
+> 
+> ![恢复删除的水平](./image/%E6%81%A2%E5%A4%8D%E5%88%A0%E9%99%A4%E7%9A%84%E6%B0%B4%E5%B9%B3.webp)
+>
+
+## 运动
+
+### 方向判断
+
+![image-20211013215645301](./image/image-20211013215645301.png)
+
+```js
+let a = { x: 10, y: 20, }, b = { x: 5, y: 3, };
+let x = a.x - b.x, y = a.y - b.y;
+let dirName = new Array('上方', '右侧', '下方', '左侧');
+// 上(0) 右(1) 下(2) 左(3)
+let direction = Math.round((((Math.atan2(y, x) * (180 / Math.PI)) + 180) / 90) + 3) % 4;
+console.log(dirName[direction]);
+```
+
+### 碰撞检测
+
+
+
+
+
+### 缓冲运动
+
+```js
+/**
+	* target - 运动到达的位置
+	* div - 节点标签(需要设定为块元素)
+*/
+// 横向缓冲运动框架
+function startMove(target, div) {
+  clearInterval(timer);
+  timer = setInterval(move, 50);
+  function move() {
+    speed = (target - div.offsetLeft) / 9;
+    if (div.offsetLeft < target) {
+      div.style.left = div.offsetLeft + Math.ceil(speed) + 'px';
+    } else if (div.offsetLeft > target) {
+      div.style.left = div.offsetLeft + Math.floor(speed) + 'px';
+    } else if (div.offsetLeft === target)  {
+      clearInterval(timer);
+    }
+  }
+}
+
+// 横向匀速运动框架
+function startMove2(target, div) {
+  clearInterval(timer);
+  timer = setInterval(moving, 50);
+  function moving() {
+    div.offsetLeft <= target ? speed = 9 : speed = -9;
+    if (Math.abs(target - div.offsetLeft) <= Math.abs(speed)) {
+      div.style.left = target + 'px'; // 直接到达
+      clearInterval(timer); // 停止
+    } else {
+      div.style.left = div.offsetLeft + speed + 'px';
+    }
+  }
+}
+```
+
+### 完美运动
+
+```js
+// 封装获取计算后元素样式函数，返回小数
+function getStyle(obj, name) {
+  return obj.currentStyle ? obj.currentStyle[name] : getComputedStyle(obj, '')[name];
+}
+// 任意值运动框架
+function startMove(obj, json, fnEnd) {
+  clearInterval(obj.timer);
+  obj.timer = setInterval(move, 30);
+  function move() {
+    var current = 0;
+    var stop = true;
+    for (const attr in json) {
+      current = attr === 'opacity' ? Math.round(parseFloat(getStyle(obj, attr)) * 100) : parseInt(getStyle(obj, attr));
+      var speed = (json[attr] - current) / 4;
+      speed = speed < 0 ? Math.floor(speed) : Math.ceil(speed);
+      if (json[attr] === current) {
+        stop = true;
+      } else {
+        stop = false;
+        if (attr === 'opacity') {
+          obj.style[attr] = (current + speed) / 100;
+          obj.style.filter = "alpha(" + [attr] + "=" + (current + speed) + ")";
+        } else {
+          obj.style[attr] = current + speed + 'px';
+        }
+      }
+      console.log('json[attr]:', json[attr], 'attr:', attr, 'current:', current, 'getStyle:', getStyle(obj, attr), 'speed:', speed);
+    }
+    if (stop === true) {
+      clearInterval(obj.timer);
+      if (fnEnd) fnEnd();
+    }
+  }
+}
+
+/* 运动调用 */ 
+// 注意：需要让触发事件的标签设置为块元素
+startMove(
+  document.getElementById('div1'), 
+  { 'height': 400, "width": 101, "opacity": 30, "left": 100, "top": 200 }, 
+  () => { console.log('链式函数执行完成！') 
+});
+startMove(
+  document.getElementById('div4'), 
+  { "top": 0, "height": 0 }, 
+  () => { startMove( document.getElementById('div3'), { "width": 0 }) }
+);
+startMove(document.getElementsByTagName('left_icon'), {'opacity': 30});
+```
+
+### 弹性运动
+
+- 弹性：
+  - 速度+=（目标点-当前值）/系数；//系数大概可以选择6，7，8
+  - 速度*=摩擦系数；//系数可以选择0.7，0.75，0.8
+- 缓冲：
+  - 速度=（目标点-当前值）/系数；
+  - 速度取整；
+
+```js
+https://www.cnblogs.com/xiaohuochai/p/5980424.html#anchor2
+```
+
+### 重力加速度
+
+## JQ
+
+### 理念
+
+#### load 和 ready 谁先执行？
+
+```js
+window.onload = function(){}
+$(document).ready(fcuntion(){})
+```
+
+**DOM文档加载步骤：**
+
+1. 解析 HTML 结构
+2. 加载外部脚本和样式表文件
+3. 解析并执行脚本代码
+4. 构造 HTML DOM 模型（ready 方法执行）
+5. 加载图片、视频等外部文件
+6. 页面加载完毕（load 方法执行）
+
+注意：onload 只执行一次，若有多次，则最后一次覆盖前面的
+           ready 可以执行多次，不会覆盖
+
+### 选择器
+
+#### 基本选择器
+
+```js
+$("#div1")		//按id属性选择元素
+$(".class1") 	//按class属性选择元素
+$("div")		//按元素名称选择元素
+$("*")			//选择所有元素
+$("#div2,span")	//并列选择元素
+```
+
+#### 层次选择器
+
+```js
+$("body div") //选择body所有的div后代元素
+$("body>div") //选择body所有的直接div后代元素
+$("#div1+div") //选择id值为div1的元素的后面相邻的兄弟元素
+$("#div1~div") //选择id值为div1的元素的后面所有的兄弟元素
+```
+
+#### 基本过滤选择器
+
+```js
+$("div:first")	//选择第一个div元素
+$("div:last")	//选择最后一个div元素
+$("div:eq(4)")	//选择第五个div元素
+$("div:gt(5)") 	//选择所有索引值大于5的div元素
+$("div:lt(5)") 	//选择所有索引值小于5的div元素
+$("div:even")	//选择所有索引值为偶数的div元素
+$("div:odd")	//选择所有索引值为奇数的div元素
+$("div:not(.class1)") //选择不包含class属性值为class1的所有div元素
+$(":header")	//选择所有的标题元素
+$(":focus")		//选择成为焦点的元素
+$(":animated")	//选择所有动画元素
+```
+
+#### 内容过滤选择器
+
+```js
+$("div:contains(class为class1)") //改变所有包含文本"class为class1"的div元素
+$("div:has('.subClass1')") //改变所有包含class值为subClass1子元素的div元素
+$("div:empty")//改变所有不包含子元素的div元素
+$("div:parent")//改变所有包含子元素的div元素
+```
+
+#### 属性过滤选择器
+
+```js
+$("div[title]") //改变所有有title属性的div元素
+$("div[title=title1]") //改变所有有title属性为title1的div元素
+$("div[title!=title1]") //改变所有有title属性不为title1的div元素
+$("div[title^=ti]") //改变所有有title属性值以ti开头的div元素
+$("div[title$=1]") //改变所有有title属性以1结尾的div元素
+$("div[title*=Pre]") //改变所有有title属性值包含Pre的div元素
+$("div[id],[title]") //改变包含属性为id和属性为title的div元素
+//注意："[],[]"是并集，"[][]"是交集（两个条件间隔一个空格）
+```
+
+#### 可见过滤选择器
+
+```js
+$("div:visible") //改变所有可见的的div元素
+$("div:hidden").show(3000);//显示所有不可见的的div元素背景色
+```
+
+#### 子元素过滤选择器
+
+```js
+$("div.class1 :nth-child(2)") ;//选择所有class属性值为class1的div元素的第二个子元素
+$("div.class1 :first-child") //改变所有class属性值为class1的div元素的第1个子元素
+$("div.class1 :last-child") //改变所有class属性值为class1的div元素的最后1个子元素
+$("div.class1 :only-child") //改变所有class属性值为class1的div元素的唯一一个子元素
+```
+
