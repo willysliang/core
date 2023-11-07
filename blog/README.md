@@ -1,40 +1,6 @@
----
-home: true
-heroImage: /hero.png
-heroText: Hero 标题
-tagline: Hero 副标题
-actionText: 快速上手 →
-actionLink: /zh/guide/
-features:
-- title: 简洁至上
-  details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
-- title: Vue驱动
-  details: 享受 Vue + webpack 的开发体验，在 Markdown 中使用 Vue 组件，同时可以使用 Vue 来开发自定义主题。
-- title: 高性能
-  details: VuePress 为每个页面预渲染生成静态的 HTML，同时在页面被加载的时候，将作为 SPA 运行。
-footer: MIT Licensed | Copyright © 2023-present Willys Liang
----
-
 ::: slot footer
 MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willysliang)
 :::
-
-
-# 更新规则
-  - feat 增加新功能
-  - fix 修复问题/BUG
-  - style 代码风格相关无影响运行结果的
-  - perf 优化/性能提升
-  - refactor 重构
-  - revert 撤销修改
-  - test 测试相关
-  - docs 文档/注释
-  - chore 依赖更新/脚手架配置修改等
-  - workflow 工作流改进
-  - ci 持续集成
-  - types 类型定义文件更改
-  - wip 开发中
-
 
 
 # 2023
