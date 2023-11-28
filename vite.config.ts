@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 10:40:11
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-28 10:10:04
+ * @ Modifier time: 2023-11-28 14:41:57
  * @ Description: vite 构建文件
  */
 
@@ -114,7 +114,7 @@ export default defineConfig(({ mode }) => {
     // root: path.resolve(__dirname, 'src'),
     root: '.',
     // cacheDir: 'node_modules/.pnpm/.vite', // 存储缓存文件的目录。此目录下会存储预打包的依赖项或 vite
-    publicDir: 'blog',
+    // publicDir: 'blog',
     build: {
       target: 'esnext', // es2020 支持 import.meta 语法
       outDir: 'core', // 指定输出路径
@@ -135,7 +135,7 @@ export default defineConfig(({ mode }) => {
       // 自定义底层的 Rollup 打包配置
       rollupOptions: {
         input: getAllBuildHtml(),
-        external: [/\.(png|jpe?g|gif|svg|webp)$/i],
+        // external: [/\blog\/.*\.(png|jpe?g|gif|svg|webp)$/i],
       },
     },
     resolve: {

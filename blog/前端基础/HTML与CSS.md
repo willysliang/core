@@ -216,7 +216,7 @@ img {
 > 表格结构：<thead></thead>		<tbody></tbody>		<tfoot></tfoot>
 > ```
 >
-> ![表格、输入框总结](./image/%E8%A1%A8%E6%A0%BC%E3%80%81%E8%BE%93%E5%85%A5%E6%A1%86%E6%80%BB%E7%BB%93.png)
+> ![表格、输入框总结](./image/table_input.png)
 
 ### 表单form
 
