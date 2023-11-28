@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-03 12:01:59
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-28 10:09:14
+ * @ Modifier time: 2023-11-28 17:18:23
  * @ Description: md 文档页
  -->
 <script setup lang="ts">
@@ -60,7 +60,7 @@ const blogFile = reactive(fileMap?.blog?.children ?? fileMap)
 
 const getMD = () => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const tempFilePath = blogFile['前端基础']!.children!.Nodejs!
+  const tempFilePath = blogFile['前端基础']!.children!.JavaScript!
     .filePath as string
 
   fetch(tempFilePath)

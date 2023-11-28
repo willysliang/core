@@ -28,6 +28,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Clear Cache
+        uses: actions/cache@v2
+        with:
+          path: /path/to/cache # 指定要清除的缓存路径
+          key: ${{ runner.os }}-cache # 缓存的键，用于标识不同的缓存
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Node
