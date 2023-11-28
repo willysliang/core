@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2023-01-10 11:27:02
- * @ Modified by: willysliang
- * @ Modified time: 2023-01-10 12:05:14
- * @ Description: monorepo
+Author: willysliang
+CreateTime: 2023-01-10 11:27:02
+Modifier: willysliang
+ModifiedTime: 2023-01-10 12:05:14
+Description: monorepo
 ---
 
 ## monorepo 介绍

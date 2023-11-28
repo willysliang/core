@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2022-08-21 16:21:10
- * @ Modified by: willysliang
- * @ Modified time: 2023-01-11 18:58:03
- * @ Description: React
+Author: willysliang
+CreateTime: 2022-08-21 16:21:10
+Modifier: willysliang
+ModifiedTime: 2023-01-11 18:58:03
+Description: React
 ---
 
 ## React基础

@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2022-08-21 16:21:35
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-28 10:30:07
- * @ Description: TypeScript
+Author: willysliang
+CreateTime: 2022-08-21 16:21:35
+Modifier: willysliang
+ModifiedTime: 2022-12-28 10:30:07
+Description: TypeScript
 ---
 
 ## TypeScript
