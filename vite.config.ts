@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 10:40:11
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-07 17:56:19
+ * @ Modifier time: 2023-11-28 10:10:04
  * @ Description: vite 构建文件
  */
 
@@ -10,7 +10,7 @@
  * vue 解析核心
  */
 import { defineConfig, loadEnv } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import createVuePlugin from '@vitejs/plugin-vue'
 import { ViteEjsPlugin } from 'vite-plugin-ejs'
 
 /**
@@ -20,8 +20,6 @@ import fs from 'fs'
 import path from 'path'
 /** 获取 git 分支名 */
 import { execSync } from 'child_process'
-/** 顶层 await */
-import topLevelAwait from 'vite-plugin-top-level-await'
 
 /**
  * eslint 相关
@@ -33,13 +31,41 @@ import checkerEslint from 'vite-plugin-checker'
  * 打包优化相关
  */
 /** vite 打包压缩 gzip */
-import viteCompression from 'vite-plugin-compression'
+// import viteCompression from 'vite-plugin-compression'
 
 /**
  * postcss 解析
  */
 import autoprefixer from 'autoprefixer'
 import postCssPxToRem from 'postcss-pxtorem'
+
+import markdown from 'vite-plugin-md'
+
+const vuePlugin = createVuePlugin({ include: [/\.vue$/, /\.md$/] })
+
+interface IMdToVuePluginReturnType {
+  name: string
+  /**
+   * @function 转换函数
+   * @param {string} code 表示要转换的模块的源代码，包含了模块的原始内容
+   * @param {string} path 表示模块的标识符，用于唯一标识模块的路径或名称
+   * @returns {unknow}
+   */
+  transfrom: (code: string, path: string) => unknown
+}
+
+const markdownTemplatePlugin = (): IMdToVuePluginReturnType => {
+  return {
+    name: 'markdown-template',
+    transfrom: (code, path) => {
+      // 在 transfrom 中进行 md 的转换
+      if (path.endsWith('.md')) {
+        const template = `<template>\n${code}\n</template>`
+        return template
+      }
+    },
+  }
+}
 
 /** 读取 package.json 文件内容 */
 const packageJSON = JSON.parse(
@@ -88,8 +114,9 @@ export default defineConfig(({ mode }) => {
     // root: path.resolve(__dirname, 'src'),
     root: '.',
     // cacheDir: 'node_modules/.pnpm/.vite', // 存储缓存文件的目录。此目录下会存储预打包的依赖项或 vite
+    publicDir: 'blog',
     build: {
-      target: 'es2020', // es2020 支持 import.meta 语法
+      target: 'esnext', // es2020 支持 import.meta 语法
       outDir: 'core', // 指定输出路径
       assetsInlineLimit: 4096, // 小于此阈值的导入或引用资源将内联为 base64 编码
       cssCodeSplit: true, // 启用 CSS 代码拆分
@@ -103,14 +130,12 @@ export default defineConfig(({ mode }) => {
       write: true, // 启用将构建后的文件写入磁盘
       emptyOutDir: true, // 构建时清空该目录
       // brotliSize: true, // 启用 brotli 压缩大小报告
-      chunkSizeWarningLimit: 500, // chunk 大小警告的限制
+      // chunkSizeWarningLimit: 500, // chunk 大小警告的限制
       watch: null, // 设置为 {} 则会启用 rollup 的监听器
       // 自定义底层的 Rollup 打包配置
       rollupOptions: {
-        // input: {
-        //   main: path.resolve(__dirname, 'index.html'),
-        // },
         input: getAllBuildHtml(),
+        external: [/\.(png|jpe?g|gif|svg|webp)$/i],
       },
     },
     resolve: {
@@ -161,13 +186,9 @@ export default defineConfig(({ mode }) => {
       /**
        * vue 解析核心
        */
-      vue(),
-      topLevelAwait({
-        // The export name of top-level await promise for each chunk module
-        promiseExportName: '__tla',
-        // The function to generate import names of top-level await promise in each chunk module
-        promiseImportName: (i) => `__tla_${i}`,
-      }),
+      vuePlugin,
+      markdownTemplatePlugin(),
+      markdown(),
       ViteEjsPlugin({
         /** 项目运行模式 */
         PROJ_ENV: importMetaEnv.VITE_PROJ_ENV,
@@ -195,14 +216,14 @@ export default defineConfig(({ mode }) => {
       /**
        * 打包优化相关
        */
-      viteCompression({
-        verbose: true, // 默认即可
-        disable: false, // 开启压缩(不禁用)，默认即可
-        deleteOriginFile: false, // 删除源文件
-        threshold: 10240, // 压缩前最小文件大小
-        algorithm: 'gzip', // 压缩算法
-        ext: '.gz', // 文件类型
-      }),
+      // viteCompression({
+      //   verbose: true, // 默认即可
+      //   disable: false, // 开启压缩(不禁用)，默认即可
+      //   deleteOriginFile: false, // 删除源文件
+      //   threshold: 10240, // 压缩前最小文件大小
+      //   algorithm: 'gzip', // 压缩算法
+      //   ext: '.gz', // 文件类型
+      // }),
     ],
     server: {
       // 禁用或配置 HMR 连接 设置 server.hmr.overlay 为 false 可以禁用服务器错误遮罩层

@@ -1,9 +1,9 @@
 ---
- * @ Author: willy
- * @ Create Time: 2023-10-27 18:48:47
- * @ Modifier by: willy
- * @ Modifier time: 2023-11-07 19:48:07
- * @ Description: 日志记录
+Author: willy
+CreateTime: 2023-10-27 18:48:47
+Modifier: willy
+ModifierTime: 2023-11-07 19:48:07
+Description: 日志记录
 ---
 
 # 更新规则

@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-02 20:49:42
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-02 21:16:00
+ * @ Modifier time: 2023-11-16 14:01:54
  * @ Description: index app 相关的持久化数据
  */
 
@@ -19,7 +19,7 @@ interface IAppIndexSate {
 export const useAppIndexStore = defineStore({
   id: 'app-index',
   state: (): IAppIndexSate => ({
-    name: `Willy's blog`,
+    name: `Willy`,
     desc: '落叶缤纷诉秋意，风雪飘摇牵梅舞',
   }),
 })

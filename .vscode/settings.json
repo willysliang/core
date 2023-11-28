@@ -1,0 +1,15 @@
+{
+    "editor.formatOnSave": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.fixAll.eslint": true
+    },
+    "eslint.options": {
+        "extensions": [".js", ".vue", ".ts", ".tsx"]
+    },
+    "typescript.tsdk": "node_modules\\typescript\\lib"
+}

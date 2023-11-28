@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-03 11:20:57
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-06 20:39:07
+ * @ Modifier time: 2023-11-27 20:44:29
  * @ Description: 读取设定目录的所有文件
  */
 
@@ -24,14 +24,14 @@ type IFileMap = Record<string, IFileNode>
  */
 export const useReadPathFiles = () => {
   /** 获取设定目录的所有文件 */
-  const modules = import.meta.glob('/blog/**/*.md')
+  const modules = import.meta.glob('/**/*.md')
 
   /** 文件地图（属性菜单） */
   let fileMap: IFileMap = {}
 
   for (const path in modules) {
     /** 文件路径 */
-    const filePath = path.slice(6, -3)
+    const filePath = path.slice(1, -3)
 
     /** 文件路径拆分开 */
     const dir: string[] = filePath.split('/')
