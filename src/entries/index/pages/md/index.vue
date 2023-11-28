@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-03 12:01:59
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-28 17:18:23
+ * @ Modifier time: 2023-11-28 17:50:17
  * @ Description: md 文档页
  -->
 <script setup lang="ts">
@@ -54,14 +54,14 @@ const VMdEditorConfig = reactive({
 })
 
 const { fileMap } = useReadPathFiles()
-
-console.log('fileMap', fileMap)
 const blogFile = reactive(fileMap?.blog?.children ?? fileMap)
 
 const getMD = () => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const tempFilePath = blogFile['前端基础']!.children!.JavaScript!
     .filePath as string
+
+  console.log('fileMap', fileMap, tempFilePath.slice(5))
 
   fetch(tempFilePath)
     .then(async (res) => await res.text())
