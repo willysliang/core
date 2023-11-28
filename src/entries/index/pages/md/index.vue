@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-03 12:01:59
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-07 19:17:42
+ * @ Modifier time: 2023-11-28 10:09:14
  * @ Description: md 文档页
  -->
 <script setup lang="ts">
@@ -28,11 +28,6 @@ VMdEditor.use(vuepressTheme, {
   },
 })
 
-const { fileMap } = useReadPathFiles()
-
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const tempFilePath = fileMap['前端基础']!.children!.Nodejs!.filePath as string
-console.log(fileMap, tempFilePath)
 const markdown = ref('')
 
 const VMdEditorConfig = reactive({
@@ -58,17 +53,29 @@ const VMdEditorConfig = reactive({
   'right-toolbar': 'toc sync-scroll fullscreen',
 })
 
-fetch(tempFilePath)
-  .then(async (res) => await res.text())
-  .then((data) => {
-    markdown.value = data
-  })
-  .catch((err) => {
-    console.log(err)
-  })
+const { fileMap } = useReadPathFiles()
+
+console.log('fileMap', fileMap)
+const blogFile = reactive(fileMap?.blog?.children ?? fileMap)
+
+const getMD = () => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const tempFilePath = blogFile['前端基础']!.children!.Nodejs!
+    .filePath as string
+
+  fetch(tempFilePath)
+    .then(async (res) => await res.text())
+    .then((data) => {
+      markdown.value = data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
 </script>
 
 <template>
+  <div class="btn" @click="getMD">按钮</div>
   <div class="ui-md">
     <VMdEditor v-model="markdown" v-bind="VMdEditorConfig" />
   </div>
