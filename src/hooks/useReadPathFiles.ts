@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-11-28 10:23:13
  * @ Modifier: willy
- * @ ModifierTime: 2023-11-28 21:17:49
+ * @ ModifierTime: 2023-11-28 21:30:44
  * @ Description: 读取设定目录的所有文件
  */
 
@@ -70,8 +70,11 @@ export const useReadPathFiles = () => {
       if (isDir) {
         node = node[curPath].children as IFileMap
       } else {
+        const filePath = `${prefixUrl}${
+          path.startsWith('/blog/') && isEnvProd ? path.slice(5) : path
+        }`
         node[curPath] = {
-          filePath: `${prefixUrl}${path}`,
+          filePath,
           fileName: curPath,
         }
       }
