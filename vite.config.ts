@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-10-27 10:40:11
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-28 17:47:24
+ * @ Modifier time: 2023-11-28 20:23:46
  * @ Description: vite 构建文件
  */
 
@@ -107,7 +107,7 @@ export default defineConfig(({ mode }) => {
   /** 简化 import.meta.env 的读取 */
   const importMetaEnv = loadEnv(mode, process.cwd(), '')
   /** 是否在调试模式（非正式环境） */
-  const isProjDev = importMetaEnv.VITE_PROJ_ENV !== 'production'
+  const viteAppIsDev = importMetaEnv.VITE_APP_ENV !== 'production'
 
   return {
     base: packageJSON.path,
@@ -121,7 +121,7 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: 4096, // 小于此阈值的导入或引用资源将内联为 base64 编码
       cssCodeSplit: true, // 启用 CSS 代码拆分
       cssTarget: '', // 允许用户为 CSS 的压缩设置一个不同的浏览器 target 与 build.target 一致
-      sourcemap: isProjDev, // 构建后是否生成 source map 文件
+      sourcemap: viteAppIsDev, // 构建后是否生成 source map 文件
       manifest: false, // 当设置为 true，构建后将会生成 manifest.json 文件
       ssrManifest: false, // 构建不生成 SSR 的 manifest 文件
       ssr: undefined, // 生成面向 SSR 的构建

@@ -13,7 +13,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npx cross-env VITE_PROJ_ENV=staging && vue-tsc && vite build",
+    "build": "vue-tsc && cross-env vite build",
+    "build:staging": "vue-tsc && cross-env NODE_ENV=staging vite build --mode staging",
     "preview": "vite preview",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "prettier": "prettier --write"
