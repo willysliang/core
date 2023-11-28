@@ -73,7 +73,7 @@ Description: Vue2
 >
 > ![image-20201117235906290](./image/image-20201117235906290.png)
 >
-> ![vue处理过程](./image/vue%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B.png)
+> ![vue处理过程](./image/vue_Architecture.png)
 >
 > ![image-20230308184732048](./image/image-20230308184732048.png)
 

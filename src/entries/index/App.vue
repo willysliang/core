@@ -2,13 +2,14 @@
  * @ Author: willy
  * @ Create Time: 2023-11-01 16:25:03
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-27 21:26:19
+ * @ Modifier time: 2023-11-28 10:31:07
  * @ Description: APP 主入口
  -->
 
 <script setup lang="ts">
 import { useAppIndexStore } from '@store/app/index'
 import { useReadPathFiles } from '@/hooks/useReadPathFiles'
+import { logo } from '@img/index'
 
 const { fileMap } = useReadPathFiles()
 console.log('fileMap', fileMap)
@@ -19,7 +20,7 @@ const { name } = useAppIndexStore()
 <template>
   <header class="px-header">
     <a class="logo">
-      <img src="@img/app/common/logo.jpg" :alt="name" class="logo-icon" />
+      <img :src="logo" :alt="name" class="logo-icon" />
       <span class="project-name">{{ name }}</span>
     </a>
   </header>

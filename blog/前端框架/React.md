@@ -731,7 +731,7 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 > 							一般在这个钩子中做一些收尾的事，例如：关闭定时器、取消订阅消息
 > ```
 > 
-> ![React16基于Fiber架构的生命周期图](./image/React16%E5%9F%BA%E4%BA%8EFiber%E6%9E%B6%E6%9E%84%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%BE.png)
+> ![React16基于Fiber架构的生命周期图](./image/React16_Fiber.png)
 > 
 > ![image-20220330214941496](./image/image-20220330214941496.png)
 > 
