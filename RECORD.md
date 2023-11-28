@@ -27,6 +27,7 @@ Description: 日志记录
 
 ## 2023年11月28日16点52分
   - docs: 更新 blog md 文档的图片格式与标题格式
+  - workflow: github 工作流更改
 
 ## 2023年11月28日10点11分
   - feat: 本地 md 文档解析打包
