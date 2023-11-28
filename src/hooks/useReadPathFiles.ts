@@ -1,12 +1,13 @@
 /**
  * @ Author: willy
- * @ Create Time: 2023-11-03 11:20:57
- * @ Modifier by: willy
- * @ Modifier time: 2023-11-27 20:44:29
+ * @ CreateTime: 2023-11-28 10:23:13
+ * @ Modifier: willy
+ * @ ModifierTime: 2023-11-28 21:17:49
  * @ Description: 读取设定目录的所有文件
  */
 
 import { reactive } from 'vue'
+import { isEnvProd } from '@utils/url'
 
 /** 单个文件的类型 */
 interface IFileNode {
@@ -25,6 +26,15 @@ type IFileMap = Record<string, IFileNode>
 export const useReadPathFiles = () => {
   /** 获取设定目录的所有文件 */
   const modules = import.meta.glob('/**/*.md')
+
+  const urlPathname = new URL(location.href).pathname.split('/').slice(0, -1)
+
+  /**
+   * url 前缀
+   * 在 正式环境 且 url 的 pathname 不是非 /*.html(存在多级的情况), 需要添加 url 前缀
+   */
+  const prefixUrl: string =
+    isEnvProd && urlPathname.length > 1 ? urlPathname.join('/') : ''
 
   /** 文件地图（属性菜单） */
   let fileMap: IFileMap = {}
@@ -61,7 +71,7 @@ export const useReadPathFiles = () => {
         node = node[curPath].children as IFileMap
       } else {
         node[curPath] = {
-          filePath: path,
+          filePath: `${prefixUrl}${path}`,
           fileName: curPath,
         }
       }

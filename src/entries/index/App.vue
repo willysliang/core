@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-01 16:25:03
  * @ Modifier by: willy
- * @ Modifier time: 2023-11-28 10:31:07
+ * @ Modifier time: 2023-11-28 20:50:52
  * @ Description: APP 主入口
  -->
 
@@ -12,7 +12,7 @@ import { useReadPathFiles } from '@/hooks/useReadPathFiles'
 import { logo } from '@img/index'
 
 const { fileMap } = useReadPathFiles()
-console.log('fileMap', fileMap)
+console.log('fileMap', fileMap, import.meta.env.VITE_APP_ENV)
 
 const { name } = useAppIndexStore()
 </script>
