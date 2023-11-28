@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2023-03-31 16:56:31
- * @ Modified by: willysliang
- * @ Modified time: 2023-03-31 16:57:29
- * @ Description: ES6+语法Ⅱ
+Author: willysliang
+CreateTime: 2023-03-31 16:56:31
+Modifier: willysliang
+ModifiedTime: 2023-03-31 16:57:29
+Description: ES6+语法Ⅱ
 ---
 
 ## ES6+语法Ⅱ

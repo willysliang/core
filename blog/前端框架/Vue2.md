@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2022-08-21 16:19:19
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-28 10:28:44
- * @ Description: Vue2
+Author: willysliang
+CreateTime: 2022-08-21 16:19:19
+Modifier: willysliang
+ModifiedTime: 2022-12-28 10:28:44
+Description: Vue2
 ---
 
 ## Vue2.0

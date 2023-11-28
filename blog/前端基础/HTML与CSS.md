@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2022-08-21 16:12:51
- * @ Modified by: willysliang
- * @ Modified time: 2023-01-05 15:02:52
- * @ Description: HTML 与 CSS
+Author: willysliang
+CreateTime: 2022-08-21 16:12:51
+Modifier: willysliang
+ModifiedTime: 2023-01-05 15:02:52
+Description: HTML 与 CSS
 ---
 
 ## HTML
@@ -162,6 +162,39 @@
 >   </picture>
 > 这样一来图片宽高比就不一致了，浏览器可能更需要针对每一个资源设置特定宽高比。但目前还没有好的解决方案，`re-layout`依然存在。
 > ```
+
+#### app内嵌H5，禁止图片长按保存
+
+```bash
+### app 内嵌 H5 禁止图片长按保存
+
+1. css 禁止点击图片事件
+img {  pointer-events:none; }
+缺点：会禁止图片的点击事件。所以当图片有点击事件时，给有点击事件的图片设置 `pointer-events:auto;`，那么则合格图片又可以长按保存。
+使用该方法的建议：如果需要给图片添加点击事件，可以在外层套一层 div，在 div 上绑定事件。
+
+
+2. 禁用了默认的callout展示， callout 是指当触摸并按住一个元素的时候出现的提示。
+img {
+	user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+ 	-moz-user-select: none;
+	-ms-user-select: none;
+}
+缺点：安卓机上可能不生效。且该特性是非标准属性，不建议使用。
+主要用于禁止长按菜单。当然针对webkit内核的浏览器。
+
+
+3. img 使用背景图替代
+改用背景图方式，原来使用img标签的改为背景图的方式实现，可以避免长按保存图片操作。
+
+
+4. img 上添加遮罩层
+在 img 图片层（与图片同一层级，可使用 absolute 定位来遮盖住图片）增加遮罩，设置透明度为0，这样图片不会被点击，也不会出现长按保存图片操作
+```
+
+
 
 ### 表格table
 

@@ -25,6 +25,10 @@ Description: 日志记录
 
 # 更新记录
 
+## 2023年11月28日10点11分
+  - feat: 本地 md 文档解析打包
+  - docs: 更新 blog
+
 ## 2023年11月7日18点04分
   - feat: md 文件在页面上预览
       - [v-md-editor](https://ckang1229.gitee.io/vue-markdown-editor/zh/)

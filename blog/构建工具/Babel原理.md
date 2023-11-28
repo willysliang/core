@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2023-03-09 10:34:34
- * @ Modified by: willysliang
- * @ Modified time: 2023-03-09 10:37:47
- * @ Description: Babel 原理
+Author: willysliang
+CreateTime: 2023-03-09 10:34:34
+Modifier: willysliang
+ModifiedTime: 2023-03-09 10:37:47
+Description: Babel 原理
 ---
 
 ## Babel 原理

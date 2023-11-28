@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2022-08-21 16:17:17
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-28 11:49:54
- * @ Description: ES6+ 语法
+Author: willysliang
+CreateTime: 2022-08-21 16:17:17
+Modifier: willysliang
+ModifiedTime: 2022-12-28 11:49:54
+Description: ES6+ 语法
 ---
 
 ## ES6

@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2022-08-21 16:23:42
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-28 11:45:24
- * @ Description: LeetCode
+Author: willysliang
+CreateTime: 2022-08-21 16:23:42
+Modifier: willysliang
+ModifiedTime: 2022-12-28 11:45:24
+Description: LeetCode
 ---
 
 ### LeetCode 1~50

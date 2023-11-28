@@ -1,9 +1,9 @@
 ---
- * @ Author: willysliang
- * @ Create Time: 2022-08-21 16:27:28
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-28 11:52:47
- * @ Description: Git 仓库管理
+Author: willysliang
+CreateTime: 2022-08-21 16:27:28
+Modifier: willysliang
+ModifiedTime: 2022-12-28 11:52:47
+Description: Git 仓库管理
 ---
 
 ### Git概念
