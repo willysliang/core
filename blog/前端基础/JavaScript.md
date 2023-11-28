@@ -1648,7 +1648,7 @@ function del() {
 > 
 > 注意：在 HTML5 规范中，规定定时器的定时时间不能小于4ms，如果是小于4ms，则默认为4ms
 > 
->   ![JS_DOM_线程执行](./image/JS_DOM_thread_execution.png)
+>   ![JS_DOM_线程执行](./image/js_line.png)
 
 #### setTimeout倒计时为什么会出现误差？
 
