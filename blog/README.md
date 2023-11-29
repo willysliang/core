@@ -39,6 +39,12 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 
 # 2023
 
+## 2023年11月29日10点25分
+  - docs: 更改图片命名
+
+## 2023年11月28日16点52分
+  - docs: 更新 blog md 文档的图片格式与标题格式
+
 ## 2023年11月7日19点38分
   - feat(项目集): md文档读取展示
 
