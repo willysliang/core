@@ -1,105 +1,111 @@
 <!--
  * @ Author: willy
  * @ Create Time: 2023-11-02 21:09:14
- * @ Modifier by: willy
- * @ Modifier time: 2023-11-03 11:12:47
+ * @ Modifier: willy
+ * @ ModifierTime: 2023-12-22 17:20:49
  * @ Description: 主页
  -->
 
 <script setup lang="ts">
+import WCard from './components/card.vue'
+import WFeatures from './components/features.vue'
+import Slider from './components/slider.vue'
+import { storeToRefs } from 'pinia'
+import { logger } from '@utils/index'
 import { useAppIndexStore } from '@store/app/index'
-import { featureOther, featureUI, featureWeb } from '@img/index'
 
-const { name, desc } = useAppIndexStore()
+const { appName, appDesc, cardInfos } = storeToRefs(useAppIndexStore())
 
-/** 特征列表 */
-const features = [
-  {
-    icon: featureWeb,
-    title: '前端',
-    desc: 'JavaScript、ES6、Vue框架等前端技术',
-  },
-  {
-    icon: featureUI,
-    title: '页面',
-    desc: 'html(5)/css(3)，前端页面相关技术',
-  },
-  {
-    icon: featureOther,
-    title: '技术',
-    desc: '技术文档、教程、技巧、总结等文章',
-  },
-] as const
+const handleToDetail = (cardInfo) => {
+  logger.info(cardInfo)
+}
 </script>
 
 <template>
   <div class="banner">
-    <h1>{{ name }}</h1>
-    <p class="description">{{ desc }}</p>
+    <h1 class="banner__title" :title="appName">{{ appName }}</h1>
+    <p class="banner__description" :title="appDesc">{{ appDesc }}</p>
 
-    <div class="features">
-      <div v-for="(feature, index) in features" :key="index" class="feature">
-        <img :src="feature.icon" class="feature-icon" alt="feature-img" />
-        <p class="feature-title">{{ feature.title }}</p>
-        <p class="feature-desc">{{ feature.desc }}</p>
-      </div>
+    <WFeatures />
+  </div>
+
+  <div class="main-wrapper">
+    <div class="cards">
+      <WCard
+        v-for="(cardInfo, index) in cardInfos"
+        :key="index"
+        v-bind="cardInfo"
+        @detail="handleToDetail"
+      />
+    </div>
+
+    <div class="slider">
+      <Slider />
     </div>
   </div>
 </template>
 
-<style lang="scss">
-@import '@/styles/funs.scss';
+<style lang="scss" scoped>
+@import '@/styles/animation.scss';
 
 .banner {
-  height: p2r(530);
+  --banner-text-color: #fff;
+  --banner-title-height: var(--text-size-xl);
+  --banner-desc-height: var(--text-size-md);
+
   width: 100%;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABOSURBVFhH7c6xCQAgDAVRR9A6E4hLu4uLiWJ7tSnuQcIvr2TRYsw3/zOGGEOMIcYQY4gxxBhiDDGGGEOMIcYQY4gxxBhiDLkx52W4Gn1tuslCtHJvL54AAAAASUVORK5CYII=)
     rgb(40, 40, 45);
-  color: #fff;
+  color: var(--banner-text-color);
   text-align: center;
   box-sizing: border-box;
   @extend %flex;
   flex-direction: column;
-  font-size: p2r(24);
 
-  h1 {
-    font-size: p2r(56);
-    line-height: p2r(56);
+  &__title {
+    font-size: var(--banner-title-height);
+    line-height: var(--banner-title-height);
+    font-weight: bold;
   }
 
-  .description {
+  &__description {
     margin-top: p2r(26);
-    font-size: p2r(18);
+    font-size: var(--banner-desc-height);
+    line-height: var(--banner-desc-height);
+    font-style: italic;
+  }
+}
+
+.main-wrapper {
+  --wrapper-bg-color: #f4f4f4;
+  --cards-widht: 100%;
+
+  @media (min-width: 767px) {
+    --cards-widht: 80%;
   }
 
-  .features {
-    @extend %flex;
-    margin-top: p2r(78);
+  width: 100%;
+  height: auto;
+  background-color: var(--wrapper-bg-color);
+  box-sizing: border-box;
+  padding: p2r(5) p2r(5);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 
-    .feature {
-      padding: 0 p2r(75);
-      @extend %flex;
-      flex-direction: column;
-      cursor: pointer;
-      &:hover {
-        color: var(--textLightenColor);
-      }
+  .cards {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    width: var(--cards-widht);
+  }
 
-      .feature-icon {
-        width: p2r(160);
-        @include btn();
-      }
-
-      .feature-title {
-        margin-top: p2r(22);
-        font-size: p2r(24);
-      }
-
-      .feature-desc {
-        margin-top: p2r(22);
-        font-size: p2r(18);
-      }
-    }
+  .slider {
+    flex: 1;
+    box-sizing: border-box;
+    padding: p2r(5);
+    align-self: flex-start;
   }
 }
 </style>

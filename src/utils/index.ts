@@ -6,10 +6,15 @@
  * @ Description: 工具类汇集
  */
 
+export * from './format'
+export * from './app'
+export * from './utils'
+export * from './random'
+
 export const modules = import.meta.glob('./*.ts')
 
 /** 
- * 获取所有模块
+ * @description 获取所有模块
  * @returns {Promise<{string, any}>} 返回一个对象，key是函数名，value是函数体拿来执行
  * 
  * @test

@@ -72,10 +72,10 @@ const getMD = () => {
       console.log(err)
     })
 }
+getMD()
 </script>
 
 <template>
-  <div class="btn" @click="getMD">按钮</div>
   <div class="ui-md">
     <VMdEditor v-model="markdown" v-bind="VMdEditorConfig" />
   </div>

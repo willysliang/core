@@ -17,4 +17,59 @@
   --borderColor: rgba(0, 0, 0, 0.12);
   --codeBg: #f6f6f6;
   --codeColor: #525252;
+
+  /** 字体定义规范 */
+  --text-size-xs: 0.4rem;
+  --text-size-sm: 0.8rem;
+  --text-size-md: 1rem;
+  --text-size-lg: 2rem;
+  --text-size-xl: 4rem;
+
+  /** 按钮规范 */
+  --btn-dis: rgb(255 255 255 / 30%);
+  --btn-hover: rgb(255 255 255 / 50%);
+  --btn-remove: rgb(255 255 255 / 80%);
+
+  /** 响应式宽 */
+  --col-width: 33.33%;
+  --col-height: 10rem;
+
+  /** 卡片相关设置 */
+  --card-bg-color: #fff;
+  --card-border-radius: 0.4rem;
+  --card-text-color: #00323c;
+  --card-padding: 0.8rem;
+  --card-margin: 0.6rem;
+  --card-title-size: var(--text-size-md);
+}
+
+/**
+  * 屏幕大小判断
+    - 大屏幕：width > 1200px
+    - 中等屏幕：992px < width < 1200px
+    - 小屏幕：768px < width < 992px
+    - 极小屏幕： width < 768px
+  */
+/* 小屏幕背景色 */
+@media (max-width: 767px) {
+  :root {
+    --col-width: 100%;
+    --col-height: 5rem;
+  }
+}
+
+/* 中屏幕背景色 */
+@media (min-width: 768px) and (max-width: 991px) {
+  :root {
+    --col-width: 20%;
+    --col-height: 20rem;
+  }
+}
+
+/* 大屏幕背景色 */
+@media (min-width: 992px) {
+  :root {
+    --col-width: 10%;
+    --col-height: 30rem;
+  }
 }

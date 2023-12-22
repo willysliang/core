@@ -10,15 +10,43 @@
 import { type Icon } from '@icon-park/vue-next/lib/runtime'
 
 export interface IconParkProp {
-  icon: Icon // icon-park 图标
-  theme?: 'outline' | 'filled' | 'two-tone' | 'multi-color' // 图标风格：线性、填充、双色、多色
-  size?: number | string // 图标大小
+  /**
+   * @description icon-park 图标
+   */
+  icon: Icon
+  /**
+   * @description 图标风格：线性、填充、双色、多色
+   */
+  theme?: 'outline' | 'filled' | 'two-tone' | 'multi-color'
+  /**
+   * @description 图标大小
+   */
+  size?: number | string
+  /**
+   * @description 是否填充
+   */
   spin?: boolean
-  fill?: string | string[] // 图标填充的颜色
-  strokeLinecap?: 'butt' | 'round' | 'square' // 端点类型
-  strokeLinejoin?: 'miter' | 'round' | 'bevel' // 拐点类型
-  strokeWidth?: number // 线段粗细
+  /**
+   * @description 图标填充的颜色
+   */
+  fill?: string | string[]
+  /**
+   * @description 端点类型
+   */
+  strokeLinecap?: 'butt' | 'round' | 'square'
+  /**
+   * @description 拐点类型
+   */
+  strokeLinejoin?: 'miter' | 'round' | 'bevel'
+  /**
+   * @description 线段粗细
+   */
+  strokeWidth?: number
 }
+
+defineOptions({
+  name: 'WIconPark',
+})
 
 defineProps<IconParkProp>()
 </script>

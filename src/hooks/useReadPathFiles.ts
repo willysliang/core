@@ -2,12 +2,12 @@
  * @ Author: willy
  * @ CreateTime: 2023-11-28 10:23:13
  * @ Modifier: willy
- * @ ModifierTime: 2023-11-28 21:30:44
+ * @ ModifierTime: 2023-12-22 15:04:03
  * @ Description: 读取设定目录的所有文件
  */
 
 import { reactive } from 'vue'
-import { isEnvProd } from '@utils/url'
+import { isEnvProd } from '@/utils/app'
 
 /** 单个文件的类型 */
 interface IFileNode {

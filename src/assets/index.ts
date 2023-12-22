@@ -6,9 +6,4 @@
  * @ Description: 图片的整体引入
  */
 
-import featureWeb from './app/common/feature_web.png'
-import featureUI from './app/common/feature_ui.png'
-import featureOther from './app/common/feature_other.png'
-import logo from './app/common/logo.jpg'
-
-export { featureWeb, featureUI, featureOther, logo }
+export * from './app/index'
