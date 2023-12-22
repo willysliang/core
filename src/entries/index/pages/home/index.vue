@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-02 21:09:14
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 17:20:49
+ * @ ModifierTime: 2023-12-22 18:50:28
  * @ Description: 主页
  -->
 
@@ -91,14 +91,13 @@ const handleToDetail = (cardInfo) => {
   padding: p2r(5) p2r(5);
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
 
   .cards {
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
     flex-shrink: 0;
     width: var(--cards-widht);
+    padding: p2r(5);
   }
 
   .slider {

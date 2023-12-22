@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-21 17:22:44
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 16:33:50
+ * @ ModifierTime: 2023-12-22 18:59:52
  * @ Description: 卡片页
  -->
 
@@ -118,8 +118,9 @@ const handleToDetail = () => {
   background-color: var(--card-bg-color);
   margin: 0 auto var(--card-margin);
   box-sizing: border-box;
-  padding: var(--card-padding);
+  padding: var(--card-padding) var(--card-padding) 0;
   color: var(--card-text-color);
+  overflow: hidden;
 
   &__hot-tag {
     position: absolute;
@@ -174,11 +175,13 @@ const handleToDetail = () => {
     box-sizing: border-box;
     margin-top: p2r(6);
     max-height: var(--card-cover-height);
+    overflow: hidden;
 
     img {
       width: 100%;
-      object-fit: contain;
-      border-radius: 1%;
+      border-radius: var(--card-border-radius);
+      object-fit: scale-down;
+      overflow: hidden;
     }
   }
 
@@ -186,6 +189,7 @@ const handleToDetail = () => {
     margin-top: p2r(6);
     font-style: italic;
     font-size: var(--card-description-text-size);
+    line-height: calc(var(--card-description-text-size) + 0.2rem);
   }
 }
 </style>
