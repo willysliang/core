@@ -20,3 +20,8 @@
     transform: scale(1);
   }
 }
+
+/** 心跳动态 */
+.ani__breath {
+  animation: breath 2s ease-in-out infinite;
+}

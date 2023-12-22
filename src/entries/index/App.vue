@@ -7,21 +7,21 @@
  -->
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { useAppIndexStore } from '@store/app/index'
 import { useReadPathFiles } from '@/hooks/useReadPathFiles'
-import { logo } from '@img/index'
 
 const { fileMap } = useReadPathFiles()
 console.log('fileMap', fileMap, import.meta.env.VITE_APP_ENV)
 
-const { name } = useAppIndexStore()
+const { appName, logoIcon } = storeToRefs(useAppIndexStore())
 </script>
 
 <template>
   <header class="px-header">
-    <a class="logo">
-      <img :src="logo" :alt="name" class="logo-icon" />
-      <span class="project-name">{{ name }}</span>
+    <a class="logo" :title="appName">
+      <img :src="logoIcon" :alt="appName" class="logo__icon" />
+      <span class="logo__name">{{ appName }}</span>
     </a>
   </header>
 
@@ -36,17 +36,25 @@ const { name } = useAppIndexStore()
 @import '@/styles/funs.scss';
 @import '@/styles/animation.scss';
 
+:root {
+  --header-height: 250px;
+  --header-bg-color: var(--blurBg);
+  --header-border-color: var(--borderColor);
+  --logo-text-size: var(--text-size-lg);
+}
+
 header {
-  height: p2r(56);
+  height: var(--header-height);
   width: 100%;
   position: sticky;
   top: 0;
   left: 0;
-  background-color: var(--blurBg);
+  z-index: 2;
+  background-color: var(--header-bg-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: p2r(24);
+  border-bottom: p2r(1) solid var(--header-border-color);
 
   .logo {
     display: flex;
@@ -54,19 +62,22 @@ header {
     height: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    padding: 0 p2r(20);
+    padding: 0 1%;
     will-change: filter;
     transition: filter 300ms;
 
     &:hover {
-      filter: drop-shadow(0 0 2em #646cffaa);
-      // 心跳动态
-      animation: breath 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 2rem #646cffaa);
     }
 
-    img {
+    &__icon {
       max-height: 90%;
-      margin-right: p2r(18);
+      margin-right: 0.5rem;
+    }
+
+    &__name {
+      font-size: var(--logo-text-size);
+      font-style: italic;
     }
   }
 }
