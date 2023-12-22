@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-22 16:03:59
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 17:24:13
+ * @ ModifierTime: 2023-12-22 19:02:47
  * @ Description: slider 模块
  -->
 
@@ -177,8 +177,11 @@ const { userInfo, tags } = storeToRefs(useAppIndexStore())
   }
 
   &__icon {
+    @extend %flex;
     img {
       max-width: 100%;
+      max-height: var(--col-height);
+      object-fit: scale-down;
     }
   }
 }
