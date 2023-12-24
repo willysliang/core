@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-21 17:22:44
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 18:59:52
+ * @ ModifierTime: 2023-12-24 15:02:05
  * @ Description: 卡片页
  -->
 
@@ -118,7 +118,7 @@ const handleToDetail = () => {
   background-color: var(--card-bg-color);
   margin: 0 auto var(--card-margin);
   box-sizing: border-box;
-  padding: var(--card-padding) var(--card-padding) 0;
+  padding: var(--card-padding);
   color: var(--card-text-color);
   overflow: hidden;
 

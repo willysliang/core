@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-22 16:03:59
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 19:02:47
+ * @ ModifierTime: 2023-12-24 15:20:19
  * @ Description: slider 模块
  -->
 
@@ -120,7 +120,7 @@ const { userInfo, tags } = storeToRefs(useAppIndexStore())
   padding: var(--card-padding);
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
 
   &__title {
     width: 100%;
