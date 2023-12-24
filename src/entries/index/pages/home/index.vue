@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-02 21:09:14
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 18:50:28
+ * @ ModifierTime: 2023-12-24 15:01:44
  * @ Description: 主页
  -->
 
@@ -93,8 +93,6 @@ const handleToDetail = (cardInfo) => {
   flex-wrap: wrap;
 
   .cards {
-    display: flex;
-    flex-wrap: wrap;
     flex-shrink: 0;
     width: var(--cards-widht);
     padding: p2r(5);
