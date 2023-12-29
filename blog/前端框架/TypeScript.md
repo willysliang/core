@@ -2949,19 +2949,19 @@ Description: TypeScript
 >
 > ```ts
 > class Animal {
-> 	name: string;
-> 	constructor(name: string){ 
->     this.name = name; 
->   }
-> 	run() {
->     return `${this.name} is running`; 
->   }
+>   name: string;
+>   constructor(name: string){ 
+>        this.name = name; 
+>     }
+>   run() {
+>        return `${this.name} is running`; 
+>     }
 > }
 > 
 > class Dog extends Animal {
-> 	bark() {
->     return `${this.name} is barking`; 
->   }
+>   bark() {
+>        return `${this.name} is barking`; 
+>     }
 > }
 > const xiaohua = new Dog('xiaohua');
 > console.log(xiaohua.run());	//xiaohua is running
@@ -2974,18 +2974,18 @@ Description: TypeScript
 >
 > ```ts
 > class Animal {
->   name: string;
->   constructor(name: string){ this.name = name; }
->   run() { return `${this.name} is running`; }
+>     name: string;
+>     constructor(name: string){ this.name = name; }
+>     run() { return `${this.name} is running`; }
 > }
 > 
 > class Cat extends Animal {
->   gender: string;
->   constructor(name, gender: string){ 
->     super(name);
->     this.gender = gender;
->   }
->   run() { return `Meow, ${this.gender},${super.run()}`; }
+>     gender: string;
+>     constructor(name, gender: string){ 
+>        super(name);
+>        this.gender = gender;
+>     }
+>     run() { return `Meow, ${this.gender},${super.run()}`; }
 > }
 > const maomao = new Cat('maomao','female');
 > console.log(maomao.run());	//Meow,female,maomao is running
@@ -3034,10 +3034,10 @@ Description: TypeScript
 >
 > ```ts
 > class Animal {
->     public name: string;
->     public constructor(public name) {
+>      public name: string;
+>      public constructor(public name) {
 >        this.name = name;
->     }
+>      }
 > }
 > ```
 
@@ -3047,10 +3047,10 @@ Description: TypeScript
 >
 > ```ts
 > class Animal {
->     readonly name;
->     public constructor(name) {
+>      readonly name;
+>      public constructor(name) {
 >        this.name = name;
->     }
+>      }
 > }
 > 
 > let a = new Animal('Jack');
@@ -3064,10 +3064,10 @@ Description: TypeScript
 >
 > ```ts
 > class Animal {
->   // public readonly name;
->   public constructor(public readonly name) {
->     // this.name = name;
->   }
+>     // public readonly name;
+>     public constructor(public readonly name) {
+>        // this.name = name;
+>     }
 > }
 > ```
 
@@ -3197,13 +3197,13 @@ Description: TypeScript
 > /* class Car { switchRadio(){} }
 > class CellPhone { switchRadio(){} } */
 > interface Radio { 
->     switchRadio(trigger: boolean): void 
+>      switchRadio(trigger: boolean): void 
 > }
 > class Car implements Radio { 
->     switchRadio(){} 
+>      switchRadio(){} 
 > }
 > class CellPhone implements Radio { 
->     switchRadio(){} 
+>      switchRadio(){} 
 > }
 > ```
 >
@@ -3211,15 +3211,15 @@ Description: TypeScript
 >
 > ```ts
 > interface Radio { 
->   switchRadio(trigger: boolean): void 
+>     switchRadio(trigger: boolean): void 
 > }
 > interface RadioWithBattery extends Radio { 
->   checkBatteryStatus() 
+>     checkBatteryStatus() 
 > }
 > class Car implements Radio{ switchRadio(){} }
 > class CellPhone implements RadioWithBattery{
-> 	switchRadio(){}
-> 	checkBatteryStatus(){}
+>   switchRadio(){}
+>   checkBatteryStatus(){}
 > }
 > ```
 >
@@ -3230,22 +3230,22 @@ Description: TypeScript
 >
 > ```ts
 > interface Alarm {
->     alert(): void;
+>      alert(): void;
 > }
 > 
 > class Door {
 > }
 > 
 > class SecurityDoor extends Door implements Alarm {
->     alert() {
+>      alert() {
 >        console.log('SecurityDoor alert');
->     }
+>      }
 > }
 > 
 > class Car implements Alarm {
->     alert() {
+>      alert() {
 >        console.log('Car alert');
->     }
+>      }
 > }
 > ```
 >
@@ -3253,24 +3253,24 @@ Description: TypeScript
 >
 > ```ts
 > interface Alarm {
->     alert(): void;
+>      alert(): void;
 > }
 > 
 > interface Light {
->     lightOn(): void;
->     lightOff(): void;
+>      lightOn(): void;
+>      lightOff(): void;
 > }
 > 
 > class Car implements Alarm, Light {
->     alert() {
+>      alert() {
 >        console.log('Car alert');
->     }
->     lightOn() {
+>      }
+>      lightOn() {
 >        console.log('Car light on');
->     }
->     lightOff() {
+>      }
+>      lightOff() {
 >        console.log('Car light off');
->     }
+>      }
 > }
 > ```
 
@@ -3278,12 +3278,12 @@ Description: TypeScript
 
 > ````ts
 > interface Alarm {
->     alert(): void;
+>      alert(): void;
 > }
 > 
 > interface LightableAlarm extends Alarm {
->     lightOn(): void;
->     lightOff(): void;
+>      lightOn(): void;
+>      lightOff(): void;
 > }
 > ````
 
@@ -3291,16 +3291,16 @@ Description: TypeScript
 
 > ```ts
 > class Point {
->     x: number;
->     y: number;
->     constructor(x: number, y: number) {
+>      x: number;
+>      y: number;
+>      constructor(x: number, y: number) {
 >        this.x = x;
 >        this.y = y;
->     }
+>      }
 > }
 > 
 > interface Point3d extends Point {
->     z: number;
+>      z: number;
 > }
 > 
 > let point3d: Point3d = {x: 1, y: 2, z: 3};
@@ -3310,12 +3310,12 @@ Description: TypeScript
 >
 > ```ts
 >class Point {
->  x: number;
-> y: number;
->  constructor(x: number, y: number) {
->      this.x = x;
->         this.y = y;
->     }
+>    x: number;
+>   y: number;
+>    constructor(x: number, y: number) {
+>        this.x = x;
+>        this.y = y;
+>      }
 >    }
 >    
 >    const p = new Point(1, 2);
@@ -3325,10 +3325,10 @@ Description: TypeScript
 > 
 > ```ts
 >class Point {
->   x: number;
->  y: number;
->   constructor(x: number, y: number) {
->     this.x = x;
+>     x: number;
+>    y: number;
+>     constructor(x: number, y: number) {
+>        this.x = x;
 >        this.y = y;
 >      }
 >    }
@@ -3344,17 +3344,17 @@ Description: TypeScript
 > 
 > ```ts
 >class Point {
->   x: number;
->  y: number;
->   constructor(x: number, y: number) {
->     this.x = x;
+>     x: number;
+>    y: number;
+>     constructor(x: number, y: number) {
+>        this.x = x;
 >        this.y = y;
 >      }
 >    }
 >    
 >    interface PointInstanceType {
 >      x: number;
->   y: number;
+>     y: number;
 > }
 > 
 >    function printPoint(p: PointInstanceType) {
@@ -3370,22 +3370,22 @@ Description: TypeScript
 >
 > ```ts
 >class Point {
->   x: number;
->  y: number;
->   constructor(x: number, y: number) {
->     this.x = x;
+>     x: number;
+>    y: number;
+>     constructor(x: number, y: number) {
+>        this.x = x;
 >        this.y = y;
 >      }
 >    }
 >    
 >    interface PointInstanceType {
 >      x: number;
->   y: number;
+>     y: number;
 > }
 > 
 >    // 等价于 interface Point3d extends PointInstanceType
 >    interface Point3d extends Point {
->   z: number;
+>     z: number;
 > }
 > 
 > let point3d: Point3d = {x: 1, y: 2, z: 3};
@@ -3403,10 +3403,10 @@ Description: TypeScript
 >
 > ```ts
 >class Point {
->   /** 静态属性，坐标系原点 */
->  static origin = new Point(0, 0);
->   /** 静态方法，计算与原点距离 */
->   static distanceToOrigin(p: Point) {
+>     /** 静态属性，坐标系原点 */
+>    static origin = new Point(0, 0);
+>     /** 静态方法，计算与原点距离 */
+>     static distanceToOrigin(p: Point) {
 >        return Math.sqrt(p.x * p.x + p.y * p.y);
 >      }
 >      /** 实例属性，x 轴的值 */
@@ -3426,8 +3426,8 @@ Description: TypeScript
 >    
 >    interface PointInstanceType {
 >      x: number;
->   y: number;
->   printPoint(): void;
+>     y: number;
+>     printPoint(): void;
 > }
 >    
 >    let p1: Point;
@@ -3598,8 +3598,8 @@ Description: TypeScript
 >    function copyFields<T extends U, U>(target: T, source: U): T {
 >      for (let id in source) {
 >        target[id] = (<T>source)[id];
->    }
->   return target;
+>      }
+>     return target;
 > }
 >
 > let x = { a: 1, b: 2, c: 3, d: 4 };
@@ -3614,7 +3614,7 @@ Description: TypeScript
 >
 > ```ts
 > interface SearchFunc {
->     (source: string, subString: string): boolean;
+>      (source: string, subString: string): boolean;
 > }
 > 
 > let mySearch: SearchFunc;
@@ -3630,10 +3630,10 @@ Description: TypeScript
 > ```ts
 > function createArray<T>(length: number, value: T): Array<T> {
 >      let result: T[] = [];
->    for (let i = 0; i < length; i++) {
+>      for (let i = 0; i < length; i++) {
 >        result[i] = value;
->    }
->    return result;
+>      }
+>      return result;
 >    }
 > 
 > createArray(3, 'x'); // ['x', 'x', 'x']
@@ -3646,21 +3646,21 @@ Description: TypeScript
 >
 > ```ts
 > class NamedValue<T> {
->     private _value: T | undefined
+>      private _value: T | undefined
 > 
->     constructor(private name: string) {}
+>      constructor(private name: string) {}
 > 
->     public setValue(value: T) {
+>      public setValue(value: T) {
 >        this._value = value
->     }
+>      }
 > 
->     public getValue(): T | undefined {
+>      public getValue(): T | undefined {
 >        return this._value
->     }
+>      }
 > 
->     public toString(): string {
+>      public toString(): string {
 >        return `${this.name}: ${this._value}`
->     }
+>      }
 > }
 > 
 > let value = new NamedValue<number>('myNumber')
@@ -3706,11 +3706,11 @@ Description: TypeScript
 > function reverse(x: number): number;
 > function reverse(x: string): string;
 > function reverse(x: number | string): number | string {
->     if (typeof x === 'number') {
->         return Number(x.toString().split('').reverse().join(''));
->     } else if (typeof x === 'string') {
->         return x.split('').reverse().join('');
->     }
+>      if (typeof x === 'number') {
+>        return Number(x.toString().split('').reverse().join(''));
+>      } else if (typeof x === 'string') {
+>        return x.split('').reverse().join('');
+>      }
 > }
 > ```
 
@@ -3720,10 +3720,10 @@ Description: TypeScript
 >
 > ```ts
 > interface Alarm {
->     price: number;
+>      price: number;
 > }
 > interface Alarm {
->     weight: number;
+>      weight: number;
 > }
 > ```
 >
@@ -3731,8 +3731,8 @@ Description: TypeScript
 >
 > ```ts
 > interface Alarm {
->     price: number;
->     weight: number;
+>      price: number;
+>      weight: number;
 > }
 > ```
 >
@@ -3740,18 +3740,18 @@ Description: TypeScript
 >
 > ```ts
 > interface Alarm {
->     price: number;
+>      price: number;
 > }
 > interface Alarm {
->     price: number;  // 虽然重复了，但是类型都是 `number`，所以不会报错
->     weight: number;
+>      price: number;  // 虽然重复了，但是类型都是 `number`，所以不会报错
+>      weight: number;
 > }
 > interface Alarm {
->     price: number;
+>      price: number;
 > }
 > interface Alarm {
->     price: string;  // 类型不一致，会报错
->     weight: number;
+>      price: string;  // 类型不一致，会报错
+>      weight: number;
 > }
 > 
 > // index.ts(5,3): error TS2403: Subsequent variable declarations must have the same type.  Variable 'price' must be of type 'number', but here has type 'string'.
@@ -3761,12 +3761,12 @@ Description: TypeScript
 >
 > ```ts
 > interface Alarm {
->     price: number;
->     alert(s: string): string;
+>      price: number;
+>      alert(s: string): string;
 > }
 > interface Alarm {
->     weight: number;
->     alert(s: string, n: number): string;
+>      weight: number;
+>      alert(s: string, n: number): string;
 > }
 > ```
 >
@@ -3774,10 +3774,10 @@ Description: TypeScript
 >
 > ```ts
 > interface Alarm {
->     price: number;
->     weight: number;
->     alert(s: string): string;
->     alert(s: string, n: number): string;
+>      price: number;
+>      weight: number;
+>      alert(s: string): string;
+>      alert(s: string, n: number): string;
 > }
 > ```
 
@@ -3797,15 +3797,15 @@ Description: TypeScript
 >
 > ```ts
 > const reqTranlate = { 
->   url: 'https://example.com', 
->   method: 'GET',
+>     url: 'https://example.com', 
+>     method: 'GET',
 > } as const
 > 
 > 
 > // 相当于把这个对象转换为 
 > type reqTranlate = { 
->   url: 'https://example.com',
->   method: 'GET', 
+>     url: 'https://example.com',
+>     method: 'GET', 
 > }
 > 
 > reqTranlate.name = willy // TypeError 对象限制只读，无法进行修改
@@ -3863,11 +3863,11 @@ Description: TypeScript
 >
 > ```ts
 >function switchValue (input: boolean) {
-> // let onSwitch = (input ? 'on' : 'off') as const // 错误写法
-> let onSwitch = input ? ('on' as const) : ('off' as const) // 正确写法
+>   // let onSwitch = (input ? 'on' : 'off') as const // 错误写法
+>   let onSwitch = input ? ('on' as const) : ('off' as const) // 正确写法
 >   
->   // onSwitch 变量类型将被推断为一个文本联合类型 on | off
->   return onSwitch
+>     // onSwitch 变量类型将被推断为一个文本联合类型 on | off
+>     return onSwitch
 >   }
 >   ```
 > 
@@ -3885,9 +3885,9 @@ Description: TypeScript
 >
 > ```ts
 > type Person = {
->     age: number
->     name: string
->     alive: boolean
+>   age: number
+>   name: string
+>   alive: boolean
 > }
 > 
 > // Age 的类型是 number
@@ -3900,7 +3900,7 @@ Description: TypeScript
 > type A = Person[keyof Person]
 > 
 > type Obj = {
->     [key: string]: number
+>   [key: string]: number
 > }
 > 
 > // number
@@ -3926,7 +3926,7 @@ Description: TypeScript
 >
 > ```ts
 >function prop<T extends object, K extends keyof T>(obj: T, key: K): string {
-> 	return obj[key]
+>   return obj[key]
 > }
 > const getKey = prop({name: 'willy'}, 'name') // willy
 > ```
@@ -3939,19 +3939,19 @@ Description: TypeScript
 >
 > ```ts
 >enum Currency {
-> 	CNY = 1,
-> 	EUR = 2,
-> 	USD = 3,
+>   CNY = 1,
+>   EUR = 2,
+>   USD = 3,
 > }
 > 
 > const CurrencyName = {
-> 	[Currency.CNY]: "人民币",
-> 	[Currency.EUR]: "欧元",
-> 	[Currency.USD]: "美元"
+>   [Currency.CNY]: "人民币",
+>   [Currency.EUR]: "欧元",
+>   [Currency.USD]: "美元"
 > };
 > 
 > function getCurrencyName<T, K extends keyof T>(key: K, map: T): T[K] {
-> 	return map[key];
+>   return map[key];
 > }
 > 
 > console.log(`name = ${getCurrencyName(Currency.CNY, CurrencyName)}`);
@@ -3965,11 +3965,11 @@ Description: TypeScript
 >
 > ```ts
 >interface StringIndexArray {
-> [index: string]: string;
+>   [index: string]: string;
 > }
 > 
 > interface NumberIndexArray {
-> [index: number]: string;
+>   [index: number]: string;
 > }
 > 
 > type K1 = keyof StringIndexArray // type K1 = string | number
@@ -3984,20 +3984,20 @@ Description: TypeScript
 >
 > ```ts
 > type Biology = {
-> 	name: string
+>   name: string
 > }
 > const biology: Biology = {
-> 	name: '生物',
+>   name: '生物',
 > }
 > 
 > type animal = {
-> 	name: string
-> 	age: number
+>   name: string
+>   age: number
 > }
 > type Person =  animal & typeof biology
 > const person: Person = {
-> 	name: '人',
-> 	age: 1,
+>   name: '人',
+>   age: 1,
 > }
 > ```
 
@@ -4007,9 +4007,9 @@ Description: TypeScript
 >
 > ```ts
 > const Color = {
-> 	red: 'red',
-> 	blue: 'blue',
-> 	green: 'green',
+>   red: 'red',
+>   blue: 'blue',
+>   green: 'green',
 > } as const 
 > 
 > // type Colors = "red" | "blue" | "green"
@@ -4047,36 +4047,36 @@ Description: TypeScript
 >
 > ```ts
 > type A = {
->     readonly foo: number
->     bar: string
+>   readonly foo: number
+>   bar: string
 > }
 > 
 > /** 循环取出属性名：获取属性值 */
 > type A1 = {
->     [prop in keyof A]: A[prop]
+>   [prop in keyof A]: A[prop]
 > }
 > 
 > /** 将所有属性变为可选 */
 > type A2 = {
->     [prop in keyof A]?: A[prop]
+>   [prop in keyof A]?: A[prop]
 > }
 > 
 > /** 添加可选属性 */
 > type Optional<Type> = {
->     [Prop in keyof Type]+?: Type[Prop]
+>   [Prop in keyof Type]+?: Type[Prop]
 > }
 > /** 移除可选属性 */
 > type Concrete<Type> = {
->     [Prop in keyof Type]-?: Type[Prop]
+>   [Prop in keyof Type]-?: Type[Prop]
 > }
 > 
 > /** 添加readonly */
 > type CreateImmutable<Type> = {
->     +readonly [Prop in keyof Type]: Type[Prop]
+>   +readonly [Prop in keyof Type]: Type[Prop]
 > }
 > /** 移除readonly */
 > type CreateMutable<Type> = {
->     -readonly [Prop in keyof Type]: Type[Prop]
+>   -readonly [Prop in keyof Type]: Type[Prop]
 > }
 > ```
 
@@ -4135,24 +4135,24 @@ Description: TypeScript
 >
 > ```ts
 > type S = {
->     kind: "square"
->     x: number
->     y: number
+>      kind: "square"
+>      x: number
+>      y: number
 > }
 > type C = {
->     kind: "circle"
->     raduis: number
+>      kind: "circle"
+>      raduis: number
 > }
 > 
 > type MyEvents<Events extends { kind: string }> = {
->     [E in Events as E["kind"]]: (event: E) => void
+>      [E in Events as E["kind"]]: (event: E) => void
 > }
 > type Config = MyEvents<S | C>
 > 
 > // 等同于
 > type Configs = {
->     square: (event: S) => void
->     circle: (event: C) => void
+>      square: (event: S) => void
+>      circle: (event: C) => void
 > }
 > 
 > ```
@@ -4204,21 +4204,21 @@ Description: TypeScript
 > type A = { a: string }
 > type B = { b: string }
 > function isTypeA(x: A | B): x is A {
->     if ("a" in x) return true
->     return false
+>   if ("a" in x) return true
+>   return false
 > }
 > 
 > 
 > /** 在类的内部，描述类的方法的返回值 */
 > class Teacher {
->     isStudent(): this is Student {
->         return false
->     }
+>   isStudent(): this is Student {
+>     return false
+>   }
 > }
 > class Student {
->     isStudent(): this is Student {
->         return true
->     }
+>   isStudent(): this is Student {
+>     return true
+>   }
 > }
 > ```
 
@@ -4392,8 +4392,8 @@ Description: TypeScript
 >
 > ```ts
 > interface User {
->   name?: string
->   age?: number
+>     name?: string
+>     age?: number
 > }
 > 
 > const user: User = { name: 'O.O' }
@@ -4409,8 +4409,8 @@ Description: TypeScript
 >
 > ```ts
 > const nameAgeMap: Record<string, number> = {
->   KAI: 27,
->   LAY: 30
+>     KAI: 27,
+>     LAY: 30
 > }
 > ```
 >
@@ -4543,13 +4543,13 @@ Description: TypeScript
 >
 > ```ts
 > type foo = () => {
->     x: number
->     y: number
+>      x: number
+>      y: number
 > }
 > 
 > const point: ReturnType<foo> = {
->     x: 10,
->     y: 20
+>      x: 10,
+>      y: 20
 > }
 > ```
 
@@ -4560,8 +4560,8 @@ Description: TypeScript
 > ```ts
 > type PointPrinter = (p: { x: number; y: number }) => void
 > const point: Parameters<PointPrinter>[0] = {
->     x: 10,
->     y: 20,
+>      x: 10,
+>      y: 20,
 > }
 > ```
 
