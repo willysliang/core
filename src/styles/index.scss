@@ -3,6 +3,7 @@
 
 body {
   font-size: 62.5%; /*px换算成rem*/
+  font-family: "'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif";
 }
 
 @media (min-width: 1440px) {
@@ -74,6 +75,16 @@ body {
   font-size: p2r(12);
 }
 
-.cursor {
-  cursor: pointer;
-}
+/** 设置 var 变量 */
+@include set-map-css-var($map: $colors, $name: 'color');
+@include set-map-css-var($map: $text-color, $name: 'text-color');
+@include set-map-css-var($map: $fill-color, $name: 'fill-color');
+@include set-map-css-var($map: $bg-color, $name: 'bg-color');
+@include set-map-css-var($map: $border-color, $name: 'border-color');
+@include set-map-css-var($map: $border-radius, $name: 'border-radius');
+@include set-map-css-var($map: $box-shadow, $name: 'box-shadow');
+@include set-map-css-var($map: $font-size, $name: 'font-size');
+@include set-map-css-var($map: $z-index, $name: 'z-index');
+@include set-map-css-var($map: $disabled, $name: 'disabled');
+@include set-map-css-var($map: $overlay-color, $name: 'overlay-color');
+@include set-map-css-var($map: $mask-color, $name: 'mask-color');
