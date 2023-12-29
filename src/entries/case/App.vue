@@ -1,18 +1,5 @@
 <script setup lang="ts">
 //
-import { getAllUtils } from '@utils/index'
-// const format = all.format as any
-getAllUtils()
-  .then((all) => {
-    console.log(
-      'sdhjskdhks',
-      all,
-      all.format_cutCNLetter('aaaaaaaaaaaaaaaaaaa'),
-    )
-  })
-  .catch((err) => {
-    throw new Error(err)
-  })
 </script>
 
 <template>
@@ -24,7 +11,6 @@ getAllUtils()
       <img src="@/assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped lang="scss">

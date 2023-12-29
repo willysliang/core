@@ -11,10 +11,23 @@ import { storeToRefs } from 'pinia'
 import { useAppIndexStore } from '@store/app/index'
 import { useReadPathFiles } from '@/hooks/useReadPathFiles'
 
+import { useRouter } from 'vue-router'
+import { indexPagesMap } from './routes'
+import { catchFunc } from '@utils/index'
+
 const { fileMap } = useReadPathFiles()
 console.log('fileMap', fileMap, import.meta.env.VITE_APP_ENV)
 
 const { appName, logoIcon } = storeToRefs(useAppIndexStore())
+
+const router = useRouter()
+const handleToCase = () => {
+  router
+    .push({
+      path: indexPagesMap.CASE.path,
+    })
+    .catch(catchFunc)
+}
 </script>
 
 <template>
@@ -23,6 +36,10 @@ const { appName, logoIcon } = storeToRefs(useAppIndexStore())
       <img :src="logoIcon" :alt="appName" class="logo__icon" />
       <span class="logo__name">{{ appName }}</span>
     </a>
+
+    <div class="header__actions">
+      <span @click="handleToCase">CASE</span>
+    </div>
   </header>
 
   <div class="container">
@@ -36,14 +53,12 @@ const { appName, logoIcon } = storeToRefs(useAppIndexStore())
 @import '@/styles/funs.scss';
 @import '@/styles/animation.scss';
 
-:root {
+header {
   --header-height: 250px;
   --header-bg-color: var(--blurBg);
   --header-border-color: var(--borderColor);
   --logo-text-size: var(--text-size-lg);
-}
 
-header {
   height: var(--header-height);
   width: 100%;
   position: sticky;
@@ -55,14 +70,14 @@ header {
   align-items: center;
   justify-content: space-between;
   border-bottom: p2r(1) solid var(--header-border-color);
+  box-sizing: border-box;
+  padding: 0 1%;
 
   .logo {
     display: flex;
     align-items: center;
     height: 100%;
     overflow: hidden;
-    box-sizing: border-box;
-    padding: 0 1%;
     will-change: filter;
     transition: filter 300ms;
 

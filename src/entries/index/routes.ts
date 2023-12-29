@@ -6,11 +6,11 @@
  * @ Description: 路由索引表
  */
 
-import { type IPagesMap } from '#/routes'
-import { Home, Bookshelf } from '@icon-park/vue-next'
+// import { type IPagesMap } from '#/routes'
+import { Home, Bookshelf, DocumentFolder } from '@icon-park/vue-next'
 
 /** index.html 的路由表 */
-export const indexPagesMap: IPagesMap = {
+export const indexPagesMap = {
   /** 首页 */
   HOME: {
     path: '/home',
@@ -26,4 +26,12 @@ export const indexPagesMap: IPagesMap = {
     icon: Bookshelf,
     title: 'MD',
   },
-}
+
+  CASE: {
+    path: '/case',
+    name: 'case',
+    component: async () => await import('./pages/case/case.vue'),
+    icon: DocumentFolder,
+    title: 'CASE',
+  },
+} as const
