@@ -6,6 +6,116 @@
  * @ Description: 通用样式
  */
 
+$namespace: 'w' !default;
+$common-separator: '-' !default;
+$element-separator: '__' !default;
+$modifier-separator: '--' !default;
+$state-prefix: 'is-' !default;
+
+/**
+ * @description BEM 架构
+ * @example bem('block', 'element', 'modifier') => 'w-block__element--modifier'
+ */
+@function bem($block, $element: '', $modifier: '') {
+  $name: $namespace + $common-separator + $block;
+
+  @if $element != '' {
+    $name: $name + $element-separator + $element;
+  }
+
+  @if $modifier != '' {
+    $name: $name + $modifier-separator + $modifier;
+  }
+
+  @return $name;
+}
+
+/**
+ * @description 获取拼接后的 CSS 变量名
+ * @example getCssVarName('button', 'text-color') => '--w-button-text-color'
+ */
+@function getCssVarName($args...) {
+  $name: '--' + $namespace;
+  @each $item in $args {
+    @if $item != '' {
+      $name: $name + '-' + $item;
+    }
+  }
+  @return $name;
+}
+
+/**
+ * @description 获取拼接后的 CSS 变量的值
+ * @example getCssVar('button', 'text-color') => var(--w-button-text-color)
+ */
+@function getCssVar($args...) {
+  @return var(#{getCssVarName($args)});
+}
+
+/**
+ * @description 获取拼接后的 CSS 变量的值，并在找不到值时赋默认值
+ * @example getCssVarWithDefault(('button', 'text-color'), red) => var(--w-button-text-color, red)
+ */
+@function getCssVarWithDefault($args, $default) {
+  @return var(#{getCssVarName($args)}, #{$default});
+}
+
+/**
+ * @description 用白色或黑色来调配颜色，以生成浅色或深色的色阶
+ * @see https://sass-lang.com/documentation/values/maps#immutability
+ * @example 
+      --w-color-primary-light-i
+      10% 53a8ff
+      20% 66b1ff
+      30% 79bbff
+      40% 8cc5ff
+      50% a0cfff
+      60% b3d8ff
+      70% c6e2ff
+      80% d9ecff
+      90% ecf5ff
+ */
+@mixin set-color-mix-level($type, $number, $mode: 'light', $mix-color: #fff) {
+  $colors: map.deep-merge(
+    (
+      $type: (
+        '#{$mode}-#{$number}':
+          mix(
+            $mix-color,
+            map.get($colors, $type, 'base'),
+            math.percentage(math.div($number, 10))
+          ),
+      ),
+    ),
+    $colors
+  ) !global;
+}
+
+/** 根据列表 map 来设置变量及相应值 */
+@mixin set-map-css-var($map, $name: 'color') {
+  :root {
+    @each $key, $value in $map {
+      // 检查是否还是 map
+      @if type-of($value) == map {
+        @each $subKey, $subValue in $value {
+          // 如果属性名为 base，则直接取 key 作为变量名
+          @if $subKey == 'base' {
+            #{ getCssVarName($name, $key) }: $subValue;
+          }
+          #{ getCssVarName($name, $key, $subKey) }: $subValue;
+        }
+      } @else {
+        // 非 map 的直接输出
+        #{ getCssVarName($name, $key) }: $value;
+
+        @if $key == 'base' {
+          #{ getCssVarName($name) }: $value;
+        }
+      }
+    }
+  }
+}
+
 /** px 转换 rem */
 @function p2r($item) {
   @return calc($item / 75) * 5 * 1rem;

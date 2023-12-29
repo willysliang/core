@@ -151,6 +151,7 @@ export default defineConfig(({ mode }) => {
         '@api': path.resolve(__dirname, 'src/api/module'),
         '@utils': path.resolve(__dirname, 'src/utils'),
         '@img': path.resolve(__dirname, 'src/assets'),
+        '@styles': path.resolve(__dirname, 'src/styles'),
       },
       //  导入时想要忽略的扩展名列表 导入时想要省略的扩展名列表。不建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响 IDE 和类型支持
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
@@ -178,7 +179,9 @@ export default defineConfig(({ mode }) => {
       },
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "src/styles/var.scss";',
+          additionalData: `
+            @use "src/styles/var.scss" as *;
+          `,
         },
       },
     },
