@@ -41,6 +41,7 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 
 ## 2023年12月29日20点11分
   - docs(前端基础): [Git仓库管理] Git 迁移项目到新仓库，并保留历史记录
+  - docs(前端算法): [数据结构] 复杂链表的复制
 
 ## 2023年11月29日10点25分
   - docs: 更改图片命名
