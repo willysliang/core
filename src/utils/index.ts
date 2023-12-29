@@ -14,10 +14,10 @@ export * from './random'
 
 export const modules = import.meta.glob('./*.ts')
 
-/** 
+/**
  * @description 获取所有模块
  * @returns {Promise<{string, any}>} 返回一个对象，key是函数名，value是函数体拿来执行
- * 
+ *
  * @test
  *  getAllUtils().then((all) => {
       console.log(all.format_cutCNLetter('aaa'))
