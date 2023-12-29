@@ -273,32 +273,61 @@ Description: Git 仓库管理
 
 #### 从一个git仓库拷贝到另一个git仓库
 
-> ```bash
-> ## 从一个git仓库拷贝到另一个git仓库
-> 1、从原地址克隆一份裸版本库
-> $ git clone --bare http:  //....(原始仓库地址)
-> 
-> 
-> 2、以镜像推送的方式上传代码到新的仓库地址
-> （目标仓库可以自己新建一个，如果用自己曾经用过的仓库里面的文件会被覆盖）
-> $ git push --mirror http：//...(目标仓库地址)
-> ```
+```bash
+## 从一个git仓库拷贝到另一个git仓库
+1、从原地址克隆一份裸版本库
+$ git clone --bare http:  //....(原始仓库地址)
+
+
+2、以镜像推送的方式上传代码到新的仓库地址
+（目标仓库可以自己新建一个，如果用自己曾经用过的仓库里面的文件会被覆盖）
+$ git push --mirror http：//...(目标仓库地址)
+
+```
+
+
 
 #### 将本地代码提交远程仓库时新建一个分支
 
-> ```bash
-> ## 将本地代码提交远程仓库时新建一个分支
->   1. 设置本地文件夹为一个Git仓库：`$ git init`
->   2. 建立远程连接: `$ git remote add origin 远程仓库地址`
->   3. 可能还需要这一步：`$ git pull --rebase origin master`
->   4. 创建本地新分支：`$ git branch 新建的分支名称`
->   5. 查看分支：`$ git branch -a`
->   6. 切换到本地新分支：`$ git checkout 所要切换的分支名称`
->   7. 此时修改了本地代码
->   8. 提交本地代码至暂缓区、历史提交区：`$ git add . && git commit -m "new branch first commit"`
->   9. 提交到远程新分支：`git push origin 所推送到远程仓库的分支名`
->   10. 去Gitlab查看，已经创建了一个新的分支并且代码正确提交。
-> ```
+```bash
+## 将本地代码提交远程仓库时新建一个分支
+  1. 设置本地文件夹为一个Git仓库：`$ git init`
+  2. 建立远程连接: `$ git remote add origin 远程仓库地址`
+  3. 可能还需要这一步：`$ git pull --rebase origin master`
+  4. 创建本地新分支：`$ git branch 新建的分支名称`
+  5. 查看分支：`$ git branch -a`
+  6. 切换到本地新分支：`$ git checkout 所要切换的分支名称`
+  7. 此时修改了本地代码
+  8. 提交本地代码至暂缓区、历史提交区：`$ git add . && git commit -m "new branch first commit"`
+  9. 提交到远程新分支：`git push origin 所推送到远程仓库的分支名`
+  10. 去Gitlab查看，已经创建了一个新的分支并且代码正确提交。
+  
+```
+
+
+
+#### Git 迁移项目到新仓库，并保留历史记录
+
+```bash
+## Git 迁移项目到新仓库，并保留历史记录
+1. 新建文件夹，将项目从旧远程仓库地址克隆到本地
+git clone git@github.com:willysliang/blog.git
+
+2. 删除需求迁移的本地项目所管理的远程仓库地址
+git remote remove origin
+
+3. 将该项目关联新仓库的地址
+git remote add origin git@github.com:willysliang/core.git
+
+4. 将项目推送到新的远程仓库
+git push -u origin master
+
+5. 进到旧项目的 .git 目录，再执行 git push --mirror
+git push --mirror git@github.com:willysliang/core.git
+
+```
+
+
 
 #### 多人协作
 
