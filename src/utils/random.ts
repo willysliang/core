@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-22 16:41:29
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 16:57:26
+ * @ ModifierTime: 2023-12-25 10:06:52
  * @ Description: 随机类
  */
 
@@ -28,5 +28,7 @@ export const randomColor = (type: 'rgb' | 'hex' | 'hsl' = 'rgb'): string => {
         `${100 * Math.random()}%`,
         `${100 * Math.random()}%`,
       ].toString()})`
+    default:
+      return '#000'
   }
 }

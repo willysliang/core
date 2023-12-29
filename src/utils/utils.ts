@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-22 14:49:27
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-22 15:34:50
+ * @ ModifierTime: 2023-12-27 17:34:46
  * @ Description: 工具类
  */
 
@@ -70,3 +70,11 @@ export const copyText = (text: string | number) => {
     logger.error('复制失败~')
   })
 }
+
+/**
+ * @description 获取数据类型
+ * @param {any} value 需获取数据类型的值
+ * @returns {IType} 返回的数据类型
+ */
+export const getValueType = (value: any): string =>
+  Object.prototype.toString.call(value).slice(8, -1)

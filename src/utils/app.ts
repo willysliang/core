@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-11-28 20:52:16
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-21 20:40:55
+ * @ ModifierTime: 2023-12-24 16:59:04
  * @ Description: URL 相关
  */
 
@@ -15,3 +15,8 @@ export const isEnvDev = import.meta.env.VITE_APP_ENV === 'development'
  * @description 当前环境是否为正式环境
  */
 export const isEnvProd = import.meta.env.VITE_APP_ENV === 'production'
+
+/**
+ * @description 当前容器是否为移动端
+ */
+export const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent)
