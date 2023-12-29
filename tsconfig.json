@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "outDir": "core",
+    "rootDir": ".",
+
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
@@ -47,6 +50,7 @@
       "@api/*": ["src/api/module/*"],
       "@utils/*": ["src/utils/*"],
       "@img/*": ["src/assets/*"],
+      "@styles/*": ["src/styles/*"],
     },
   },
   "types": ["vite/client", "**/*.d.ts"],

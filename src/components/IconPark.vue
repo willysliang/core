@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { type Icon } from '@icon-park/vue-next/lib/runtime'
 
-export interface IconParkProp {
+export interface WIconParkProps {
   /**
    * @description icon-park 图标
    */
@@ -48,7 +48,7 @@ defineOptions({
   name: 'WIconPark',
 })
 
-defineProps<IconParkProp>()
+defineProps<WIconParkProps>()
 </script>
 
 <template>

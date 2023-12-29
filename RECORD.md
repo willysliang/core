@@ -28,6 +28,8 @@ Description: 日志记录
 ## 2023年12月29日19点30分
   - style: 规范化样式、样式变量化
   - feat(utils): 添加工具类
+  - feat(comp): 添加组件入口
+  - wip(comp): ['WSelect'] 选择器定义类型
 
 ## 2023年12月22日17点25分
   - feat: 首页样式实现
