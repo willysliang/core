@@ -12,6 +12,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import createVuePlugin from '@vitejs/plugin-vue'
 import { ViteEjsPlugin } from 'vite-plugin-ejs'
+import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
 
 /**
  * vite 构建优化
@@ -190,6 +191,7 @@ export default defineConfig(({ mode }) => {
        * vue 解析核心
        */
       vuePlugin,
+      vueJsxPlugin({}),
       markdownTemplatePlugin(),
       markdown(),
       ViteEjsPlugin({

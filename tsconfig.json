@@ -35,7 +35,11 @@
     "sourceMap": true,
     "importHelpers": true,
     "declaration": true, // 在编译时自动生成单独的类型声明文件
+
+    /** tsx */
     "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
 
     /* 别名地址 */
     "baseUrl": ".",

@@ -23,6 +23,7 @@
     "@icon-park/vue-next": "^1.4.2",
     "@kangc/v-md-editor": "^2.3.17",
     "@rollup/pluginutils": "^5.0.5",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
     "amfe-flexible": "^2.2.1",
     "autoprefixer": "^10.4.16",
     "clipboard": "^2.0.11",
