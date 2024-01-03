@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-11-01 15:10:14
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-29 19:09:07
+ * @ ModifierTime: 2024-01-03 19:46:06
  * @ Description: 类型样式
  */
 
@@ -158,8 +158,9 @@ $overlay-color: map.merge(
 $mask-color: () !default;
 $mask-color: map.merge(
   (
-    '': rgba(255, 255, 255, 0.9),
+    '': rgba(255, 255, 255, 0.65),
     'extra-light': rgba(255, 255, 255, 0.3),
+    'transparent': rgba(255, 255, 255, 0),
   ),
   $mask-color
 );
@@ -171,9 +172,9 @@ $mask-color: map.merge(
 $border-radius: () !default;
 $border-radius: map.merge(
   (
-    'base': 4px,
-    'small': 2px,
-    'round': 20px,
+    'base': 0.2rem,
+    'small': 0.1rem,
+    'round': 1rem,
     'circle': 100%,
   ),
   $border-radius
@@ -218,6 +219,13 @@ $font-size: map.merge(
     'base': 14px,
     'small': 13px,
     'extra-small': 12px,
+
+    'xl': 4rem,
+    'lg': 2rem,
+    'md': 1.5rem,
+    '': 1rem,
+    'sm': 0.8rem,
+    'xs': 0.4rem,
   ),
   $font-size
 );
@@ -230,8 +238,10 @@ $z-index: () !default;
 $z-index: map.merge(
   (
     'normal': 1,
-    'top': 1000,
-    'popper': 2000,
+    'mask': 98,
+    'popup': 99,
+    'top': 999,
+    'popper': 1000,
   ),
   $z-index
 );

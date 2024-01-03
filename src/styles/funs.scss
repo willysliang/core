@@ -32,9 +32,9 @@ $state-prefix: 'is-' !default;
 
 /**
  * @description 获取拼接后的 CSS 变量名
- * @example getCssVarName('button', 'text-color') => '--w-button-text-color'
+ * @example getVarName('button', 'text-color') => '--w-button-text-color'
  */
-@function getCssVarName($args...) {
+@function getVarName($args...) {
   $name: '--' + $namespace;
   @each $item in $args {
     @if $item != '' {
@@ -49,7 +49,7 @@ $state-prefix: 'is-' !default;
  * @example getCssVar('button', 'text-color') => var(--w-button-text-color)
  */
 @function getCssVar($args...) {
-  @return var(#{getCssVarName($args)});
+  @return var(#{getVarName($args)});
 }
 
 /**
@@ -57,7 +57,7 @@ $state-prefix: 'is-' !default;
  * @example getCssVarWithDefault(('button', 'text-color'), red) => var(--w-button-text-color, red)
  */
 @function getCssVarWithDefault($args, $default) {
-  @return var(#{getCssVarName($args)}, #{$default});
+  @return var(#{getVarName($args)}, #{$default});
 }
 
 /**
@@ -100,16 +100,16 @@ $state-prefix: 'is-' !default;
         @each $subKey, $subValue in $value {
           // 如果属性名为 base，则直接取 key 作为变量名
           @if $subKey == 'base' {
-            #{ getCssVarName($name, $key) }: $subValue;
+            #{ getVarName($name, $key) }: $subValue;
           }
-          #{ getCssVarName($name, $key, $subKey) }: $subValue;
+          #{ getVarName($name, $key, $subKey) }: $subValue;
         }
       } @else {
         // 非 map 的直接输出
-        #{ getCssVarName($name, $key) }: $value;
+        #{ getVarName($name, $key) }: $value;
 
         @if $key == 'base' {
-          #{ getCssVarName($name) }: $value;
+          #{ getVarName($name) }: $value;
         }
       }
     }
@@ -160,7 +160,8 @@ $state-prefix: 'is-' !default;
   top: 0px;
   right: 0px;
   bottom: 0px;
-  z-index: 9999;
+  z-index: 1;
+  // z-index: var(#{getVarName('z-index', 'popup')});
 }
 
 /* 溢出省略号 @param {Number} 行数 */
