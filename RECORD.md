@@ -27,6 +27,9 @@ Description: 日志记录
 
 ## 2024年1月3日21点10分
   - chore(vite): 支持 tsx 语法
+  - feat(utils): ['createBEM'、'Type'] 添加新工具类
+  - style(var): 修改公共变量
+  - feat(comp): ['WPopover'、'WSelect'] 弹出层、选择器
 
 ## 2023年12月29日19点30分
   - style: 规范化样式、样式变量化

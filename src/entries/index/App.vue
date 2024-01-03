@@ -80,6 +80,7 @@ header {
     overflow: hidden;
     will-change: filter;
     transition: filter 300ms;
+    flex-shrink: 0;
 
     &:hover {
       filter: drop-shadow(0 0 2rem #646cffaa);
@@ -88,11 +89,15 @@ header {
     &__icon {
       max-height: 90%;
       margin-right: 0.5rem;
+      flex-shrink: 0;
     }
 
     &__name {
       font-size: var(--logo-text-size);
       font-style: italic;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      padding-right: p2r(10);
     }
   }
 }
