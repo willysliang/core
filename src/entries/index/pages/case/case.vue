@@ -2,22 +2,24 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-24 16:31:31
  * @ Modifier: willy
- * @ ModifierTime: 2023-12-27 17:39:56
+ * @ ModifierTime: 2024-01-03 21:22:07
  * @ Description: case 组件案例
  -->
 
 <script setup lang="ts">
 import WTooltip from '@comp/tooltip/tooltip.vue'
-import WSelect from '@comp/select/select.vue'
+import WSelect, { ISelectProps } from '@comp/Select/Select.vue'
+import Popover from '@comp/Popover/Popover.vue'
 
 import { ref } from 'vue'
 
-const test = ref<any>({
-  key: 111,
-  bbb: 2,
-  value: 222,
-  label: 333,
+const test = ref<ISelectProps>({
+  modelValue: 222,
+  options: Array.from({ length: 100 }).map((_, i) => ({ value: i, test: i })),
+  labelKey: 'test',
 })
+
+const showPopver = ref(false)
 </script>
 
 <template>
@@ -31,6 +33,12 @@ const test = ref<any>({
       </template>
     </WTooltip>
 
-    <WSelect v-model="test" />
+    <WSelect v-bind="test" v-model="test.modelValue" />
+    <Popover
+      v-model:visible="showPopver"
+      :placement="'center'"
+      :content="`<span style='color:red'>23728379273927398</span>`"
+      >assahjskahksj</Popover
+    >
   </div>
 </template>
