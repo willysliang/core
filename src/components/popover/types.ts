@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-04 17:09:30
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-04 17:20:48
+ * @ ModifierTime: 2024-01-04 20:07:31
  * @ Description: 类型定义
  */
 
@@ -54,4 +54,4 @@ export interface IContentInfoType {
 }
 
 /** CSS 属性对象 */
-export type IStyleType = Record<string, number | string>
+export type IStyleType = Record<string, number | string> | string
