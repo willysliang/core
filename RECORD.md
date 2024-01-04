@@ -25,6 +25,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年1月4日17点34分
+  - feat(comp): ['WPopover'] - 兼容 positionMode 为 'absolute' | 'fixed' 两种情况
+
 ## 2024年1月3日21点10分
   - chore(vite): 支持 tsx 语法
   - feat(utils): ['createBEM'、'Type'] 添加新工具类

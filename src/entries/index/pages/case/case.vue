@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-24 16:31:31
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-03 21:22:07
+ * @ ModifierTime: 2024-01-04 15:54:59
  * @ Description: case 组件案例
  -->
 
@@ -24,8 +24,6 @@ const showPopver = ref(false)
 
 <template>
   <div class="case">
-    <h1>THIS IS CASE PAGES~</h1>
-
     <WTooltip :content="'212178'">
       <span>十端口接收端口</span>
       <template #content>
@@ -36,7 +34,6 @@ const showPopver = ref(false)
     <WSelect v-bind="test" v-model="test.modelValue" />
     <Popover
       v-model:visible="showPopver"
-      :placement="'center'"
       :content="`<span style='color:red'>23728379273927398</span>`"
       >assahjskahksj</Popover
     >

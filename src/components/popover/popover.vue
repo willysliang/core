@@ -2,48 +2,17 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-02 21:41:39
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-03 21:10:29
+ * @ ModifierTime: 2024-01-04 17:23:00
  * @ Description: Popover - 弹出层（气泡卡片）
  -->
 
 <script setup lang="ts">
-import { createBEM } from '@/utils'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { createBEM } from '@/utils'
+import type { IContentInfoType, IPopoverProps, IStyleType } from './types'
+import { calcAbsoluteLocation, calcFixedLocation } from './utils'
 
 defineOptions({ name: 'WPopover' })
-
-export type ITrigger = ('click' | 'contextmenu' | 'focus') &
-  keyof WindowEventMap
-
-export interface IPopoverProps {
-  /** Popover 是否显示 */
-  visible: boolean
-  /** 触发时机 */
-  trigger?: ITrigger
-  /** 显示的内容，会被 slot 的内容替换掉 */
-  content?: string | HTMLElement
-  /** 是否显示 Tooltip 箭头 */
-  showArrow?: boolean
-  /** 定位方式 */
-  positionMode?: 'absolute' | 'fixed'
-  /** 出现的位置 */
-  placement?:
-    | 'top'
-    | 'top-start'
-    | 'top-end'
-    | 'bottom'
-    | 'bottom-start'
-    | 'bottom-end'
-    | 'left'
-    | 'left-start'
-    | 'left-end'
-    | 'right'
-    | 'right-start'
-    | 'right-end'
-    | 'center'
-    | 'center-start'
-    | 'center-end'
-}
 
 const props = withDefaults(defineProps<IPopoverProps>(), {
   visible: false,
@@ -51,7 +20,7 @@ const props = withDefaults(defineProps<IPopoverProps>(), {
   content: '',
   placement: 'bottom',
   showArrow: true,
-  positionMode: 'fixed',
+  positionMode: 'absolute',
 }) as Required<IPopoverProps>
 
 /**
@@ -73,21 +42,51 @@ onBeforeUnmount(() => {
 })
 
 /**
- * 计算可视区域的高度
+ * @description 获取并计算容器的宽高
  */
-const clientRect = computed(() => {
+const contentInfo = computed<IContentInfoType>(() => {
   const getBoundingClientRect = triggerRef.value?.getBoundingClientRect()
-  if (getBoundingClientRect) {
-    return getBoundingClientRect
-  }
-  return {
+  let clientRect = {
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+  }
+  clientRect = getBoundingClientRect || clientRect
+
+  const unit = 'px'
+  const arrowHeight = 5
+  const contentHeight = clientRect.bottom - clientRect.top || 0
+  const contentWidth = clientRect.right - clientRect.left || 0
+
+  return {
+    unit,
+    arrowHeight,
+    contentHeight,
+    contentWidth,
   }
 })
-console.log(clientRect.value)
+
+/**
+ * @description 计算弹层所在位置的样式
+ */
+const contentStyle = computed<IStyleType>(() => {
+  const placement = createBEM('popover', 'content')(props.placement)
+
+  let styleObj: IStyleType = {}
+
+  const isFixed = props.positionMode === 'fixed'
+
+  styleObj = isFixed
+    ? calcFixedLocation(placement)
+    : calcAbsoluteLocation(placement, contentInfo.value)
+
+  return styleObj
+})
 </script>
 
 <template>
@@ -104,10 +103,15 @@ console.log(clientRect.value)
             'content',
           )([props.positionMode, props.placement]),
         ]"
+        :style="contentStyle"
       >
         <div v-if="props.showArrow" class="w-popover__arrow"></div>
         <slot name="content">
-          <span class="w-popover__content--text" v-html="$props.content"></span>
+          <span
+            class="w-popover__content--text"
+            :style="`max-width: ${contentInfo.contentWidth + contentInfo.unit}`"
+            v-html="$props.content"
+          ></span>
         </slot>
       </div>
     </template>
@@ -118,6 +122,7 @@ console.log(clientRect.value)
 .w-popover {
   display: inline-block;
   position: relative;
+  margin-top: 10rem;
 
   &__mask {
     position: fixed;
@@ -189,63 +194,10 @@ console.log(clientRect.value)
       position: fixed;
     }
 
-    &--bottom,
-    &--bottom-start,
-    &--bottom-end,
-    &--right-end,
-    &--left-end {
-      bottom: 0;
-    }
-
-    &--right,
-    &--right-start,
-    &--right-end,
-    &--bottom-end,
-    &--top-end,
-    &--center-end {
-      right: 0;
-    }
-
-    &--top,
-    &--top-start,
-    &--top-end,
-    &--right-start,
-    &--left-start {
-      top: 0;
-    }
-
-    &--left,
-    &--left-start,
-    &--left-end,
-    &--bottom-start,
-    &--top-start,
-    &--center-start {
-      left: 0;
-    }
-
-    &--bottom,
-    &--top {
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    &--center-start,
-    &--center-end,
-    &--left,
-    &--right {
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    &--center {
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
     &--text {
       display: inline-block;
       box-sizing: border-box;
+      word-wrap: break-word;
       padding: p2r(5);
       font-size: var(#{getVarName('font-size')}, 1rem);
       line-height: var(#{getVarName('font-size')}, 1rem);
