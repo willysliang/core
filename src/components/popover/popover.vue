@@ -2,15 +2,15 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-02 21:41:39
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-04 17:23:00
+ * @ ModifierTime: 2024-01-04 20:38:58
  * @ Description: Popover - 弹出层（气泡卡片）
  -->
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { createBEM } from '@/utils'
-import type { IContentInfoType, IPopoverProps, IStyleType } from './types'
 import { calcAbsoluteLocation, calcFixedLocation } from './utils'
+import type { IContentInfoType, IPopoverProps, IStyleType } from './types'
 
 defineOptions({ name: 'WPopover' })
 
@@ -20,14 +20,17 @@ const props = withDefaults(defineProps<IPopoverProps>(), {
   content: '',
   placement: 'bottom',
   showArrow: true,
-  positionMode: 'absolute',
+  positionMode: 'fixed',
 }) as Required<IPopoverProps>
 
 /**
  * 更新 visible 的状态
  */
-const emits = defineEmits(['update:visible'])
-const updateVisible = (status: boolean) => emits('update:visible', status)
+const emits = defineEmits(['update:visible', 'changeVisible'])
+const updateVisible = (status: boolean) => {
+  emits('update:visible', status)
+  emits('changeVisible', status)
+}
 
 /**
  * 添加触发方式的事件 ref
@@ -87,11 +90,22 @@ const contentStyle = computed<IStyleType>(() => {
 
   return styleObj
 })
+
+/**
+ * @description 计算弹层主内容区域的样式
+ */
+const contentTextStyle = computed<IStyleType>(() => {
+  const isFixed = props.positionMode === 'fixed'
+  if (isFixed) return ''
+  return `max-width: ${contentInfo.value.contentWidth + contentInfo.value.unit}`
+})
 </script>
 
 <template>
-  <div ref="triggerRef" class="w-popover">
-    <slot name="default" />
+  <div class="w-popover">
+    <div ref="triggerRef" class="w-popover__trigger">
+      <slot name="default" />
+    </div>
 
     <template v-if="props.visible">
       <div class="w-popover__mask" @click.stop="updateVisible(false)"></div>
@@ -109,7 +123,7 @@ const contentStyle = computed<IStyleType>(() => {
         <slot name="content">
           <span
             class="w-popover__content--text"
-            :style="`max-width: ${contentInfo.contentWidth + contentInfo.unit}`"
+            :style="contentTextStyle"
             v-html="$props.content"
           ></span>
         </slot>
@@ -120,9 +134,12 @@ const contentStyle = computed<IStyleType>(() => {
 
 <style lang="scss" scoped>
 .w-popover {
-  display: inline-block;
   position: relative;
-  margin-top: 10rem;
+  display: inline-block;
+
+  &__trigger {
+    display: inline-block;
+  }
 
   &__mask {
     position: fixed;

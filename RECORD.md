@@ -25,6 +25,11 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年1月4日21点49分
+  - fix(comp): ['WPopover']
+    - 修复在 'positionMode=fixed' 时的宽度限制
+    - 修复在未定义 'slot=default' 内容时点击 'slot=content' 的内容会关闭
+
 ## 2024年1月4日17点34分
   - feat(comp): ['WPopover'] - 兼容 positionMode 为 'absolute' | 'fixed' 两种情况
 
