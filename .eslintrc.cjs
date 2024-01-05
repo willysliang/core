@@ -17,13 +17,13 @@ module.exports = {
     '@vue/typescript/recommended',
   ],
   overrides: [],
-  parser: 'vue-eslint-parser',
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: './tsconfig.json',
-    parser: '@typescript-eslint/parser',
-  },
+  // parser: 'vue-eslint-parser',
+  // parserOptions: {
+  //   ecmaVersion: 'latest',
+  //   sourceType: 'module',
+  //   project: './tsconfig.json',
+  //   parser: '@typescript-eslint/parser',
+  // },
   plugins: ['vue'],
   globals: {
     document: false,
