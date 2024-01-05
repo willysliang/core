@@ -25,6 +25,10 @@ Description: 日志记录
 
 # 更新记录
 
+
+## 2024年1月5日20点22分
+  - feat(comp): ['WPicker'] 选择器定义类型、选择器操作区
+
 ## 2024年1月4日21点49分
   - fix(comp): ['WPopover']
     - 修复在 'positionMode=fixed' 时的宽度限制
