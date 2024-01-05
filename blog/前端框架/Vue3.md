@@ -1469,6 +1469,228 @@ Description: Vue3
 >   - 在`beforeCreate`之前执行一次，`this`是`undefined`
 > ```
 
+#### TodoList 案例
+
+```vue
+<template>
+  <div class="todo-container">
+    <div class="todo-header">
+      <div class="todo-title">Todo List</div>
+    </div>
+
+    <div class="todo-content">
+      <div class="todo-input-group">
+        <input
+          type="text"
+          class="todo-input"
+          :value="innerInput"
+          placeholder="What needs to be done?"
+          @input="(event: any) => onInput(event!.target!.value, event)"
+          @keydown.enter="(event: any) => onAdd(innerInput, event)"
+        />
+        <div
+          class="todo-button-add"
+          @click.stop="(event: any) => onAdd(innerInput, event)"
+        >
+          Add
+        </div>
+      </div>
+
+      <div
+        class="todo-items-group"
+        @scroll.passive="(event: any) => onScroll(event)"
+      >
+        <template v-for="(item, index) of innerFilter" :key="index">
+          <div class="todo-item-group">
+            <div
+              :class="[
+                'todo-item-content',
+                { 'todo-item-done': item.state === true },
+              ]"
+              @click.stop="(event: Event) => onClick(item, event)"
+            >
+              <slot name="item" :item="item" :index="index">
+                {{ index + 1 + ') ' + item.title }}
+              </slot>
+            </div>
+
+            <div class="todo-item-buttons">
+              <div
+                v-if="item.state !== true"
+                class="todo-button-done"
+                @click.stop="(event: any) => onChange(item, event)"
+              >
+                Done
+              </div>
+
+              <div
+                v-if="item.state === true"
+                class="todo-button-reset"
+                @click.stop="(event: any) => onChange(item, event)"
+              >
+                Reset
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="todo-item-actions">
+        <div class="todo-count">
+          <span style="margin-right: 3px">Total: </span>
+          <span style="color: #f34d4d">{{ innerCount }}</span>
+        </div>
+
+        <div class="todo-states">
+          <div
+            :class="[
+              'todo-state',
+              { 'todo-state-active': innerState === null },
+            ]"
+            @click.stop="(event: any) => onFilter(null, event)"
+          >
+            All
+          </div>
+
+          <div
+            :class="[
+              'todo-state',
+              { 'todo-state-active': innerState === false },
+            ]"
+            @click.stop="(event: any) => onFilter(false, event)"
+          >
+            Uncompleted
+          </div>
+
+          <div
+            :class="[
+              'todo-state',
+              { 'todo-state-active': innerState === true },
+            ]"
+            @click.stop="(event: any) => onFilter(true, event)"
+          >
+            Completed
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { ref, computed, PropType, SlotsType, defineComponent } from 'vue'
+
+export interface Item {
+  title: string
+  state: boolean
+}
+
+export default defineComponent({
+  name: 'TodoList',
+  props: {
+    input: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    items: {
+      type: Array as PropType<Item[]>,
+      default: () => [],
+    },
+    state: {
+      type: Boolean as PropType<boolean | null>,
+      default: null,
+    },
+  },
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:items': (_input: Array<Item>) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:state': (_state: boolean | null) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    scroll: (_event: Event) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    click: (_item: Item) => true,
+  },
+  slots: {} as SlotsType<{
+    item: {
+      index: number
+      item: Item
+    }
+  }>,
+  setup(props, ctx) {
+    const innerInput = ref(props.input)
+    const innerState = ref(props.state)
+    const innerItems = ref(props.items)
+
+    const innerFilter = computed(() => {
+      return innerState.value !== null
+        ? innerItems.value.filter((item) => item.state === innerState.value)
+        : innerItems.value
+    })
+
+    const innerCount = computed(() => {
+      return innerFilter.value.length
+    })
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onInput = (input: string, _event: Event) => {
+      innerInput.value = input
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onAdd = (input: string, _event: Event) => {
+      if (input.trim()) {
+        innerItems.value.push({
+          title: input.trim(),
+          state: false,
+        })
+        ctx.emit('update:items', [...innerItems.value])
+      }
+      innerInput.value = ''
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onChange = (item: Item, _event: Event) => {
+      item.state = !item.state
+      ctx.emit('update:items', [...innerItems.value])
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onFilter = (state: boolean | null, _event: Event) => {
+      innerState.value = state
+      ctx.emit('update:state', state)
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onClick = (item: Item, _event: Event) => {
+      ctx.emit('click', item)
+    }
+
+    const onScroll = (event: Event) => {
+      ctx.emit('scroll', event)
+    }
+
+    return {
+      innerInput,
+      innerState,
+      innerItems,
+      innerFilter,
+      innerCount,
+      onInput,
+      onAdd,
+      onChange,
+      onFilter,
+      onScroll,
+      onClick,
+    }
+  },
+})
+</script>
+
+```
+
+
+
 ### ref函数
 
 - 作用：**把数据定义为响应式**
@@ -1527,16 +1749,16 @@ Description: Vue3
 > - `unref() `是 `val = isRef(val) ? val.value : val` 的语法糖
 > - 如果参数是一个 ref 则返回它的 value，否则返回参数本身
 >
-> ```js
+> ```vue
 > <script setup lang='ts'>
-> import { unRef } from 'vue'
->   
-> const valueRef = ref('');
-> const value = unref(valueRef);
-> if (!value) {
->    console.warning('请输入要拷贝的内容！');
->    return;
-> }
+>   import { unRef } from 'vue'
+> 
+>   const valueRef = ref('');
+>   const value = unref(valueRef);
+>   if (!value) {
+>     console.warning('请输入要拷贝的内容！');
+>     return;
+>   }
 > </script>
 > ```
 
@@ -1569,27 +1791,31 @@ Description: Vue3
 >  const person2 = toRefs(person) // 若不用toRef()，该赋值会让 person2 变量不具备响应式
 > ```
 >
-> ```js
-> import { reactive, toRef, toRefs  } from 'vue'
-> export default {
->   setup() {
->     const person = reactive({
->       name: "aaa",
->       age: 14,
->       job: {
->         job1: {
->           select: "frontEnd"
+> ```vue
+> <script>
+>   import { reactive, toRef, toRefs  } from 'vue'
+>   
+>   export default {
+>     setup() {
+>       const person = reactive({
+>         name: "aaa",
+>         age: 14,
+>         job: {
+>           job1: {
+>             select: "frontEnd"
+>           }
 >         }
+>       })
+>       
+>       return {
+>         person,
+>         name: person.name,  // 不会改变person中的name值
+>         jobs: toRef(person.job.job1, 'select'), // 会改变person中的值
+>         ...toRefs(person),  // 如ES10的flat()对toRef()平铺,但是只平铺一层 调用时直接属性名，深层次的数据则一层一层引用
 >       }
->     })
->     return {
->       person,
->       name: person.name,  // 不会改变person中的name值
->       jobs: toRef(person.job.job1, 'select'), // 会改变person中的值
->       ...toRefs(person),  // 如ES10的flat()对toRef()平铺,但是只平铺一层 调用时直接属性名，深层次的数据则一层一层引用
 >     }
 >   }
-> }
+> </script>
 > ```
 >
 
@@ -1926,22 +2152,22 @@ Description: Vue3
 >  注意2：强制开启了深度监视（deep配置无效），且不可关闭深度监视（即多层内的数据都可以改变，但不可阻止其改变）
 > */
 > watch(person, (newVal, oldVal) => {
-> 	console.log('person改变了', newVal, oldVal)
+>   console.log('person改变了', newVal, oldVal)
 > },{immediate: true})
 > 
 > //情况四：监视reactive定义的响应式数据中的某个属性
 > watch(()=>person.job,(newValue,oldValue)=>{
-> 	console.log('person的job变化了',newValue,oldValue)
+>   console.log('person的job变化了',newValue,oldValue)
 > },{immediate:true,deep:true}) 
 > 
 > //情况五：监视reactive定义的响应式数据中的某些属性
 > watch([()=>person.job,()=>person.name],(newValue,oldValue)=>{
-> 	console.log('person的job变化了',newValue,oldValue)
+>   console.log('person的job变化了',newValue,oldValue)
 > },{immediate:true,deep:true})
 > 
 > //特殊情况
 > watch(()=>person.job,(newValue,oldValue)=>{
->     console.log('person的job变化了',newValue,oldValue)
+>   console.log('person的job变化了',newValue,oldValue)
 > },{deep:true}) //此处由于监视的是reactive素定义的对象中的某个属性，所以deep配置有效
 > ```
 >
@@ -2902,6 +3128,304 @@ Description: Vue3
 > **修改`tsconfig.json`配置文件**
 >
 > ![image-20220808125421130](./image/image-20220808125421130.png)
+
+### Vue文件中的JSX
+
+#### 在vue文件中使用JSX语法注意事项
+
+```bash
+## 在 vue 文件中使用 JSX 语法的注意事项
+
+### 文件的定义和声明
+	- 需要 jsx 语法的支持 (typescript 和 @vitejs/plugin-vue-jsx)
+  - 需要使用语言的声明 `<script lang="tsx">`
+
+
+### setup 函数的使用注意事项
+- 由于 `setup` return 导出的是渲染函数，所以如果想让父组件 ref 获取子组件 `setup` 函数中定义的属性和方法，必须呀使用 expose 导出。
+  `ctx.expose({ innerInput, onChange })`
+
+
+### jsx 语法中如何定义事件修饰符
+- 如果是 `stop、prevent、self、ctrl、shift、alt、meta、left、middle、right、exact` 修饰符，可以使用 `withModifiers` 进行处理。
+		`<button onClick={withModifiers((event) => handleFilter(null, event), ['stop'])}>按钮</button>`
+
+- 如果是 `.passive、.capture 、 .once ` 等修饰符，可以使用驼峰写法将他们拼接在事件名后面。
+		`<div onScrollPassive={(event) => handleScroll(event)}>滚动区域</div>`
+
+- 还有其他的修饰符如回车事件等可通过 Event 自定义来处理。
+		`<input type="text" onKeydown={(event) => event.keyCode === 13 && handleAdd(innerInput.value, event)} />`
+
+
+### vue语法的使用注意
+- jsx 语法中需注意 ref、v-models、slots 的定义和使用，其中 v-model 和 v-models 都只是语法糖
+		- 单个 v-model: 例 `v-model={[items.value, 'items']}`
+		- 多个 v-model: 例 `v-models={[[items.value, 'items'], [state.value, 'state']]}`
+		
+```
+
+#### TodoList 案例（VUE文件）
+
+```vue
+<script setup lang="tsx">
+import { ref, computed } from 'vue'
+
+defineOptions({
+  name: 'TodoList',
+  inheritAttrs: false,
+})
+
+export interface Item {
+  title: string
+  state: boolean
+}
+
+export interface Emits {
+  (e: 'update:items', input: Item[]): void
+  (e: 'update:state', state: boolean | null): void
+  (e: 'scroll', event: Event): void
+  (e: 'click', item: Item): void
+}
+const emit = defineEmits<Emits>()
+
+export interface Slots {
+  item(props: { index: number; item: Item }): any
+}
+const slots = defineSlots<Slots>()
+
+export interface Props {
+  input: string
+  items: Item[]
+  state: boolean | null
+}
+const props = withDefaults(defineProps<Props>(), {
+  input: '',
+  items: () => [],
+  state: null,
+})
+
+const innerInput = ref(props.input)
+const innerState = ref(props.state)
+const innerItems = ref(props.items)
+
+const innerFilter = computed(() => {
+  return innerState.value !== null
+    ? innerItems.value.filter((item) => item.state === innerState.value)
+    : innerItems.value
+})
+
+const innerCount = computed(() => innerFilter.value.length)
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const onInput = (input: string) => {
+  innerInput.value = input
+}
+
+const onAdd = (input: string, event: Event) => {
+  if (input.trim()) {
+    innerItems.value.push({
+      title: input.trim(),
+      state: false,
+    })
+    emit('update:items', [...innerItems.value])
+  }
+  innerInput.value = ''
+  event.stopPropagation()
+}
+
+const onChange = (item: Item, event: Event) => {
+  item.state = !item.state
+  emit('update:items', [...innerItems.value])
+  event.stopPropagation()
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const onFilter = (state: boolean | null) => {
+  innerState.value = state
+  emit('update:state', state)
+}
+
+const onClick = (item: Item, event: Event) => {
+  emit('click', item)
+  event.stopPropagation()
+}
+
+const onScroll = (event: Event) => {
+  emit('scroll', event)
+}
+
+defineExpose({
+  innerInput,
+  innerState,
+  innerItems,
+  innerFilter,
+  innerCount,
+  onInput,
+  onAdd,
+  onChange,
+  onFilter,
+  onScroll,
+  onClick,
+})
+
+const TodoItems = () =>
+  innerFilter.value.map((item, index) => {
+    return (
+      <div class="todo-item-group">
+        <div
+          class={[
+            'todo-item-content',
+            { 'todo-item-done': item.state === true },
+          ]}
+          onClick={(event: Event) => onClick(item, event)}
+        >
+          {slots.item
+            ? slots.item({ index, item })
+            : index + 1 + ') ' + item.title}
+        </div>
+
+        <div class="todo-item-buttons">
+          <div
+            class={{
+              'todo-button-done': item.state !== true,
+              'todo-button-reset': item.state === true,
+            }}
+            onClick={(event: any) => onChange(item, event)}
+          >
+            {item.state !== true ? 'Done' : 'Reset'}
+          </div>
+        </div>
+      </div>
+    )
+  })
+</script>
+
+<template>
+  <div class="todo-container">
+    <div class="todo-content">
+      <div class="todo-input-group">
+        <input
+          type="text"
+          class="todo-input"
+          :value="innerInput"
+          placeholder="What needs to be done?"
+          @input="(event: any) => onInput(event.target.value)"
+          @keydown.enter="(event: any) => onAdd(innerInput, event)"
+        />
+        <span
+          class="todo-button-add"
+          @click.stop="(event: any) => onAdd(innerInput, event)"
+        >
+          Add
+        </span>
+      </div>
+
+      <div
+        class="todo-items-group"
+        @scroll.passive="(event: any) => onScroll(event)"
+      >
+        <TodoItems />
+      </div>
+
+      <div class="todo-item-actions">
+        <div class="todo-count">
+          <span style="margin-right: 3px">Total: </span>
+          <span style="color: #f34d4d">{{ innerCount }}</span>
+        </div>
+
+        <div class="todo-states">
+          <span :class="['todo-state']" @click.stop="() => onFilter(null)">
+            All
+          </span>
+
+          <span :class="['todo-state']" @click.stop="() => onFilter(false)">
+            Uncompleted
+          </span>
+
+          <span :class="['todo-state']" @click.stop="() => onFilter(true)">
+            Completed
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss">
+// @import './style.scss';
+</style>
+
+```
+
+#### UseTodoList 案例（TSX文件）
+
+```tsx
+import { defineComponent, onMounted, watch, ref } from 'vue'
+import TodoList, { Item } from './TodoList'
+
+export default defineComponent({
+  name: 'UseTodoList',
+
+  setup() {
+    const input = ref('')
+    const state = ref(null)
+    const todo: any = ref(null)
+
+    const items = ref([
+      {
+        title: '晨跑3公里',
+        state: true,
+      },
+      {
+        title: '午休30分钟',
+        state: true,
+      },
+      {
+        title: '看书2小时',
+        state: false,
+      },
+    ])
+
+    watch(state, () => {
+      console.log('watch/state: ', state.value)
+    })
+    watch(items, () => {
+      console.log('watch/items: ', items.value)
+    })
+
+    onMounted(() => {
+      console.log(todo.value)
+    })
+
+    return () => (
+      <>
+        <TodoList
+          ref={el => { todo.value = el }}
+          input={input.value}
+          v-models={[[items.value, 'items'], [state.value, 'state']]}
+          v-slots={{ item: (opts: { index: number, item: Item }) => opts.index + 1 + '、' + opts.item.title }}
+        />
+        <TodoList
+          {
+            ...{
+              'items': items.value,
+              'state': state.value,
+              'onUpdate:items': value => { items.value = value },
+              'onUpdate:state': value => { state.value = value }
+            }
+          }
+          ref={el => { todo.value = el }}
+          input={input.value}
+          v-slots={{ item: (opts: { index: number, item: Item }) => opts.index + 1 + '、' + opts.item.title }}
+        />
+      </>
+    )
+  },
+})
+
+```
+
+
 
 ### TSX的使用
 
