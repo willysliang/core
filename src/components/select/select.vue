@@ -2,13 +2,13 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-26 16:26:58
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-03 21:23:36
+ * @ ModifierTime: 2024-01-04 21:46:37
  * @ Description: Select 选择器
  -->
 
 <script setup lang="ts">
 import { computed, onMounted, ref, onBeforeUnmount } from 'vue'
-import Picker from './Picker.tsx'
+import Picker from '@comp/Picker/Picker.tsx'
 import { getValueType, Type, isMobile } from '@/utils'
 
 defineOptions({ name: 'WSelect' })
@@ -130,12 +130,7 @@ const selectItem = (option) => {
     </div>
 
     <template v-if="isMobile">
-      <div v-show="showWrapper" class="w-select__popup">
-        <div class="w-select__mask" @click.stop="handleWrapper(false)"></div>
-        <div class="w-select__picker">
-          <Picker />
-        </div>
-      </div>
+      <Picker v-model:visible="showWrapper" />
     </template>
 
     <template v-else>
@@ -214,13 +209,6 @@ const selectItem = (option) => {
     &:hover {
       background-color: var(--select-item-hover-bg-color);
     }
-  }
-
-  &__popup {
-    position: fixed;
-    @extend %fullScreen;
-
-    z-index: var(getVarName('z-index', 'popup'));
   }
 
   &__mask {
