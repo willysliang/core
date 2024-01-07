@@ -29,6 +29,7 @@ Description: 日志记录
 
 ## 2024年1月7日23:10:22
   - feat(utils): [dom] DOM相关工具类整理
+  - chore(stylelint): 修改stylelint格式化
   
 ## 2024年1月7日19点38分
   - fix(comp): 更改文件驼峰命名
