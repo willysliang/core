@@ -55,3 +55,12 @@ export const createBEM = (
 }
 
 export type BEM = ReturnType<typeof createBEM>
+
+/**
+ * @descption 从页面中删除所有 CSS 样式（包括内联样式和链接的CSS）
+ */
+export const removeAllCssStyle = () => {
+  document
+    .querySelectorAll('style,link[rel="stylesheet"]')
+    .forEach((item) => item.remove())
+}
