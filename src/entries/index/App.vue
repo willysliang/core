@@ -15,6 +15,8 @@ import { useRouter } from 'vue-router'
 import { indexPagesMap } from './routes'
 import { catchFunc } from '@utils/index'
 
+import './test'
+
 const { fileMap } = useReadPathFiles()
 console.log('fileMap', fileMap, import.meta.env.VITE_APP_ENV)
 
