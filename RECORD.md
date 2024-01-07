@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年1月7日19点38分
+  - fix(comp): 更改文件驼峰命名
+
 ## 2024年1月5日20点22分
   - feat(comp): ['WPicker'] 选择器定义类型、选择器操作区
   - chore(eslint): 兼容在 vue 文件中使用 JSX/TSX 语法
