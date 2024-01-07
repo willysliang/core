@@ -39,6 +39,9 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 
 # 2023
 
+## 2024年1月7日13点34分
+  - docs(前端基础): [前端杂记] 添加 JSDoc 注释规范描述
+
 ## 2024年1月5日21点48分
   - docs(前端框架): [Vue3] 更新 JSX/TSX 语法描述
   - docs(前端基础): [前端杂记] 更改[错误编码]文件名
