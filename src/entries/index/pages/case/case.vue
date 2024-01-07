@@ -2,12 +2,12 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-24 16:31:31
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-04 15:54:59
+ * @ ModifierTime: 2024-01-07 19:36:25
  * @ Description: case 组件案例
  -->
 
 <script setup lang="ts">
-import WTooltip from '@comp/tooltip/tooltip.vue'
+import WTooltip from '@comp/Tooltip/Tooltip.vue'
 import WSelect, { ISelectProps } from '@comp/Select/Select.vue'
 import Popover from '@comp/Popover/Popover.vue'
 
