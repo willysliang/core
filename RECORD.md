@@ -30,6 +30,7 @@ Description: 日志记录
   - feat(utils): [common] 通用工
   具类整合
   - chore: [github-ci/cd] dev可进行工作流
+  - chore: [github-ci/cd] 移除dev触发CI/CD打包流程(github-pages设定develop不允许进行打包部署)
 
 ## 2024年1月7日23:10:22
   - feat(utils): [dom] DOM相关工具类整理
