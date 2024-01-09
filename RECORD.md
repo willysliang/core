@@ -26,6 +26,10 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年1月9日19点54分
+  - feat(utils): [common] 通用工
+  具类整合
+  - chore: [github-ci/cd] dev可进行工作流
 
 ## 2024年1月7日23:10:22
   - feat(utils): [dom] DOM相关工具类整理
