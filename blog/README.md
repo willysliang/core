@@ -39,6 +39,9 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 
 # 2023
 
+## 2024年1月9日21点10分
+  - docs(前端算法): [数据结构] 删除链表中的选定节点/重复节点
+
 ## 2024年1月7日23:08:49
   - docs(前端基础): [JavaScript] DOM
 
