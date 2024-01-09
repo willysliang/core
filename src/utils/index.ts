@@ -8,10 +8,10 @@
 
 export * from './utils'
 export * from './common'
-export * from './cssUtils'
 export * from './app'
 export * from './format'
 export * from './random'
+export * from './dom/indx'
 
 export const modules = import.meta.glob('./*.ts')
 

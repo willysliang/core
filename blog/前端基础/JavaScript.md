@@ -736,6 +736,34 @@ Description: JavaScript
 > document.documentElement	:获取html节点
 > ```
 
+#### 匹配对应父元素的标签
+
+```js
+/**
+ * @description 查找元素的所有祖先，直到元素与指定的选择器匹配为止
+ * @param {HTMLElement} el - 所要查找的元素
+ * @param {string} selector - 所要查找的父元素的标签名称
+ */
+const getParentsUntil = (el, selector) => {
+  const parents = []
+  let _el = el.parentNode
+
+  // 循环向上移动元素的祖先树
+  while (_el && typeof _el.matches === 'function') {
+    // 将每个新祖先添加到数组的开头
+    parents.unshift(_el)
+    // 检查当前元素是否与指定的选择器匹配
+    if (_el.matches(selector)) return parents
+    else _el = _el.parentNode
+  }
+  return []
+}
+
+getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav, ul, li]
+```
+
+
+
 ### DOM修改（操作样式）
 
 > **操作样式：**设置类样式class 、设置行内样式style
@@ -776,25 +804,31 @@ Description: JavaScript
 >   - insertCell(index) (只有tr能调用)
 >   - deleteCell(index) (只有tr能调用)
 
+#### 获取和设置CSS样式
+
+> 
+
+
+
 #### 提取非行间样式
 
 > ```js
 >window.onload = function () {
->   let div = document.getElementsByTagName("div")[0];
->   let style = getAttr(div, 'width')
->   console.log(style)
+>     let div = document.getElementsByTagName("div")[0];
+>     let style = getAttr(div, 'width')
+>     console.log(style)
 > }
 > 
 > // 获取class或id 标签的指定样式
 >function getAttr(obj, attr) {
->   let style;
->  if (obj.currentStyle) {   //当有这个属性的时候currentStyle(即在IE中时)
->     style = obj.currentStyle[attr]; //兼容IE
->  }
->   else {
->     style = getComputedStyle(obj, false)[attr]; //主流浏览器
->   }
->   return style;
+>     let style;
+>    if (obj.currentStyle) {   //当有这个属性的时候currentStyle(即在IE中时)
+>        style = obj.currentStyle[attr]; //兼容IE
+>    }
+>     else {
+>        style = getComputedStyle(obj, false)[attr]; //主流浏览器
+>     }
+>     return style;
 >}
 > ```
 
@@ -809,6 +843,40 @@ Description: JavaScript
 > - 形如：input[type=text] 选择input标签中的文本类型的
 >- Checkbox的checked 为选中状态
 > - 取反则是为非：!   形如：获取的变量.checked=!获取的变量.checked
+
+#### 切换类
+
+```bash
+### 切换类
+classList.toggle() 是 JavaScript 中用于切换 HTML 元素类名的方法。
+使用该方法时，元素存在该类名就会移除，没有则添加该类。
+
+const toggleClass = (el, className) => el.classList.toggle(className)
+toggleClass(document.querySelector('p.hdfp'), 'hdfp')
+
+```
+
+```html
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <style>
+      .btn { background-color: #ccc; color: #000; } 
+      .btn.active { background-color: #000; color: #fff; }
+    </style>
+  </head>
+  <body>
+    <button id="myBtn" class="btn">Toggle</button>
+    <script>
+      let btn = document.getElementById("myBtn"); 
+      btn.addEventListener("click", function() { this.classList.toggle("active"); });
+    </script>
+  </body>
+</html>
+
+```
+
+
 
 #### 从 DOM 元素中移除所有子元素
 
@@ -1234,9 +1302,11 @@ ele.dispatchEvent(e) // 触发事件
 
 
 
-### offset、scroll、client
+### 滚动
 
-#### 垂直计算
+#### offset、scroll、client
+
+##### 垂直计算
 
 > - 常见高
 >
@@ -1267,7 +1337,7 @@ ele.dispatchEvent(e) // 触发事件
 >
 > ![image-20200920125228504](./image/image-20200920125228504.png)![image-20200920125235120](./image/image-20200920125235120.png)
 
-#### 水平计算
+##### 水平计算
 
 > - **scrollTop/scrollLeft:** 
 >
@@ -1437,6 +1507,8 @@ ele.dispatchEvent(e) // 触发事件
 > </script>
 > </html>
 > ```
+
+
 
 ## BOM
 
@@ -2436,5 +2508,16 @@ $("div.class1 :nth-child(2)") ;//选择所有class属性值为class1的div元素
 $("div.class1 :first-child") //改变所有class属性值为class1的div元素的第1个子元素
 $("div.class1 :last-child") //改变所有class属性值为class1的div元素的最后1个子元素
 $("div.class1 :only-child") //改变所有class属性值为class1的div元素的唯一一个子元素
+```
+
+### 自定义查询选择器简写(JQ原理)
+
+```js
+const $ = document.querySelector.bind(document)
+const $$ = document.querySelector.bind(document)
+
+const mainCotent = $('.main-content')
+const exteralLinks = $$('a[target="_blank"]')
+
 ```
 
