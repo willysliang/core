@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年1月12日
+  - feat(utils): [scroll] EventHandler - 事件帮手类  16点52分
+
 ## 2024年1月9日19点54分
   - feat(utils): [common] 通用工
   具类整合
