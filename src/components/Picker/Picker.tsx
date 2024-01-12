@@ -3,13 +3,14 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-02 20:48:20
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-07 19:40:22
+ * @ ModifierTime: 2024-01-09 17:56:50
  * @ Description: 移动端 - 选择器
  */
 
 import { defineComponent } from 'vue'
 import WPopover from '@comp/Popover/Popover.vue'
 import { WPickerAction } from './PickerAction'
+import WPickerOptions from './PickerOptions'
 import './Picker.scss'
 
 interface WPickerProps {
@@ -54,6 +55,7 @@ export default defineComponent({
                     onCancel={() => handleChangeVisible(false)}
                     onConfirm={handleConfirm}
                   />
+                  <WPickerOptions />
                 </div>
               </>
             ),

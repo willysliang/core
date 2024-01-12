@@ -1,10 +1,10 @@
 .w-picker {
   --picker-max-height: 50vh;
-  --picker-min-height: 10rem;
+  --picker-height: 20rem;
 
   width: 100vw;
+  height: var(--picker-height);
   max-height: var(--picker-max-height);
-  min-height: var(--picker-min-height);
   display: flex;
   flex-direction: column;
 
@@ -34,5 +34,19 @@
     &--confirm {
       color: var(#{getVarName('color', 'success')});
     }
+  }
+}
+
+.w-picker-options {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &__column {
+    flex: 1;
+    @include notScrollbar();
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }

@@ -209,6 +209,23 @@ $state-prefix: 'is-' !default;
   }
 }
 
+@mixin notScrollbar() {
+  -webkit-overflow-scrolling: touch;
+  /* Firefox隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  /*定义滚动条样式（高宽及背景）*/
+  &::-webkit-scrollbar {
+    width: p2r(0);
+  }
+
+  /*定义滑块 样式*/
+  &::-webkit-scrollbar-thumb {
+    width: p2r(0);
+  }
+}
+
 /**
  * 通用四状态按钮
  * @param {'img' | 'brightness' | ''} $type 按钮类型： ''：默认、img:图片、brightness：高亮
