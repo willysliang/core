@@ -6,66 +6,41 @@
  * @ Description: 测试
  */
 
-/** 链表单个节点数据字段约束 */
-interface ILinkedNode<T = number> {
-  next: ILinkedNode<T> | null
-  value: T
-}
-
-/** 当前节点数据字段约束 */
-type ICurListNode<T = number> = null | ILinkedNode<T>
-
-/** 链表节点类 */
-export class ListNode<T = number> implements ILinkedNode<T> {
-  next: ICurListNode<T>
-  value: T
-
-  constructor(nodeValue: T, next: ICurListNode<T> = null) {
-    this.next = next
-    this.value = nodeValue
-  }
-}
-
 /**
- * 用来删除重复链表节点
- * @param {ICurListNode<T>} head - 链表的头节点
- * @returns {ICurListNode<T>} 删除重复节点后的链表头节点
+ * @function findNumberWithSum 和为 S 的连续正整数序列
+ * @description 输入一个正数S，打印出所有和为S的连续正数序列
+ * @param {number} target 正整数
+ * @returns {number[][]} 连续正整数序列
+ * @example FindContinuousSequence(15) // 预期结果：[[1, 2, 3, 4, 5], [4, 5, 6], [7, 8]]
  */
-function deleteDuplicatesNode<T = number>(
-  head: ICurListNode<T>,
-): ICurListNode<T> {
-  /** 如果是链表为空 或 链表只有一个节点，则直接返回 */
-  if (head === null || head.next === null) return head
+function FindContinuousSequence(target: number): number[][] {
+  const result: number[][] = []
+  let low: number = 1
+  let high: number = 2
+  let sum: number = low + high
 
-  const listNodeMap = new Map<T, boolean>()
-  let currentNode: ICurListNode<T> = head
-  let prev: ICurListNode<T> = null
-
-  while (currentNode !== null) {
-    if (listNodeMap.has(currentNode.value)) {
-      // 删除重复节点
-      prev!.next = currentNode.next
+  while (low < high && high < target) {
+    if (sum < target) {
+      high++
+      sum += high
+    } else if (sum > target) {
+      sum -= low
+      low++
     } else {
-      listNodeMap.set(currentNode.value, true)
-      prev = currentNode
+      // sum === target：找到连续序列，将其插入结果中
+      const sequence: number[] = []
+      for (let i = low; i <= high; i++) {
+        sequence.push(i)
+      }
+      result.push(sequence)
+      sum -= low
+      low++
     }
-
-    currentNode = currentNode.next
   }
 
-  return head
+  return result
 }
 
 /** 测试用例 */
-// 创建链表
-const node1 = new ListNode(1)
-const node2 = new ListNode(2)
-const node3 = new ListNode(2)
-const node4 = new ListNode(3)
-node1.next = node2
-node2.next = node3
-node3.next = node4
-
-// 调用函数删除重复节点
-const newHead = deleteDuplicatesNode(node1)
-console.log(newHead)
+const case1 = FindContinuousSequence(15) // 预期结果：[[1, 2, 3, 4, 5], [4, 5, 6], [7, 8]]
+console.log(case1)
