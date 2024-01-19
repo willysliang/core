@@ -40,6 +40,9 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 # 2023
 
 
+## 2024年1月19日18点43分
+  - docs(前端基础): [ES6+语法Ⅱ] async/await 语法补充
+
 ## 2024年1月12日19点55分
   - docs(前端算法): [数据结构] 数组 Array
     - 把数组排成最小的数
