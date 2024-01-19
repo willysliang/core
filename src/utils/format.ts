@@ -6,6 +6,10 @@
  * @ Description: 转换类
  */
 
+/** ======================================================================================== */
+/** ----------------------------------- 中文 Utils ------------------------------------------ */
+/** ======================================================================================== */
+
 /**
  * @description 中文裁字
  * @param {string} str
@@ -41,6 +45,30 @@ export const cutCNLetter = (
   }
   return str
 }
+
+/**
+ * @function generateRandomChina 生成随机中文字符串
+ * @param strLength 字符串长度
+ * @returns 随机生成的字符串
+ * @example generateRandomChina(10)
+ */
+export const generateRandomChina = (
+  strLength: number = Math.floor(Math.random() * 3 + 2),
+): string => {
+  if (strLength < 1) return ''
+
+  let strs = ''
+  for (let i = 0; i < strLength; i++) {
+    const randomNumber = Math.floor(Math.random() * (40959 - 19968 + 1)) + 19968
+    strs += String.fromCharCode(randomNumber)
+  }
+
+  return strs
+}
+
+/** ======================================================================================== */
+/** ----------------------------------- 时间 Utils ----------------------------------------- */
+/** ======================================================================================== */
 
 /**
  * @description 时间日期格式化
