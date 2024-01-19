@@ -6,22 +6,25 @@
  * @ Description: 路由入口
  */
 
-import { indexPagesMap } from '@/entries/index/routes'
 import {
   createRouter,
   createWebHashHistory,
   type RouteRecordRaw,
 } from 'vue-router'
+import { indexPagesMap } from '@/entries/index/routes'
+
+/** 默认路由 */
+const defaultRoute = indexPagesMap.CASE
 
 /** 路由表 */
 const routes: RouteRecordRaw[] = [
   {
     path: '/core', // 默认首页
-    redirect: '/home',
+    redirect: defaultRoute.path,
   },
   {
     path: '/', // 默认首页
-    redirect: '/home',
+    redirect: defaultRoute.path,
   },
   ...Object.values(indexPagesMap),
 ]
