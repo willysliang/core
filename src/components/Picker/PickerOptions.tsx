@@ -2,29 +2,54 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-09 17:49:58
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-09 19:30:38
+ * @ ModifierTime: 2024-01-19 18:41:37
  * @ Description: 选择器选项区
  */
 
-import { defineComponent, ref } from 'vue'
-import { dateColumns } from './demo/data'
-import { lang } from '@utils/index'
+import { computed, defineComponent, ref } from 'vue'
 import './Picker.scss'
+import { selectProps } from './type'
+import { Type, getValueType } from '@/utils'
+import { ISelectProps } from '../Select/type'
 
 export default defineComponent({
   name: 'WPickerOptions',
-  setup() {
-    type T = Array<Record<string, any>>
-    const data = lang<T>(dateColumns as any)
-    const options = ref<Array<Record<string, any>>>(data)
+  props: selectProps,
+  emits: ['select', 'updateValue'],
+  setup(props: Required<ISelectProps>, { emit }) {
+    const options = ref<Array<Record<string, any>>>([])
+    console.log(options.value)
 
-    console.log(options.value[0])
+    /** 获取 item 的值 */
+    const getItem = (option, type: 'label' | 'value' = 'label') => {
+      const getProp = type === 'label' ? props.labelKey : props.valueKey
+      if (getValueType(option) === Type.Object) return option[getProp]
+      return option
+    }
+
+    /** 选择相应的 item */
+    const selectItem = (option) => {
+      if (props.disabled) return undefined
+
+      emit('updateValue', getItem(option, 'value'))
+      emit('select', option)
+    }
+
+    /**
+     * label 相关
+     */
+    const showLabel = computed<boolean>(
+      () => Array.isArray(props.modelValue) && props.modelValue.length > 1,
+    )
 
     return () => (
       <div class="w-picker-options">
+        {showLabel.value && <div class="w-picker-options__label">{/*  */}</div>}
         <ul class="w-picker-options__column">
-          {options.value[0].map((item) => (
-            <li>{item.text}</li>
+          {props.options.map((option) => (
+            <li onClick={() => selectItem(option)}>
+              <span>{getItem(option, 'label')}</span>
+            </li>
           ))}
         </ul>
       </div>
