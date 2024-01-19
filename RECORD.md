@@ -25,6 +25,10 @@ Description: 日志记录
 
 # 更新记录
 
+
+## 2024年1月19日18点45分
+  - feat(comp): [Picker、Select] 选项展示
+
 ## 2024年1月19日10点09分
   - feat(utils): [format] generateRandomChina 生成随机中文字符串
 
