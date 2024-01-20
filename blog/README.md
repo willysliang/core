@@ -37,8 +37,11 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 
 
 
-# 2023
+# 2024
 
+## 2024年1月21日07:26:15
+  - docs(前端基础): [Git仓库管理] ssh 连接校验异常
+    - ssh: connect to host github.com port 22: Connection timed out
 
 ## 2024年1月20日09:35:31
   - docs(前端框架): [TypeScript] const 和 readonly 的区别
@@ -71,6 +74,9 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 ## 2024年1月5日21点48分
   - docs(前端框架): [Vue3] 更新 JSX/TSX 语法描述
   - docs(前端基础): [前端杂记] 更改[错误编码]文件名
+
+
+# 2023
 
 ## 2023年12月29日20点11分
   - docs(前端基础): [Git仓库管理] Git 迁移项目到新仓库，并保留历史记录

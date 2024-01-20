@@ -132,10 +132,10 @@ Description: Git 仓库管理
 > mkdir ~/.ssh
 > cd ~/.ssh
 > git config --global user.name 'willy'
-> git config --global user.email 'willylsiang@qq.com'
+> git config --global user.email 'willysliang@qq.com'
 > 
 > # 生成公钥和私钥
-> ssh-keygen -t rsa -C "willysliang@163.com" -f "github_id_rsa"
+> ssh-keygen -t rsa -C "willysliang@qq.com" -f "github_id_rsa"
 > 
 > 连续按三次回车
 > 
@@ -233,6 +233,52 @@ Description: Git 仓库管理
 > ## 缓存输入的用户名和密码
 > git config --global credential.helper wincred
 > ```
+
+#### ssh连接校验异常
+
+```bash
+## ssh 连接校验错误
+
+### 1. 连接异常
+在连接github时，执行”ssh -T git@github.com” 命令时，出现
+ssh: connect to host github.com port 22: Connection timed out
+fatal: Could not read from remote repository.
+
+
+### 解决方案
+#### 1. 打开存放 ssh 的目录
+$ cd ~/.ssh
+
+
+#### 2. 新建 config 文件
+Host github.com
+User 注册github的邮箱
+Hostname ssh.github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa # github 配置的私钥
+Port 443
+
+Host gitlab.com
+Hostname altssh.gitlab.com
+User 注册gitlab的邮箱
+Port 443
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa # gitlab 配置的私钥
+
+
+#### 3. 删除 config 中的权限
+找到C:\用户\用户名\.ssh\config文件
+属性 —> 安全 —> 高级 —> 禁用继承 —>删除所有继承项 —> 确定.
+
+
+#### 4. 执行连接操作
+$ ssh -T git@github.com
+
+如果出现提示则输入：yes 回车
+
+```
+
+
 
 ### 远程仓库操纵
 
