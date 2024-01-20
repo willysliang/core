@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-15 15:15:19
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-19 18:32:15
+ * @ ModifierTime: 2024-01-20 15:43:50
  * @ Description: 选择项的类型声明
  */
 
@@ -31,6 +31,10 @@ export const selectProps = {
   labelKey: {
     type: [String, Number] as PropType<string | number>,
     default: 'label',
+  },
+  leafKey: {
+    type: [String, Number] as PropType<string | number>,
+    default: 'children',
   },
   clearable: {
     type: Boolean,
