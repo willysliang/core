@@ -220,8 +220,8 @@ Description: TypeScript
 
 > ```bash
 > ## 概述
-> - 如果没有明确的指定类型，那么 TypeScript 会依照类型推论（Type Inference）的规则推断出一个类型
-> - 如果定义的时候没有赋值，不管之后有没有赋值，都会被推断成 any 类型而完全不被类型检查
+> - 类型推论：在没有明确的指定类型时，TypeScript 会依照类型推论的规则推断出一个类型。
+> - 如果定义时没有赋值，不管之后有没有赋值，都会被推断成 any 类型而导致完全不被类型检查。
 > 
 > 
 > ## 什么是类型推论
@@ -235,14 +235,13 @@ Description: TypeScript
 >     myFavoriteNumber = 7;
 >     // index.ts(2,1): error TS2322: Type 'number' is not assignable to type 'string'.
 >     
->     
-> 	TypeScript 会在没有明确的指定类型的时候推测出一个类型，这就是类型推论。
 > 
 > ## 注意
 > - 如果定义的时候没有赋值，不管之后有没有赋值，都会被推断成 any 类型而完全不被类型检查：
 >     let myFavoriteNumber;
 >     myFavoriteNumber = 'seven';
 >     myFavoriteNumber = 7;
+> 
 > ```
 
 ### 联合类型
@@ -256,13 +255,13 @@ Description: TypeScript
 > 
 > ## 例子
 > 通过竖线`|`分隔每个类型，所以 `number | string | boolean` 表示一个值可以是number,string或boolean。
->     let numberOrString: number |string;
+>     let numberOrString: number | string;
 >     numberOrString = 111;
 >     numberOrString = 'abc';
 >     
 >     
 > ## 访问联合类型的属性或方法
-> 当 TypeScript 不确定一个联合类型的变量到底是哪个类型时，我们只能访问此联合类型的所有类型里共有的属性或方法
+> 当 TypeScript 不确定一个联合类型的变量是哪个类型时，我们只能访问此联合类型的所有类型里共有的属性或方法
 >     function getString(something: string | number): string {
 >     	  console.log(something.length) // error， length 不是 string 和 number 的共有属性，所以会报错
 >         return something.toString();
@@ -280,6 +279,7 @@ Description: TypeScript
 >     // index.ts(5,30): error TS2339: Property 'length' does not exist on type 'number'.
 >     上例中，第二行的 myFavoriteNumber 被推断成了 string，访问它的 length 属性不会报错。
 > 		而第四行的 myFavoriteNumber 被推断成了 number，访问它的 length 属性时就报错了。
+> 
 > ```
 
 ### 对象类型：接口
@@ -392,6 +392,50 @@ Description: TypeScript
 >     gender: 'male'
 > };
 > ```
+
+#### const 和 readonly 的区别
+
+```bash
+### const 和 readonly 的区别
+TypeScript 中 readonly 和 const 都可以用于声明不可修改的变量或属性，但它们有着不同的使用场景和限制：
+- const 适用于基本类型数据和对象字面量，一旦声明后就不能再修改。
+- const 变量在代码运行时被计算出，并且只在其块级作用域内有效。
+- const 常量用于算法和常量值，并且需要在编译时解析。
+
+- readonly 适用于对象属性，可以在对象实例化后再次进行赋值，但不能再次被修改。
+- readonly 访问器必须由getter访问器或值初始化。
+- readonly 常用于对象中的属性，可以使用对象字面量来初始化，其属性值可以在运行时更改。
+
+如果需要不可变的常量值，使用 const 变量更合适；如果需要仅允许在初始化后更改的对象属性，则可以使用readonly属性。
+
+> 注意：在给定的类中，如果一个属性只有 getter 方法而没有 setter 方法，它将被视为只读。
+> 如在 React 中不允许直接更改组件的 props 和 state。因为 props 是不可变的，state 可通过 setState() 方法更新。
+```
+
+```ts
+/** const 用于定义常量 */
+const message = 'Hello'
+// message = 'World' // 会报错
+
+
+/** readonly 用于属性的声明 */
+class Triangle {
+  public readonly numberOfVertices = 3
+}
+const triangle = new Triangle()
+triangle.numberOfVertices = 4 // 会报错
+
+
+/** 只设置 getter 不设置 setter 会被视为只读 */
+class Square {
+  side: number = 0
+  get area() { return this.side * this.side }
+}
+const s = new Square()
+// s.area = 100 // 会报错
+```
+
+
 
 ### 数组的类型
 
