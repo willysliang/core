@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-15 14:45:04
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-19 18:33:34
+ * @ ModifierTime: 2024-01-20 15:43:09
  * @ Description: 类型定义
  */
 
@@ -27,6 +27,10 @@ export interface ISelectProps {
    * @description 作为展示 label 的键名
    */
   labelKey?: string | number
+  /**
+   * @description 叶子节点的键名
+   */
+  leafKey?: string | number
   /**
    * @description 是否可清空选项
    */

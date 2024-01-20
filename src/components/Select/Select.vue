@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-26 16:26:58
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-19 18:37:22
+ * @ ModifierTime: 2024-01-20 19:57:53
  * @ Description: Select 选择器
  -->
 
@@ -11,6 +11,7 @@ import { computed, onMounted, ref, onBeforeUnmount } from 'vue'
 import Picker from '@comp/Picker/Picker.tsx'
 import { ISelectProps as IProps } from './type'
 import { getValueType, Type, isMobile } from '@/utils'
+import { deepFindActItem } from './utils'
 
 defineOptions({ name: 'WSelect' })
 
@@ -54,6 +55,7 @@ const props = withDefaults(defineProps<ISelectProps>(), {
   disabled: false,
   valueKey: 'value',
   labelKey: 'label',
+  leafKey: 'children',
   clearable: false,
   multiple: false,
   multipleLimit: 5,
@@ -61,6 +63,14 @@ const props = withDefaults(defineProps<ISelectProps>(), {
   delimiter: '/',
 }) as Required<ISelectProps>
 
+/**
+ * 初始化获取值
+ */
+console.log(deepFindActItem(props.options, props.modelValue, 'value', 'test'))
+
+/**
+ * label
+ */
 /** 显示 label 的值 */
 const labelValue = computed(() => {
   if (getValueType(props.modelValue) === Type.Object) {
@@ -70,6 +80,9 @@ const labelValue = computed(() => {
   } else return props.modelValue
 })
 
+/**
+ * 获取
+ */
 /** 获取 item 的值 */
 const getItem = (option, type: 'label' | 'value' = 'label') => {
   const getProp = type === 'label' ? props.labelKey : props.valueKey
@@ -77,10 +90,16 @@ const getItem = (option, type: 'label' | 'value' = 'label') => {
   return option
 }
 
+/**
+ * 更新
+ */
 const emits = defineEmits(['select', 'update:modelValue'])
 
 const handleUpdateValue = (value) => emits('update:modelValue', value)
 
+/**
+ * 选择
+ */
 /** 选择相应的 item */
 const selectItem = (option) => {
   if (props.disabled) return undefined

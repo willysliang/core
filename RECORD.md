@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年1月20日19点58分
+  - feat(comp): [Select] deepFindActItem 递归获取选中的item
+
 ## 2024年1月19日18点45分
   - feat(comp): [Picker、Select] 选项展示
 
