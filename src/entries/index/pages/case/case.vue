@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-24 16:31:31
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-07 19:36:25
+ * @ ModifierTime: 2024-01-20 19:48:06
  * @ Description: case 组件案例
  -->
 
@@ -10,12 +10,19 @@
 import WTooltip from '@comp/Tooltip/Tooltip.vue'
 import WSelect, { ISelectProps } from '@comp/Select/Select.vue'
 import Popover from '@comp/Popover/Popover.vue'
-
 import { ref } from 'vue'
+import { generateRandomChina } from '@/utils'
 
 const test = ref<ISelectProps>({
-  modelValue: 222,
-  options: Array.from({ length: 100 }).map((_, i) => ({ value: i, test: i })),
+  modelValue: [4, 999],
+  options: Array.from({ length: 100 }).map((_, i) => ({
+    value: i,
+    test: i + generateRandomChina(Math.floor(Math.random() * 50 + 2)),
+    children: Array.from({ length: 100 }).map((_, j) => ({
+      value: +`${i}${j}`,
+      test: i + generateRandomChina(Math.floor(Math.random() * 50 + 2)),
+    })),
+  })),
   labelKey: 'test',
 })
 

@@ -2,55 +2,20 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-26 16:26:58
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-04 21:46:37
+ * @ ModifierTime: 2024-01-20 19:57:53
  * @ Description: Select 选择器
  -->
 
 <script setup lang="ts">
 import { computed, onMounted, ref, onBeforeUnmount } from 'vue'
 import Picker from '@comp/Picker/Picker.tsx'
+import { ISelectProps as IProps } from './type'
 import { getValueType, Type, isMobile } from '@/utils'
+import { deepFindActItem } from './utils'
 
 defineOptions({ name: 'WSelect' })
 
-export interface ISelectProps {
-  /**
-   * @description 选中项的值
-   */
-  modelValue: string | number | boolean | Record<string, unknown> | unknown[]
-  /**
-   * @description 选项列表
-   */
-  options: unknown[]
-  /**
-   * @description 是否禁用选择器
-   */
-  disabled?: boolean
-  /**
-   * @description 作为 value 唯一标识的键名
-   */
-  valueKey?: string | number
-  /**
-   * @description 作为展示 label 的键名
-   */
-  labelKey?: string | number
-  /**
-   * @description 是否可清空选项
-   */
-  clearable?: boolean
-  /**
-   * @description 是否多选
-   */
-  multiple?: boolean
-  /**
-   * @description 在多选时可以选择的项目数量上限
-   */
-  multipleLimit?: number
-  /**
-   * @description 是否弃用搜索功能
-   */
-  filterable?: boolean
-}
+export interface ISelectProps extends IProps {}
 
 /** 是否展示选择层 */
 const showWrapper = ref<boolean>(false)
@@ -90,19 +55,34 @@ const props = withDefaults(defineProps<ISelectProps>(), {
   disabled: false,
   valueKey: 'value',
   labelKey: 'label',
+  leafKey: 'children',
   clearable: false,
   multiple: false,
   multipleLimit: 5,
   filterable: true,
+  delimiter: '/',
 }) as Required<ISelectProps>
 
-/** 显示 label 的值 */
-const labelValue = computed(() =>
-  getValueType(props.modelValue) === Type.Object
-    ? props.modelValue[props.labelKey]
-    : props.modelValue,
-)
+/**
+ * 初始化获取值
+ */
+console.log(deepFindActItem(props.options, props.modelValue, 'value', 'test'))
 
+/**
+ * label
+ */
+/** 显示 label 的值 */
+const labelValue = computed(() => {
+  if (getValueType(props.modelValue) === Type.Object) {
+    return props.modelValue[props.labelKey]
+  } else if (Array.isArray(props.modelValue)) {
+    return props.modelValue.join(` ${props.delimiter} `)
+  } else return props.modelValue
+})
+
+/**
+ * 获取
+ */
 /** 获取 item 的值 */
 const getItem = (option, type: 'label' | 'value' = 'label') => {
   const getProp = type === 'label' ? props.labelKey : props.valueKey
@@ -110,11 +90,21 @@ const getItem = (option, type: 'label' | 'value' = 'label') => {
   return option
 }
 
+/**
+ * 更新
+ */
 const emits = defineEmits(['select', 'update:modelValue'])
 
+const handleUpdateValue = (value) => emits('update:modelValue', value)
+
+/**
+ * 选择
+ */
 /** 选择相应的 item */
 const selectItem = (option) => {
-  emits('update:modelValue', getItem(option, 'value'))
+  if (props.disabled) return undefined
+
+  handleUpdateValue(getItem(option, 'value'))
   emits('select', option)
 
   showWrapper.value = false
@@ -130,7 +120,11 @@ const selectItem = (option) => {
     </div>
 
     <template v-if="isMobile">
-      <Picker v-model:visible="showWrapper" />
+      <Picker
+        v-model:visible="showWrapper"
+        v-bind="props"
+        @update-value="handleUpdateValue"
+      />
     </template>
 
     <template v-else>
@@ -163,6 +157,7 @@ const selectItem = (option) => {
   --select-wrapper-max-height: calc(var(--select-height) * 5);
   --select-picker-max-height: 40vh;
   --select-item-hover-bg-color: #f5f7fa;
+  --select-item-font-size: var(#{getVarName('font-size', 'sm')});
 
   width: var(--select-width);
   height: var(--select-height);
@@ -203,8 +198,12 @@ const selectItem = (option) => {
   }
 
   .w-select__item {
-    height: var(--select-height);
+    width: 100%;
+    font-size: var(--select-item-font-size);
+    line-height: calc(var(--select-item-font-size) + #{p2r(5)});
     text-align: center;
+    box-sizing: border-box;
+    padding: p2r(8) p2r(5);
 
     &:hover {
       background-color: var(--select-item-hover-bg-color);

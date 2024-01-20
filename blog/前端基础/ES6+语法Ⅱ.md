@@ -2220,6 +2220,9 @@ Promise.race([]).then((res) => {
 > ## 异步函数 async/await
 > - `async/await` 是 Generator 的语法糖，是一个自执行的 generate 函数。
 > 		`async function` 代替了 `function *`，`await` 代替了 `yield`，同时也无需自己手写一个自动执行器 run。
+> 
+> 
+> 
 > ```
 >
 > ```js
@@ -2245,11 +2248,9 @@ Promise.race([]).then((res) => {
 
 - `async`用于申明一个`function`是异步的，而`await`用于等待一个异步方法执行完成（`await`只出现在`async`函数中）
 
-- **async 函数返回的是一个 Promise 对象**。如果在async函数中 return 一个直接量，async 会把这个直接量通过 Promise.resolve() 封装成 Promise 对象。
+- **async 函数会始终返回一个 Promise 对象**。async 函数会把返回值通过 Promise.resolve() 封装成 Promise 对象再返回。
 
-- **在没有`await`配合下，`async`返回`promise`回对象，所以可以配合`then`处理**
-
-  - 返回的结果和promise对象中then用法同样的效果。结合Promise 的特点——无等待，所以在没有 await 的情况下执行 async 函数，它会立即执行，返回一个 Promise 对象，并且，绝不会阻塞后面的语句
+- 在函数内部没有 `await` 关键字的情况下执行 async 函数，函数会立即执行，但仍然返回一个已解决的 Promise，且绝不会阻塞后面的语句。这意味着即使没有 `await` 关键字，仍然可以使用 `.then` 和 `.catch` 来处理该函数产生的 Promise。
 
   ```js
   async function Async() {

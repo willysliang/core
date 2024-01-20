@@ -3,33 +3,29 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-02 20:48:20
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-09 17:56:50
+ * @ ModifierTime: 2024-01-19 18:30:11
  * @ Description: 移动端 - 选择器
  */
 
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import WPopover from '@comp/Popover/Popover.vue'
 import { WPickerAction } from './PickerAction'
 import WPickerOptions from './PickerOptions'
+import { pickerProps, IPickerProps } from './type'
 import './Picker.scss'
-
-interface WPickerProps {
-  visible: boolean
-}
+import { Type, getValueType } from '@/utils'
 
 export default defineComponent({
   name: 'WPicker',
-  props: {
-    visible: {
-      type: Boolean,
-    },
-  },
-  emits: ['update:visible'],
+  props: pickerProps,
+  emits: ['update:visible', 'updateValue', 'select'],
 
-  setup(props: WPickerProps, { emit }) {
-    const handleChangeVisible = (status: boolean) => {
+  setup(props: Required<IPickerProps>, { emit }) {
+    const selectValue = ref(props.modelValue)
+
+    /** 切换显隐 */
+    const handleChangeVisible = (status: boolean) =>
       emit('update:visible', status)
-    }
 
     /**
      * @description 确定按钮触发事件
@@ -38,6 +34,19 @@ export default defineComponent({
       //
 
       handleChangeVisible(false)
+    }
+
+    /** 获取 item 的值 */
+    const getItem = (option, type: 'label' | 'value' = 'label') => {
+      const getProp = type === 'label' ? props.labelKey : props.valueKey
+      if (getValueType(option) === Type.Object) return option[getProp]
+      return option
+    }
+
+    const handleUpdateValue = (value) => emit('updateValue', value)
+
+    const handleSelectOption = (option) => {
+      handleUpdateValue(getItem(option, 'value'))
     }
 
     return () => (
@@ -55,7 +64,12 @@ export default defineComponent({
                     onCancel={() => handleChangeVisible(false)}
                     onConfirm={handleConfirm}
                   />
-                  <WPickerOptions />
+                  <WPickerOptions
+                    {...props}
+                    v-model:modelValue={selectValue.value}
+                    onUpdateValue={handleUpdateValue}
+                    onSelect={handleSelectOption}
+                  />
                 </div>
               </>
             ),
