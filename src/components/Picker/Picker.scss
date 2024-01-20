@@ -3,7 +3,7 @@
   --picker-height: 20rem;
 
   width: 100vw;
-  height: var(--picker-height);
+  // height: var(--picker-height);
   max-height: var(--picker-max-height);
   display: flex;
   flex-direction: column;
@@ -25,6 +25,7 @@
       box-sizing: border-box;
       padding: p2r(2) p2r(5);
       @include btn();
+      font-size: var(#{getVarName('font-size')});
     }
 
     &--cancel {
@@ -48,5 +49,21 @@
     @include notScrollbar();
     overflow-y: auto;
     overflow-x: hidden;
+
+    & > li {
+      --picker-option-font-size: var(#{getVarName('font-size', 'sm')});
+
+      width: 100%;
+      font-size: var(--picker-option-font-size);
+      line-height: calc(var(--picker-option-font-size) + #{p2r(5)});
+      text-align: center;
+      box-sizing: border-box;
+      padding: p2r(8) p2r(5);
+      border-bottom: 1px solid var(#{getVarName('border-color')});
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }

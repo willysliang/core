@@ -26,6 +26,15 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年1月20日19点58分
+  - feat(comp): [Select] deepFindActItem 递归获取选中的item
+
+## 2024年1月19日18点45分
+  - feat(comp): [Picker、Select] 选项展示
+
+## 2024年1月19日10点09分
+  - feat(utils): [format] generateRandomChina 生成随机中文字符串
+
 ## 2024年1月12日
   - feat(utils): [scroll] EventHandler - 事件帮手类  16点52分
   - feat(comp): [Picker] WPickerOptions - 选择列的样式
