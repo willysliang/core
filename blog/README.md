@@ -40,6 +40,9 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 # 2023
 
 
+## 2024年1月20日09:35:31
+  - docs(前端框架): [TypeScript] const 和 readonly 的区别
+
 ## 2024年1月12日19点55分
   - docs(前端算法): [数据结构] 数组 Array
     - 把数组排成最小的数
