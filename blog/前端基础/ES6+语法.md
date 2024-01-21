@@ -4461,6 +4461,8 @@ console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Ma
 > Array.of(1, 2) // [1, 2]
 > ```
 
+
+
 ## 对象 Object 
 
 > #### 对象操作
@@ -4750,51 +4752,83 @@ console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Ma
 > ```
 >
 
-### 对象属性的访问
+### 对象属性的访问方式
 
-> #### object.property 和 object['property'] 的区别
->
-> 以下是使用引号和不使用引号声明和访问对象属性的方式：
->
-> ```js
-> const obj = { key: 'value' }
-> obj.key
-> 
-> // Or
-> const obj = { key: 'value' }
-> obj['key']
-> ```
->
-> 如果属性名是数字文字，则可能需要使用不同的键来访问属性值。
->
-> ```js
-> const obj = { 12e34: 'hello' }
-> 
-> console.log(obj['1.2e34']) // undefined
-> console.log(obj['1.2e+35']) // 'hello'
-> ```
->
-> 用引号括住属性将有助于我们避免问题：
->
-> ```js
-> const obj = { '12e34': 'hello' }
-> 
-> console.log(obj['12e34']) // 'hello'
-> ```
->
-> 如果属性是**保留关键字**之一，那么我们必须使用引号来访问属性值。
->
-> ```js
-> const styles = { class: 'foo' }
-> 
-> // 将引发异常，因为类是保留关键字
-> styles[class]
-> 
-> // 返回 'foo'
-> styles['class']
-> ```
->
-> 对于包含特殊字符（如 `-`）的属性，也会发生同样的情况。
+```bash
+### 对象属性的访问方式
+- 有两种方法访问对象属性：点符号（`.`）和括号符号（`[]`）。
+- 一般情况下使用点符号，当想使用变量访问属性时使用括号符号。
+- 当您尝试访问不存在的属性时，它将返回 `undefined`，而不会抛出错误。
+
+
+#### object.property 和 object['property'] 的区别
+使用点符号的一个主要限制是它只适用于有效的标识符。
+标识符是代码中表示变量、函数或属性的字符序列。标识符具有以下规则：
+	- 首字母必须是字母、下划线（`_`）或美元符号（`$`），不能是数字。
+	- 除首字母外，其他字符可以是字母、数字、下划线或美元符号（`$`）
+	- 普通标识符（用作变量名、函数名和循环语句中用于跳转的标记）不能是保留字符
+	- 在严格模式下，`arguments` 和 `eval` 不能用作变量名，函数名或者参数名
+  - 注意：上面所说的字母，不只是 ASCII 字母，还包括 Unicode 中的一些字符。但便于移植，字母通常是使用 ASCII 中的字母。
+
+
+```
+
+```js
+const obj = {
+  123: 'digit',
+  123name: 'start with digit',
+  name123: 'does not start with digit',
+  $name: '$ sign',
+  name-123: 'hyphen',
+  NAME: 'upper case',
+  name: 'lower case'
+}
+
+
+/** 点符号 */
+obj.123      // ❌ SyntaxError
+obj.123name  // ❌ SyntaxError
+obj.name123  // ✅ 'does not start with digit'
+obj.$name    // ✅  '$ sign'
+obj.name-123  // ❌ SyntaxError
+obj.'name-123'// ❌ SyntaxError
+obj.NAME // ✅ 'upper case'
+obj.name // ✅ 'lower case'
+
+
+/** 括号符号 */
+obj['123'] // ✅ 'digit'
+obj['123name'] // ✅ 'start with digit'
+obj['name123'] // ✅ 'does not start with digit'
+obj['$name'] // ✅ '$ sign'
+obj['name-123'] // ✅ 'does not start with digit'
+obj['NAME'] // ✅ 'upper case'
+obj['name'] // ✅ 'lower case'
+
+```
+
+**特殊的访问**
+
+```js
+/** 如果属性名是数字文字，则可能需要使用不同的键来访问属性值 */
+const obj1 = { 12e34: 'hello' }
+obj1['1.2e34'] // undefined
+obj1['1.2e+35'] // 'hello'
+
+
+/** 用引号括住属性将有助于我们避免问题 */
+const obj2 = { '12e34': 'hello' }
+obj2['12e34'] // 'hello'
+
+
+/* 如果属性是保留关键字之一，则必须使用引号来访问属性值 */
+const styles = { class: 'foo' }
+styles[class] // 将引发异常，因为类是保留关键字
+styles['class'] // 返回 'foo'
+
+```
+
+
 
 ### super关键字
 

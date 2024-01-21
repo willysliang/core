@@ -39,6 +39,10 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 
 # 2024
 
+
+## 2024年1月21日12:46:16
+  - docs(前端基础): [ES6+语法] 对象属性的访问方式
+
 ## 2024年1月21日07:26:15
   - docs(前端基础): [Git仓库管理] ssh 连接校验异常
     - ssh: connect to host github.com port 22: Connection timed out
