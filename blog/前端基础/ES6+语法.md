@@ -378,13 +378,14 @@ Description: ES6+ 语法
 > ```bash
 > ## undefined 与 null
 > - null 和 undefined 的共同点：都是基本数据类型，数据保存在栈中，且在 if 判断语句中值都为 false。
+> 
 > - `null` 表示'无'的对象，即空对象。
 >       1. 作为函数的参数，表示该函数的参数是正常或意料之中的值空缺。
 >       2. 作为对象原型链的终点。
 >       3. null 转为数值时为`0`。
 >       4. 解除对象引用，便于对象垃圾回收。
 >       		- 垃圾回收机制：当一个对象不再被任何变量引用时，会被释放
->       		- 即null 是主动释放一个变量引用的对象，表示一个变量不再指向任何对象地址，null会被内存收集器回收。
+>       		- 即 null 是主动释放一个变量引用的对象，表示一个变量不再指向任何对象地址，null会被内存收集器回收。
 > 
 > 
 > - `undefined`表示'无'的原始值，即变量声明但未赋值。
@@ -393,6 +394,7 @@ Description: ES6+ 语法
 >       3. 对象中没有赋值的属性的值为undefined。
 >       4. 函数没有返回值时，默认返回undefined。
 >       5. undefined 转为数值时为`NaN`。
+> 
 > ```
 
 #### 0.1 + 0.2 != 0.3
@@ -417,6 +419,96 @@ Description: ES6+ 语法
 > ```
 >
 > ![image-20230410110121037](./image/image-20230410110121037.png)
+
+
+
+#### void 和 undefined 的区别
+
+```bash
+### void 和 undefined 的区别
+- 因为不可能重写 `void` 操作符。因此，`void` 被用作 `undefined` 值的替换，以安全的方式获取 `undefined` 值。
+- 而且在 ES5 中，不可能重写 `undefined`，因为它被 `Writeable` 设置为 `false`。
+
+- `void`是一个操作符，而不是一个函数。因此不需要将表达式括在括号中。`void 0` 相当于 `void(0)`。
+- 有些缩微器使用 `void 0` 来缩短 `undefined` 的长度。
+- 如果使用立即调用的函数表达式（称为 IIFE），则可以使用 `void` 将 `function` 关键字视为表达式，而不是声明。
+
+
+#### 在落后 ES 引擎中的对比
+1. 在 ES5 浏览器中，直接使用 void 的运算符和 undedfined 的值没有区别。
+    void 0 === undefined // true
+    void 1 === undefined // true
+    void 'Foo' === undefined // true
+    
+
+2. 在运行 ES3 引擎的旧浏览器中，undefined 是一个全部变量，是可以更改的。
+    // 在 ES3 中
+    console.log(undefined) // undefined
+    var undefined = 'foo'
+    console.log(undefined) // 'foo'
+
+
+
+#### void 在箭头函数中的作用
+- 当与箭头函数一起使用时，可以使用 `void` 来避免副作用。
+	- 产生副作用原因：ES6 箭头函数允许通过省略函数体中的大括号来使用函数的返回值。
+
+案例：
+  如在某些情况下，我们不打算使用函数的返回值，因为它可能会导致不同的行为产生。
+    `button.onClick = () => doSomething()`
+    其在返回 false 的情况下，将跳过 click 事件的默认行为，这可能是您不希望看到的。
+  而将结果传递给 void 将确保无论执行函数的结果如何，它都不会改变箭头函数的行为：
+    `button.onClick = () => void doSomething()`
+
+现实场景：
+  如在 React、Svelte 等库中可以看到使用 void 和箭头函数的优势。
+  这些库允许我们在将组件装入 DOM 之后立即执行函数。例如，React 提供 `useEffect`，Svelte 具有 `onMount`。
+  React： 
+    `useEffect(() => doSomething())` 
+    它可以在运行时产生 Bug，为了避免这种情况，我们可以使用 void：
+    `useEffect(() => void doSomething())`
+    或者使用大括号的方式：
+    `useEffect(() => { doSomething() })`
+	
+	
+#### javascript URI 中的 void
+在以 `javascript:` 为前缀的 URL 中使用了 `void` 运算符。
+默认情况下，浏览器将在遵循 `javascript:` URI 时计算代码，然后用返回值替换页面内容。
+
+为了防止出现默认行为，代码必须返回 `undefined`。这就是我们看到以下代码的原因：
+	`<a href="javascript: void(0);" onclick="doSomething"> ... </a>`
+
+现在，不推荐使用 `javascript:` 协议。由于用户可以将未初始化的输入放入事件处理程序中，因此可能会产生安全问题：
+	`<a href="javascript: alert('unsanitized input')">...</a>`
+
+从 v16.9.0 开始，React 还反对使用 `javascript:` URL。
+
+```
+
+
+
+#### `===` 和  Object.is() 的区别
+
+```bash
+### `===` 和 Object.is() 的区别
+`Object.is()` 的行为与 `===`（严格相等操作符）相同，除了 `NaN`、`+0` 和 `-0`。
+
+```
+
+```js
++0 === -0 // true
+Object.is(+0, -0) // false
+
+NaN === NaN // false
+Object.is(NaN, NaN) // true
+
+Number.NaN === Number.NaN // false
+Object.is(Number.NaN, Number.NaN) // true
+
+NaN === Number.NaN // false
+Object.is(NaN, Number.NaN) // true
+
+```
 
 
 
@@ -4627,7 +4719,7 @@ console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Ma
 > }
 > ```
 
-### 对象转换为数组 entires()
+### 对象转换为数组 entires
 
 > `Object.entries(obj)`
 >
@@ -4709,7 +4801,7 @@ console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Ma
 > */
 > ```
 
-### 键值对列表转换为对象`fromEntries()`
+### 键值对列表转换为对象  fromEntries
 
 > `Object.fromEntries(iterable)`
 >
@@ -4769,7 +4861,6 @@ console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Ma
 	- 普通标识符（用作变量名、函数名和循环语句中用于跳转的标记）不能是保留字符
 	- 在严格模式下，`arguments` 和 `eval` 不能用作变量名，函数名或者参数名
   - 注意：上面所说的字母，不只是 ASCII 字母，还包括 Unicode 中的一些字符。但便于移植，字母通常是使用 ASCII 中的字母。
-
 
 ```
 
@@ -4945,7 +5036,7 @@ styles['class'] // 返回 'foo'
 > console.log(obj.a, obj.b, obj.c)// 1, 2, 3
 > ```
 
-### defineProperty() 新增或修改原有属性
+### 增改原有属性 defineProperty
 
 > - `Object.defineProperty()`定义对象中新属性或修改原有的属性(为指定对象定义扩展多个属性)。
 > - `Object.defineProperty(obj目标对象, prop需定义或修改的属性名字, descriptor目标属性所拥有的特性)`
@@ -5035,7 +5126,7 @@ styles['class'] // 返回 'foo'
 > 注意：这两种方法都对对象执行'浅'冻结/密封。这意味着'嵌套对象和数组不会被冻结或密封'，可以进行修改。为了防止这种情况发生，您可以像本文所述的那样对对象进行深度冻结。
 > 
 > 
-> 1. Object.freeze('被冻结的对象')
+> ### 1. Object.freeze('被冻结的对象')
 > Object.freeze() 方法可以冻结一个对象，即该对象不可修改或添加属性，且对象的原型也不能被修改。该方法返回被冻结的对象。
 > 			const obj1 = { name: 'willy' }
 >       const freeze = Object.freeze(obj1)	// 使用了Object.freeze() 方法，不可以操作原来的obj
@@ -5046,7 +5137,7 @@ styles['class'] // 返回 'foo'
 >       console.log(obj1, freeze) // { name: 'willy' }
 >       
 >       
-> 2. Object.seal()
+> ### 2. Object.seal()
 > Object.seal() 只将现有的 configurable 属性标记为不可配置，这意味着只要它们是可写的，就可更改它们的值。
 >       const obj2 = { name: 'willy' }
 >       const seal = Object.seal(obj2)
@@ -5054,6 +5145,7 @@ styles['class'] // 返回 'foo'
 >       delete seal.name  // 不可删除
 >       seal.age = 44
 >       console.log(obj2, seal) // { name: 'cilly' }
+> 
 > ```
 
 ### AggregateError错误对象
