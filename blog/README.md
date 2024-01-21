@@ -39,6 +39,8 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
 
 # 2024
 
+## 2024年1月21日21:52:04
+ - docs(前端基础): [ES6+语法] void 和 undefined 的区别
 
 ## 2024年1月21日12:46:16
   - docs(前端基础): [ES6+语法] 对象属性的访问方式
