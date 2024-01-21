@@ -1,26 +1,37 @@
 ---
-home: true
-heroImage: /hero.png
-heroText: Hero 标题
-tagline: Hero 副标题
-actionText: 快速上手 →
-actionLink: /zh/guide/
-features:
-- title: 简洁至上
-  details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
-- title: Vue驱动
-  details: 享受 Vue + webpack 的开发体验，在 Markdown 中使用 Vue 组件，同时可以使用 Vue 来开发自定义主题。
-- title: 高性能
-  details: VuePress 为每个页面预渲染生成静态的 HTML，同时在页面被加载的时候，将作为 SPA 运行。
-footer: MIT Licensed | Copyright © 2023-present Willys Liang
+Author: willysliang
+CreateTime: 2024-01-21 07:11:37
+Modifier: willysliang
+ModifiedTime: 2024-01-21 21:59:26
+Description: README
 ---
 
 ::: slot footer
-MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willysliang)
+MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willysliang)
 :::
 
+# 概述
 
-# 更新规则
+## 学习路线
+基础：计算机原理、编译原理、数据结构、算法、设计模式、编程范式等基本知识了解
+语法：JavaScript、ECMAScript、CSS、TypeScript、HTML、Node.js 等语法的了解和使用
+框架：React、Vue、Egg、Koa、Express、Webpack 等原理的了解和使用
+工程：编译工具、格式工具、Git、NPM、单元测试、Nginx、PM2、CI / CD 了解和使用
+网络：HTTP、TCP、UDP、WebSocket、Cookie、Session、跨域、缓存、协议的了解
+性能：编译性能、监控、白屏检测、SEO、Service Worker 等了解
+插件：Chrome 、Vue CLI 、Webpack 等插件设计思路的理解
+系统：Mac、Windows、Linux 系统配置的实践
+后端：Redis 缓存、数据库、Graphql、SSR、模板引擎等了解和使用
+
+## 前端体系规划
+助理前端工程师: 基础编程能力
+前端工程师: 基础前端技能
+资深前端工程师: 组件化、工具、性能优化
+前端专家: 组件体系、工具链、持续集成、性能体系
+高级前端专家：前端体系
+
+
+## 更新规则
   - feat 增加新功能
   - fix 修复问题/BUG
   - style 代码风格相关无影响运行结果的
@@ -36,8 +47,10 @@ MIT Licensed | Copyright © 2023-present [Willys Liang](https://github.com/willy
   - wip 开发中
 
 
-
 # 2024
+
+## 2024年1月21日23:27:33
+  - docs(all): 添加文字描述
 
 ## 2024年1月21日21:52:04
  - docs(前端基础): [ES6+语法] void 和 undefined 的区别
