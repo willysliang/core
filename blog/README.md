@@ -51,6 +51,8 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 ## 2024年1月22日21点27分
  - docs(前端算法): [数据结构] N数之和
+ - docs(前端进阶): [逻辑思维] 更改文件命名 [前端笔试题] -> [前端逻辑]
+ - docs(前端进阶): [逻辑思维] 从数组中删除重复的对象
 
 ## 2024年1月21日23:27:33
   - docs(all): 添加文字描述
