@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-20 19:52:27
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-20 19:58:13
+ * @ ModifierTime: 2024-01-22 15:40:12
  * @ Description: 工具类
  */
 
@@ -66,10 +66,15 @@ export const deepFindActItem = (
     return { result, labels }
   }
 
-  /** 工具类 */
-  const isObject = (obj) => typeof obj === 'object'
+  /**
+   * 工具类
+   */
+  /** 是否为对象 */
+  const isObject = (obj) => obj !== null && typeof obj === 'object'
+  /** 移除传入的数据中包含的 proxy 对象 */
   const removeProxy = (obj) =>
     isObject(obj) ? JSON.parse(JSON.stringify(obj)) : obj
+  /** 获取label 的值 */
   const getLabelValue = (obj) => (isObject(obj) ? obj[labelKey] : obj)
 
   // 非数组（单选）

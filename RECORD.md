@@ -26,6 +26,11 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年1月22日21点33分
+  - feat(utils): [common] 
+    - deepEqual 深度对比两个值是否相等
+    - removeDuplicates 删除数组的重复项对象
+
 ## 2024年1月20日19点58分
   - feat(comp): [Select] deepFindActItem 递归获取选中的item
 
