@@ -72,18 +72,15 @@ Description: LeetCode
 > ```js
 > /** 使用 Map */
 > var twoSum = function (nums, target) {
->     const map = new Map()
->     for (let i = 0; i < nums.length; i++) {
+>      const map = new Map()
+>      for (let i = 0; i < nums.length; i++) {
 >        const complement = target - nums[i]	// 计算当前所属数的值 与 target 的差值
->        if (map.has(complement)) {
->          return [map.get(complement), i]
->        } else {
->          map.set(nums[i], i)
->        }
->     }
->     return []
-> }
-> ```
+>        if (map.has(complement)) return [map.get(complement), i]
+>        else map.set(nums[i], i)
+>      }
+>      return []
+>    }
+>    ```
 
 ### 2. 两数相加
 
