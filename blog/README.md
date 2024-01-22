@@ -49,6 +49,9 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 # 2024
 
+## 2024年1月22日21点27分
+ - docs(前端算法): [数据结构] N数之和
+
 ## 2024年1月21日23:27:33
   - docs(all): 添加文字描述
 
