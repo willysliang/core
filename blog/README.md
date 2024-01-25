@@ -49,6 +49,9 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 # 2024
 
+## 2024年1月25日09点58分
+  - docs(前端基础): [ES6+语法II] Map 和 Object 的区别
+
 ## 2024年1月22日21点27分
  - docs(前端算法): [数据结构] N数之和
  - docs(前端进阶): [逻辑思维] 更改文件命名 [前端笔试题] -> [前端逻辑]
