@@ -1120,53 +1120,114 @@ Description: ES6+语法Ⅱ
 
 ### Map
 
-> - `Map`数据结构是为了**解决对象无法使用非字符串作为键**而提出的数据结构（即Map可使用各种类型的值作为键，包括对象也可作为键）
->
-> - `Map`本质上是一个二维数组，其中数组元素是只包含两个元素(键值对)的数组。
->
->   - 设置键值对方法`set(key, value);`
->   - 获得值的方法`get(key);`
->
->   - 删除键值对方法`delete(key);`
->   - 清空所有数据则用`clear();`
->
->   - 构造Map实例`new Map(iterable)`参数是`iterable`对象。由于`entries()`方法产生的形式与Map本身一样，所以可以用Map实例当参数传入
->
->
-> ```js
-> var m = new Map();
-> let m2 = new Map(m.entires());	// 等价 let m3 = new Map(m);
-> var x = { id: 1 }, y = { id: 2 };
-> m.set(x, 'foo');
-> m.set(y, 'bar');
-> var marr = [...m]; // [[{id: 1}, 'foo'], [{id: 2}, 'bar']]; 二维数组
-> var marr2 = [...m.entries()]; // 效果同上 [...m]
-> console.log(marr2[0][1]); // 'foo';
-> 
-> let x = new Map([
->     ['acc', 'abcd'],
->     [123, { x: '手机', y: '电脑' }],
->     [2 > 3, '不正确']
-> ]);
-> //可以直接使用数组的foreach遍历
-> x.forEach((x) => { console.log(x); })
-> console.log(x)	// Map { 'acc' => 'abcd', 123 => { x: '手机', y: '电脑' }, false => '不正确' }
-> 
-> //遍历器
-> //遍历器只能用for of来遍历
-> //.keys()指的是返回键名的遍历器
-> for (let s of x.keys()) {
->     console.log(s);
-> }
-> //.values()指的是返回键值的遍历器
-> for (let a of x.values()) {
->     console.log(a);
-> }
-> //.entries()指的是返回键值对的遍历器
-> for (let y of x.entries()) {
->     console.log(y);
-> }
-> ```
+```bash
+## Map 数据结构
+- `Map` 数据结构是为了**解决对象无法使用非字符串作为键**而提出的数据结构（即Map可使用各种类型的值作为键，包括对象也可作为键）
+- `Map`本质上是一个二维数组，其中数组元素是只包含两个元素(键值对)的数组。
+
+    - 设置键值对：`set(key, value)`
+    - 获得值：`get(key)`
+    - 删除键值对：`delete(key)`
+    - 清空所有数据：`clear()`
+
+    - 构造Map实例 `new Map(iterable)` 参数是 `iterable` 对象。
+    - 由于 `entries()` 方法产生的形式与 Map 本身一样，所以可以用 Map实例当参数传入
+```
+
+```js
+/**
+ * 一般使用
+ */
+const map1 = new Map()
+const map2 = new Map(map1.entries()) // 等价 let m3 = new Map(map1);
+console.log(map2)
+
+const x = { id: 1 }
+const y = { id: 2 }
+map1.set(x, 'foo')
+map1.set(y, 'bar')
+
+console.log(map1.has({ id: 1 }), map1.has(x)) // false true
+
+const marr = [...map1]
+console.log(marr) // [[{id: 1}, 'foo'], [{id: 2}, 'bar']]; 二维数组
+
+const marr2 = [...map1.entries()] // 效果同上 [...map1]
+console.log(marr2[0][1]) // 'foo'
+
+
+
+/**
+ * 迭代遍历
+ */
+const map3 = new Map([
+  ['acc', 'abcd'],
+  ['123', { x: '手机', y: '电脑' }],
+  ['2 > 3', '不正确'],
+])
+console.log(map3) // Map { 'acc' => 'abcd', 123 => { x: '手机', y: '电脑' }, false => '不正确' }
+
+// 可以直接使用数组的foreach遍历
+map3.forEach((x) => {
+  console.log(x)
+})
+
+// 遍历器
+// 遍历器只能用for of来遍历
+// .keys()指的是返回键名的遍历器
+for (const s of map3.keys()) {
+  console.log(s)
+}
+// .values()指的是返回键值的遍历器
+for (const a of map3.values()) {
+  console.log(a)
+}
+// .entries()指的是返回键值对的遍历器
+for (const y of map3.entries()) {
+  console.log(y)
+}
+
+```
+
+#### Map和 Object 的区别
+
+```bash
+### Map 和 Object 的区别
+1. Key 的类型：
+对象（Object）的键必须是字符串或者Symbols。尽管当你使用非字符串作为键时，它会被转换为字符串。
+Map可以使用任何类型作为键，包括对象、函数、原始类型。
+
+2. 键的顺序：
+对象（Object）在ES2015之前没有键的顺序保证；而在ES2015及之后，字符串键按照创建时的顺序排列，Symbol键则按照它们被添加到对象的顺序排列。
+Map则会按照元素添加的顺序保持键值对的顺序。
+
+3. 大小可追踪：
+对象（Object）没有内建的方式来追踪有多少键值对存在。
+Map有一个size属性，可以直接获取到Map中键值对的数量。
+
+4. 性能：
+对象（Object）在处理大量的键值对和频繁添加和删除键值对时，性能可能不如Map。
+Map在频繁的添加和删除键值对的操作中通常提供更好的性能，特别是当涉及到大量的键值对时。
+
+5. 易用性：
+对象（Object）拥有字面量语法（{}），并且在JavaScript中被广泛使用。
+Map则需要使用构造函数（new Map()）来创建。
+
+6. 内建方法：
+对象（Object）有一些内建的原型方法，但这些方法可能被对象的键覆盖。
+Map提供了一套标准的方法来操作数据，例如get(), set(), has(), delete(), clear()，以及可以直接进行迭代的方法，例如keys(), values(), 和 entries()。
+
+7. JSON支持：
+对象（Object）可以直接被转换为JSON字符串，使用JSON.stringify()。
+Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
+
+在实践中：
+如果你需要保证键的顺序，或者你的键不仅仅是字符串或Symbol，那么Map可能是更好的选择。
+如果你的数据结构相对简单，并且主要用于JSON序列化，那么对象可能更便捷。
+
+```
+
+
 
 ### WeakMap
 
