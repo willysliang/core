@@ -455,45 +455,43 @@ Description: ES6+语法Ⅱ
 
 ### `export * as ns from 'mod'`
 
-> - 语法：`export * as ns from 'module'`
->
->
-> ```js
-> export * as ns from './utils'
-> 
-> // 👆 等同于 👇
-> import * as ns from './utils'
-> export { ns }
-> ```
->
-> ### 扩展
->
-> [Airbnb 规范](https://github.com/airbnb/javascript)建议我们不要使用通配符导入。
->
-> > **原因**：确保您有一个默认导出。
->
-> ```js
-> // bad
-> import * as AirbnbStyleGuide from './AirbnbStyleGuide'
-> 
-> // good
-> import AirbnbStyleGuide from './AirbnbStyleGuide'
-> ```
->
-> 并且不要直接从 `import` 中 `export`
->
-> > **原因**：尽管单行代码很简洁，但是使用一种清晰的导入方式和一种清晰的导出方式可以使事情保持一致。
->
-> ```js
-> // bad
-> // es6.js
-> export { es6 as default } from './AirbnbStyleGuide'
-> 
-> // good
-> // es6.js
-> import { es6 } from './AirbnbStyleGuide'
-> export default es6
-> ```
+```bash
+### `export * as ns from 'mod'`
+语法：`export * as nameSpaceStr from 'modulePath'`
+
+
+- 为了确保有一个默认导出， [Airbnb 规范](https://github.com/airbnb/javascript)建议不要使用通配符导入。
+- 不要直接从 import 中 export，使用一种清晰的导入方式和一种清晰的导出方式可以使事情保持一致。
+```
+
+```js
+export * as ns from './utils'
+
+// 👆 等同于 👇
+import * as ns from './utils'
+export { ns }
+```
+
+**确保存在一个默认导出**
+
+```js
+// bad
+import * as AirbnbStyleGuide from './AirbnbStyleGuide'
+
+// good
+import AirbnbStyleGuide from './AirbnbStyleGuide'
+```
+
+```js
+// bad
+export { es6 as default } from './AirbnbStyleGuide'
+
+// good
+import { es6 } from './AirbnbStyleGuide'
+export default es6
+```
+
+
 
 ## 正则表达式  RegExp
 
@@ -565,7 +563,6 @@ Description: ES6+语法Ⅱ
 >     - U+000D 回车符（\r）
 >     - U+2028 行分隔符（line separator）
 >     - U+2029 段分隔符（paragraph separator）
-> 
 > 
 > ```
 
@@ -2466,3 +2463,181 @@ async reqHttp = () => {
 > test3()	// 输出：100, 2000, 3000
 > ```
 >
+
+## 类文件对象 Blob
+
+```bash
+## 类文件对象 Blob
+- Blob 意思是 '二进制大对象'，表示一个不可变、原始数据的类文件对象。它的数据可以按文本或二进制的格式进行读取，也可以转换成 ReadableStream 来用于数据操作。
+- Blob 对象主要负责保存数据，是字节块的不透明表示。
+
+### Blob 的作用
+- Blob 可以从网络内容中创建，可以保存到磁盘，也可以从磁盘读取。Blob 是 `FileReader` API 中使用的文件的底层数据结构。
+- Blob 可以使用 [Channel Messaging API] 在 [Web Worker] 和 [iframe] 之间发送，也可以使用 [Push API] 从服务器发送到客户端。
+- 可以使用 URL 引用 Blob。
+- 提取存储在 Blob 中的文本(或字节)，Blob 还可以直接存储在 [IndexedDB] 总，也可以从 IndexedDB 中检索出来。
+
+
+### 关联/参考地址
+- [Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API) 
+- [Web Worker](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Using_web_workers)
+- [iFrame](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
+- [Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API) 
+- [DOMString](https://developer.mozilla.org/zh-CN/docs/conflicting/Web/JavaScript/Reference/Global_Objects/String_6fa58bba0570d663099f0ae7ae8883ab)
+- [ArrayBuffer](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
+- [ArrayBufferView](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)
+
+- [Blob](https://zh.javascript.info/blob)
+- [你不知道的 Blob](https://juejin.cn/post/6844904178725158926)
+- [《你不知道的 Blob》番外篇](https://juejin.cn/post/6844904183661854727)
+
+```
+
+#### 创建 Blob
+
+```bash
+### 创建 Blob
+#### 创建 Blob 的方式一：使用 Blob 构造函数
+- 语法：`const Blob = new Blob(array, options)`
+		- 构造函数只接受一个值数组。即使只有一个字符串也必须将其包装在数组中。值数组可以是：
+        - 字符串（包括 DOMString）
+        - ArrayBuffer
+        - ArrayBufferView
+        - 另一个 Blob
+		- Blob 构造函数接受一个可选的第二个参数，该参数表示 `MIME` 类型。
+
+- 一旦拥有 Blob 对象后，可以访问其 2 个属性：
+		- `size` 返回 Blob 内容的长度（以字节为单位）
+		- `type` 与之关联的 MIME 类型
+		- 可以调用它唯一的 `slice()` 方法，`slice()` 方法可以检索 Blob 的一部分。
+
+- 例子：
+	- `const data = new Blob(['Test'])`
+	- `const data = new Blob(['Test'], { type: 'text/plain' })`
+
+
+#### 创建 Blob 的方式二：从另一个 Blob，使用 `Blob.slice()` 实例方法
+	- 从 aBlob 字节 10 到 20 创建新 blob：`const partialBlob = aBlob.slice(10, 20)`
+
+```
+
+#### 上传 Blob 数据
+
+```bash
+### 上传 Blob 数据
+
+```
+
+```js
+/**
+ * @function uploadBlob 上传Blob 数据
+ * @param {string} url 上传的接口地址
+ * @param {Blob} blob 所上传的 Blob
+ * @param {Function} trackProgress 跟踪上传的进度
+ * @desc 用作对输入类型或拖放的回调
+ */
+export const uploadBlob = (url, blob, trackProgress) => {
+  // 使用 XHR 将 Blob 加载到 URL
+  const xhr = new XMLHttpRequest()
+  xhr.open('POST', url)
+  xhr.send(blob)
+  xhr.upload.onprogress = trackProgress
+}
+
+```
+
+#### 以 Blob 形式下载数据
+
+```bash
+### 以 Blob 形式下载数据
+
+
+```
+
+```js
+/**
+ * @function downloadBlob 以 Blob 形式从互联网下载数据
+ * @param {string} url 所需要下载的数据接口地址
+ * @param {Function} callback 回调函数，获取 Blob 对象
+ * @desc 从互联网下载数据，并将其存储到 Blob 对象中
+ */
+export const downloadBlob = (url, callback) => {
+  const xhr = new XMLHttpRequest()
+  xhr.open('GET', url)
+  xhr.responseType = 'blob'
+
+  xhr.onload = () => {
+    callback(xhr.response)
+  }
+
+  xhr.send(null)
+}
+
+```
+
+#### Blob URL 引用
+
+```bash
+### Blob URL 引用
+- Blob URL 由浏览器生成，是内部引用。给定一个 Blob，您可以使用该 URL 生成指向它的 `URL.createObjectURL()` 函数。
+- 一旦浏览器看到该 URL，它将提供存储在内存或磁盘中的相应 Blob。
+- Blob URL 以 `blob://` 开头，不同于 Data URL（以 `data:` 开头），因为它们不将数据存储在 URL 中。它也不同于 File URL（以 `file:` 开头），因为它们不会显示文件路径等敏感信息。
+- 如果访问一个不再存在的 Blob URL，将收到来自浏览器的 404 错误。
+- 生成 Blob URL 后，可以通过调用 [`URL.revokeObjectURL()`](https://developer.mozilla.org/zh-CN/docs/Web/API/URL/revokeObjectURL) 并传递 URL 来删除它。
+
+```
+
+#### 从页面上的本地磁盘加载文件并获取
+
+```bash
+### 从页面上的本地磁盘加载文件并获取
+
+```
+
+```html
+<!-- 用 input 标签选择图像，一旦选择图像，则删除输入元素并显示图像，然后在完成图像显示后清除 Blob  -->
+<input type="file" allow="image/*" />
+
+<script>
+const input = document.querySelector('input')
+
+if (input !== null) {
+  input.addEventListener('change', () => {
+    const img = document.createElement('img')
+    const imageBlob = URL.createObjectURL(input?.files?.[0] || new Blob([]))
+    img.src = imageBlob
+
+    img.onload = function () {
+      URL.revokeObjectURL(imageBlob)
+    }
+
+    input && input.parentNode && input.parentNode.replaceChild(img, input)
+  })
+}
+</script>
+```
+
+#### 读取 Blob 的数据
+
+```bash
+### 读取 Blob 的数据
+- 无法直接访问 Blob 对象中包含的数据，必须使用 `FileReader` 对象或使用响应对象`Response`。
+
+```
+
+```js
+/* 使用 FileReader 对象访问 Blob 中的数据 */
+const reader = new FileReader()
+reader.addEventListener('load', () => {
+  console.log(reader.result) // 'Test'
+})
+reader.readAsText(data)
+
+
+/* 使用 Response 响应对象访问 Blob 中的数据 */
+const text = await new Response(data).text()
+text // 'Test'
+```
+
+
+
