@@ -51,6 +51,9 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 ## 2024年1月25日09点58分
   - docs(前端基础): [ES6+语法II] Map 和 Object 的区别
+  - docs(前端算法): [数据结构] 
+    - 二维数组(构建乘积数组、顺时针打印矩阵)
+    - 数据统计(数组中出现次数超过数组长度一半的数字)
 
 ## 2024年1月22日21点27分
  - docs(前端算法): [数据结构] N数之和
