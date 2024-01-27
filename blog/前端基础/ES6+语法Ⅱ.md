@@ -2468,14 +2468,36 @@ async reqHttp = () => {
 
 ```bash
 ## 类文件对象 Blob
-- Blob 意思是 '二进制大对象'，表示一个不可变、原始数据的类文件对象。它的数据可以按文本或二进制的格式进行读取，也可以转换成 ReadableStream 来用于数据操作。
+- Blob 表示二进制类型的大对象，在 JS 中 Blob 类型的对象表示一个不可变的类似文件对象的原始数据。
+- Blob 存储的数据可以按文本或二进制的格式进行读取，也可以转换成 ReadableStream 来用于数据操作。
+
 - Blob 对象主要负责保存数据，是字节块的不透明表示。
+		- Blob 通常存储的是映像、声音或多媒体文件。
+		- 注意：Blob 存储的不一定是 JavaScript 原生格式的格式的数据。
+		- 如 `File` 接口基于 Blob，继承 Blob 的功能并将其扩展使其支持用户系统上的文件。
+ 
+
+### Blob 对象拥有两个属性：
+- size: 表示 Blob 对象所包含数据的大小（以字节为单位）
+- type: 表明该 Blob 对象所包含数据的 MIME 类型。（字符串类型），如果类型未定义，则该值为空字符串
+- 可以调用它唯一的 `slice()` 方法检索 Blob 的一部分。
+
+
 
 ### Blob 的作用
 - Blob 可以从网络内容中创建，可以保存到磁盘，也可以从磁盘读取。Blob 是 `FileReader` API 中使用的文件的底层数据结构。
 - Blob 可以使用 [Channel Messaging API] 在 [Web Worker] 和 [iframe] 之间发送，也可以使用 [Push API] 从服务器发送到客户端。
 - 可以使用 URL 引用 Blob。
 - 提取存储在 Blob 中的文本(或字节)，Blob 还可以直接存储在 [IndexedDB] 总，也可以从 IndexedDB 中检索出来。
+
+
+
+### Blob 的方法
+- slice([start[, end[, contentType]]])：返回一个新的 Blob 对象，包含了源 Blob 对象中指定范围内的数据。
+- stream()：返回一个能读取 blob 内容的 ReadableStream。
+- text()：返回一个 Promise 对象且包含 blob 所有内容的 UTF-8 格式的 USVString。
+- arrayBuffer()：返回一个 Promise 对象且包含 blob 所有内容的二进制格式的 ArrayBuffer。
+
 
 
 ### 关联/参考地址
@@ -2493,23 +2515,24 @@ async reqHttp = () => {
 
 ```
 
+![blob_composition](./image/blob_composition.png)
+
 #### 创建 Blob
 
 ```bash
 ### 创建 Blob
 #### 创建 Blob 的方式一：使用 Blob 构造函数
-- 语法：`const Blob = new Blob(array, options)`
-		- 构造函数只接受一个值数组。即使只有一个字符串也必须将其包装在数组中。值数组可以是：
-        - 字符串（包括 DOMString）
-        - ArrayBuffer
-        - ArrayBufferView
-        - 另一个 Blob
-		- Blob 构造函数接受一个可选的第二个参数，该参数表示 `MIME` 类型。
+- Blob 由一个可选的字符串 `type`（通常指 MIME 类型）和 `blobParts` 组成。
+- 语法：`const Blob = new Blob(blobParts, options)`
+		- blobParts：它是一个由 ArrayBuffer，ArrayBufferView，Blob，字符串（包括 DOMString） 等对象构成的值数组。
+				- 即使只有一个字符串也必须将其包装在数组中。
+				- DOMStrings 会被编码为 UTF-8。
+		- options：一个可选的对象，包含以下两个属性：
+				- type：默认值为 ""，它代表了将会被放入到 blob 中的数组内容的 MIME 类型。
+				- endings：用于指定包含行结束符 \n 的字符串如何被写入。 它是以下两个值中的一个：（默认值为 "transparent"）
+        	- "native"：代表行结束符会被更改为适合宿主操作系统文件系统的换行符。
+        	- "transparent"：代表会保持 blob 中保存的结束符不变。
 
-- 一旦拥有 Blob 对象后，可以访问其 2 个属性：
-		- `size` 返回 Blob 内容的长度（以字节为单位）
-		- `type` 与之关联的 MIME 类型
-		- 可以调用它唯一的 `slice()` 方法，`slice()` 方法可以检索 Blob 的一部分。
 
 - 例子：
 	- `const data = new Blob(['Test'])`
@@ -2520,6 +2543,45 @@ async reqHttp = () => {
 	- 从 aBlob 字节 10 到 20 创建新 blob：`const partialBlob = aBlob.slice(10, 20)`
 
 ```
+
+```js
+/**
+ * 从普通字符串创建（基础版）
+ */
+const txt = 'willy'
+const txtToBolb = new Blob([txt])
+console.log('txtToBolb: ', txtToBolb.size, txtToBolb.type) // txtToBolb:  5 ''
+
+
+/**
+ * 从 DOMString 创建 Blob
+ */
+const str = '<html><h2>Hello willy</h2></html>' // DOMString
+const strToBlob = new Blob([str], { type: 'text/html', endings: 'transparent' })
+console.log('strToBlob: ', strToBlob.size, strToBlob.type) // strToBlob:  33 text/html
+// strToBlob.text().then((data) => console.log(data))
+
+
+/**
+ * 从类型化数组和字符串创建 Blob
+ */
+const hello = new Uint8Array([72, 101, 108, 108, 111]) // 二进制格式的 "hello"
+const arr = [hello, ' ', 'willy']
+const arrToBlob = new Blob(arr, { type: 'text/plain' })
+console.log('arrToBlob: ', arrToBlob.size, arrToBlob.type) // arrToBlob:  11 text/plain
+
+
+/**
+ * 从另一个 Blob 中使用 slice() 实例方法创建
+ */
+const blob1 = new Blob(['hello willy'])
+const blob2 = blob1.slice(6)
+const blob2Text = await blob2.text()
+console.log(blob2Text) // 'willy'
+
+```
+
+
 
 #### 上传 Blob 数据
 
@@ -2546,10 +2608,49 @@ export const uploadBlob = (url, blob, trackProgress) => {
 
 ```
 
-#### 以 Blob 形式下载数据
+#### 文件分片上传
 
 ```bash
-### 以 Blob 形式下载数据
+### 文件分片上传
+File 对象是特殊类型的 Blob，且可以用在任意的 Blob 类型的上下文中。
+所以针对大文件传输的场景，可以使用 Blob 的 slice() 实例方法对大文件进行切割，然后分片进行上传。
+
+```
+
+```js
+const chunkedUpload = (file = new File(), uploadUrl = '', chunkSize = 4000) => {
+  for (let start = 0; start < file.size; start += chunkSize) {
+    const chunk = file.slice(start, start + chunkSize)
+    const formData = new FormData()
+    formData.append('data', chunk)
+
+    fetch(uploadUrl, { method: 'post', body: formData })
+      .then((res) => {
+        res.text()
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
+}
+
+const file = new File(['a'.repeat(1000000)], 'test.txt')
+const chunkSize = 4000
+const uploadUrl = 'http://willy.com/api/upload_file/post'
+
+chunkedUpload(file, uploadUrl, chunkSize)
+
+```
+
+
+
+#### 以 Blob 形式从互联网下载数据
+
+```bash
+### 以 Blob 形式从互联网下载数据
 
 
 ```
@@ -2575,17 +2676,87 @@ export const downloadBlob = (url, callback) => {
 
 ```
 
-#### Blob URL 引用
+**下载线上图片到本地显示**
 
-```bash
-### Blob URL 引用
-- Blob URL 由浏览器生成，是内部引用。给定一个 Blob，您可以使用该 URL 生成指向它的 `URL.createObjectURL()` 函数。
-- 一旦浏览器看到该 URL，它将提供存储在内存或磁盘中的相应 Blob。
-- Blob URL 以 `blob://` 开头，不同于 Data URL（以 `data:` 开头），因为它们不将数据存储在 URL 中。它也不同于 File URL（以 `file:` 开头），因为它们不会显示文件路径等敏感信息。
-- 如果访问一个不再存在的 Blob URL，将收到来自浏览器的 404 错误。
-- 生成 Blob URL 后，可以通过调用 [`URL.revokeObjectURL()`](https://developer.mozilla.org/zh-CN/docs/Web/API/URL/revokeObjectURL) 并传递 URL 来删除它。
+```js
+const myImage = document.querySelector('img') as HTMLImageElement | null
+
+const requestImg = new Request(
+  'https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/6/2/172734410c51dbed~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.png',
+)
+
+fetch(requestImg)
+  .then((response) => response.blob())
+  .then((myBlob) => {
+    // 创建一个 blob 的资源 url 地址
+    const objectURL = URL.createObjectURL(myBlob)
+    console.log(objectURL)
+
+    if (myImage && 'src' in myImage) myImage.src = objectURL
+  })
 
 ```
+
+
+
+#### Blob 用作 URL 引用
+
+```bash
+### Blob 用作 URL 引用
+- Blob 可以作为 `<a>`、`<img>` 或其他标签的 URL。而因为 Blob 的 type 属性，还可以进行上传/下载 Blob 对象。
+
+- Blob URL 以 `blob://` 开头，不同于 Data URL（以 `data:` 开头），因为它们不将数据存储在 URL 中。它也不同于 File URL（以 `file:` 开头），因为它们不会显示文件路径等敏感信息。
+
+
+
+
+#### Blob URL / Object URL
+- Blob URL/Object URL 是一种伪协议，允许 Blob 和 File 对象用作图像，下载二进制数据链接等的 URL 源。
+
+- 在浏览器中，使用 `URL.createObjectURL` 方法来创建 Blob URL，该方法可接收一个 Blob 对象，并为其创建一个唯一的 URL，其形式为 `blob:<origin>/<uuid>`。
+		- 例：`blob:http://localhost:4000/7966ae32-0105-498d-b37f-b6b6a245dcd5`。
+		- 浏览器内部为每个通过 URL.createObjectURL 生成并存储了一个 URL → Blob 映射。因为 Blob URL 是通过内部引用的方式来使用，因此 Blob URL 较短。
+		- 当浏览器看到 Blob URL，它将提供存储在内存或磁盘中的相应 Blob，以此访问 Blob。
+		- 如果访问一个不再存在的 Blob URL，将收到来自浏览器的 404 错误。
+		
+- 生成的 Blob URL 仅在当前文档打开的状态下才有效。
+    - 虽然存储了 URL → Blob 的映射，但 Blob 本身仍驻留在内存中，浏览器无法释放它。
+    - 映射在文档卸载时自动清除，因此 Blob 对象随后被释放。但是，如果应用程序寿命很长，那不会很快发生。因此，如果我们创建一个 Blob URL，即使不再需要该 Blob，它也会存在内存中。
+
+- 生成 Blob URL 后，可以通过调用 `URL.revokeObjectURL()` 方法，从内部映射中删除引用，从而允许删除 Blob（如果没有其他引用），并释放内存。
+
+
+```
+
+#### Blob 文件下载
+
+```js
+/**
+ * @function downloadBlob 下载 Blob 对象中的内容
+ * @param {Blob} blob Blob 对象
+ * @param {string} fileName 文件名字
+ * @example
+  const blob = new Blob(['一文彻底掌握 Blob Web API'], { type: 'text/plain' })
+  downloadBlob(blob, 'test')
+ */
+const downloadBlob = (blob: Blob, fileName: string) => {
+  // 创建 a 标签下载 Blob 对象中的内容
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = fileName
+  link.click()
+  link.remove()
+
+  // 及时清除 Blob 对象
+  URL.revokeObjectURL(link.href)
+}
+
+const blob = new Blob(['一文彻底掌握 Blob Web API'], { type: 'text/plain' })
+downloadBlob(blob, 'test')
+
+```
+
+
 
 #### 从页面上的本地磁盘加载文件并获取
 
