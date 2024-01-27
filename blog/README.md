@@ -49,6 +49,10 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 # 2024
 
+
+## 2024年1月27日21点22分
+  - docs(前端基础): [ES6+语法II] Blob 对象
+
 ## 2024年1月27日13点33分
   - docs(前端算法): [数据结构] 数据统计(数组中出现次数超过数组长度一半的数字)
 
