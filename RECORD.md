@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年1月27日21点22分
+  - feat(utils): [file] 添加文件类
+
 ## 2024年1月22日21点33分
   - feat(utils): [common] 
     - deepEqual 深度对比两个值是否相等
