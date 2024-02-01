@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-24 16:31:31
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-20 19:48:06
+ * @ ModifierTime: 2024-01-30 19:46:41
  * @ Description: case 组件案例
  -->
 
@@ -14,16 +14,22 @@ import { ref } from 'vue'
 import { generateRandomChina } from '@/utils'
 
 const test = ref<ISelectProps>({
-  modelValue: [4, 999],
-  options: Array.from({ length: 100 }).map((_, i) => ({
+  modelValue: ['2-2-2', 4, null],
+  // modelValue: '2-2-2',
+  // modelValue: [null],
+  options: Array.from({ length: 53 }).map((_, i) => ({
     value: i,
-    test: i + generateRandomChina(Math.floor(Math.random() * 50 + 2)),
-    children: Array.from({ length: 100 }).map((_, j) => ({
-      value: +`${i}${j}`,
-      test: i + generateRandomChina(Math.floor(Math.random() * 50 + 2)),
+    label: i + generateRandomChina(Math.floor(Math.random() * 24)),
+    children: Array.from({ length: 10 }).map((_, j) => ({
+      value: `${i}-${j}`,
+      label: i + generateRandomChina(Math.floor(Math.random() * 4)),
+      children: Array.from({ length: 10 }).map((_, k) => ({
+        value: `${i}-${j}-${k}`,
+        label: i + generateRandomChina(Math.floor(Math.random() * 4)),
+      })),
     })),
   })),
-  labelKey: 'test',
+  labelKey: 'label',
 })
 
 const showPopver = ref(false)
