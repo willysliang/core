@@ -117,8 +117,7 @@ export class EventHandler {
     delay: number = 200,
   ): void {
     if (!targetEle) {
-      console.error('')
-      return
+      throw new Error('targetEle is required and must be HTMLElement type.')
     }
 
     if (this.scrollTimeout) clearTimeout(this.scrollTimeout)
