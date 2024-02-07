@@ -24,25 +24,27 @@ jobs:
       - name: Clear Cache
         uses: actions/cache@v2
         with:
-          path: /path/to/cache
-          key: ${{ runner.os }}-cache
-
+          path: /path/to/cache # 指定要清除的缓存路径
+          key: ${{ runner.os }}-cache # 缓存的键，用于标识不同的缓存
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Set up Node
         uses: actions/setup-node@v3
+      - name: pnpm
+        uses: pnpm/action-setup@v2
         with:
-          node-version: '14' # Define the Node.js version, replace '14' with your desired version
+          version: 7
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
-
+        run: pnpm install --no-frozen-lockfile && pnpm install
       - name: Install requests package
         run: pnpm install requests
-
       - name: Build
+        run: pnpm run build
         run: pnpm run build
 
       # 新增的CHANGELOG生成步骤
