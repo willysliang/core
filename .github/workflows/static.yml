@@ -1,20 +1,27 @@
+# 将静态内容部署到 GitHub Pages 的简易工作流程
 name: Deploy static content to Pages
 
 on:
+  # 仅在推送到默认分支时运行。
   push:
     branches: ['master']
+
+  # 这个选项可以使你手动在 Action tab 页面触发工作流
   workflow_dispatch:
 
+# 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages。
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# 允许一个并发的部署
 concurrency:
   group: 'pages'
   cancel-in-progress: true
 
 jobs:
+  # 单次部署的工作描述
   deploy:
     environment:
       name: github-pages
@@ -45,14 +52,13 @@ jobs:
         run: pnpm install requests
       - name: Build
         run: pnpm run build
-        run: pnpm run build
 
       # 新增的CHANGELOG生成步骤
-      - name: Generate CHANGELOG
+      - name: Install Ruby and github_changelog_generator
         run: |
+          sudo apt-get install ruby-full
           sudo gem install github_changelog_generator
           github_changelog_generator -u willysliang -p core --token ${{ secrets.GITHUB_TOKEN }}
-
       - name: Commit CHANGELOG
         run: |
           git fetch --unshallow || git fetch
@@ -61,15 +67,13 @@ jobs:
           git add CHANGELOG.md
           git commit -m "Update CHANGELOG.md" || echo "No changes to commit"
           git push
-
       - name: Setup Pages
         uses: actions/configure-pages@v3
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
+          # Upload dist repository
           path: './core'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
