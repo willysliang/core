@@ -58,7 +58,14 @@ jobs:
         run: |
           sudo apt-get install ruby-full
           sudo gem install github_changelog_generator
-          github_changelog_generator -u willysliang -p core --token ${{ secrets.GITHUB_TOKEN }}
+          github_changelog_generator \
+            --user willysliang \
+            --project core \
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --future-release v2.0.0 \
+            --header-label "# Changelog" \
+            --configure-sections '{"enhancements":{"prefix":"* **Enhancements:**","labels":["enhancement", "feature"]},"bugs":{"prefix":"* **Fixed bugs:**","labels":["bug"]}}' \
+            --add-sections '{"deprecated":{"prefix":"* **Deprecated:**","labels":["deprecated"]}}'
       - name: Commit CHANGELOG
         run: |
           git fetch --unshallow || git fetch
