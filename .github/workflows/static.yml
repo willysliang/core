@@ -52,14 +52,30 @@ jobs:
         run: pnpm install requests
       - name: Build
         run: pnpm run build
+
+      # 新增的CHANGELOG生成步骤
+      - name: Generate CHANGELOG
+        run: |
+          sudo gem install github_changelog_generator
+          github_changelog_generator -u <username> -p <repository> --token ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit CHANGELOG
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git commit -m "Update CHANGELOG.md" || echo "No changes to commit"
+          git push origin HEAD:master
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
           # Upload dist repository
           path: './core'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-
