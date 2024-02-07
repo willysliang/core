@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年2月7日19点04分
+  - build: 添加 CI/CD 构建工具
+
 ## 2024年2月1日21点39分
   - feat(comp): [Select] 组件抽离、递归获取选中的item、展示label的值
 
