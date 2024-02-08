@@ -49,6 +49,8 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 # 2024
 
+## 2024年2月8日23:32:45
+  - docs(前端基础): [ES6+语法] 数组去重、指定区间随机数、函数链式、匹配汉字
 
 ## 2024年1月27日21点22分
   - docs(前端基础): [ES6+语法II] Blob 对象

@@ -2438,6 +2438,42 @@ end fn1
 > console.log(a, b, c, d, e, f);	// ƒ 1 ƒ 3 ƒ 6 ƒ 6 ƒ 6 ƒ 6
 > ```
 
+### 链式调用
+
+```bash
+### 链式调用
+在构造函数中创建方法时，`return this` 返回当前调用方法的对象，可以实现链式调用方法。
+
+```
+
+```js
+function Person(name) {
+  this.name = name
+
+  this.sayHi = function() {
+    console.log(this.name)
+    return this
+  }
+
+  this.modifyName = function(name) {
+    this.name = name
+    return this
+  }
+}
+
+const person = new Person('IU')
+
+person
+  .sayHi()
+  .modifyName('UI')
+  .sayHi()
+// IU
+// UI
+// Person { name: 'UI', sayHi: f, modifyName: f }
+```
+
+
+
 ## 原型链 prototype
 
 ### __proto__、prototype、constructor
@@ -3675,18 +3711,20 @@ console.log(9 >>> 2)	// 2
 
 #### 获取选定区间的随机数
 
-> ```js
-> /* 获取选定区间的随机数 */
-> // 注意：此随机方法包括下限，但不包括上限。例如，`random(10, 12)` 将随机 10 或 11，但从不随机 12
-> const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
-> 
-> /* 获取选定区间的随机数 */
-> const getRandomInclusive2 = (min, max) =>  {
-> min = Math.ceil(min);
-> max = Math.floor(max);
-> return Math.floor(Math.random() * (max -min + 1)) + min
-> }
-> ```
+```js
+/**
+ * @function random 获取选定区间的随机数
+ * @param {number} min 最小值
+ * @param {number} max 最大值
+ * @returns {number}
+ * @desc 注意：此随机方法包括下限，但不包括上限。
+ * @eaample random(10, 12) 将随机 10 或 11，但从不随机 12
+ */
+const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
+
+```
+
+
 
 ### Date 对象
 
@@ -4552,6 +4590,98 @@ console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Ma
 > Array.of(1) // [1]
 > Array.of(1, 2) // [1, 2]
 > ```
+
+### 数组去重
+
+```bash
+### 数组去重
+1. Set（只能对基础数据类型的数据去重）
+可以给数组创建一个 Set 以丢弃重复的值，然后使用扩展运算符 `...` 将其转化回数组。
+注意：如果数组的数值中存储的是对象，即使是属性值与数值都相同，但因为它们引用的是不同的内存地址，Set 会认为每个对象都是唯一的，从而无法实现去重效果。
+
+
+2. Map
+- 方案1：把数组中每个 item 存储在 Map 中，再通过 filter 来过滤出 Map 中已经存储的值。
+- 方案2：把数组中每个 item 存储在 Map 中，再取出 Map 中存储的所有值（取出的值已经去重）。
+
+```
+
+```js
+/** --------- 简单数据类型去重 ---------- */
+const arr = [1, 2, 2, '1', null, '', undefined, NaN, NaN, true, false]
+
+/**
+ * 使用 Set 去重
+ */
+const unique1 = [...new Set(arr)]
+console.log('Set: ', unique1) // [1, 2, "1", null, "", undefined, NaN, true, false]
+
+// Set 无法给 复杂数据类型 去重
+const unique2 = [...new Set([{ a: 1 }, { a: 1 }])] // [{a: 1}, {a: 1}]
+console.log('Set给复杂数据类型去重的缺陷: ', unique2)
+
+// Set 和 Array.from() 组合使用
+const unique22 = Array.from(new Set(arr))
+console.log('Set + Array.from(): ', unique22)
+
+/**
+ * 使用 filter
+ * 注意：该方法直接把 `NaN` 全局过滤掉
+ */
+const unique3 = arr.filter((item, index) => arr.indexOf(item) === index)
+console.log('filter: ', unique3)
+
+/**
+ * 使用 includes
+ */
+const unique4 = []
+arr.forEach((item) => !unique4.includes(item) && unique4.push(item))
+console.log('includes: ', unique4)
+
+/**
+ * 使用 indexOf
+ * 注意：该方法无法判断数组中是否含有 `NaN`
+ */
+const unique5 = []
+arr.forEach((item) => !unique5.indexOf(item) === -1 && unique5.push(item))
+console.log('indexOf: ', unique5)
+
+/**
+ * 使用 reduce
+ */
+const unique6 = arr.reduce(
+  (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+  [],
+)
+console.log(unique6)
+
+/**
+ * Object.hasOwnProperty()
+ * 注意：必须要加上 typeof item，这是为了防止如同 字符串1 与 数字1
+ */
+const obj = {}
+const unique7 = arr.filter((item) => {
+  const curItem = typeof item + item
+  return Object.hasOwnProperty(curItem) ? false : (obj[curItem] = true)
+})
+console.log(unique7)
+
+/** --------- 复杂数据类型去重 ---------- */
+/**
+ * 使用 Map 存储值来判断
+ */
+const map = new Map()
+const unique33 = arr.filter((item) => !map.has(item) && map.set(item, true))
+console.log(unique33) // [1, 2, "1", null, "", undefined, NaN, true, false]
+
+const map2 = new Map()
+arr.forEach((item) => {
+  !map2.has(item) && map2.set(item, true)
+})
+const unique44 = Array.from(map2.keys())
+console.log(unique44)
+
+```
 
 
 
