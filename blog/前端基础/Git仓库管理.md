@@ -278,6 +278,28 @@ $ ssh -T git@github.com
 
 ```
 
+#### 上传代码报403错误
+
+```bash
+## 上传代码到远程仓库报403错误
+### 报错信息描述
+Connection reset by 20.205.243.160 port 443 
+fatal: Could not read from remote repository.  
+Please make sure you have the correct access rights 
+and the repository exists. 
+
+
+### 问题原因
+因为自己配置的用户地址跟提交地址不对应，所以出现报错问题
+
+### 解决
+1. 重新生成并绑定 ssh。
+ssh-keygen  -t  rsa -C   "自己的邮箱"  ## 此邮箱地址跟 git config user.email 建议一致
+
+2. 添加 ssh 信息到 github 中
+
+```
+
 
 
 ### 远程仓库操纵
