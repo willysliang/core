@@ -6,25 +6,46 @@ ModifiedTime: 2022-12-28 11:53:11
 Description: NodeJS
 ---
 
-## node.js
+## nodejs
 
 ```bash
-# node.js
-## nodejs 的学习规划
-1. 学习JavaScript：Node.js是基于JavaScript语言的，因此需要先学习JavaScript，掌握其基本语法、函数、面向对象编程等基础知识。
-2. 学习Node.js基础知识：学习Node.js的基础知识，包括模块、事件机制、异步编程等。
-3. 学习Node.js的核心模块：学习Node.js的核心模块，如fs、http、net等，掌握它们的使用方法和应用场景。
-4. 学习Node.js框架：学习Node.js的框架，如Express、Koa等，了解它们的使用方法和特点，以及如何搭建Web应用程序。
-5. 学习数据库操作：学习数据库的操作，如MySQL、MongoDB等，学习如何使用Node.js连接数据库、进行增删改查等操作。
-6. 学习前端技术：学习前端技术，如HTML、CSS、React、Vue等，了解前后端分离的开发模式，以及如何使用Node.js搭建API服务。
-7. 学习Node.js的高级特性：学习Node.js的高级特性，如流、Buffer、Cluster等，了解它们的使用方法和优化应用程序的技巧。
-8. 实践项目：通过实践项目来巩固所学知识，如搭建一个博客、构建一个API服务等，不断提升自己的Node.js技能。
+## node.js
+### nodejs 的学习规划
+1. 学习JavaScript，Node.js是基于JavaScript语言的，因此需要先学习 JS，掌握其基本语法、函数、面向对象编程等基础知识。
+2. 学习Node.js基础知识，包括模块、事件机制、异步编程等。
+3. 学习Node.js的核心模块，如fs、http、net等，掌握它们的使用方法和应用场景。
+4. 学习Node.js框架，如Express、Koa等，了解它们的使用方法和特点，以及如何搭建Web应用程序。
+5. 学习数据库操作，如MySQL、MongoDB等，学习如何使用Node.js连接数据库、进行增删改查等操作。
+6. 学习前端技术，如HTML、CSS、React、Vue等，了解前后端分离的开发模式，以及如何使用Node.js搭建API服务。
+7. 学习Node.js的高级特性，如流、Buffer、Cluster等，了解它们的使用方法和优化应用程序的技巧。
+8. 实践项目，通过实践项目来巩固所学知识，如搭建一个博客、构建一个API服务等。
+
+
+### nodejs 概念
+- node.js是一个基于 Chrome V8 引擎的 JavaScript 运行环境：
+	  - 不是库，是运行环境/JS语言解释器。底层源码是用C++开发的。
+  	- Chrome V8引擎：引擎分为渲染引擎（渲染DOM）和脚本引擎(运行脚本语言)。脚本引擎最流行的是chrome中的V8引擎。
+- node.js 的包管理是 npm，成为世界上最大的开源代码的生态系统。
+- node.js 使用一个事件驱动、非阻塞I/O的模型，使其轻量又高效。
+  	- 事件驱动：指在持续事务管理过程中，进行决策的一种策略，即跟随当前时间点上出现的事件，调动可用资源，执行相关任务，使不断出现的问题得以解决，防止事务堆积。
+ 	 	- I/O：在服务器上可理解为读写操作，非阻塞I/O(异步I/O)。nodejs是单线程语言，其在遇到I/O事件会创建一个线程去执行，然后主线程会继续往下执行。因此，触发一个I/O事件，紧接着继续执行别的动作，再触发一个I/O事件，两个动作并行执行，假如各需要 1s，那么总时间是1s。
+
+
+### nodejs 组成
+- nodejs 是由 ECMAScript 及 node 环境提供的一些附加API组成，包括文件、http、路径等API。
+- 全局对象 global 的方法可在任何地方使用，global 可省略。
+  - console.log()   //在控制台输出
+  - setTimeout()   //设置超时定时器
+  - clearTimeout()   /清除超时定时器
+  - setInterval()   //设置间歇定时器
+  - clearInterval()  //清除间歇定时器
+- node 应用场景：自动化构件等工具、HTTP Proxy、网站应用开发、im即时聊天(socket、io)
 
 ```
 
 
 
-## 安装nodejs
+## 安装 nodejs
 
 ```cmd
 #下载cnpm	(i是英文install的缩写，-g代表全局安装，-D代表本地安装。全局安装意味着安装后在任何文件夹下都能使用，而本地安装则把东西安装到指定的文件夹，当然使用也只能在这个文件夹下使用)
@@ -49,51 +70,10 @@ npm config rm https-proxy
 npm config set registry http://registry.npm.taobao.org
 #查看是否修改成功
 npm config get registry
+
 ```
 
-```vscode-cmd
-#在vscode中本地安装webpack
-npm install webpack@3.6.0 -save-dev
 
-#把main.js文件打包生成bundle.js文件
-webpack .\src\main.js .\dist\bundle.js	
-```
-
-**脚手架`CLI`安装**
-
-```cmd
-vue --version
-npm install @vue/cli -g
-```
-
-### Node
-
-**概念**
-
-- node.js是一个基于Chrome V8引擎的JavaScript运行环境：
-  - 不是库，是运行环境/JS语言解释器。底层源码是用C++开发的。
-  - Chrome V8引擎：引擎分为渲染引擎（渲染DOM）和脚本引擎(运行脚本语言)。脚本引擎最流行的是chrome中的V8引擎。
-- node.js的包管理是npm，成为世界上最大的开源代码的生态系统。
-- node.js使用了一个事件驱动、非阻塞I/O的模型，使其轻量又高效。
-  - 事件驱动：指在持续事务管理过程中，进行决策的一种策略，即跟随当前时间点上出现的事件，调动可用资源，执行相关任务，使不断出现的问题得以解决，防止事务堆积。
-  - I/O：在服务器上可理解为读写操作，非阻塞I/O(异步I/O)。nodejs是单线程语言，其在遇到I/O事件会创建一个线程去执行，然后主线程会继续往下执行。因此，触发一个I/O事件，紧接着继续执行别的动作，再触发一个I/O事件，两个动作并行执行，假如各需要1s，那么总时间是1s。
-
-**组成**
-
-- nodejs是由ECMAScript及node环境提供的一些附加API组成，包括文件、http、路径等API。
-- 全局对象global的方法可在任何地方使用，global可省略。
-  - console.log()   //在控制台输出
-  - setTimeout()   //设置超时定时器
-  - clearTimeout()   /清除超时定时器
-  - setInterval()   //设置间歇定时器
-  - clearInterval()  //清除间歇定时器
-- node应用场景：自动化构件等工具、HTTP Proxy、网站应用开发、im即时聊天(socket、io)
-
-```bash
-nvm list	#查看所有安装版本
-nvm use 12.13.1		#切换指定版本
-nvm uninstall 12.13.1	#卸载指定版本
-```
 
 ### NPM
 
@@ -217,10 +197,12 @@ vi /etc/hosts
 
 ### NVM
 
-```
+```bash
+## NVM 
 在开发的工程中，我们可能需要经常切换node版本来应对不同的开发环境，所以需要经常使用不同版本的node
 
-一、安装npm插件n ,通过n模块来管理node版本
+
+### 一、安装npm插件n ,通过n模块来管理node版本
 1、全局安装n模块
 npm instlal -g n
 2、安装当前稳定版本
@@ -232,26 +214,38 @@ n v8.16.0
 5、卸载指定的node版本
 n rm v8.16.0
 
-二、使用nvm管理node版本
+
+### 二、使用nvm管理node版本
 1、安装nvm
 brew install nvm
+
 2、使用nvm安装node版本
-安装最新版本
-nvm isntall node
-安装指定版本
-nvm install 8.16.0
+- 安装最新版本
+	nvm isntall node
+
+- 安装指定版本
+	nvm install 8.16.0
+	
 3、查看所有版本
 nvm ls
+
 4、切换node版本
-使用最新版本
-nvm use node
-使用指定版本
+- 使用最新版本
+	nvm use node
+- 使用指定版本
 nvm use 10.16.2
 
+5. 案例
 通常会使用第二种方式
 例如：在一个项目中使用的是node@6.13.2,新项目使用的是node@8.16.0,
 先要安装node@8.16.0：	nvm install 8.16.0，
 然后，nvm use 8.16.0
+
+
+### NVM 使用
+nvm list	#查看所有安装版本
+nvm use 12.13.1		#切换指定版本
+nvm uninstall 12.13.1	#卸载指定版本
 ```
 
 ### NRM
@@ -268,6 +262,7 @@ npm config get registry
 npm config set registry https://registry.npm.taobao.org
 
 #3.切换nrm  -->nrm use 源名
+
 ```
 
 #### 管理源
@@ -404,15 +399,20 @@ npm install git+ssh://git@github.com:lurongtao/gp-project.git
 
 ### npm变量
 
+```bash
+### npm 变量
 - npm 脚本可以使用 npm 的内部变量。
+- 通过 `npm_package_` 前缀， npm 脚本可以拿到 package.json 里面的字段。
+	注意：一定要在 npm 脚本中运行才可以(如 `npm run view`)，直接在命令行中运行 JS 是拿不到值的(如 `node view.js`)。
+- 通过环境变量 `process.env` 对象，拿到 `package.json` 的字段值。如果是 Bash 脚本，可以使用 `$npm_package_name` 和 `$npm_package_version` 取到这两个值。
 
-- 通过 `npm_package_` 前缀，npm 脚本可以拿到 package.json 里面的字段。
+```
 
-- >注意：一定要在 npm 脚本中运行（如：npm run view）才可以，直接在命令行中运行JS（如：node view.js）是拿不到值的
-
-- 通过环境变量 process.env 对象，拿到 package.json 的字段值。如果是 Bash 脚本，可以用`$npm_package_name` 和 `$npm_package_version `取到这两个值。
+**取值案例**
 
 ```json
+// 以下为 pageage.json 文件内容
+
 {
   "name": "foo", 
   "version": "1.2.5",
@@ -588,6 +588,26 @@ npx 还可以执行 GitHub 上面的模块源码。
     #某些时候需要显示所有的环境变量
     env
 ```
+
+## 安装依赖问题
+
+```bash
+### ETIMEDOUT
+问题：connect ETIMEDOUT 104.16.26.34:443
+
+解决方案：
+1. 清除缓存
+$ npm config set proxy false
+
+2. 如果报错，继续强制清除
+$ npm cache clean --force
+
+3. 重新执行安装步骤
+$ npm i
+
+```
+
+
 
 ## 模块化 CommonJS
 
@@ -1274,10 +1294,10 @@ deleteFolderRecursive('temp')
 
 
 
-## URL接口（代替内置模块 url）
+## URL接口
 
 ```bash
-## URL 接口
+## URL 接口（代替内置模块 url）
 浏览器原生提供 `URL()` 接口，它是一个构造函数，用来构造、解析和编码 URL。一般情况下，通过 `window.URL` 可拿到这个构造函数。
 
 
@@ -1297,9 +1317,9 @@ qs.parse()将URL解析成对象的形式
 qs.stringify()将对象 序列化成URL的形式，以&进行拼接
 ```
 
-```js
-// 打印两个对象的输出
+#### url 模块和 URL 接口的对比
 
+```js
 // url模块，url.parse('link')
 const url = {
     protocol: "https:",
@@ -2273,7 +2293,3 @@ doPyt()
 ```
 
 
-
-
-
-## ##
