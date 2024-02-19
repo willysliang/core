@@ -26,6 +26,10 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年2月19日20点27分
+  - feat(public): ServiceWorker
+  - feat(server): 服务器搭建
+
 ## 2024年2月19日09点03分
   - chore(pnpm-lock): 依赖更新
 
