@@ -52,6 +52,7 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 ## 2024年2月19日09点00分
   - docs(前端基础): [JavaScript] 自定义属性
+  - docs(前端基础): [ES6+语法] 虚值与布尔值 JSON.stringify缺陷
 
 ## 2024年2月8日23:32:45
   - docs(前端基础): [ES6+语法] 数组去重、指定区间随机数、函数链式、匹配汉字

@@ -512,6 +512,40 @@ Object.is(NaN, Number.NaN) // true
 
 
 
+#### 虚值与布尔值
+
+```bash
+## 虚值与布尔值
+- 虚值是在转换为布尔值时变为 false 的值。
+- 使用 `Boolean()` 方法或 `!!` 运算符，可将 `truthy` 或 `falsy` 值转换为布尔值。
+	- Falsy：false、null、undefined、NaN、0、+0、-0、空字符串
+	- Truthy：其他都为 false。
+```
+
+```js
+!!false // false
+!!undefined // false
+!!null // false
+!!NaN // false
+!!0 // false
+!!'' // false
+
+!!'hello' // true
+!!1 // true
+!!{} // true
+!![] // true
+
+// or
+Boolean(false) // false
+Boolean(undefined) // false
+Boolean(null) // false
+Boolean(NaN) // false
+Boolean(0) // false
+Boolean('') // false
+```
+
+
+
 ## 作用域 SCope
 
 ### var
@@ -5450,106 +5484,140 @@ styles['class'] // 返回 'foo'
 
 ## JSON 对象
 
-> ```bash
-> ## JSON 对象
-> - JSON 是指 JavaScript 对象表示法（JavaScript Object Notation）
-> - JSON 是轻量级的文本数据交互格式，并不是编程语言，独立于语言存在；具有自我描述性。
-> - JSON 可以将 JavaScript 对象中表示的一组数据转换为字符串，然后就可以在函数之间轻松地传递这个字符串，或者在异步应用中将字符串从 Web 客户端传递给服务端。
-> 
-> 
-> ### 对象结构和数组结构
-> JSON 简单来说就是 JavaScript 中的对象和数组。
->   - 对象表示为键值对，数据由 ',' 分割，属性值的类型可以是 '数字、字符串、数组、对象'。
->   - 花括号保存对象：`{ key: value, key: value, ... }`。
->   - 方括号保存数组：`['a', 'b', 'c']`。
-> 
-> 
-> ### JSON 与对象的区别
-> JSON 使用文本表示一个 JS 对象的信息，本质是一个字符串；但 JSON 的 key 值必须用引号`""`，对象的 key 值可以不用引号。
->     const obj = { a: 'Hello', b: 'World' }	// 表示一个对象，注意键名也可以用引号包裹。
->     const json = '{"a": "Hello", "b": "World"}'	// 是一个 JSON 字符串，本质是一个字符串。
-> 
-> 
-> 
-> ### JSON 和 JavaScript 对象的互转
-> - 从 JSON 字符串转换为 JS 对象，使用 `JSON.parse()` 方法。
-> - 从 JS 对象转换为 JSON 字符串，使用 `JSON.stringify()` 方法。
-> 		const obj = JSON.parse('{"a": "Hello", "b": "World"}')
-> 			// 结果是 {a: 'Hello', b: 'World'}
-> 		const json = JSON.stringify({a: 'Hello', b: 'World'})
-> 			// 结果是 '{"a": "Hello", "b": "World"}'
-> 
-> 
-> 
-> ### JSON.parse(JSON.string(obj)) 深拷贝的缺陷
-> 1. 无法获取值为 undefined 的 key
-> 2. NaN、无穷大、无穷小 都会转变为 null
-> 3. 无法获取原型上的方法、属性（如定义了函数的属性），只能获取 Object 原型上的内容
-> 4. Date 对象转变为 Date 字符串
-> 5.` Symbol()` （循环引用）会丢失
-> ```
+```bash
+## JSON 对象
+- JSON 是指 JavaScript 对象表示法（JavaScript Object Notation）
+- JSON 是轻量级的文本数据交互格式，并不是编程语言，独立于语言存在；具有自我描述性。
+- JSON 可以将 JavaScript 对象中表示的一组数据转换为字符串，然后就可以在函数之间轻松地传递这个字符串，或者在异步应用中将字符串从 Web 客户端传递给服务端。
+
+
+### 对象结构和数组结构
+JSON 简单来说就是 JavaScript 中的对象和数组。
+  - 对象表示为键值对，数据由 ',' 分割，属性值的类型可以是 '数字、字符串、数组、对象'。
+  - 花括号保存对象：`{ key: value, key: value, ... }`。
+  - 方括号保存数组：`['a', 'b', 'c']`。
+
+
+### JSON 与对象的区别
+JSON 使用文本表示一个 JS 对象的信息，本质是一个字符串；但 JSON 的 key 值必须用引号`""`，对象的 key 值可以不用引号。
+    `const obj = { a: 'Hello', b: 'World' }`，表示一个对象，注意键名也可以用引号包裹。
+    `const json = '{"a": "Hello", "b": "World"}'`，表示是一个 JSON 字符串，本质是一个字符串。
+
+
+
+### JSON 和 JavaScript 对象的互转
+- 从 JSON 字符串转换为 JS 对象，使用 `JSON.parse()` 方法。
+- 从 JS 对象转换为 JSON 字符串，使用 `JSON.stringify()` 方法。
+		const obj = JSON.parse('{"a": "Hello", "b": "World"}')
+			// 结果是 {a: 'Hello', b: 'World'}
+		const json = JSON.stringify({a: 'Hello', b: 'World'})
+			// 结果是 '{"a": "Hello", "b": "World"}'
+
+
+
+### JSON.parse(JSON.string(obj)) 深拷贝的缺陷
+1. 无法获得值为 undefined 的 key
+2. NaN、无穷大、无穷小 都会转变为 null
+3. 无法获取原型上的方法、属性（如定义了函数的属性），只能获取 Object 原型上的内容
+4. Date 对象转变为 Date 字符串
+5.` Symbol()` （循环引用）会丢失
+
+```
+
+#### 使用 JSON.stringify 会产生异常的情况
+
+```bash
+### 使用 JSON.stringify 会产生异常的情况
+1. 循环引用
+当对象存在循环引用时，JSON.stringify() 无法将其转换为 JSON 字符串，并报错异常。
+    const obj = {}
+    obj.prop = obj
+    JSON.stringify(obj) // 报错：Converting circular structure to JSON
+
+
+2. 不支持的数据类型
+JSON.stringify() 只能处理 JavaScript 支持的数据类型，如字符串、数字、布尔值、数组、对象和 null。
+如果对象包含函数、RegExp、Date、undefined 或 Symbol 等不支持的数据类型，则会丢失该部分数据。
+
+
+3. 大型对象的嵌套深度过大
+如果要序列化的对象存在很大的嵌套深度，超出 JSON.stringify() 的默认堆栈大小限制，可能会导致堆栈溢出错误。
+    const obj = {}
+    let currentObj = obj
+    for (let i = 0; i < 100000; i++) {
+      currentObj.prop = {}
+      currentObj = currentObj.prop
+    }
+    JSON.stringify(obj) // RangeError: Maximum call stack size exceeded
+```
+
+
 
 #### 对象的测试
 
-> ```js
-> const obj = {
->   name: Symbol('willy'),	// Symbol() 丢失
->   age: 18,
->   hobbit: ['dance', 'sing', {type: 'sports', value: 'run'}],
->   schoolData: {
->     grades: 'A',
->   },
->   date: new Date(), // 转化为 Date 字符串
->   run: function() {},	// 函数丢失
->   walk: undefined,	// 值为 undefined 导致丢失
->   fly: NaN, // 转化为 null
->   cy: null,
-> }
-> const jsonStr = JSON.stringify(obj)
-> const cloneObj = JSON.parse(jsonStr)
-> console.log(cloneObj)
-> 
-> /**
-> {
->   age: 18,
->   cy: null,
->   date: "2023-03-22T12:10:31.020Z",
->   fly: null,
->   hobbit: (3) ['dance', 'sing', {…}],
->   schoolData: {grades: 'A'}, 
-> } */
-> 
-> ```
+```js
+const obj = {
+  name: Symbol('willy'),	// Symbol() 丢失
+  age: 18,
+  hobbit: ['dance', 'sing', {type: 'sports', value: 'run'}],
+  schoolData: {
+    grades: 'A',
+  },
+  date: new Date(), // 转化为 Date 字符串
+  run: function() {},	// 函数丢失
+  walk: undefined,	// 值为 undefined 导致丢失
+  fly: NaN, // 转化为 null
+  cy: null,
+}
+const jsonStr = JSON.stringify(obj)
+const cloneObj = JSON.parse(jsonStr)
+console.log(cloneObj)
+
+/**
+{
+  age: 18,
+  cy: null,
+  date: "2023-03-22T12:10:31.020Z",
+  fly: null,
+  hobbit: (3) ['dance', 'sing', {…}],
+  schoolData: {grades: 'A'}, 
+} */
+
+```
+
+
 
 #### 自定义对象测试
 
-> ````js
-> const Ken = function () { this.name = 'Ken' }
-> Ken.prototype.walk = function () { console.log('walk') }
-> const KenNaNa = function () {
->   Ken.call(this, arguments)
->   this.name = 'KenNaNa'
-> }
-> const tempFunc = function () {}
-> tempFunc.prototype = Ken.prototype
-> KenNaNa.prototype = new tempFunc()
-> KenNaNa.prototype.age = '18'
-> Object.defineProperty(KenNaNa.prototype, 'constructor', {
->   value: KenNaNa,
->   enumerable: false,
-> })
-> const kenNaNa = new KenNaNa()
-> const copyKenNaNa = JSON.parse(JSON.stringify(kenNaNa))
-> 
-> /**
->  Ken {age: "18", run: ƒ, contructor: ƒ}
->  * */ 
-> console.log(copyKenNaNa.constructor); // ƒ Object() { [native code]}
-> console.log(copyKenNaNa.age) // undefined
-> console.log(copyKenNaNa.run()) // is not function
-> console.log(copyKenNaNa.walk()) // is not function 
-> console.log(copyKenNaNa.toString()) // "[object Object]"
-> ````
+```js
+const Ken = function () { this.name = 'Ken' }
+Ken.prototype.walk = function () { console.log('walk') }
+const KenNaNa = function () {
+  Ken.call(this, arguments)
+  this.name = 'KenNaNa'
+}
+const tempFunc = function () {}
+tempFunc.prototype = Ken.prototype
+KenNaNa.prototype = new tempFunc()
+KenNaNa.prototype.age = '18'
+Object.defineProperty(KenNaNa.prototype, 'constructor', {
+  value: KenNaNa,
+  enumerable: false,
+})
+const kenNaNa = new KenNaNa()
+const copyKenNaNa = JSON.parse(JSON.stringify(kenNaNa))
+
+/**
+	Ken {age: "18", run: ƒ, contructor: ƒ}
+ * */ 
+console.log(copyKenNaNa.constructor); // ƒ Object() { [native code]}
+console.log(copyKenNaNa.age) // undefined
+console.log(copyKenNaNa.run()) // is not function
+console.log(copyKenNaNa.walk()) // is not function 
+console.log(copyKenNaNa.toString()) // "[object Object]"
+```
+
+
 
 ## 深拷贝与浅拷贝
 
