@@ -687,19 +687,53 @@ Description: JavaScript
 
 ### DOM属性
 
-> ```bash
-> ### DOM 属性
-> - innerHTML - 节点（元素）的文本值
-> - parentNode - 节点（元素）的父节点
-> - childNodes - 节点（元素）的子节点
-> - attributes - 节点（元素）的属性节点
-> 
-> 
-> 因为不可以直接输出自定义的属性，所以有了以下方法
->     - 获取标签对应的属性：getAttribute(“”); //属性可以是自定义，也可以是本身已有的
->     - 设置标签属性的值setAttribute(“属性名”，“属性值”);
->     - 移除标签属性 removeAttribute(“属性名”);
-> ```
+```bash
+### DOM 属性
+- innerHTML - 节点（元素）的文本值
+- parentNode - 节点（元素）的父节点
+- childNodes - 节点（元素）的子节点
+- attributes - 节点（元素）的属性节点
+
+```
+
+#### 自定义属性
+
+```bash
+### 自定义属性
+DOM 中的自定义属性不能直接访问，但可以通过以下方法来进行操作：
+	- 获取标签对应的属性：`getAttribute('属性名')`（注意：属性可以是自定义，也可以是 DOM 自身已有的）
+	- 设置标签属性的值：`setAttribute('属性名', '属性值')`
+	- 移除标签属性值：`removeAttribute('属性名')`
+
+```
+
+```js
+const ele = document.getElementById('data') as HTMLElement
+
+/**
+ * 获取 data-* 属性的值
+ */
+const getMessage1 = ele.getAttribute('data-message')
+// or
+const getMessage2 = ele.dataset.message
+
+/**
+ * 设置 da-* 属性的值
+ */
+ele.setAttribute('data-message', 'Hi, willy')
+// or
+ele.dataset.message = 'Hi, willy'
+
+
+/**
+ * 删除 data-* 属性
+ */
+ele.removeAttribute('data-message')
+// or
+delete ele.dataset.message
+```
+
+
 
 ### DOM访问
 
