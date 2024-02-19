@@ -1,18 +1,18 @@
 {
   "name": "@willy/server",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.ts",
+  "description": "node服务器",
   "scripts": {
-    "watch": "tsc --watch",
-    "start": "nodemon ./dist/app.js",
-    "dev": "concurrently \"npm:watch\" \"npm:start\""
+    "start": "nodemon --exec ts-node ./src/app.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.2",
     "web-push": "^3.6.7"
   }
 }
