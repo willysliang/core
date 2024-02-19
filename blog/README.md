@@ -52,6 +52,7 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 ## 2024年2月19日20点24分
   - docs(前端基础): [JavaScript] DOMString
+  - docs(前端基础): [WEB_API] Push API
 
 ## 2024年2月19日09点00分
   - docs(前端基础): [JavaScript] 自定义属性
