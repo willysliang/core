@@ -2502,10 +2502,6 @@ async reqHttp = () => {
 
 ### 关联/参考地址
 - [Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API) 
-- [Web Worker](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Using_web_workers)
-- [iFrame](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
-- [Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API) 
-- [DOMString](https://developer.mozilla.org/zh-CN/docs/conflicting/Web/JavaScript/Reference/Global_Objects/String_6fa58bba0570d663099f0ae7ae8883ab)
 - [ArrayBuffer](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
 - [ArrayBufferView](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)
 
@@ -2758,7 +2754,7 @@ downloadBlob(blob, 'test')
 
 
 
-#### 从页面上的本地磁盘加载文件并获取
+#### 从本地磁盘加载文件并获取
 
 ```bash
 ### 从页面上的本地磁盘加载文件并获取
