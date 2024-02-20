@@ -51,6 +51,7 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 ## 2024年2月20日07点52分
   - docs(计算机网络): [计算机网络] JWT认证
+  - docs(前端基础): [ES6+语法] 柯里化函数
 
 ## 2024年2月19日20点24分
   - docs(前端基础): [JavaScript] DOMString
