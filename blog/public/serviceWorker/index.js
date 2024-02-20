@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-19 14:25:43
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-19 15:02:13
+ * @ ModifierTime: 2024-02-20 11:29:40
  * @ Description: serviceWorker 的 demo 调用
  */
 
@@ -71,6 +71,12 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
           'BL2ZBfM2Vtg7dERhMqIyZv9T_9omdZ6K0TUrBBi5jxQnK6tK2ASX0ufWfa4Xf7Z2Hm1u2F0wT7BwQZ6rZZJI6sA',
         privateKey: 'dPbG4S6Bc3tB1fgEjMxm3gBlXHJm2wPMI0tm9g4TxvQ',
       }
+
+      // swReg.showNotification('新消息', {
+      //   body: '消息描述',
+      //   icon: '../vite.svg',
+      //   badge: '../vite.svg',
+      // })
 
       // 请求推送通知权限
       return swReg.pushManager.getSubscription().then((subscription) => {
