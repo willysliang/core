@@ -1973,38 +1973,6 @@ end fn1
 > ```
 >
 
-### 偏函数
-
-> ```bash
-> ## 偏函数
-> 1. 柯里化
-> 将一个多参数函数转换成多个单参数的函数，即将一个 n 元函数转换为 n 个一元函数。
-> 
-> 
-> 2. 偏函数
-> 固定一个函数的一个或多个参数(即设置默认值)，返回一个新函数，在新函数中继续接收剩余参数，即将一个 n 元函数转换成一个 n-x 元函数。
-> 
-> 偏函数的使用场景
->     - 动态生成函数
->     - 减少参数
->     - 延迟计算
-> ```
->
-> ```js
-> // 乘法
-> let multi = (x, y) => x * y;
-> 
-> // 构造一个对数值乘以2的函数
-> let double = multi.bind(null, 2);
-> console.log(double(3)); // 6
-> console.log(double(5)); // 10
-> 
-> const addPartial = (x, y, z) => x + y + z
-> const partialFunc = addPartial.bind(this, 2, 3)
-> partialFunc(5) // 10
-> ```
->
-
 ### 惰性函数
 
 > - 惰性函数是针对优化频繁使用的函数(当再次调用相同的函数，不再执行某些判断条件)；常用于函数库的编写、单例模式中。
@@ -2329,88 +2297,103 @@ end fn1
 
 ### 函数柯里化
 
-> - 函数柯里化(currying)：把接受多个参数的函数变换成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数并返回结果的新函数的技术
->   - 柯里化基于闭包实现，可能会导致内存泄露
->   - 使用递归执行会降低性能，递归过多时会发生栈溢出，需要进行递归优化
->   - arguments是类数组，使用`Array.prototype.slice.call`转换为数组时效率低
->
-> ```js
-> // 普通的add函数
-> function add(x, y) {
->   return x + y
-> }
-> 
-> // Currying 后 es5 写法
-> function curryingAdd(x) {
->   return function (y) {
->     return x + y
->   }
-> }
-> 
-> // es6 箭头函数写法
-> let adds = x => ( y => x + y )
-> 
-> add(1, 2)           // 3
-> curryingAdd(1)(2)   // 3
-> adds(1)(2)
-> ```
->
-> #### 典型柯里化
->
-> ```js
-> function curry (fn, args = []) {
->   return function () {
->     const rest = [...args, ...arguments]
->     if (rest.length < fn.length) {
->       return curry.call(this, fn, rest)
->     } else {
->       return fn.apply(this, rest)
->     }
->   }
-> }
-> 
-> // test
-> function sum (a, b, c) {
->   return a + b + c
-> }
-> const sumFn = curry(sum)
-> console.log(curry(sum)(1)(2)(3)) // 6
-> console.log(sumFn(1)(2, 3)) // 6
-> 
-> 
-> /** 箭头函数的写法 */
-> const fn = (a, b, c) => {
->   return a + b + c
-> }
-> cons currys = (fn, ...args) => {
->   return args.length >= fn.length
->   	? fn(...args)
->   	: (...args2) => curry(fn, ...args, ...args2)
-> }
-> console.log(curry(fn)(1)(2)(3))
-> ```
->
-> #### 函数复用
->
-> ```js
-> // 函数封装后
-> function check(reg, txt) { return reg.test(txt); }
-> check(/\d+/g, 'test')       //false
-> check(/[a-z]+/g, 'test')    //true
-> 
-> // Currying后
-> function curryingCheck(reg) {
->   return function (txt) {
->     return reg.test(txt)
->   }
-> }
-> var hasNumber = curryingCheck(/\d+/g)
-> var hasLetter = curryingCheck(/[a-z]+/g)
-> hasNumber('test1')      // true
-> hasNumber('testtest')   // false
-> hasLetter('21212')      // false
-> ```
->
+```bash
+## 函数柯里化
+柯里化(currying)是一个函数，它一次接受一个参数，并返回一个新函数，该函数期待下一个参数。它是一种函数转换，将 `f(a,b,c)` 转换为可以被以 `f(a)(b)(c)` 的形式进行调用。
+即柯里化是计算具有多个参数的函数，并将它们分解为具有单个参数的函数序列。
+
+使用柯里化的原因
+	- 柯里化是一种检查方法，确保你在继续之前得到了所需的一切(结果缓存)
+	- 它可以避免多次传递同一个变量(参数服用)
+	- 它将函数划分为多个较小的功能，可以处理一项职责。这使你的函数更纯粹，降低出错及产生副作用的概率。(函数颗粒化)
+	- 在函数编程中，可用于创建高阶函数。
+	
+
+柯里化的缺点
+	- 柯里化基于闭包实现，可能会导致内存泄漏
+	- 使用递归执行会降低性能，递归过多时会发生栈溢出，需要进行递归优化。
+	- arguments 是类数组，使用 `Array.prototype.slice.call` 转换为数组时效率低。
+
+```
+
+```js
+// 非柯里化
+const add = (a, b, c) => {
+  return a + b + c
+}
+add(1, 2, 3) // 6
+
+
+// 柯里化
+const addCurrying = (a) => {
+  return (b) => {
+    return (c) => {
+      return a + b + c
+    }
+  }
+}
+addCurrying(1)(2)(3) // 6
+
+
+// 箭头函数简化
+const addCurry = (a) => (b) => (c) => a + b + c
+addCurry(1)(2)(3) // 6
+```
+
+#### 高级柯里化
+
+```js
+function curry (fn, args = []) {
+  return function () {
+    const rest = [...args, ...arguments]
+    if (rest.length < fn.length) {
+      return curry.call(this, fn, rest)
+    } else {
+      return fn.apply(this, rest)
+    }
+  }
+}
+
+// test
+function sum (a, b, c) { return a + b + c }
+const sumFn = curry(sum)
+console.log(curry(sum)(1)(2)(3)) // 6
+console.log(sumFn(1)(2, 3)) // 6
+
+
+/** 箭头函数的写法 */
+cons currys = (fn, ...args) => {
+  return args.length >= fn.length
+  	? fn(...args)
+  	: (...args2) => curry(fn, ...args, ...args2)
+}
+const fn = (a, b, c) => { return a + b + c }
+console.log(curry(fn)(1)(2)(3))
+```
+
+#### 函数复用
+
+```js
+// 函数封装后
+function check(reg, txt) { return reg.test(txt); }
+check(/\d+/g, 'test')       //false
+check(/[a-z]+/g, 'test')    //true
+
+// Currying后
+function curryingCheck(reg) {
+  return function (txt) {
+    return reg.test(txt)
+  }
+}
+var hasNumber = curryingCheck(/\d+/g)
+var hasLetter = curryingCheck(/[a-z]+/g)
+hasNumber('test1')      // true
+hasNumber('testtest')   // false
+hasLetter('21212')      // false
+```
+
+
+
 > #### 参数不定长的柯里化
 >
 > - valueOf()：返回最适合该对象类型的原始值
@@ -2448,29 +2431,71 @@ end fn1
 > console.log(add(1)(2)(3)(4)) // 10
 > console.log(add(1, 2)(3, 4)(5, 6)) // 21
 > ```
->
-> #### 柯里化加法
->
-> ```js
-> function add() {
->   let args = [].slice.call(arguments);
->   let fn = function () {
->     let fn_args = [].slice.call(arguments)
->     return add.call(null, ...args.concat(fn_args))
->   }
->   fn.toString = function () {
->     return args.reduce((a, b) => a + b)
->   }
->   return fn
-> }
-> let a = add(1); 			// 1
-> let b = add(1)(2);  	// 3
-> let c = add(1)(2)(3) // 6
-> let d = add(1)(2, 3); // 6
-> let f = add(1, 2)(3); // 6
-> let e = add(1, 2, 3); // 6
-> console.log(a, b, c, d, e, f);	// ƒ 1 ƒ 3 ƒ 6 ƒ 6 ƒ 6 ƒ 6
-> ```
+
+#### 柯里化加法
+
+```js
+function add() {
+  let args = [].slice.call(arguments);
+  let fn = function () {
+    let fn_args = [].slice.call(arguments)
+    return add.call(null, ...args.concat(fn_args))
+  }
+  fn.toString = function () {
+    return args.reduce((a, b) => a + b)
+  }
+  return fn
+}
+
+let a = add(1); 			// 1
+let b = add(1)(2);  	// 3
+let c = add(1)(2)(3) // 6
+let d = add(1)(2, 3); // 6
+let f = add(1, 2)(3); // 6
+let e = add(1, 2, 3); // 6
+console.log(a, b, c, d, e, f);	// ƒ 1 ƒ 3 ƒ 6 ƒ 6 ƒ 6 ƒ 6
+console.log(
+  String(a),
+  b.toString(),
+  c.toString(),
+  d.toString(),
+  e.toString(),
+  String(e),
+) // ƒ 1 ƒ 3 ƒ 6 ƒ 6 ƒ 6 ƒ 6
+```
+
+
+
+### 偏函数
+
+```bash
+## 偏函数
+- 柯里化：将一个多参数函数转换成多个单参数的函数，即将一个 n 元函数转换为 n 个一元函数。
+- 偏函数：固定一个函数的一个或多个参数(即设置默认值)，返回一个新函数，在新函数中继续接收剩余参数，即将一个 n 元函数转换成一个 n-x 元函数。
+
+- 柯里化：一个接受多个参数的函数。它将把这个函数转换成一系列函数，其中每个小函数将接受一个参数，直到所有参数都完成。
+- 偏函数：当给定的参数少于预期的参数时，函数将转化为偏函数，并返回一个期望剩余参数的新函数。
+
+偏函数的使用场景
+    - 动态生成函数
+    - 减少参数
+    - 延迟计算
+```
+
+```js
+// 乘法
+let multi = (x, y) => x * y;
+
+// 构造一个对数值乘以2的函数
+let double = multi.bind(null, 2);
+console.log(double(3)); // 6
+console.log(double(5)); // 10
+
+const addPartial = (x, y, z) => x + y + z
+const partialFunc = addPartial.bind(this, 2, 3)
+partialFunc(5) // 10
+
+```
 
 ### 链式调用
 
