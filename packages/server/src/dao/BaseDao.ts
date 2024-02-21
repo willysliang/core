@@ -2,10 +2,11 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 12:06:14
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-20 21:11:32
+ * @ ModifierTime: 2024-02-21 11:55:29
  * @ Description: 基础 DAO 类
  */
 import { Model } from 'mongoose'
+
 export class BaseDao {
   Model: Model<any>
 
@@ -32,7 +33,6 @@ export class BaseDao {
       return dao
     } catch (error) {
       console.log('create error--> ', error)
-      throw new error()
     }
   }
 
@@ -49,7 +49,6 @@ export class BaseDao {
       return result
     } catch (error) {
       console.log('save error--> ', error)
-      throw new error()
     }
   }
   /**
@@ -63,7 +62,6 @@ export class BaseDao {
       return result
     } catch (error) {
       console.log('saveMany error--> ', error)
-      throw new error()
     }
   }
 
@@ -74,7 +72,7 @@ export class BaseDao {
    * @param constraints 查找配置
    * @returns {Promise}
    */
-  async findAll(condition, constraints) {
+  async findAll(condition, constraints: null | Record<string, any> = null) {
     try {
       const data = await this.Model.find(
         condition,
@@ -83,7 +81,6 @@ export class BaseDao {
       return data
     } catch (error) {
       console.log('findAll error--> ', error)
-      throw new error()
     }
   }
 
@@ -103,7 +100,6 @@ export class BaseDao {
       return data
     } catch (error) {
       console.log(`findOne error--> ${error}`)
-      throw new error()
     }
   }
 
@@ -123,7 +119,6 @@ export class BaseDao {
       return data
     } catch (error) {
       console.log(`findOneByOrder--> ${error}`)
-      throw new error()
     }
   }
 
@@ -136,11 +131,10 @@ export class BaseDao {
    */
   async update(condition, updater) {
     try {
-      const result = await this.Model.update(condition, updater)
+      const result = await this.Model.updateMany(condition, updater)
       return result
     } catch (error) {
       console.log(`update error--> ${error}`)
-      throw new error()
     }
   }
 
@@ -152,11 +146,10 @@ export class BaseDao {
    */
   async remove(condition) {
     try {
-      const result = await this.Model.remove(condition)
+      const result = await this.Model.deleteMany(condition)
       return result
     } catch (error) {
       console.log(`remove error--> ${error}`)
-      throw new error()
     }
   }
 }

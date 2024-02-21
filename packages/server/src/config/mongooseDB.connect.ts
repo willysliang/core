@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 17:46:47
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-20 19:51:52
+ * @ ModifierTime: 2024-02-21 14:19:14
  * @ Description: 数据库连接
  */
 
@@ -95,3 +95,5 @@ export const connectDB = () => {
     close,
   }
 }
+
+export const connectPool = connectDB()

@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 20:04:18
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-20 20:51:25
+ * @ ModifierTime: 2024-02-21 10:45:07
  * @ Description: 鉴权中间件
  */
 
@@ -14,29 +14,36 @@ import { SECRETKEY } from '../config/app.config'
 export const validateToken = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const auth = req.headers?.Authorization || req.headers?.authorization
+
     if (typeof auth === 'string' && auth.startsWith('Bearer')) {
       const token = auth.split(' ')?.[1] || ''
 
+      if (!token) {
+        res.json({
+          code: 400,
+          msg: 'token is null',
+        })
+        return
+      }
+
       jwt.verify(token, SECRETKEY, (error: string, decoded: Object) => {
         if (error) {
-          res.status(400).json('jwt is valid')
+          res.json({
+            code: 400,
+            msg: 'jwt is valid',
+          })
           return
-          //   throw Error('jwt is valid')
         }
         // @ts-ignore
         req.user = decoded.user
         next()
       })
-
-      if (!token) {
-        res.status(401).json('token is null')
-        return
-        // throw new Error('token is null')
-      }
     } else {
-      res.status(403).json('auth is valid')
+      res.json({
+        code: 400,
+        msg: 'auth is valid',
+      })
       return
-      //   throw Error('auth is valid')
     }
   },
 )

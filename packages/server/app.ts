@@ -2,20 +2,22 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 10:13:16
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-20 19:42:01
+ * @ ModifierTime: 2024-02-21 15:53:10
  * @ Description: 入口
  */
 
 import express from 'express'
 import indexRouter from './src/router/index'
-import { handleOnError, handleOnListening } from './src/utils/app'
+import { handleOnError, handleOnListening } from './src/utils/appUtils'
 import { SERVER_PORT } from './src/config/app.config'
-import { connectDB } from './src/config/mongooseDB.connect'
+import { errorHandler, error404Handler } from './src/middleware/errorMiddleware'
 
 const path = require('node:path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const http = require('node:http')
+const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const app = express()
 
@@ -30,12 +32,20 @@ app.set('view engine', 'jade')
  */
 app.use(logger('dev'))
 app.use(express.json())
+app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+// 允许跨域
+app.use(
+  cors({
+    origin: '*',
+  }),
+)
 
 /**
- * 静态资源
+ * 中间件
  */
+/** 静态资源中间件设置 */
 app.use(express.static(path.join(__dirname, 'public')))
 
 /**
@@ -43,10 +53,10 @@ app.use(express.static(path.join(__dirname, 'public')))
  */
 app.use('/', indexRouter)
 
-/**
- * 连接数据库
- */
-connectDB()
+/** 404 处理 */
+app.use(error404Handler)
+/** 错误信息处理中间件 */
+app.use(errorHandler)
 
 /**
  * 服务器启动

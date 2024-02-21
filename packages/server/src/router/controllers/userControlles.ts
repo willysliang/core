@@ -1,8 +1,16 @@
+/**
+ * @ Author: willy
+ * @ CreateTime: 2024-02-20 20:35:16
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-02-21 16:41:14
+ * @ Description: 用户接口
+ */
+
 import { Response, Request } from 'express'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { UserService } from '../../services/user.services'
+import { UserService } from '../../services/UserService'
 import { SALT_ROUNDS, SECRETKEY } from '../../config/app.config'
 import { isUndefined } from '../../utils/index'
 
@@ -10,6 +18,26 @@ const userService = new UserService()
 
 /**
  * 注册
+ * @example 前端调用案例
+    fetch('http://localhost:3000/user/userinfo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        account: '3',
+        email: '3',
+        password: '3',
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('fetch', result)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+ * 
  */
 export const createRegister = asyncHandler(
   async (req: Request, res: Response) => {
@@ -19,33 +47,57 @@ export const createRegister = asyncHandler(
       return
     }
 
+    // 查询账号是否已经注册
     const userAvailable = await userService.getUser(account)
+
+    console.log('userAvailable', userAvailable)
     if (userAvailable) {
-      res.status(400).json('User already registered!')
+      res.json({
+        code: 400,
+        msg: 'User already registered!',
+      })
       return
     }
 
+    // 密码加盐
     bcrypt.genSalt(SALT_ROUNDS, (err: Error, salt: string) => {
       if (err) {
-        throw new Error('bcrypt ??')
-      } else {
-        bcrypt.hash(password, salt, async (err: Error, hash: string) => {
-          if (err) {
-            throw new Error('bcrypt ??')
-          } else {
-            let user = await userService.createUser({
-              username,
-              email,
-              password: hash,
-            })
-            if (user) {
-              res.status(201).json({ _id: user.id, email: user.email })
-            } else {
-              res.status(400).json('User data us not valid')
-            }
-          }
+        res.json({
+          code: 400,
+          msg: 'bcrypt salt error',
+          data: { error: err },
         })
+        return
       }
+
+      bcrypt.hash(password, salt, async (error: Error, hash: string) => {
+        if (error) {
+          res.json({
+            code: 400,
+            msg: 'bcrypt hash error',
+            data: { error },
+          })
+          return
+        }
+
+        const user = await userService.createUser({
+          account,
+          email,
+          password: hash,
+        })
+
+        const jsonResult = user
+          ? {
+              code: 201,
+              msg: 'success',
+              data: { _id: user.id, email: user.email },
+            }
+          : {
+              code: 400,
+              msg: 'User data us not valid.',
+            }
+        res.json(jsonResult)
+      })
     })
   },
 )
@@ -57,7 +109,10 @@ export const createLogin = asyncHandler(async (req: Request, res: Response) => {
   const { account, password } = req.body
 
   if (isUndefined(account) || isUndefined(password)) {
-    res.status(400).json('All fields are mandatory.')
+    res.json({
+      code: 400,
+      msg: 'All fields are mandatory.',
+    })
     return
   }
 
@@ -75,9 +130,16 @@ export const createLogin = asyncHandler(async (req: Request, res: Response) => {
       SECRETKEY,
       { expiresIn: '24h' },
     )
-    res.status(200).json({ token })
+    res.json({
+      code: 200,
+      msg: 'success',
+      data: { token },
+    })
   } else {
-    res.status(400).json('account or password is valid')
+    res.json({
+      code: 400,
+      msg: 'account or password is valid',
+    })
   }
 })
 
@@ -86,7 +148,23 @@ export const createLogin = asyncHandler(async (req: Request, res: Response) => {
  */
 export const createCurrentUserInfo = asyncHandler(
   async (req: Request, res: Response) => {
-    // @ts-ignore
-    res.status(200).json(req.user)
+    res.json({
+      code: 200,
+      // @ts-ignore
+      msg: { user: req.user },
+    })
   },
 )
+
+/**
+ * 爬虫信息
+ */
+export const createSpider = asyncHandler(async (_: Request, res: Response) => {
+  const data = await userService.spider()
+  console.log('data', data)
+  res.json({
+    code: 200,
+    msg: 'success',
+    data,
+  })
+})

@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年2月21日21点29分
+  - feat(server): 错误中间件、链接mongoose(用户信息模块)
+
 ## 2024年2月20日21点36分
   - feat(server): 服务分层、TOKEN鉴权、用户相关
 
