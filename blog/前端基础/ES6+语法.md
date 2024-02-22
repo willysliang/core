@@ -512,6 +512,24 @@ Object.is(NaN, Number.NaN) // true
 
 
 
+#### variable === undefined 与 typeof variable === undefined 的区别
+
+```bash
+### variable === undefined 与 typeof variable === undefined 的区别
+检测变量是否为 undefined 有两种方法
+	1. `variable === undefined`
+	2. `typeof variable === 'undefined'`
+	
+两者区别：
+在 es3 旧版浏览器中，undefined 是一个全局变量名，其原始值未定义，但是可以更改该值。
+	typeof undeclaredVar === 'undefined' // true
+	undeclaredVar === undefined // 引发 ReferenceError 异常
+在新版浏览器中，因为 undefined 的 writable 属性设置为 false，所以无法更改 undefined，因而没有这种问题。
+
+```
+
+
+
 #### 虚值与布尔值
 
 ```bash

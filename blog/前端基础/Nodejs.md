@@ -754,10 +754,10 @@ const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面
 
 
 ### __dirname
-`__dirname` 是 nodejs 中的一个全局变量，表示当前模块所在的目录的绝对路径。具体来说，它是一个包含当前模块所在目录完整路径的字符串。
+`__dirname` 是 nodejs 中的一个全局变量，表示当前模块所在的目录的绝对路径。
 例如，如果一个 Node.js 模块位于 `C:\Users\username\projects\myapp\index.js`，那么在该模块中访问 __dirname 变量的值为 `C:\Users\username\projects\myapp`。
 __dirname 变量通常用于构建文件路径，比如读取文件、写入文件、加载模块等。使用 `__dirname` 变量可以确保路径的正确性，避免出现相对路径错误。
-需要注意的是，`__dirname` 变量不是全局变量的一部分，而是每个模块独有的局部变量。因此，在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
+注意：`__dirname` 变量不是全局变量的一部分，而是每个模块独有的局部变量。因此在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
 
 
 ### 相对路径和绝对路径问题
