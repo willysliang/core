@@ -2,13 +2,14 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 20:04:18
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-21 10:45:07
+ * @ ModifierTime: 2024-02-22 16:51:18
  * @ Description: 鉴权中间件
  */
 
 import { Request, Response, NextFunction } from 'express'
 import asyncHandler from 'express-async-handler'
 import jwt from 'jsonwebtoken'
+import createError from 'http-errors'
 import { SECRETKEY } from '../config/app.config'
 
 export const validateToken = asyncHandler(
@@ -19,19 +20,15 @@ export const validateToken = asyncHandler(
       const token = auth.split(' ')?.[1] || ''
 
       if (!token) {
-        res.json({
-          code: 400,
-          msg: 'token is null',
-        })
+        res.status(400)
+        next(createError(400, '请携带验证信息!'))
         return
       }
 
       jwt.verify(token, SECRETKEY, (error: string, decoded: Object) => {
         if (error) {
-          res.json({
-            code: 400,
-            msg: 'jwt is valid',
-          })
+          res.status(400)
+          next(createError(400, '请携带有效验证信息!'))
           return
         }
         // @ts-ignore
@@ -39,10 +36,8 @@ export const validateToken = asyncHandler(
         next()
       })
     } else {
-      res.json({
-        code: 400,
-        msg: 'auth is valid',
-      })
+      res.status(400)
+      next(createError(400, '请携带验证信息!'))
       return
     }
   },

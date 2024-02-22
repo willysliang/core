@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-21 14:44:02
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-21 21:20:20
+ * @ ModifierTime: 2024-02-22 11:59:17
  * @ Description: 错误状态码中间件
  */
 
@@ -47,7 +47,7 @@ export const errorHandler = (
     res.status(err.status || 500)
     res.render('error', {
       code: statusCode,
-      msg: errorCodeMap[statusCode],
+      msg: err.message || errorCodeMap[statusCode],
       data: {
         message: err.message,
         stackTrace: err.stack,

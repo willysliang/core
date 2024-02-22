@@ -2,10 +2,10 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 12:06:14
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-21 11:55:29
+ * @ ModifierTime: 2024-02-22 16:34:17
  * @ Description: 基础 DAO 类
  */
-import { Model } from 'mongoose'
+import { Model, ObjectId } from 'mongoose'
 
 export class BaseDao {
   Model: Model<any>
@@ -93,9 +93,53 @@ export class BaseDao {
    */
   async findOne(condition, constraints: null | Record<string, any> = null) {
     try {
-      const data = await this.Model.findOne(
-        condition,
-        constraints ? constraints : null,
+      const data = await this.Model.findOne(condition, constraints)
+      return data
+    } catch (error) {
+      console.log(`findOne error--> ${error}`)
+    }
+  }
+
+  /**
+   * 根据键 id 查询 doc
+   * @param {ObjectId} id 查询条件
+   * @param {object} condition 其他查询条件
+   * @param {object} [constraints] 约束条件
+   * @returns {Promise}
+   */
+  async findById(
+    id: ObjectId,
+    condition = null,
+    constraints: null | Record<string, any> = null,
+  ) {
+    try {
+      const data = await this.Model.findById(id, condition, constraints)
+      return data
+    } catch (error) {
+      console.log(`findOne error--> ${error}`)
+    }
+  }
+
+  /**
+   * 根据键 id 查询并更新 doc
+   * @param {ObjectId} id 查询条件
+   * @param {object} condition 其他查询条件
+   * @param {object} [options] 约束条件
+   * @returns {Promise}
+   */
+  async findByIdAndUpdate(
+    documentId: ObjectId,
+    update: Record<string, any> = {},
+    options: Record<string, any> = {
+      new: true, // 设置为 true 以返回更新后的文档，默认为 false 返回更新前的文档
+      runValidators: true, // 如果设置为 true，则应用模式中定义的验证规则
+    },
+  ) {
+    try {
+      const data = await this.Model.findByIdAndUpdate(
+        documentId,
+        update,
+        options,
       )
       return data
     } catch (error) {
@@ -139,17 +183,32 @@ export class BaseDao {
   }
 
   /**
-   * 移除 doc
+   * 移除单个 doc
    *
    * @param condition 查找条件
    * @returns {Promise}
    */
-  async remove(condition) {
+  async deleteOne(condition) {
+    try {
+      const result = await this.Model.deleteOne(condition)
+      return result
+    } catch (error) {
+      console.log(`deleteOne error--> ${error}`)
+    }
+  }
+
+  /**
+   * 移除多个 doc
+   *
+   * @param condition 查找条件
+   * @returns {Promise}
+   */
+  async deleteMany(condition) {
     try {
       const result = await this.Model.deleteMany(condition)
       return result
     } catch (error) {
-      console.log(`remove error--> ${error}`)
+      console.log(`deleteMany error--> ${error}`)
     }
   }
 }

@@ -1,12 +1,14 @@
-fetch('http://localhost:3000/user/userinfo', {
+fetch('http://localhost:3000/contact', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    account: '3',
-    email: '3',
-    password: '3',
+    account: '4',
+    email: '4',
+    password: '4',
+    phone: '4',
+    name: '4',
   }),
 })
   .then((response) => response.json())
