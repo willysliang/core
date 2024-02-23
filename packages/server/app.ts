@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 10:13:16
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-22 20:10:16
+ * @ ModifierTime: 2024-02-23 18:49:03
  * @ Description: 入口
  */
 
@@ -12,7 +12,7 @@ import cors from 'cors'
 import compression from 'compression'
 import indexRouter from './src/router/index'
 import { handleOnError, handleOnListening } from './src/utils/appUtils'
-import { SERVER_PORT } from './src/config/app.config'
+import { SERVER_PORT } from '@willy/utils'
 import { errorHandler, error404Handler } from './src/middleware/errorMiddleware'
 
 const path = require('node:path')
@@ -24,6 +24,8 @@ const app = express()
 
 // 禁止 X-Powered-By 响应头，减少了暴露服务使用情况的信息量
 app.disable('x-powered-by')
+// 信任代理设置（在多个代理时获取到真实的客户端 IP 地址）
+app.set('trust proxy', true)
 
 /**
  * 视图资源

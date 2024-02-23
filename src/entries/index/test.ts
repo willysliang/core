@@ -1,4 +1,6 @@
-fetch('http://localhost:3000/contact', {
+import { SERVER_BASE_URL } from '@packages/utils'
+
+fetch(`${SERVER_BASE_URL}/contact`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

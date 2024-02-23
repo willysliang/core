@@ -2,9 +2,11 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-19 14:25:43
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-20 11:29:40
+ * @ ModifierTime: 2024-02-23 18:11:15
  * @ Description: serviceWorker 的 demo 调用
  */
+
+import { WebPushServer, WebPushUtils } from './webPush.js'
 
 /**
  * 使用 serviceWorker API 缓存资源
@@ -40,23 +42,6 @@ if ('serviceWorker' in navigator) {
 }
 
 /**
- * @function urlBase64ToUint8Array 用于将 URL 安全的 base64 编码的公钥转换为 Uint8Array
- * @description 通常用于配置 Web Push 的 applicationServerKey
- */
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
-
-  const rawData = window.atob(base64)
-  const outputArray = new Uint8Array(rawData.length)
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i)
-  }
-  return outputArray
-}
-
-/**
  * 使用 PUSH API 推送消息（即使后续不打开该网站也会继续收到服务端下发的消息）
  * 注册 Service Worker 并请求推送通知权限
  */
@@ -66,39 +51,42 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
     .then((swReg) => {
       console.log('Service Worker 注册成功', swReg)
 
-      const VAPID_KEY = {
-        publicKey:
-          'BL2ZBfM2Vtg7dERhMqIyZv9T_9omdZ6K0TUrBBi5jxQnK6tK2ASX0ufWfa4Xf7Z2Hm1u2F0wT7BwQZ6rZZJI6sA',
-        privateKey: 'dPbG4S6Bc3tB1fgEjMxm3gBlXHJm2wPMI0tm9g4TxvQ',
-      }
-
       // swReg.showNotification('新消息', {
       //   body: '消息描述',
       //   icon: '../vite.svg',
       //   badge: '../vite.svg',
       // })
 
+      const webPushUtils = new WebPushUtils()
+
       // 请求推送通知权限
-      return swReg.pushManager.getSubscription().then((subscription) => {
+      return swReg.pushManager.getSubscription().then(async (subscription) => {
         if (subscription === null) {
           // 用户还没有订阅推送服务，请求订阅
           return swReg.pushManager
             .subscribe({
               userVisibleOnly: true,
-              applicationServerKey: urlBase64ToUint8Array(
-                VAPID_KEY.publicKey, // 你的公钥
+              applicationServerKey: webPushUtils.urlBase64ToUint8Array(
+                webPushUtils.vapidKey.publicKey, // 你的公钥
               ),
             })
-            .then((PushSubscription) => {
-              console.log('推送订阅成功：', PushSubscription)
-              // 将订阅信息发送到服务器
+            .then(async (pushSubscription) => {
+              console.log('推送订阅成功：', pushSubscription)
+              const webPushServer = new WebPushServer(pushSubscription)
+              await webPushServer.sendSubscribe()
             })
             .catch((error) => {
               console.error('推送订阅失败：', error)
             })
         } else {
           // 用户已经订阅
-          console.log('Subscription object: ', subscription)
+          console.log('用户已经订阅: ', subscription)
+
+          const webPushServer = new WebPushServer(subscription)
+          webPushServer.checkPushSubscription()
+
+          // 取消订阅
+          // await webPushServer.unsubscribe().catch(() => {})
         }
       })
     })
