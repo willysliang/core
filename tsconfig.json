@@ -55,6 +55,7 @@
       "@utils/*": ["src/utils/*"],
       "@img/*": ["src/assets/*"],
       "@styles/*": ["src/styles/*"],
+      "@packages/*": ["packages/*"],
     },
   },
   "types": ["vite/client", "**/*.d.ts"],

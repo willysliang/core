@@ -153,6 +153,7 @@ export default defineConfig(({ mode }) => {
         '@utils': path.resolve(__dirname, 'src/utils'),
         '@img': path.resolve(__dirname, 'src/assets'),
         '@styles': path.resolve(__dirname, 'src/styles'),
+        '@packages': path.resolve(__dirname, 'packages'),
       },
       //  导入时想要忽略的扩展名列表 导入时想要省略的扩展名列表。不建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响 IDE 和类型支持
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
