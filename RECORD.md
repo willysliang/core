@@ -25,6 +25,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年2月24日10点53分
+  - perf(server): 优化封装MongooseConnect类
+
 ## 2024年2月23日18点54分
   - feat(utils): 添加通用方法子模块
   - feat(server): webPush消息推送、调整调用通用方法、优化 public/webPush 方法
