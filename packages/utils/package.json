@@ -1,0 +1,18 @@
+{
+  "name": "@willy/utils",
+  "version": "1.0.0",
+  "description": "工具库",
+  "main": "main.ts",
+  "scripts": {
+    "dev": "nodemon --exec ts-node ./main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.2",
+    "typescript": "^5.0.2"
+  }
+}

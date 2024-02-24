@@ -619,87 +619,160 @@ Description: JavaScript
 
 ## DOM
 
-> ```bash
-> ## DOM
-> - DOM 为文档提供了结构化表示，并定义了如何通过脚本来访问文档结构。
-> - DOM 的目的是为了能让 js 操作 html 元素而制定的一个规范。
-> - DOM 就是由节点组成的；所有的节点都是Object。
-> - DOM对象与标签的区别
->     - 元素标签(位于文档)对应的元素节点(位于Dom节点书上)。
->     - 区别是 DOM 里面的元素节点是个对象，拥有属性和方法；而元素标签仅仅是标签而已。
->   
->   
-> ### DOM作用
->   - 找对象（元素节点）
->   - 设置元素的属性值
->   - 设置元素的样式
->   - 动态创建和删除元素
->   - 事件的触发响应：事件源、事件、事件的驱动程序
-> 
-> - 节点元素：父（parent）、子（child）和同胞（sibling）
-> - 元素的属性（包括对应标签的属性）
->     - 非表单元素的属性：id、src、title、href、alt
->     - 表单元素的属性：name、value、type、disabled、checked、selected
->     - 超链接-->取消默认行为的执行 ：return false;
-> 
-> 
-> ### DOM节点属性
-> 1. nodeName	--> nodeName 属性规定节点的名称，仅只读
->     - 文档节点（文档）：整个 HTML 文档就是一个文档节点；nodeName 始终是 #document
->     - 元素节点（标签）：HTML标签；nodeName 与标签名相同
->     - 属性节点（属性）：元素的属性；nodeName 与属性名相同
->     - 文本节点（文本）：HTML标签中的文本内容(包括标签之间的空格、换行)；nodeName始终是 #text
->   
-> 2. nodeValue 	-->  nodeValue 属性规定节点的值
->     - 元素节点的 nodeValue 是 undefined 或 null
->     - 文本节点的 nodeValue 是文本本身
->     - 属性节点的 nodeValue 是属性值
-> 
-> 3. NodeType
->     - 元素：1
->     - 属性：2
->     - 文本：3
->     - 注释：8
->     - 文档：9
-> ```
->
-> ![JS_DOM节点关系表](./image/JS_DOM_node.png)
+```bash
+## DOM
+- DOM 为文档提供了结构化表示，并定义了如何通过脚本来访问文档结构。
+- DOM 的目的是为了能让 js 操作 html 元素而制定的一个规范。
+- DOM 是由节点组成的；所有的节点本质上都是 Object。
+- DOM对象与标签的区别
+    - 元素标签(位于文档)对应的元素节点(位于Dom节点书上)。
+    - 区别是 DOM 里面的元素节点是个对象，拥有属性和方法；而元素标签仅仅是标签而已。
+  
+  
+### DOM作用
+  - 找对象（元素节点）
+  - 设置元素的属性值
+  - 设置元素的样式
+  - 动态创建和删除元素
+  - 事件的触发响应：事件源、事件、事件的驱动程序
+
+- 节点元素：父（parent）、子（child）和同胞（sibling）
+- 元素的属性（包括对应标签的属性）
+    - 非表单元素的属性：id、src、title、href、alt
+    - 表单元素的属性：name、value、type、disabled、checked、selected
+    - 超链接-->取消默认行为的执行：`return false`
+
+
+### DOM节点属性
+1. nodeName	--> nodeName 属性规定节点的名称，仅只读
+    - 文档节点（文档）：整个 HTML 文档就是一个文档节点；nodeName 始终是 `#document`
+    - 元素节点（标签）：HTML标签；nodeName 与标签名相同
+    - 属性节点（属性）：元素的属性；nodeName 与属性名相同
+    - 文本节点（文本）：HTML标签中的文本内容(包括标签之间的空格、换行)；nodeName始终是 `#text`
+  
+2. nodeValue 	-->  nodeValue 属性规定节点的值
+    - 元素节点的 nodeValue 是 undefined 或 null
+    - 文本节点的 nodeValue 是文本本身
+    - 属性节点的 nodeValue 是属性值
+
+3. NodeType
+    - 元素：1
+    - 属性：2
+    - 文本：3
+    - 注释：8
+    - 文档：9
+```
+
+![JS_DOM节点关系表](./image/JS_DOM_node.png)
+
+
+
+### DOMString
+
+```bash
+## DOMString
+DOMString 是一种字符串类型。它是由 16 位无符号证书序列组成，每个整数代表一个 UTF-16 代码单元。
+
+每个代码单元都是一个 16 位的数值，通常代表一个字符，但有时需要两个代码单元来表示一个字符（对于 Unicode 辅助平面上的字符）。当文档或 Web API 规范提到 DOMString 时，它指的就是这样的字符串。
+
+在 Web API 中，许多属性和方法返回或接受 DOMString 类型的参数。由于 JavaScript 的字符串是以 UTF-16 编码的，所以 DOMString 可以被当作普通的 JavaScript 字符串来使用，没有特殊的区别或限制。这意味着，在 JavaScript 中处理字符串时，实际是在处理 DOMString。
+
+在 Web API 中，DOMString 通常用于：
+	- DOM 元素属性，如 id、className、value 等。
+	- 传递给或从方法返回的字符串值，如 document.querySelector() 或 Node.textContent。
+	- 在构造函数中当做参数，如 new Text('Hello, world!')，其中 'Hello, world!' 就是一个 DOMString。
+	- 表示 URL、选择器字符串或其他需要以文本形式表示的数据。
+注意：尽管 DOMString 在概念上等同于 JavaScript 字符串，但在一些特殊情境下，DOMString 可能会被指定为 null 或 undefined，这通常表明字符串值是不存在的。此外，有些 API 可能会将 DOMString 限定为必须符合某些模式或格式(可能不接收 null 值)，比如必须是合法的 CSS 选择器或有效的 URL。在这些情况下，需要确保提供的字符串满足这些要求。
+
+```
+
+```js
+/** 获取 DOM 元素属性值 */
+let elementId = element.id;  // `elementId` is a DOMString
+let elementClasses = element.className;  // `elementClasses` is a DOMString
+
+
+/** 设置 DOM 元素属性值 */
+element.id = 'new-id';  // Setting a DOMString
+element.className = 'new-class'; // className is a DOMString that you can set
+
+```
+
+
+
+
 
 ### DOM方法
 
-> ```bash
-> ### DOM 方法
-> 1. get(获取)
-> 2. set(设置)
-> 3. remove(移除)
-> 4. create(创建)
-> 5. insert(插入)
-> 6. replace(替代)
-> 7. append(添加)
-> 
-> 
-> - getElementById(id) - 获取带有指定 id 的节点（元素）
-> - appendChild(node) - 插入新的子节点（元素）
-> - removeChild(node) - 删除子节点（元素）
-> - createAttribute() - 创建属性节点
-> - 要复制的节点.cloneNode(true)--复制节点
-> ```
+```bash
+### DOM 方法
+1. get(获取)
+2. set(设置)
+3. remove(移除)
+4. create(创建)
+5. insert(插入)
+6. replace(替代)
+7. append(添加)
+
+
+- getElementById(id) - 获取带有指定 id 的节点（元素）
+- appendChild(node) - 插入新的子节点（元素）
+- removeChild(node) - 删除子节点（元素）
+- createAttribute() - 创建属性节点
+- 要复制的节点.cloneNode(true)--复制节点
+```
+
+
 
 ### DOM属性
 
-> ```bash
-> ### DOM 属性
-> - innerHTML - 节点（元素）的文本值
-> - parentNode - 节点（元素）的父节点
-> - childNodes - 节点（元素）的子节点
-> - attributes - 节点（元素）的属性节点
-> 
-> 
-> 因为不可以直接输出自定义的属性，所以有了以下方法
->     - 获取标签对应的属性：getAttribute(“”); //属性可以是自定义，也可以是本身已有的
->     - 设置标签属性的值setAttribute(“属性名”，“属性值”);
->     - 移除标签属性 removeAttribute(“属性名”);
-> ```
+```bash
+### DOM 属性
+- innerHTML - 节点（元素）的文本值
+- parentNode - 节点（元素）的父节点
+- childNodes - 节点（元素）的子节点
+- attributes - 节点（元素）的属性节点
+
+```
+
+#### 自定义属性
+
+```bash
+### 自定义属性
+DOM 中的自定义属性不能直接访问，但可以通过以下方法来进行操作：
+	- 获取标签对应的属性：`getAttribute('属性名')`（注意：属性可以是自定义，也可以是 DOM 自身已有的）
+	- 设置标签属性的值：`setAttribute('属性名', '属性值')`
+	- 移除标签属性值：`removeAttribute('属性名')`
+
+```
+
+```js
+const ele = document.getElementById('data') as HTMLElement
+
+/**
+ * 获取 data-* 属性的值
+ */
+const getMessage1 = ele.getAttribute('data-message')
+// or
+const getMessage2 = ele.dataset.message
+
+/**
+ * 设置 da-* 属性的值
+ */
+ele.setAttribute('data-message', 'Hi, willy')
+// or
+ele.dataset.message = 'Hi, willy'
+
+
+/**
+ * 删除 data-* 属性
+ */
+ele.removeAttribute('data-message')
+// or
+delete ele.dataset.message
+```
+
+
 
 ### DOM访问
 
@@ -2065,224 +2138,6 @@ new Boolean(true).toString() // "true"
 var v4 = Number('123')
 console.log(typeof v4, v4 === 123)  // number true
 ```
-
-## 观察器
-
-### IntersectionObserver 相交节点观察器
-
-> ```bash
-> ## IntersectionObserver API
-> IntersectionObserver API 是异步的，不随着目标元素的滚动同步触发。 即只有线程空闲下来，才会执行观察器。这意味着，这个观察器的优先级非常低，只在其他任务执行完，浏览器有了空闲才会执行。
-> 
-> 
-> ## IntersectionObserverEntry对象提供目标元素的信息，一共有六个属性。
-> time：可见性发生变化的时间，是一个高精度时间戳，单位为毫秒
-> target：被观察的目标元素，是一个 DOM 节点对象
-> rootBounds：根元素的矩形区域的信息，getBoundingClientRect()方法的返回值，如果没有根元素（即直接相对于视口滚动），则返回null
-> boundingClientRect：目标元素的矩形区域的信息
-> intersectionRect：目标元素与视口（或根元素）的交叉区域的信息
-> intersectionRatio：目标元素的可见比例，即intersectionRect占boundingClientRect的比例，完全可见时为1，完全不可见时小于等于0
-> 
-> 
-> ## options 
-> root: null, // 指定与目标元素相交的根元素，默认null为视口
-> threshold: [] // [0, 0.5, 1] 当目标元素和根元素相交的面积占目标元素面积的百分比到达或跨过某些指定的临界值时就会触发回调函数
-> rootMagin：'' // "100px 0" 与margin类型写法，指定与跟元素相交时的延时加载
-> 
-> 
-> ## 实例方法
-> - observe()
-> 	- 观察某个目标元素，一个观察者实例可以观察任意多个目标元素。
-> 	- 注意：这不是事件，没有冒泡。所以不能只调用一次 observe 方法就能观察一个页面里的所有 img 元素
-> - unobserve()
-> 	- 取消对某个目标元素的观察，延迟加载通常都是一次性的，observe 的回调里应该直接调用 unobserve() 那个元素.
-> - disconnect()
-> 	- 取消观察所有已观察的目标元素
-> - takeRecords()
->     在浏览器内部，当一个观察者实例在某一时刻观察到了若干个相交动作时，它不会立即执行回调，它会调用 window.requestIdleCallback() （目前只有 Chrome 支持）来异步的执行我们指定的回调函数，而且还规定了最大的延迟时间是 100 毫秒，相当于浏览器会执行：
->     requestIdleCallback(() => {
->       if (entries.length > 0) {
->         callback(entries, observer)
->       }
->     }, { timeout: 100 })
-> ```
->
-> #### 图片滚动底部懒加载
->
-> ```vue
-> <template>
->   <img
->     v-for="(item, index) in imgUrl"
->     :key="index"
->     ref="imgRef"
->     :src="systemNotfound"
->     :data-src="imgUrl[index]"
->     class="h-96"
->   />
-> </template>
-> 
-> <script setup lang="ts">
-> import { onMounted, ref } from 'vue'
-> import { systemNotfound } from '@/assets/images'
-> 
-> const imgRef = ref([])
-> const imgUrl = ref([
->   'https://img2.baidu.com/it/u=617579813,2960860841&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
->   'https://img2.baidu.com/it/u=1003272215,1878948666&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
->   'https://img1.baidu.com/it/u=2995157981,91041597&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=750',
->   'https://img2.baidu.com/it/u=1395980100,2999837177&fm=253&fmt=auto&app=120&f=JPEG?w=1200&h=675',
->   'https://img0.baidu.com/it/u=925843206,3288141497&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=769',
->   'https://img1.baidu.com/it/u=1300668939,1504410366&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=858',
->   'https://img0.baidu.com/it/u=4008146120,512111027&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
->   'https://img1.baidu.com/it/u=3622442929,3246643478&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
->   'http://t13.baidu.com/it/u=230088816,2918366315&fm=224&app=112&f=JPEG?w=250&h=500',
->   'https://img2.baidu.com/it/u=3038223445,2416689412&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-> ])
-> 
-> onMounted(() => {
->   const options = {
->     root: null,
->     // 这里是一个数组可以指定多个比例类似[0.25, 0.5, 0.75, 1]
->     threshold: [0], // 交会处
->     rootMargin: '0px', // 对视口进行收缩和扩张
->   }
->   const lazyIntersection = new IntersectionObserver((entires) => {
->     // entires为监听的节点数组对象
->     entires.forEach((item: any) => {
->       // isIntersecting是当前监听元素交叉区域是否在可视区域指定的阈值内返回的是一个布尔值
->       if (item.isIntersecting) {
->         item.target.src = item.target?.getAttribute('data-src')
->         // 这里资源加载后就停止进行观察
->         lazyIntersection.unobserve(item.target)
->       }
->     })
->   }, options)
-> 
->   /** observe用来观察指定的DOM节点 */
->   imgRef.value.forEach((item) => {
->     lazyIntersection.observe(item)
->   })
-> })
-> </script>
-> ```
-
-### MutationObserver 节点元素变化监听器
-
-> ```bash
-> ## MutationObserver 节点元素变化监听器
-> - Mutation Observer 提供了监视对 DOM 树所做更改的能力。它被设计为旧的 Mutation Events 功能的替代品，该功能是 DOM3 Events 规范的一部分。
-> - 即是说这是一个 DOM 元素变化的监听器，当被观察的目标 DOM 发生改变时就可以执行指定的逻辑。
-> 
-> 
-> ## MutationObserver 的应用场景（防删除 DOM 水印）
-> - MutationObserver 主要在需要监听用户是否违规操作 DOM 的场景。
-> - 以水印为例，监听用户是否私自把页面的水印 DOM 进行删除，如果触发了事件则对水印进行恢复。
-> - 常规的页面水印是通过一个 DOM 元素来生成顶层的固定水印，如果用户有一定的网页知识可通过开发者工具来删除水印，这时就可以使用 MutationObserver 来监听 DOM 的操作。
-> ### 代码的实现
-> - 我们可在加载完水印之后创建一个监听器，并且监听了 body 元素（因为常规的水印元素是body的直接子元素，如果直接监听刚才的水印元素，删除这个元素并不会触发监听器）
-> - 首先根据 mutation 的 removedNodes 字段判断是否进行了删除操作，如果是删除操作再根据是否有下一个相邻节点来判断节点恢复的位置，如果存在相邻节点就在其前面插入被删除的节点，否则直接在末尾追加。
-> 
-> 
-> ## 实例方法
-> - MutationObserver是一个构造函数，他的实例会有 disconnect、observe和 takeRecords 三个方法
-> 
-> ### 1. constructor
-> 构造函数接收一个函数，用于在 DOM 变化时执行，该函数有两个参数：一个是描述所有被触发改动的 MutationRecord 对象数组，另一个是调用该函数的 MutationObserver 对象。
-> 
-> ### 2. observe
-> - mutationObserver.observe(target[, options])
-> 	- target: DOM 树中的一个要观察变化的DOM Node（可能是一个Element），或者是被观察的子节点树的根节点。
-> 	- options: 一个可选的 MutationObserverInit 对象，此对象的配置项描述了 DOM 的哪些变化应该提供给当前观察者的 callback
-> 		- attributes设为 true 以观察受监视元素的属性值变更。默认值为 false。
-> 		- attributeFilter要监视的特定属性名称的数组。如未包含此属性，则对所有属性的更改都会触发变动通知。无默认值。
-> 		- characterData设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化。无默认值
-> 		- childList设为 true 以监视目标节点（如果 subtree 为 true，则包含子孙节点）添加或删除新的子节点。默认值为 false。
-> 		- subtree的其他值也会作用于此子树下的所有节点，而不仅仅只作用于目标节点。默认值为 false。
-> 
-> ### 3. disconnect
-> 阻止 MutationObserver 实例继续接收的通知，直到再次调用其 observe() 方法，该观察者对象包含的回调函数都不会再被调用。
-> 
-> ### 4. takeRecords
-> 返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表，使变更队列保持为空。
-> DOM 变化之后并不是立即通知执行回调，而是等主线程代码执行完毕再通知，所以 takeRecords 可以将通知提前拦截。
-> ```
->
-> ```js
-> const DOMHandle = (mutationList, observer) => {
-> 	mutationList.forEach(mutation => {
-> 		switch(mutation.type) {
-> 			case 'childList':
->         // 从树上添加或移除一个或多个的子节点
->         console.log('结点变更')
->         break
-> 			case 'attributes':
->         // mutation.target 中某节点的一个属性值被更改
->         console.log('属性变更')
->         break
-> 		}
-> 	})
-> }
-> 
-> const observer = new MutationObserver(DOMHandler)
-> const node1 = document.getElementById('box')
-> observer.observe(node1, { attributes: true })
-> node1.setAttribute('name', 'willy') // 属性变更
-> 
-> observer.disconnect()
-> node1.setAttribute('name', 'cilly') // 调用之后再元素版本修改属性都不会再次出发之前的回调
-> 
-> 
-> const node2 = document.getElementById('app')
-> observer.observe(node2, {attributes: true})
-> node.setAttribute('name', 'king')
-> const notices = observer.takeRecords()  // 拦截 DOM 更改的回调
-> console.log(notice)
-> ```
->
-> ### 【实例】防删除 DOM 元素水印
->
-> ```html
-><ul>
->   <li>测试删除 DOM 是否能恢复</li>
->   <li>1</li>
->   <li>2</li>
->   <li>3</li>
->   <li>4</li>
->   <li>5</li>
-> </ul>
-> 
-> <script>
-> 	window.onload = () => {
->     loadMark(settings) // 加载水印
-> 
->     // DOMHandler 在 typescript 中属于 MutationCallback
->     const DOMHandler = (mutationList, observer) => {
->       console.log(mutationList)
->       mutationList.forEach((mutation) => {
->         const { target, nextSibling, removedNodes } = mutation
->         // 如果列表不为空，说明触发操作的动作是删除
->         if (mutation.removedNodes.length) {
->           if (nextSibling) {
->             // 如果存在下一个相邻子节点执行插入
->             console.log('恢复被删除的节点')
->             target.insertBefore(removedNodes[0], nextSibling)
->           } else {
->             // 直接添加到 target 的末尾
->             target.appendChild(removedNodes[0])
->           }
->         }
->       })
->     }
-> 
->     const observer = new MutationObserver(DOMHandler)
->     const node = document.body
->     observer.observe(node, { attributes: true, childList: true, subtree: true })
->   }
-> </script>
-> ```
-> 
-> ![恢复删除的水印](./image/recover_deleted_watermark.webp)
->
 
 ## 运动
 

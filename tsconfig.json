@@ -55,6 +55,7 @@
       "@utils/*": ["src/utils/*"],
       "@img/*": ["src/assets/*"],
       "@styles/*": ["src/styles/*"],
+      "@packages/*": ["packages/*"],
     },
   },
   "types": ["vite/client", "**/*.d.ts"],
@@ -67,6 +68,8 @@
     "types/**/*.ts",
     "config/**/*.ts",
     "vite.config.ts",
+    "blog/**/*.js",
+    "blog/**/*.ts",
   ],
   "exclude": ["node_modules", "tests/server/**/*.ts", "dist", "**/*.js", "./public"],
   "references": [{ "path": "./tsconfig.node.json" }]

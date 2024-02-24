@@ -512,6 +512,58 @@ Object.is(NaN, Number.NaN) // true
 
 
 
+#### variable === undefined 与 typeof variable === undefined 的区别
+
+```bash
+### variable === undefined 与 typeof variable === undefined 的区别
+检测变量是否为 undefined 有两种方法
+	1. `variable === undefined`
+	2. `typeof variable === 'undefined'`
+	
+两者区别：
+在 es3 旧版浏览器中，undefined 是一个全局变量名，其原始值未定义，但是可以更改该值。
+	typeof undeclaredVar === 'undefined' // true
+	undeclaredVar === undefined // 引发 ReferenceError 异常
+在新版浏览器中，因为 undefined 的 writable 属性设置为 false，所以无法更改 undefined，因而没有这种问题。
+
+```
+
+
+
+#### 虚值与布尔值
+
+```bash
+## 虚值与布尔值
+- 虚值是在转换为布尔值时变为 false 的值。
+- 使用 `Boolean()` 方法或 `!!` 运算符，可将 `truthy` 或 `falsy` 值转换为布尔值。
+	- Falsy：false、null、undefined、NaN、0、+0、-0、空字符串
+	- Truthy：其他都为 false。
+```
+
+```js
+!!false // false
+!!undefined // false
+!!null // false
+!!NaN // false
+!!0 // false
+!!'' // false
+
+!!'hello' // true
+!!1 // true
+!!{} // true
+!![] // true
+
+// or
+Boolean(false) // false
+Boolean(undefined) // false
+Boolean(null) // false
+Boolean(NaN) // false
+Boolean(0) // false
+Boolean('') // false
+```
+
+
+
 ## 作用域 SCope
 
 ### var
@@ -1939,38 +1991,6 @@ end fn1
 > ```
 >
 
-### 偏函数
-
-> ```bash
-> ## 偏函数
-> 1. 柯里化
-> 将一个多参数函数转换成多个单参数的函数，即将一个 n 元函数转换为 n 个一元函数。
-> 
-> 
-> 2. 偏函数
-> 固定一个函数的一个或多个参数(即设置默认值)，返回一个新函数，在新函数中继续接收剩余参数，即将一个 n 元函数转换成一个 n-x 元函数。
-> 
-> 偏函数的使用场景
->     - 动态生成函数
->     - 减少参数
->     - 延迟计算
-> ```
->
-> ```js
-> // 乘法
-> let multi = (x, y) => x * y;
-> 
-> // 构造一个对数值乘以2的函数
-> let double = multi.bind(null, 2);
-> console.log(double(3)); // 6
-> console.log(double(5)); // 10
-> 
-> const addPartial = (x, y, z) => x + y + z
-> const partialFunc = addPartial.bind(this, 2, 3)
-> partialFunc(5) // 10
-> ```
->
-
 ### 惰性函数
 
 > - 惰性函数是针对优化频繁使用的函数(当再次调用相同的函数，不再执行某些判断条件)；常用于函数库的编写、单例模式中。
@@ -2295,88 +2315,103 @@ end fn1
 
 ### 函数柯里化
 
-> - 函数柯里化(currying)：把接受多个参数的函数变换成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数并返回结果的新函数的技术
->   - 柯里化基于闭包实现，可能会导致内存泄露
->   - 使用递归执行会降低性能，递归过多时会发生栈溢出，需要进行递归优化
->   - arguments是类数组，使用`Array.prototype.slice.call`转换为数组时效率低
->
-> ```js
-> // 普通的add函数
-> function add(x, y) {
->   return x + y
-> }
-> 
-> // Currying 后 es5 写法
-> function curryingAdd(x) {
->   return function (y) {
->     return x + y
->   }
-> }
-> 
-> // es6 箭头函数写法
-> let adds = x => ( y => x + y )
-> 
-> add(1, 2)           // 3
-> curryingAdd(1)(2)   // 3
-> adds(1)(2)
-> ```
->
-> #### 典型柯里化
->
-> ```js
-> function curry (fn, args = []) {
->   return function () {
->     const rest = [...args, ...arguments]
->     if (rest.length < fn.length) {
->       return curry.call(this, fn, rest)
->     } else {
->       return fn.apply(this, rest)
->     }
->   }
-> }
-> 
-> // test
-> function sum (a, b, c) {
->   return a + b + c
-> }
-> const sumFn = curry(sum)
-> console.log(curry(sum)(1)(2)(3)) // 6
-> console.log(sumFn(1)(2, 3)) // 6
-> 
-> 
-> /** 箭头函数的写法 */
-> const fn = (a, b, c) => {
->   return a + b + c
-> }
-> cons currys = (fn, ...args) => {
->   return args.length >= fn.length
->   	? fn(...args)
->   	: (...args2) => curry(fn, ...args, ...args2)
-> }
-> console.log(curry(fn)(1)(2)(3))
-> ```
->
-> #### 函数复用
->
-> ```js
-> // 函数封装后
-> function check(reg, txt) { return reg.test(txt); }
-> check(/\d+/g, 'test')       //false
-> check(/[a-z]+/g, 'test')    //true
-> 
-> // Currying后
-> function curryingCheck(reg) {
->   return function (txt) {
->     return reg.test(txt)
->   }
-> }
-> var hasNumber = curryingCheck(/\d+/g)
-> var hasLetter = curryingCheck(/[a-z]+/g)
-> hasNumber('test1')      // true
-> hasNumber('testtest')   // false
-> hasLetter('21212')      // false
-> ```
->
+```bash
+## 函数柯里化
+柯里化(currying)是一个函数，它一次接受一个参数，并返回一个新函数，该函数期待下一个参数。它是一种函数转换，将 `f(a,b,c)` 转换为可以被以 `f(a)(b)(c)` 的形式进行调用。
+即柯里化是计算具有多个参数的函数，并将它们分解为具有单个参数的函数序列。
+
+使用柯里化的原因
+	- 柯里化是一种检查方法，确保你在继续之前得到了所需的一切(结果缓存)
+	- 它可以避免多次传递同一个变量(参数服用)
+	- 它将函数划分为多个较小的功能，可以处理一项职责。这使你的函数更纯粹，降低出错及产生副作用的概率。(函数颗粒化)
+	- 在函数编程中，可用于创建高阶函数。
+	
+
+柯里化的缺点
+	- 柯里化基于闭包实现，可能会导致内存泄漏
+	- 使用递归执行会降低性能，递归过多时会发生栈溢出，需要进行递归优化。
+	- arguments 是类数组，使用 `Array.prototype.slice.call` 转换为数组时效率低。
+
+```
+
+```js
+// 非柯里化
+const add = (a, b, c) => {
+  return a + b + c
+}
+add(1, 2, 3) // 6
+
+
+// 柯里化
+const addCurrying = (a) => {
+  return (b) => {
+    return (c) => {
+      return a + b + c
+    }
+  }
+}
+addCurrying(1)(2)(3) // 6
+
+
+// 箭头函数简化
+const addCurry = (a) => (b) => (c) => a + b + c
+addCurry(1)(2)(3) // 6
+```
+
+#### 高级柯里化
+
+```js
+function curry (fn, args = []) {
+  return function () {
+    const rest = [...args, ...arguments]
+    if (rest.length < fn.length) {
+      return curry.call(this, fn, rest)
+    } else {
+      return fn.apply(this, rest)
+    }
+  }
+}
+
+// test
+function sum (a, b, c) { return a + b + c }
+const sumFn = curry(sum)
+console.log(curry(sum)(1)(2)(3)) // 6
+console.log(sumFn(1)(2, 3)) // 6
+
+
+/** 箭头函数的写法 */
+cons currys = (fn, ...args) => {
+  return args.length >= fn.length
+  	? fn(...args)
+  	: (...args2) => curry(fn, ...args, ...args2)
+}
+const fn = (a, b, c) => { return a + b + c }
+console.log(curry(fn)(1)(2)(3))
+```
+
+#### 函数复用
+
+```js
+// 函数封装后
+function check(reg, txt) { return reg.test(txt); }
+check(/\d+/g, 'test')       //false
+check(/[a-z]+/g, 'test')    //true
+
+// Currying后
+function curryingCheck(reg) {
+  return function (txt) {
+    return reg.test(txt)
+  }
+}
+var hasNumber = curryingCheck(/\d+/g)
+var hasLetter = curryingCheck(/[a-z]+/g)
+hasNumber('test1')      // true
+hasNumber('testtest')   // false
+hasLetter('21212')      // false
+```
+
+
+
 > #### 参数不定长的柯里化
 >
 > - valueOf()：返回最适合该对象类型的原始值
@@ -2414,29 +2449,107 @@ end fn1
 > console.log(add(1)(2)(3)(4)) // 10
 > console.log(add(1, 2)(3, 4)(5, 6)) // 21
 > ```
->
-> #### 柯里化加法
->
-> ```js
-> function add() {
->   let args = [].slice.call(arguments);
->   let fn = function () {
->     let fn_args = [].slice.call(arguments)
->     return add.call(null, ...args.concat(fn_args))
->   }
->   fn.toString = function () {
->     return args.reduce((a, b) => a + b)
->   }
->   return fn
-> }
-> let a = add(1); 			// 1
-> let b = add(1)(2);  	// 3
-> let c = add(1)(2)(3) // 6
-> let d = add(1)(2, 3); // 6
-> let f = add(1, 2)(3); // 6
-> let e = add(1, 2, 3); // 6
-> console.log(a, b, c, d, e, f);	// ƒ 1 ƒ 3 ƒ 6 ƒ 6 ƒ 6 ƒ 6
-> ```
+
+#### 柯里化加法
+
+```js
+function add() {
+  let args = [].slice.call(arguments);
+  let fn = function () {
+    let fn_args = [].slice.call(arguments)
+    return add.call(null, ...args.concat(fn_args))
+  }
+  fn.toString = function () {
+    return args.reduce((a, b) => a + b)
+  }
+  return fn
+}
+
+let a = add(1); 			// 1
+let b = add(1)(2);  	// 3
+let c = add(1)(2)(3) // 6
+let d = add(1)(2, 3); // 6
+let f = add(1, 2)(3); // 6
+let e = add(1, 2, 3); // 6
+console.log(a, b, c, d, e, f);	// ƒ 1 ƒ 3 ƒ 6 ƒ 6 ƒ 6 ƒ 6
+console.log(
+  String(a),
+  b.toString(),
+  c.toString(),
+  d.toString(),
+  e.toString(),
+  String(e),
+) // ƒ 1 ƒ 3 ƒ 6 ƒ 6 ƒ 6 ƒ 6
+```
+
+
+
+### 偏函数
+
+```bash
+## 偏函数
+- 柯里化：将一个多参数函数转换成多个单参数的函数，即将一个 n 元函数转换为 n 个一元函数。
+- 偏函数：固定一个函数的一个或多个参数(即设置默认值)，返回一个新函数，在新函数中继续接收剩余参数，即将一个 n 元函数转换成一个 n-x 元函数。
+
+- 柯里化：一个接受多个参数的函数。它将把这个函数转换成一系列函数，其中每个小函数将接受一个参数，直到所有参数都完成。
+- 偏函数：当给定的参数少于预期的参数时，函数将转化为偏函数，并返回一个期望剩余参数的新函数。
+
+偏函数的使用场景
+    - 动态生成函数
+    - 减少参数
+    - 延迟计算
+```
+
+```js
+// 乘法
+let multi = (x, y) => x * y;
+
+// 构造一个对数值乘以2的函数
+let double = multi.bind(null, 2);
+console.log(double(3)); // 6
+console.log(double(5)); // 10
+
+const addPartial = (x, y, z) => x + y + z
+const partialFunc = addPartial.bind(this, 2, 3)
+partialFunc(5) // 10
+
+```
+
+### 链式调用
+
+```bash
+### 链式调用
+在构造函数中创建方法时，`return this` 返回当前调用方法的对象，可以实现链式调用方法。
+
+```
+
+```js
+function Person(name) {
+  this.name = name
+
+  this.sayHi = function() {
+    console.log(this.name)
+    return this
+  }
+
+  this.modifyName = function(name) {
+    this.name = name
+    return this
+  }
+}
+
+const person = new Person('IU')
+
+person
+  .sayHi()
+  .modifyName('UI')
+  .sayHi()
+// IU
+// UI
+// Person { name: 'UI', sayHi: f, modifyName: f }
+```
+
+
 
 ## 原型链 prototype
 
@@ -3675,18 +3788,20 @@ console.log(9 >>> 2)	// 2
 
 #### 获取选定区间的随机数
 
-> ```js
-> /* 获取选定区间的随机数 */
-> // 注意：此随机方法包括下限，但不包括上限。例如，`random(10, 12)` 将随机 10 或 11，但从不随机 12
-> const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
-> 
-> /* 获取选定区间的随机数 */
-> const getRandomInclusive2 = (min, max) =>  {
-> min = Math.ceil(min);
-> max = Math.floor(max);
-> return Math.floor(Math.random() * (max -min + 1)) + min
-> }
-> ```
+```js
+/**
+ * @function random 获取选定区间的随机数
+ * @param {number} min 最小值
+ * @param {number} max 最大值
+ * @returns {number}
+ * @desc 注意：此随机方法包括下限，但不包括上限。
+ * @eaample random(10, 12) 将随机 10 或 11，但从不随机 12
+ */
+const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
+
+```
+
+
 
 ### Date 对象
 
@@ -4553,6 +4668,98 @@ console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Ma
 > Array.of(1, 2) // [1, 2]
 > ```
 
+### 数组去重
+
+```bash
+### 数组去重
+1. Set（只能对基础数据类型的数据去重）
+可以给数组创建一个 Set 以丢弃重复的值，然后使用扩展运算符 `...` 将其转化回数组。
+注意：如果数组的数值中存储的是对象，即使是属性值与数值都相同，但因为它们引用的是不同的内存地址，Set 会认为每个对象都是唯一的，从而无法实现去重效果。
+
+
+2. Map
+- 方案1：把数组中每个 item 存储在 Map 中，再通过 filter 来过滤出 Map 中已经存储的值。
+- 方案2：把数组中每个 item 存储在 Map 中，再取出 Map 中存储的所有值（取出的值已经去重）。
+
+```
+
+```js
+/** --------- 简单数据类型去重 ---------- */
+const arr = [1, 2, 2, '1', null, '', undefined, NaN, NaN, true, false]
+
+/**
+ * 使用 Set 去重
+ */
+const unique1 = [...new Set(arr)]
+console.log('Set: ', unique1) // [1, 2, "1", null, "", undefined, NaN, true, false]
+
+// Set 无法给 复杂数据类型 去重
+const unique2 = [...new Set([{ a: 1 }, { a: 1 }])] // [{a: 1}, {a: 1}]
+console.log('Set给复杂数据类型去重的缺陷: ', unique2)
+
+// Set 和 Array.from() 组合使用
+const unique22 = Array.from(new Set(arr))
+console.log('Set + Array.from(): ', unique22)
+
+/**
+ * 使用 filter
+ * 注意：该方法直接把 `NaN` 全局过滤掉
+ */
+const unique3 = arr.filter((item, index) => arr.indexOf(item) === index)
+console.log('filter: ', unique3)
+
+/**
+ * 使用 includes
+ */
+const unique4 = []
+arr.forEach((item) => !unique4.includes(item) && unique4.push(item))
+console.log('includes: ', unique4)
+
+/**
+ * 使用 indexOf
+ * 注意：该方法无法判断数组中是否含有 `NaN`
+ */
+const unique5 = []
+arr.forEach((item) => !unique5.indexOf(item) === -1 && unique5.push(item))
+console.log('indexOf: ', unique5)
+
+/**
+ * 使用 reduce
+ */
+const unique6 = arr.reduce(
+  (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+  [],
+)
+console.log(unique6)
+
+/**
+ * Object.hasOwnProperty()
+ * 注意：必须要加上 typeof item，这是为了防止如同 字符串1 与 数字1
+ */
+const obj = {}
+const unique7 = arr.filter((item) => {
+  const curItem = typeof item + item
+  return Object.hasOwnProperty(curItem) ? false : (obj[curItem] = true)
+})
+console.log(unique7)
+
+/** --------- 复杂数据类型去重 ---------- */
+/**
+ * 使用 Map 存储值来判断
+ */
+const map = new Map()
+const unique33 = arr.filter((item) => !map.has(item) && map.set(item, true))
+console.log(unique33) // [1, 2, "1", null, "", undefined, NaN, true, false]
+
+const map2 = new Map()
+arr.forEach((item) => {
+  !map2.has(item) && map2.set(item, true)
+})
+const unique44 = Array.from(map2.keys())
+console.log(unique44)
+
+```
+
 
 
 ## 对象 Object 
@@ -5320,106 +5527,140 @@ styles['class'] // 返回 'foo'
 
 ## JSON 对象
 
-> ```bash
-> ## JSON 对象
-> - JSON 是指 JavaScript 对象表示法（JavaScript Object Notation）
-> - JSON 是轻量级的文本数据交互格式，并不是编程语言，独立于语言存在；具有自我描述性。
-> - JSON 可以将 JavaScript 对象中表示的一组数据转换为字符串，然后就可以在函数之间轻松地传递这个字符串，或者在异步应用中将字符串从 Web 客户端传递给服务端。
-> 
-> 
-> ### 对象结构和数组结构
-> JSON 简单来说就是 JavaScript 中的对象和数组。
->   - 对象表示为键值对，数据由 ',' 分割，属性值的类型可以是 '数字、字符串、数组、对象'。
->   - 花括号保存对象：`{ key: value, key: value, ... }`。
->   - 方括号保存数组：`['a', 'b', 'c']`。
-> 
-> 
-> ### JSON 与对象的区别
-> JSON 使用文本表示一个 JS 对象的信息，本质是一个字符串；但 JSON 的 key 值必须用引号`""`，对象的 key 值可以不用引号。
->     const obj = { a: 'Hello', b: 'World' }	// 表示一个对象，注意键名也可以用引号包裹。
->     const json = '{"a": "Hello", "b": "World"}'	// 是一个 JSON 字符串，本质是一个字符串。
-> 
-> 
-> 
-> ### JSON 和 JavaScript 对象的互转
-> - 从 JSON 字符串转换为 JS 对象，使用 `JSON.parse()` 方法。
-> - 从 JS 对象转换为 JSON 字符串，使用 `JSON.stringify()` 方法。
-> 		const obj = JSON.parse('{"a": "Hello", "b": "World"}')
-> 			// 结果是 {a: 'Hello', b: 'World'}
-> 		const json = JSON.stringify({a: 'Hello', b: 'World'})
-> 			// 结果是 '{"a": "Hello", "b": "World"}'
-> 
-> 
-> 
-> ### JSON.parse(JSON.string(obj)) 深拷贝的缺陷
-> 1. 无法获取值为 undefined 的 key
-> 2. NaN、无穷大、无穷小 都会转变为 null
-> 3. 无法获取原型上的方法、属性（如定义了函数的属性），只能获取 Object 原型上的内容
-> 4. Date 对象转变为 Date 字符串
-> 5.` Symbol()` （循环引用）会丢失
-> ```
+```bash
+## JSON 对象
+- JSON 是指 JavaScript 对象表示法（JavaScript Object Notation）
+- JSON 是轻量级的文本数据交互格式，并不是编程语言，独立于语言存在；具有自我描述性。
+- JSON 可以将 JavaScript 对象中表示的一组数据转换为字符串，然后就可以在函数之间轻松地传递这个字符串，或者在异步应用中将字符串从 Web 客户端传递给服务端。
+
+
+### 对象结构和数组结构
+JSON 简单来说就是 JavaScript 中的对象和数组。
+  - 对象表示为键值对，数据由 ',' 分割，属性值的类型可以是 '数字、字符串、数组、对象'。
+  - 花括号保存对象：`{ key: value, key: value, ... }`。
+  - 方括号保存数组：`['a', 'b', 'c']`。
+
+
+### JSON 与对象的区别
+JSON 使用文本表示一个 JS 对象的信息，本质是一个字符串；但 JSON 的 key 值必须用引号`""`，对象的 key 值可以不用引号。
+    `const obj = { a: 'Hello', b: 'World' }`，表示一个对象，注意键名也可以用引号包裹。
+    `const json = '{"a": "Hello", "b": "World"}'`，表示是一个 JSON 字符串，本质是一个字符串。
+
+
+
+### JSON 和 JavaScript 对象的互转
+- 从 JSON 字符串转换为 JS 对象，使用 `JSON.parse()` 方法。
+- 从 JS 对象转换为 JSON 字符串，使用 `JSON.stringify()` 方法。
+		const obj = JSON.parse('{"a": "Hello", "b": "World"}')
+			// 结果是 {a: 'Hello', b: 'World'}
+		const json = JSON.stringify({a: 'Hello', b: 'World'})
+			// 结果是 '{"a": "Hello", "b": "World"}'
+
+
+
+### JSON.parse(JSON.string(obj)) 深拷贝的缺陷
+1. 无法获得值为 undefined 的 key
+2. NaN、无穷大、无穷小 都会转变为 null
+3. 无法获取原型上的方法、属性（如定义了函数的属性），只能获取 Object 原型上的内容
+4. Date 对象转变为 Date 字符串
+5.` Symbol()` （循环引用）会丢失
+
+```
+
+#### 使用 JSON.stringify 会产生异常的情况
+
+```bash
+### 使用 JSON.stringify 会产生异常的情况
+1. 循环引用
+当对象存在循环引用时，JSON.stringify() 无法将其转换为 JSON 字符串，并报错异常。
+    const obj = {}
+    obj.prop = obj
+    JSON.stringify(obj) // 报错：Converting circular structure to JSON
+
+
+2. 不支持的数据类型
+JSON.stringify() 只能处理 JavaScript 支持的数据类型，如字符串、数字、布尔值、数组、对象和 null。
+如果对象包含函数、RegExp、Date、undefined 或 Symbol 等不支持的数据类型，则会丢失该部分数据。
+
+
+3. 大型对象的嵌套深度过大
+如果要序列化的对象存在很大的嵌套深度，超出 JSON.stringify() 的默认堆栈大小限制，可能会导致堆栈溢出错误。
+    const obj = {}
+    let currentObj = obj
+    for (let i = 0; i < 100000; i++) {
+      currentObj.prop = {}
+      currentObj = currentObj.prop
+    }
+    JSON.stringify(obj) // RangeError: Maximum call stack size exceeded
+```
+
+
 
 #### 对象的测试
 
-> ```js
-> const obj = {
->   name: Symbol('willy'),	// Symbol() 丢失
->   age: 18,
->   hobbit: ['dance', 'sing', {type: 'sports', value: 'run'}],
->   schoolData: {
->     grades: 'A',
->   },
->   date: new Date(), // 转化为 Date 字符串
->   run: function() {},	// 函数丢失
->   walk: undefined,	// 值为 undefined 导致丢失
->   fly: NaN, // 转化为 null
->   cy: null,
-> }
-> const jsonStr = JSON.stringify(obj)
-> const cloneObj = JSON.parse(jsonStr)
-> console.log(cloneObj)
-> 
-> /**
-> {
->   age: 18,
->   cy: null,
->   date: "2023-03-22T12:10:31.020Z",
->   fly: null,
->   hobbit: (3) ['dance', 'sing', {…}],
->   schoolData: {grades: 'A'}, 
-> } */
-> 
-> ```
+```js
+const obj = {
+  name: Symbol('willy'),	// Symbol() 丢失
+  age: 18,
+  hobbit: ['dance', 'sing', {type: 'sports', value: 'run'}],
+  schoolData: {
+    grades: 'A',
+  },
+  date: new Date(), // 转化为 Date 字符串
+  run: function() {},	// 函数丢失
+  walk: undefined,	// 值为 undefined 导致丢失
+  fly: NaN, // 转化为 null
+  cy: null,
+}
+const jsonStr = JSON.stringify(obj)
+const cloneObj = JSON.parse(jsonStr)
+console.log(cloneObj)
+
+/**
+{
+  age: 18,
+  cy: null,
+  date: "2023-03-22T12:10:31.020Z",
+  fly: null,
+  hobbit: (3) ['dance', 'sing', {…}],
+  schoolData: {grades: 'A'}, 
+} */
+
+```
+
+
 
 #### 自定义对象测试
 
-> ````js
-> const Ken = function () { this.name = 'Ken' }
-> Ken.prototype.walk = function () { console.log('walk') }
-> const KenNaNa = function () {
->   Ken.call(this, arguments)
->   this.name = 'KenNaNa'
-> }
-> const tempFunc = function () {}
-> tempFunc.prototype = Ken.prototype
-> KenNaNa.prototype = new tempFunc()
-> KenNaNa.prototype.age = '18'
-> Object.defineProperty(KenNaNa.prototype, 'constructor', {
->   value: KenNaNa,
->   enumerable: false,
-> })
-> const kenNaNa = new KenNaNa()
-> const copyKenNaNa = JSON.parse(JSON.stringify(kenNaNa))
-> 
-> /**
->  Ken {age: "18", run: ƒ, contructor: ƒ}
->  * */ 
-> console.log(copyKenNaNa.constructor); // ƒ Object() { [native code]}
-> console.log(copyKenNaNa.age) // undefined
-> console.log(copyKenNaNa.run()) // is not function
-> console.log(copyKenNaNa.walk()) // is not function 
-> console.log(copyKenNaNa.toString()) // "[object Object]"
-> ````
+```js
+const Ken = function () { this.name = 'Ken' }
+Ken.prototype.walk = function () { console.log('walk') }
+const KenNaNa = function () {
+  Ken.call(this, arguments)
+  this.name = 'KenNaNa'
+}
+const tempFunc = function () {}
+tempFunc.prototype = Ken.prototype
+KenNaNa.prototype = new tempFunc()
+KenNaNa.prototype.age = '18'
+Object.defineProperty(KenNaNa.prototype, 'constructor', {
+  value: KenNaNa,
+  enumerable: false,
+})
+const kenNaNa = new KenNaNa()
+const copyKenNaNa = JSON.parse(JSON.stringify(kenNaNa))
+
+/**
+	Ken {age: "18", run: ƒ, contructor: ƒ}
+ * */ 
+console.log(copyKenNaNa.constructor); // ƒ Object() { [native code]}
+console.log(copyKenNaNa.age) // undefined
+console.log(copyKenNaNa.run()) // is not function
+console.log(copyKenNaNa.walk()) // is not function 
+console.log(copyKenNaNa.toString()) // "[object Object]"
+```
+
+
 
 ## 深拷贝与浅拷贝
 

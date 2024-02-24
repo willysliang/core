@@ -278,6 +278,52 @@ $ ssh -T git@github.com
 
 ```
 
+#### 上传代码报403错误
+
+```bash
+## 上传代码到远程仓库报403错误
+### 报错信息描述
+Connection reset by 20.205.243.160 port 443 
+fatal: Could not read from remote repository.  
+Please make sure you have the correct access rights 
+and the repository exists. 
+
+
+### 原因分析
+出现这错误一般是以下两种原因：
+	- 客户端与服务端未生成 ssh key
+	- 客户端与服务端的ssh key不匹配
+为解决以上问题，我们需要重新生成一次ssh key ，并重新配置一下GitHub账户即可。
+
+
+### 解决
+1. 生成新的SSH key
+如果是客户端与服务端未生成ssh key，直接生成新的 rsa 密匙即可。
+$ ssh-keygen -t rsa -C "youremail@example.com"  
+如果是客户端与服务端的ssh key 不匹配，此时需要先将本地生成的 id_rsa以及id_rsa.pub这两个文件【一般在用户名下的.ssh文件夹下】删除掉，然后再使用上述指令生成新的rsa密钥。
+
+#### 补充说明
+ssh-keygen -t rsa -b 4096 -C "邮箱"：这条命令的目的是为了让本地机器ssh登录远程机器上的GitHub账户无需输入密码。
+ssh-keygen（基于密匙的安全验证）：需要依靠密钥进行安全验证，必须为自己创建一对密钥，并把公用密钥放在需要访问的服务器上。
+	-t 即指定密钥的类型。密钥的类型有两种，一种是RSA，一种是DSA。
+	-b 指定密钥长度。对于RSA密钥，最小要求768位，默认是2048位。命令中的4096指的是RSA密钥长度为4096位。DSA密钥必须恰好是1024位(FIPS 186-2 标准的要求)。
+	-C 表示要提供一个新注释，用于识别这个密钥。“邮箱”里面不一定非要填邮箱，可以是任何内容，邮箱仅仅是识别用的key
+
+
+2. 将SSH key 添加到 ssh-agent
+使用 `ssh-add ~/.ssh/id_rsa` 将产生的新ssh key添加到ssh-agent中：
+补充： 如果出现“Could not open a connection to your authentication agent.”的错误
+		- $ eval "$(ssh-agent -s)"
+		- $ eval `ssh-agent`
+		- 然后再次执行 ssh-add ~/.ssh/id_rsa 指令。
+
+3. 将SSH key 添加到你的GitHub账户
+
+4. 验证 key
+使用 `ssh -T git@github.com` 对ssh key 进行验证
+
+```
+
 
 
 ### 远程仓库操纵

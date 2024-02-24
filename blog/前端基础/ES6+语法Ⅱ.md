@@ -1010,20 +1010,20 @@ export default es6
 
 ### 常规正则
 
-> ### 匹配是否包含汉字
->
-> **原理上的匹配汉字表达式**
->
-> ```js
-> /[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]/
-> ```
->
-> **优化后的匹配汉字表达式**
->
-> ```js
-> let pattern = /\p{Script=Han}/u
-> !!'你好'.match(pattern) // true
-> ```
+#### 匹配是否包含汉字
+
+```js
+/** 传统的匹配是否包含汉字：枚举法 */
+const pattern1 = /[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]/
+
+
+/** 优化后的匹配汉字表达式 */
+const pattern = /\p{Script=Han}/u
+!!'你好'.match(pattern) // true
+
+```
+
+
 
 ## 数据结构
 
@@ -2502,10 +2502,6 @@ async reqHttp = () => {
 
 ### 关联/参考地址
 - [Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API) 
-- [Web Worker](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Using_web_workers)
-- [iFrame](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
-- [Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API) 
-- [DOMString](https://developer.mozilla.org/zh-CN/docs/conflicting/Web/JavaScript/Reference/Global_Objects/String_6fa58bba0570d663099f0ae7ae8883ab)
 - [ArrayBuffer](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
 - [ArrayBufferView](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)
 
@@ -2758,7 +2754,7 @@ downloadBlob(blob, 'test')
 
 
 
-#### 从页面上的本地磁盘加载文件并获取
+#### 从本地磁盘加载文件并获取
 
 ```bash
 ### 从页面上的本地磁盘加载文件并获取
