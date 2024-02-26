@@ -11,9 +11,8 @@ import { storeToRefs } from 'pinia'
 import { useAppIndexStore } from '@store/app/index'
 //  import { useReadPathFiles } from '@/hooks/useReadPathFiles'
 
-//  import { useRouter } from 'vue-router'
-//  import { indexPagesMap } from './routes'
-//  import { catchFunc } from '@utils/index'
+import { useRouter } from 'vue-router'
+import { indexPagesMap } from './routes'
 
 import './test'
 
@@ -22,25 +21,29 @@ import './test'
 
 const { appName, logoIcon } = storeToRefs(useAppIndexStore())
 
-//  const router = useRouter()
-//  const handleToCase = () => {
-//    router
-//      .push({
-//        path: indexPagesMap.CASE.path,
-//      })
-//      .catch(catchFunc)
-//  }
+const router = useRouter()
+const handleToCase = () => {
+  router.push({
+    path: indexPagesMap.CASE.path,
+  })
+}
+
+const handleToHome = () => {
+  router.push({
+    path: indexPagesMap.HOME.path,
+  })
+}
 </script>
 
 <template>
   <header class="px-header">
-    <a class="logo" :title="appName">
+    <a class="logo" :title="appName" @click="handleToHome">
       <img :src="logoIcon" :alt="appName" class="logo__icon" />
       <span class="logo__name">{{ appName }}</span>
     </a>
 
     <div class="header__actions">
-      <!-- <span @click="handleToCase">CASE</span> -->
+      <span @click="handleToCase">CASE</span>
     </div>
   </header>
 

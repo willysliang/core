@@ -15,7 +15,7 @@
     "node": ">=16.14"
   },
   "scripts": {
-    "dev": "vite --port=4000",
+    "dev": "vite",
     "build": "vue-tsc && cross-env vite build",
     "build:staging": "vue-tsc && cross-env NODE_ENV=staging vite build --mode staging",
     "preview": "vite preview",
