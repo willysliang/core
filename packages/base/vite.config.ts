@@ -115,7 +115,7 @@ export default defineConfig(({ mode }) => {
     // root: path.resolve(__dirname, 'src'),
     root: '.',
     // cacheDir: 'node_modules/.pnpm/.vite', // 存储缓存文件的目录。此目录下会存储预打包的依赖项或 vite
-    publicDir: 'public',
+    publicDir: './public',
     build: {
       target: 'esnext', // es2020 支持 import.meta 语法
       outDir: '../../dist', // 指定输出路径
