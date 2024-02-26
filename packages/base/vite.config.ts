@@ -118,7 +118,7 @@ export default defineConfig(({ mode }) => {
     publicDir: 'public',
     build: {
       target: 'esnext', // es2020 支持 import.meta 语法
-      outDir: 'dist', // 指定输出路径
+      outDir: '../../dist', // 指定输出路径
       assetsInlineLimit: 4096, // 小于此阈值的导入或引用资源将内联为 base64 编码
       cssCodeSplit: true, // 启用 CSS 代码拆分
       cssTarget: '', // 允许用户为 CSS 的压缩设置一个不同的浏览器 target 与 build.target 一致
