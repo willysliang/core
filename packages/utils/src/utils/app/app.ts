@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-23 14:59:38
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 09:58:08
+ * @ ModifierTime: 2024-02-26 11:55:49
  * @ Description: app 相关的辅助函数
  */
 
@@ -49,10 +49,13 @@ export const getIpInfo = async (): Promise<IIpInfo> => {
   })
 }
 
+export const isBrowser = typeof window !== 'undefined'
+
 /**
  * @description 当前容器是否为移动端
  */
 export const isMobile: boolean =
+  isBrowser &&
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent,
+    window.navigator.userAgent,
   )

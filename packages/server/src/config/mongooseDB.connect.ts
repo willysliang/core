@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-20 17:46:47
- * @ Modifier: willysliang
- * @ ModifierTime: 2024-02-24 10:23:51
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-02-26 11:43:32
  * @ Description: 数据库连接
  */
 
@@ -85,14 +85,14 @@ class MongooseConnect {
      * Mongo 连接成功回调
      */
     mongoClient.on('connected', () => {
-      console.log('Mongoose connected to ' + this.getMongoUrl)
+      console.log('Mongoose connected to ' + this.mongooseUrl)
     })
 
     /**
      * Mongo 连接失败回调
      */
     mongoClient.on('error', (err) => {
-      console.log('Mongoose connection error: ' + this.getMongoUrl + err)
+      console.log('Mongoose connection error: ' + this.mongooseUrl + err)
     })
     /**
      * Mongo 关闭连接回调
