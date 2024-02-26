@@ -29,6 +29,7 @@ Description: 日志记录
   - feat(utils): 移植通用方法
   - refactor: 重构项目结构，页面迁移至 packages/base
   - refactor(base): 修改子项目 public 路径
+  - chore(blog): 设置 blog 子项目
 
 ## 2024年2月24日10点53分
   - perf(server): 优化封装MongooseConnect类

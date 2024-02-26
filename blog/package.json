@@ -1,5 +1,5 @@
 {
-  "name": "willys",
+  "name": "@willy/blog",
   "version": "1.0.0",
   "main": "index.ts",
   "author": "willysliang <willysliang@qq.com>",
