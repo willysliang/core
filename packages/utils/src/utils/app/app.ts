@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-23 14:59:38
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-23 17:48:35
+ * @ ModifierTime: 2024-02-26 09:58:08
  * @ Description: app 相关的辅助函数
  */
 
@@ -48,3 +48,11 @@ export const getIpInfo = async (): Promise<IIpInfo> => {
       })
   })
 }
+
+/**
+ * @description 当前容器是否为移动端
+ */
+export const isMobile: boolean =
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  )

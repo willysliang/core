@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm config set ignore-workspace-root-check true && vue-tsc && cross-env vite build",
+    "build": "vue-tsc && cross-env vite build",
     "build:staging": "vue-tsc && cross-env NODE_ENV=staging vite build --mode staging",
     "preview": "vite preview",
     "server": "pnpm -F \"@willy/server\" start",

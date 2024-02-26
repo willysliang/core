@@ -25,6 +25,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年2月26日
+  - feat(utils): 移植通用方法
+
 ## 2024年2月24日10点53分
   - perf(server): 优化封装MongooseConnect类
 
