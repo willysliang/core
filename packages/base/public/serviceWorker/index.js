@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-19 14:25:43
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-23 18:11:15
+ * @ ModifierTime: 2024-02-26 14:41:43
  * @ Description: serviceWorker 的 demo 调用
  */
 
@@ -14,8 +14,8 @@ import { WebPushServer, WebPushUtils } from './webPush.js'
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/public/serviceWorker/serviceWorker.js', {
-        scope: '/public/serviceWorker/serviceWorkerLoad.html',
+      .register('/serviceWorker/serviceWorker.js', {
+        scope: '/serviceWorker/serviceWorkerLoad.html',
       })
       .then((registration) => {
         console.log(
@@ -47,7 +47,7 @@ if ('serviceWorker' in navigator) {
  */
 if ('serviceWorker' in navigator && 'PushManager' in window) {
   navigator.serviceWorker
-    .register('/public/serviceWorker/serviceWorker.js')
+    .register('/serviceWorker/serviceWorker.js')
     .then((swReg) => {
       console.log('Service Worker 注册成功', swReg)
 
