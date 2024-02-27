@@ -9,7 +9,7 @@
     "willy"
   ],
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=16.14"
   },
   "scripts": {
     "dev": "pnpm -F \"@willy/base\" dev",
