@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:19:37
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-27 17:42:20
+ * @ ModifierTime: 2024-02-27 20:37:05
  * @ Description: 配置文件
  */
 
@@ -17,6 +17,7 @@ export default defineUserConfig({
     vuePluginOptions: {},
   }),
   theme,
+  base: '/static_blog/',
 
   lang: 'zh-CN',
   title: 'BLOG',

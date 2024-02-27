@@ -27,6 +27,8 @@ Description: 日志记录
 
 ## 2024年2月27日
   - feat(blog): 使用 vuepress 打包搭建静态博客
+  - build(blog): 修改blog ci/cd 流程
+  - build(blog): 修改 blog 打包的基础地址
 
 ## 2024年2月26日
   - feat(utils): 移植通用方法
