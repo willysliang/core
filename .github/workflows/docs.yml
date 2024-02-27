@@ -43,7 +43,7 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v4
         with:
           # GitHub 仓库的 HTTPS URL
-          repo: /willysliang/static_blog.git
+          repo: willysliang/static_blog.git
           # 部署到 gh-pages 分支
           target_branch: gh-pages
           # 部署目录为 VuePress 的默认输出目录
