@@ -49,6 +49,9 @@ MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willy
 
 # 2024
 
+## 2024年2月27日
+  - docs(前端基础): [Git仓库管理] GitHub Actions 报 403 错误
+
 ## 2024年2月22日08点48分
   - docs(all): [碎片] 内容整理
   - docs(前端进阶): [前端逻辑] 管道运算符

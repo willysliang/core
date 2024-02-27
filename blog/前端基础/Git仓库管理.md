@@ -723,9 +723,47 @@ git config --global alias.unstage 'reset HEAD'
 7. 管理公钥：把每个人的公钥收集起来放到服务器的`/home/git/.ssh/authorized_keys`文件里。或用[Gitosis](https://github.com/res0nat0r/gitosis)来管理公钥
 8. 管理权限：会在版本控制系统里设置一套完善的权限控制，每个人是否有读写权限会精确到每个分支甚至每个目录下。因为Git是为Linux源代码托管而开发的，所以Git也继承了开源社区的精神，不支持权限控制。不过，因为Git支持钩子（hook），所以，可以在服务器端编写一系列脚本来控制提交等操作，达到权限控制的目的。[Gitolite](https://github.com/sitaramc/gitolite)就是这个工具。
 
-### 使用SourceTree
+## GitHub Actions
 
-- 官网：[https://www.sourcetreeapp.com](https://www.sourcetreeapp.com/)
-- Git图形界面工具推荐[SourceTree](https://www.sourcetreeapp.com/)，它是由[Atlassian](https://www.atlassian.com/)开发的免费Git图形界面工具，可以操作任何Git库。
-- 使用SourceTree可以以图形界面操作Git，省去了敲命令的过程，对于常用的提交、分支、推送等操作来说非常方便。
-- SourceTree使用Git命令执行操作，出错时，仍然需要阅读Git命令返回的错误信息。
+### 在 GitHub Actions 工作流程中部署 GitHub Pages 时出现 403 错误
+
+```bash
+### 在 GitHub Actions 工作流程中部署 GitHub Pages 时出现 403 错误，可能是由于以下原因之一：
+1. 没有正确配置仓库的访问权限。如果你没有正确配置仓库的访问权限，可能会导致 403 错误。你需要确保你有足够的权限来访问该仓库，并进行部署操作。你可以在仓库的设置页面中配置访问权限。
+
+
+2. 没有正确配置 Action 的输入参数。如果你没有正确配置 crazy-max/ghaction-github-pages Action 的输入参数，可能会导致 403 错误。你需要确保你已经正确配置了 repo、target_branch 和 build_dir 等参数，以便 Action 可以正确地部署 GitHub Pages。
+
+
+3. 没有正确配置 Personal Access Token（PAT）。
+在使用 crazy-max/ghaction-github-pages Action 部署 GitHub Pages 时，需要提供一个有效的 PAT，用于进行身份验证和授权。如果你没有正确配置 PAT，可能会导致 403 错误。你可以在 GitHub 的设置页面中创建一个新的 PAT，并将其保存在仓库的 Secrets 中。然后，在 GitHub Actions 工作流程中，你可以使用 ${{ secrets.PAT }} 引用该 PAT。
+
+在 GitHub 上创建 Personal Access Token（PAT）并将其保存在仓库的 Secrets 中的具体流程：
+    登录 GitHub，进入你的个人资料页面。
+    点击右上角的头像，选择 Settings。
+    在左侧菜单中选择 Developer settings，然后选择 Personal access tokens。
+    点击 Generate new token 按钮。
+    在 Token description 中输入一个描述性的名称，以便于识别该令牌的用途。
+    在 Select scopes 中选择需要授权的权限。如果只需要访问公共仓库，可以选择 public_repo。如果你需要访问私有仓库，可以选择 repo，并勾选其中的子权限。
+    点击 Generate token 按钮。
+    复制生成的 PAT，并将其保存在一个安全的地方，以便后续使用。
+    进入你的 GitHub 仓库，点击 Settings。
+    在左侧菜单中选择 Secrets，然后点击 New repository secret 按钮。
+    在 Name 中输入一个名称，例如 PAT。
+    在 Value 中粘贴刚才复制的 PAT。
+    点击 Add secret 按钮，保存该令牌。
+现在，你已经成功创建了一个 PAT，并将其保存在仓库的 Secrets 中。在 GitHub Actions 工作流程中，你可以使用 ${{ secrets.PAT }} 引用该 PAT，以进行身份验证和授权。
+
+在 Github Actions 中使用
+在你的 GitHub 仓库中，创建一个新的 Secrets，例如 PAT。
+将你的 PAT 复制到该 Secrets 的 Value 中，并保存该 Secrets。
+在你的 GitHub Actions 工作流程中，使用 ${{ secrets.PAT }} 引用该 Secrets。例如：
+- name: Deploy to GitHub Pages
+  uses: crazy-max/ghaction-github-pages@v2.2.4
+  with:
+    target_branch: gh-pages
+    build_dir: ./public
+  env:
+    GITHUB_TOKEN: ${{ secrets.PAT }}
+```
+
