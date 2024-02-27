@@ -9,12 +9,15 @@
     "willy"
   ],
   "engines": {
-    "node": ">=16.14"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "dev": "pnpm -F \"@willy/base\" dev",
     "build": "pnpm -F \"@willy/base\" build",
     "server": "pnpm -F \"@willy/server\" start",
+    "blog:dev": "pnpm -F \"@willy/blog\" dev",
+    "blog:build": "pnpm -F \"@willy/blog\" build",
+    "blog:deploy": "pnpm -F \"@willy/blog\" deploy",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {

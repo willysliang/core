@@ -25,6 +25,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年2月27日
+  - feat(blog): 使用 vuepress 打包搭建静态博客
+
 ## 2024年2月26日
   - feat(utils): 移植通用方法
   - refactor: 重构项目结构，页面迁移至 packages/base

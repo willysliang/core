@@ -6,7 +6,7 @@ ModifiedTime: 2024-01-21 21:59:26
 Description: README
 ---
 
-::: slot footer
+::: tip
 MIT Licensed | Copyright © 2024-present [Willys Liang](https://github.com/willysliang)
 :::
 

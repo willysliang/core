@@ -9,5 +9,18 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/willysliang/blog.git"
+  },
+  "scripts": {
+    "dev": "vuepress dev .",
+    "build": "vuepress build .",
+    "clean-dev": "vuepress-vite dev . --clean-cache",
+    "deploy": "bash ./deploy.sh"
+  },
+  "devDependencies": {
+    "@vuepress/bundler-vite": "2.0.0-rc.8",
+    "@vuepress/theme-default": "2.0.0-rc.17",
+    "vue": "^3.3.4",
+    "vuepress": "2.0.0-rc.8",
+    "vuepress-theme-hope": "2.0.0-rc.26"
   }
 }
