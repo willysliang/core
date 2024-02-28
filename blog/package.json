@@ -13,8 +13,7 @@
   "scripts": {
     "dev": "vuepress dev .",
     "build": "vuepress build .",
-    "clean-dev": "vuepress-vite dev . --clean-cache",
-    "deploy": "bash ./deploy.sh"
+    "clean-dev": "vuepress-vite dev . --clean-cache"
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.8",

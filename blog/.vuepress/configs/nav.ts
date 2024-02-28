@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-27 16:42:24
+ * @ ModifierTime: 2024-02-27 21:04:11
  * @ Description: 导航栏
  */
 
@@ -130,6 +130,7 @@ const shareNavs = [
   {
     text: '生态系统',
     children: [
+      { text: 'HOME', link: 'https://willysliang.github.io/core' },
       { text: 'Vue3.x', link: 'https://v3.cn.vuejs.org/' },
       {
         text: 'Element Plus',

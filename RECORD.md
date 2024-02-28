@@ -25,6 +25,10 @@ Description: 日志记录
 
 # 更新记录
 
+
+## 2024年2月28日
+  - feat(blog): 博客首页调整
+
 ## 2024年2月27日
   - feat(blog): 使用 vuepress 打包搭建静态博客
   - build(blog): 修改blog ci/cd 流程

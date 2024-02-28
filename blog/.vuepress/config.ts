@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:19:37
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-27 20:37:05
+ * @ ModifierTime: 2024-02-28 12:53:07
  * @ Description: 配置文件
  */
 
@@ -12,14 +12,21 @@ import { defineUserConfig } from 'vuepress'
 import theme from './theme/defaultTheme'
 
 export default defineUserConfig({
+  head: [
+    // 引入你的图标文件
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+  ],
+
   bundler: viteBundler({
     viteOptions: {},
     vuePluginOptions: {},
   }),
   theme,
+
   base: '/static_blog/',
+  port: 8080,
 
   lang: 'zh-CN',
-  title: 'BLOG',
-  description: 'This is my first vuepress site.',
+  title: 'Mr.Willy',
+  description: 'This is willysliang blog site.',
 })

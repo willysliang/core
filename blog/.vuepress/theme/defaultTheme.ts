@@ -1,14 +1,24 @@
+/**
+ * @ Author: willy
+ * @ CreateTime: 2024-02-27 17:39:40
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-02-28 12:47:38
+ * @ Description: 默认主题
+ */
+
 import { defaultTheme } from '@vuepress/theme-default'
 import navConfig from '../configs/nav'
 
 export default defaultTheme({
-  logo: 'https://vuejs.org/images/logo.png',
+  // logo: 'https://vuejs.org/images/logo.png',
+  logo: '/logo__icon--dark.png',
   repo: 'https://github.com/willysliang/core.git',
   repoLabel: 'GitHub',
-  home: '/PAGES/HOME.md',
+  // home: '/PAGES/HOME.md',
   navbar: navConfig,
   sidebar: 'auto',
   sidebarDepth: 4,
+  colorMode: 'dark',
 
   editLink: true,
   editLinkText: '编辑此页',
