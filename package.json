@@ -29,7 +29,7 @@
       "prettier --write",
       "stylelint --fix"
     ],
-    "*.{json,md,html}": [
+    "*.{json,html}": [
       "prettier --write"
     ]
   },

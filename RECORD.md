@@ -30,6 +30,7 @@ Description: 日志记录
 - feat(blog): 博客首页调整
 - docs(all): [README] 添加README描述信息
 - feat(all): [husky] 增加 Git Message 提交前校验信息
+- fix(all): [husky] 修改文件编码格式为 utf-8、不格式化md文件
 
 ## 2024年2月27日
 
