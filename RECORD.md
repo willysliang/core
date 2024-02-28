@@ -28,6 +28,10 @@ Description: 日志记录
 
 ## 2024年2月28日
   - feat(blog): 博客首页调整
+  - docs(all): [README] 添加README描述信息
+  - feat(all): [husky] 增加 Git Message 提交前校验信息
+  - fix(all): [husky] 修改文件编码格式为 utf-8、不格式化md文件
+  - docs(all): 还原MD文档格式化内容
 
 ## 2024年2月27日
   - feat(blog): 使用 vuepress 打包搭建静态博客

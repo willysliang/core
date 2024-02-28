@@ -19,20 +19,20 @@ Description: Git 仓库管理
 > ```bash
 > # 安装 Git
 > yum install git -y
-> 
-> 
+>
+>
 > # 配置邮箱、用户名（注意：邮箱格式必须要正确）
 > git config --global user.name willysliang	# 设置用户名
 > git config --global user.email willysliang@qq.com	#设置用户邮箱
 > git config user.name	#查看用户名
 > git config user.email	#查看邮箱
 > git show 	#显示所有信息
-> 
-> 
+>
+>
 > #适当的地显示颜色
-> git config --global color.ui ture	
-> 
-> 
+> git config --global color.ui ture
+>
+>
 > # 创建仓库
 > mkdir demo	#创建仓库
 > git init	#进行初始化，需要在版本库目录中
@@ -45,13 +45,13 @@ Description: Git 仓库管理
 > # 文件添加到暂存区
 > git add ./abc.md	#将abc.md文件存放到暂存区
 > git add ./			#添加当前目录下的所有文件到暂存区
-> 
-> 
+>
+>
 > # 暂存区文件存放到仓库
 > git commit -m "上传说明描述内容"	#把代码放到仓库
 > git commit -a -m "message"		#-a参数可将所有已跟踪文件中的执行修改或删除操作的文件都提交到本地仓库，即使它们没有经过git add添加到暂存区（一般不使用）
-> 
-> 
+>
+>
 > # 修改提交信息（修改上次提交的信息，值message）
 > git commit --amend -m "所修改的提交信息"
 > ```
@@ -62,26 +62,26 @@ Description: Git 仓库管理
 > # 查看状态
 > git status	#仓库内文件的状态变化信息
 > git status --short	#或git status -s对status简洁输出
-> 
-> 
+>
+>
 > # 查看提交记录
 > git log				# 显示当前分支的提交日志
 > git log --oneline	# 简写说明，简洁版的日志 或 git log --pretty=oneline --abbrev-commit
 > git log --stat		# 显示 commit 历史，以及每次 commit 发生变更的文件
 > git log --oneline -number	# 查看最近的 number 个提交数
-> 
-> 
+>
+>
 > # 获取漂亮的日志信息
 > git log --pretty=format:"%h - %an, %ar : %s"		# 以给定格式有序的打印提交日志的内容、
 > git log --pretty=format:"%Cred(%h)%Creset - %Cgreen(%an, %ar)%Creset : %Cblue%s" # 为输出日志设置颜色
-> 
-> 
+>
+>
 > # 显示提交历史图表
 > ## （`--graph` 选项可以以**图形**方式展示日志）
 > git log --graph
 > git log --pretty=format:"%h %s" --graph
-> 
-> 
+>
+>
 > # 基于时间的日志记录
 > ## 可以在特定时间范围内记录条目。非常适合检查每日项目的提交记录
 > git log --since="yesterday" --oneline
@@ -102,11 +102,11 @@ Description: Git 仓库管理
 > git reset --hard HEAD^		#回退上个版本
 > $ git reset --hard HEAD^^	#回退到上上个版本
 > git reset --hard 版本号	#回退到指定版本（版本号可不写全）
-> 
+>
 > git reflog					#查看隐藏的版本号(即在版本回退前存在，回退后不存在的版本)
 > ```
 
-### 撤销修改  checkout
+### 撤销修改 checkout
 
 > ```bash
 > ## 撤销修改 checkout
@@ -118,8 +118,8 @@ Description: Git 仓库管理
 >         2. `git checkout -- file` 丢弃所选文件的修改。
 >     - 场景3：已经提交了不合适的修改到版本库时，想要撤销本次修改，参考版本回退，但前提是没有推送到远程库。
 > - 注意：使用 checkout 需要你本来就已经存在文件于版本库中，否则会显示找不到该文件。
-> 
-> 
+>
+>
 > $ git reset HEAD readme.txt
 > $ git checkout -- readme.txt
 > ```
@@ -133,22 +133,22 @@ Description: Git 仓库管理
 > cd ~/.ssh
 > git config --global user.name 'willy'
 > git config --global user.email 'willysliang@qq.com'
-> 
+>
 > # 生成公钥和私钥
 > ssh-keygen -t rsa -C "willysliang@qq.com" -f "github_id_rsa"
-> 
+>
 > 连续按三次回车
-> 
+>
 > # 在用户主目录的`.ssh`目录里有`id_rsa`和`id_rsa.pub`两个文件，这两个是SSH Key的秘钥对，`id_rsa`是私钥，`id_rsa.pub`是公钥
-> 
-> 
+>
+>
 > # GitHub设置公钥，打开“Account settings”，“SSH Keys”页面：然后，点“Add SSH Key”，填上任意Title，在Key文本框里粘贴`id_rsa.pub`文件的内容.
-> 
-> 
+>
+>
 > #绑定好github上的ssh后，关联本地仓库（origin为远程库名，且关联必须放公钥到github账号列表上，否则推送不了数据）
 > git remote add origin git@github.com:willy-liang/willy.git
-> 
-> 
+>
+>
 > #把本地库的内容推送到github上
 > git push -u origin master
 > 或 git push ssh地址 master
@@ -161,11 +161,11 @@ Description: Git 仓库管理
 > ```bash
 > # 进入用户目录下的 .ssh 文件夹下，路径会因你使用的操作系统不同而略有差异
 > cd ~/.ssh
-> 
+>
 > # 生成 key
 > ssh-keygen -t rsa -C "willysliang@qq.com" -f "gitee_id_rsa"
 > ssh-keygen -t rsa -C "willysliang@qq.com" -f "github_id_rsa"
-> 
+>
 > # 最终生成四个key文件
 > 在用户主目录的.ssh目录里有id_rsa和id_rsa.pub两个文件，这两个是SSH Key的秘钥对，id_rsa是私钥，id_rsa.pub是公钥
 > ```
@@ -178,7 +178,7 @@ Description: Git 仓库管理
 > HostName gitee.com
 > PreferredAuthentications publickey
 > IdentityFile ~/.ssh/gitee_id_rsa
-> 
+>
 > # github
 > Host github.com
 > HostName github.com
@@ -194,12 +194,11 @@ Description: Git 仓库管理
 > git remote add gitee git@gitee.com:liangwilly/willy.git
 > git remote -v	#查看远程信息表
 > git remote -rm gitee	#删除远程库
-> 
+>
 > #把本地库的内容推送到github与gitee上
 > git push origin master
 > git push gitee master
 > ```
->
 
 #### GitLab无需每次输入账号密码
 
@@ -217,10 +216,10 @@ Description: Git 仓库管理
 > ```bash
 > git remote set-url --add --push origin git@github.com:lio-zero/blog.git
 > git remote set-url --add --push origin git@github.com:lio-zero/news.git
-> 
+>
 > # 使用 --push 可以操作推送 Url，而不是获取 Url
 > # 使用 --add 将添加新的Url，而不是更改现有的 Url
-> 
+>
 > # 执行 git push 将更改发送到两个存储库
 > ```
 
@@ -229,7 +228,7 @@ Description: Git 仓库管理
 > ```bash
 > ## 删除 git 缓存中的账号密码
 > git credential-manager uninstall
-> 
+>
 > ## 缓存输入的用户名和密码
 > git config --global credential.helper wincred
 > ```
@@ -283,10 +282,10 @@ $ ssh -T git@github.com
 ```bash
 ## 上传代码到远程仓库报403错误
 ### 报错信息描述
-Connection reset by 20.205.243.160 port 443 
-fatal: Could not read from remote repository.  
-Please make sure you have the correct access rights 
-and the repository exists. 
+Connection reset by 20.205.243.160 port 443
+fatal: Could not read from remote repository.
+Please make sure you have the correct access rights
+and the repository exists.
 
 
 ### 原因分析
@@ -299,7 +298,7 @@ and the repository exists.
 ### 解决
 1. 生成新的SSH key
 如果是客户端与服务端未生成ssh key，直接生成新的 rsa 密匙即可。
-$ ssh-keygen -t rsa -C "youremail@example.com"  
+$ ssh-keygen -t rsa -C "youremail@example.com"
 如果是客户端与服务端的ssh key 不匹配，此时需要先将本地生成的 id_rsa以及id_rsa.pub这两个文件【一般在用户名下的.ssh文件夹下】删除掉，然后再使用上述指令生成新的rsa密钥。
 
 #### 补充说明
@@ -324,8 +323,6 @@ ssh-keygen（基于密匙的安全验证）：需要依靠密钥进行安全验�
 
 ```
 
-
-
 ### 远程仓库操纵
 
 > ```bash
@@ -333,29 +330,29 @@ ssh-keygen（基于密匙的安全验证）：需要依靠密钥进行安全验�
 > - `$ git clone 仓库地址`
 > - git支持多种协议，包括https（速度慢、每次推送必须输入口令），但ssh协议速度最快。
 > - 在自己的账号下clone仓库才能有权限推送修改；别人的仓库会因无权限而没法修改。
-> 
-> 
+>
+>
 > ## 提交代码到GitHub
 > - 将房间master分支里的代码上传到Github仓库中：`$ git push 服务器地址 master`
 > - 从Github仓库里的master分支拿到本地：`$ git pull 服务器地址 master`
 > 		（本地要初始化一个克隆仓库，此方法为合并数据）
 > - 把所有的内容拿到本地：`$ git clone 服务器地址`
 > 		（此方法会覆盖本地的内容数据）
-> 
-> 
+>
+>
 > ## 拉取远程仓库的代码
 > `$ git pull`：从远程仓库获取最新版本并 merge 到本地
 > `$ git fetch`：从远程仓库获取最新版本到本地，不会自动 merge
-> 
-> 
+>
+>
 > ## 删除远程仓库的绑定（GitHub库）
 > - 查看远程库信息：`$ git remote -v`
 > - 删除命名为origin的远程库：`$ git remote rm origin`
 > - 关联远程库：`$ git remote add origin git@server-name:path/repo-name.git`
-> - 推送master分支的所有内容：`$ git push -u origin master` 
+> - 推送master分支的所有内容：`$ git push -u origin master`
 > 		注意：加上 `-u`，git会把当前分支与远程分支进行关联（此方法只在当前目录下有效）
-> 
-> 
+>
+>
 > ## 删除远程仓库的文件
 > 1. 先把github上的文件拉取下来：`$ git pull origin master`
 > 2. 删除磁盘上的文件：`$ git rm -r --cached test.md`
@@ -377,8 +374,6 @@ $ git push --mirror http：//...(目标仓库地址)
 
 ```
 
-
-
 #### 将本地代码提交远程仓库时新建一个分支
 
 ```bash
@@ -393,10 +388,8 @@ $ git push --mirror http：//...(目标仓库地址)
   8. 提交本地代码至暂缓区、历史提交区：`$ git add . && git commit -m "new branch first commit"`
   9. 提交到远程新分支：`git push origin 所推送到远程仓库的分支名`
   10. 去Gitlab查看，已经创建了一个新的分支并且代码正确提交。
-  
+
 ```
-
-
 
 #### Git 迁移项目到新仓库，并保留历史记录
 
@@ -418,8 +411,6 @@ git push -u origin master
 git push --mirror git@github.com:willysliang/core.git
 
 ```
-
-
 
 #### 多人协作
 
@@ -450,8 +441,7 @@ git push --mirror git@github.com:willysliang/core.git
 - 添加过子模块的仓库，如果想重新克隆，在克隆仓库后需要在仓库目录下执行`git submodule init`和`git submodule update`，如果不执行，子模块中会没有文件
   1. `git clone 仓库地址`
   2. `cd 克隆的仓库文件夹名`
-  3. `git submodule init`
-     4. `git submodule update`
+  3. `git submodule init` 4. `git submodule update`
 
 #### 更改子模块的分支
 
@@ -484,8 +474,8 @@ git pull --recurse-submodules								 // 合并写法
 > - 主分支master：要执行的代码。
 > - 子分支：还未写完的代码存放的分支。
 > - `HEAD`严格来说不是指向提交，而是指向`master`，`master`才是指向提交的，所以，`HEAD`指向的就是当前分支。
-> 
-> 
+>
+>
 > ## 创建与合并分支 switch
 > - 创建并切换到 dev 分支：`$ git switch -c dev`
 > - 直接切换到已有的 master 分支：`$ git switch master`
@@ -511,15 +501,15 @@ git pull --recurse-submodules								 // 合并写法
 > Git创建分支，除了增加一个`dev`指针，改改`HEAD`的指向，工作区的文件都没有任何改变。
 > 当完成在`dev`上的工作后，就可以吧`dev`合并到`master`上，就是直接把`master`指向`dev`的当前提交，就完成合并了。
 > 合并完分支后，甚至可以删除`dev`分支。删除`dev`分支就是把`dev`指针给删掉，删掉后，就剩下一条`master`分支。
-> 
-> 
+>
+>
 > ### 解决合并分支内容的冲突
 > - 在多个分支中修改同一个文件，合并可能会产生冲突（Git用`<<<<<<<`，`=======`，`>>>>>>>`标记出不同分支的内容）
 > - 冲突解决办法：合并分支后，手动修改冲突文件的内容。
 > - 查看分支的合并情况：`git log --graph --pretty=oneline --abbrev-commit`
 > - 用`git log --graph`命令可以看到分支合并图
-> 
-> 
+>
+>
 > ### 合并分支命令
 > - `$ git merge 需要被合并的分支名称` 命令用于合并指定分支到当前分支。
 > ```
@@ -532,11 +522,10 @@ git pull --recurse-submodules								 // 合并写法
 > ```bash
 > #--no-ff参数，表示禁用Fast forward
 > git merge --no-ff -m "merge with no-ff" dev
-> 
+>
 > #查看分支历史
 > git log --graph --pretty=oneline --abbrev-commit
 > ```
->
 
 #### Bug分支
 
@@ -549,12 +538,10 @@ git pull --recurse-submodules								 // 合并写法
 > - `git stash apply stash@{0}`：恢复指定的stash（有多次stash时使用）
 > - `git cherry-pick 4c80e2 `：复制一个特定的提交到当前分支（`3c80e2`为其他分支的提交号）
 
-
-
 ### 工作流 git flow
 
 ```bash
-## 工作流 
+## 工作流
 1. master 分支：主分支，用于发布稳定版本。
 2. develop 分支：开发分支，用于集成所有功能的开发，并进行构建、测试和部署等操作。
 3. feature 分支：功能分支，用于开发某个具体的功能，从 develop 分支分离出来，完成后合并回 develop 分支。
@@ -594,7 +581,7 @@ git pull --recurse-submodules								 // 合并写法
 
 ```
 
-### 	Rebase
+### Rebase
 
 `git rebase`操作的特点：把分叉的提交历史"整理"成一条直线，看上去更直观。缺点是本地的分叉提交已经被修改过了。
 
@@ -649,12 +636,12 @@ git push origin :refs/tags/0.1.3
 > 2. 忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没必要放进版本库，比如Java编译产生的`.class`文件；
 > 3. 忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件。
 >
-> ````
+> ```
 > # Windows:Windows会自动在有图片的目录下生成隐藏的缩略图文件，如果有自定义目录，目录下就会有Desktop.ini文件，因此你需要忽略Windows自动生成的垃圾文件：
 > Thumbs.db
 > ehthumbs.db
 > Desktop.ini
-> 
+>
 > # Python，忽略Python编译产生的.pyc、.pyo、dist等文件或目录
 > *.py[cod]
 > *.so
@@ -662,20 +649,20 @@ git push origin :refs/tags/0.1.3
 > *.egg-info
 > dist
 > build
-> 
+>
 > # My configurations:自定义
 > db.ini
 > deploy_key_rsa
-> 
+>
 > # 排除所有.开头的隐藏文件:
 > .*
 > # 排除所有.class文件:
 > *.class
-> 
+>
 > # 不排除.gitignore和App.class:
 > !.gitignore
 > !App.class
-> ````
+> ```
 >
 > - 当被`.gitignore`忽略,强制添加到Git：`git add -f App.class`
 > - `.gitignore`规则写错检查：`git check-ignore -v App.class`
@@ -723,6 +710,127 @@ git config --global alias.unstage 'reset HEAD'
 7. 管理公钥：把每个人的公钥收集起来放到服务器的`/home/git/.ssh/authorized_keys`文件里。或用[Gitosis](https://github.com/res0nat0r/gitosis)来管理公钥
 8. 管理权限：会在版本控制系统里设置一套完善的权限控制，每个人是否有读写权限会精确到每个分支甚至每个目录下。因为Git是为Linux源代码托管而开发的，所以Git也继承了开源社区的精神，不支持权限控制。不过，因为Git支持钩子（hook），所以，可以在服务器端编写一系列脚本来控制提交等操作，达到权限控制的目的。[Gitolite](https://github.com/sitaramc/gitolite)就是这个工具。
 
+## Git 项目提交信息处理
+
+### Husky 工程化
+
+```bash
+## Husky 工程化
+在前端工程化时，husky 是必不可少的工具，它可以方便地处理 git hooks 并执行特定的脚本。
+钩子都被存储在 .git 目录下的 hooks 目录。
+
+
+###  安装
+1. 在项目中安装
+$ pnpm install husky
+
+2. 在项目中添加 srcipts 命令
+$ npm pkg set scripts.prepare="husky install"
+（等价于在 package.json 文件 scripts 属性下添加 `prepare: "husky install"`）
+
+
+
+### 使用
+首次安装完毕需执行，这时会在你项目中创建了一个 .husky 文件夹
+$ pnpm run prepare
+
+
+
+### 常用 Git Hooks
+- `applypatch-msg` : 应用补丁，通过 `git am` 触发。
+- `pre-applypatch` : 提交补丁前，运行 `git am` 期间触发。
+- `post-applypatch` : 提交产生后，运行 `git am` 期间最后触发。
+- `pre-commit` : 用于检查即将提交的快照，`git commit` 触发（可通过 `--no-verify` 绕过）。
+- `commit-msg` : 用来在提交通过前验证项目状态或提交信息，`git commit` 和 `git merge` 触发（可通过 `--no-verify` 绕过）。
+- `post-commit` : 主要用于通知，`git commit` 触发，但不会影响结果。
+- `post-receive` : 推送完成后执行，可以用来更新其他系统服务或者通知用户。
+
+
+```
+
+### lint-staged
+
+```bash
+## lint-staged
+lint-staged 是一个在git暂存区上运行linters的工具。它将根据package.json依赖项中的代码质量工具来安装和配置 husky 和 lint-staged ，因此请确保在此之前安装lint-staged，并配置所有代码质量工具，比如Prettier和ESlint。
+
+
+### 安装
+pnpm i -D lint-staged
+
+
+### 参数
+执行 npx lint-staged --help 命令可以看到相关的所有参数如下：
+用法: lint-staged [options]
+
+Options:
+  -V, --version                      输出版本号
+  --allow-empty                      当任务撤消所有分阶段的更改时允许空提交（默认值：false）默认情况下，当LITER任务撤消所有阶段性的更改时，LITET阶段将抛出一个错误，并中止提交。
+  -c, --config [path]                配置文件的路径
+  -d, --debug                        打印其他调试信息（默认值：false）
+  -p, --concurrent <parallel tasks>  要同时运行的任务数，或者为false则要连续运行任务（默认值：true）
+  -q, --quiet                        自己的控制台输出（默认值：false）
+  -r, --relative                     将相对文件路径传递给任务（默认值：false）
+  -x, --shell                        跳过任务解析以更好地支持shell（默认值：false）
+  -h, --help                         输出用法信息
+
+```
+
+### commitlint
+
+```bash
+## commitlint
+提交时，进行提交信息验证，是否符合规范。 这里使用到一个 commitlint 的包
+
+@commitlint/cli : commit 消息校验工具。
+@commitlint/config-angular : Angular提交信息规范。
+@commitlint/config-conventional : 传统规范。
+
+
+### 安装
+$ pnpm i @commitlint/cli @commitlint/config-conventional -D
+
+
+### 生成配置文件
+$ echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.cjs
+
+```
+
+### 添加 hooks
+
+#### .husky/pre-commit
+
+```sh
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged --allow-empty "$1"
+
+```
+
+#### .husky/commit-msg
+
+```sh
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no -- commitlint --config commitlint.config.cjs --edit $1
+
+```
+
+```bash
+### 添加命令
+把 `.husky/pre-commit` 文件添加到git中。
+$ git add .husky/pre-commit
+
+
+### 自检代码
+$ npx lint-staged --allow-empty "$1"
+
+$ npx --no -- commitlint --config commitlint.config.cjs --edit $1
+
+```
+
 ## GitHub Actions
 
 ### 在 GitHub Actions 工作流程中部署 GitHub Pages 时出现 403 错误
@@ -766,4 +874,3 @@ git config --global alias.unstage 'reset HEAD'
   env:
     GITHUB_TOKEN: ${{ secrets.PAT }}
 ```
-
