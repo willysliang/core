@@ -169,13 +169,9 @@ const api = {
         let username = url.searchParams.get("username")
         let password = url.searchParams.get("password")
         if (username === "ds" && password === "123") {
-            Object.assign(data, {
-                ok: 1,
-            })
+            Object.assign(data, { ok: 1 })
         } else {
-            Object.assign(data, {
-                ok: 0,
-            })
+            Object.assign(data, { ok: 0 })
         }
         apiRender(res, JSON.stringify(data))
     },
@@ -258,7 +254,6 @@ App 实例再运行过程中，会调用一系列的中间件。每个中间件�
 4. 执行共享逻辑：可以执行一些通用逻辑，这些逻辑可以在多个路由处理程序中共享。例如身份验证、请求日志记录、性能监控等。
 5. 处理错误：可以捕获和处理应用程序中的错误。例如未处理的异常、HTTP 错误响应等。
 
-
 ```
 
 ````js
@@ -294,39 +289,39 @@ const uselessMiddlewareError = (req, res, next) => {
  * 实现 Koa 的洋葱模型
  */
 class Koa {
-    middlewares: Array<any> = []
+  middlewares: Array<any> = []
 
-    /** 执行动作 */
-    private action = (instance, ctx) => {
-        // 记录索引
-        let index = 1
+  /** 执行动作 */
+  private action = (instance, ctx) => {
+    // 记录索引
+    let index = 1
 
-        const next = () => {
-            // 记录执行的中间件函数
-            const nextMiddleware = instance.middlewares[index]
+    const next = () => {
+      // 记录执行的中间件函数
+      const nextMiddleware = instance.middlewares[index]
 
-            // 递归执行
-            if (nextMiddleware) {
-                index++
-                nextMiddleware(ctx, next)
-            }
-        }
-
-        // 从第一个开始执行
-        instance.middlewares[0](ctx, next)
+      // 递归执行
+      if (nextMiddleware) {
+        index++
+        nextMiddleware(ctx, next)
+      }
     }
 
-    /** 添加中间件函数 */
-    use(fn) {
-        this.middlewares.push(fn)
-    }
+    // 从第一个开始执行
+    instance.middlewares[0](ctx, next)
+  }
 
-    /** 监听接口并启动服务 */
-    public listen(port) {
-        Promise.resolve({}).then((ctx) => {
-            this.action(this, ctx)
-        })
-    }
+  /** 添加中间件函数 */
+  use(fn) {
+    this.middlewares.push(fn)
+  }
+
+  /** 监听接口并启动服务 */
+  public listen(port) {
+    Promise.resolve({}).then((ctx) => {
+      this.action(this, ctx)
+    })
+  }
 }
 
 ```
@@ -373,8 +368,6 @@ koa.listen(3000)
 
 
 
-
-
 ## Express 
 
 ```bash
@@ -382,11 +375,11 @@ koa.listen(3000)
 可以为请求处理提供多个回调函数，其行为类似中间件。唯一的区别是这些回调函数有可能调用 next('route') 方法而略过其他路由回调函数。可以利用该机制为路由定义前提条件，如果在现有路径上继续执行没有意义，则可将控制权交给剩下的路径。
 
 
-
 ### lowdb
 Lowdb是一种轻量级的本地JSON数据库，可以用于存储和操作JSON数据。它的作用是在Node.js和浏览器中提供一种简单的方法来创建和管理本地数据库，这些数据库通常用于小型应用程序和原型开发。Lowdb提供了一组简单易用的API，可以用于读取、写入、更新和删除JSON数据。它还支持链式操作，使得数据操作更加简单和直观。
 
 安装：$ npm i lowdb
+
 ```
 
 ### all方法和http动词方法
@@ -674,6 +667,7 @@ $ cnpm i -g express-generator
 
 2. 使用 ejs 模板引擎创建应用：
 $ express --view=ejs myapp
+
 ```
 
 ### ejs 标签含义
@@ -852,8 +846,6 @@ mongoose.model(modelName, schemaObj, collection, skipInit, connection)
   - skipInit（布尔值，可选）：如果为true，则不会自动初始化模型，否则会自动初始化。默认为false。
   - connection（Mongoose连接对象，可选）：可选的连接对象，用于指定用于模型的数据库连接。如果未提供，则将使用默认连接。
 
-
-
 ```
 
 ```ts
@@ -873,20 +865,14 @@ module.exports = function (success = null, error = null) {
 
     /** 监听 mongoose 数据库连接的状态 */
     mongoose.connection.on("open", async () => {
-        if (success) {
-            success()
-            return
-        }
+        if (success) return success()
         console.log("数据库连接成功~")
     })
     mongoose.connection.on("close", () => {
         console.log("数据库连接已经断开~")
     })
     mongoose.connection.on("error", (err) => {
-        if (error) {
-            error()
-            return
-        }
+        if (error) return error()
         console.log("连接错误", err)
     })
 
@@ -896,35 +882,48 @@ module.exports = function (success = null, error = null) {
 
 ```
 
-### 文档字段约束
+### 字段定义及约束 Schema 
 
-````bash
+```bash
+### 模型的配置对象 Schema 和 SchemaType
+在 mongoose 中，Schema 是模型的配置对象。Schema 不允许您从 MongoDB 读写，这就是模型的用途。
+
+Schema 的作用
+	- 定义保存在 MongoDB 中的文档可以具有哪些属性
+	- 定义自定义验证(validation)
+  - 声明(virtuals)
+  - 声明 getter 和 setter
+  - 定义静态(statics)和方法(methods)
+
+
+`SchemaType` 类只是一个基类。有几个类继承自 `SchemaType`，代表不同的核心 Mongoose 类型：
+    - `mongoose.Schema.Types.String`
+    - `mongoose.Schema.Types.Number`
+    - `mongoose.Schema.Types.Date`
+    - `mongoose.Schema.Types.Buffer`
+    - `mongoose.Schema.Types.Boolean`
+    - `mongoose.Schema.Types.Mixed`
+    - `mongoose.Schema.Types.ObjectId`（或等效的 `mongoose.ObjectId`）
+    - `mongoose.Schema.Types.Array`
+    - `mongoose.Schema.Types.Decimal128`
+    - `mongoose.Schema.Types.Map`
+
+
 ### 文档字段约束
 - require：Boolean，数据是否必填。
-
 - default: any，设置默认值，如果给字段设置值时则取该设定的默认值。
-
 - min/max：最小/大值（仅适用于数字）
-
 - match：正则匹配（仅适用于字符串）
-
 - enum: 枚举匹配（只适用于字符串）
-
 - validate：自定义匹配。validate 是一个函数，函数的参数代表当前字段，返回 true 表示通过验证，返回 false 表示未通过验证。
-````
+
+```
 
 ````js
 const mongoose = require("mongoose")
 mongoose.connect("mongodb://localhost:27017/student")
 
-const descLength = (arg) => {
-    if (arg.length < 20) {
-        return true
-    }
-    return false
-}
-
-const Schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -942,10 +941,23 @@ const Schema = new mongoose.Schema({
     },
     desc: {
         type: String,
-        validate: descLength,
+        validate: (arg) => arg.length < 20,
     },
+  	money: Number,
 })
-const stuModel = mongoose.model("students", Schema)
+
+// 判断原始类型
+schema.path('name') instanceof mongoose.SchemaType // true
+schema.path('name') instanceof mongoose.Schema.Types.String // true
+schema.path('age') instanceof mongoose.SchemaType // true
+schema.path('age') instanceof mongoose.Schema.Types.Number // true
+
+// 设置值
+schema.path('money').default(25)
+schema.path('money').validate((v) => v >= 21)
+
+// 创建实例
+const stuModel = mongoose.model("students", schema)
 new stuModel({ name: "01willy", age: 12, gender: "male", desc: "" }).save(
     (err, doc) => {
         if (err) {
@@ -958,6 +970,15 @@ new stuModel({ name: "01willy", age: 12, gender: "male", desc: "" }).save(
 
 ````
 
+#### ObjectIds
+
+```bash
+### ObjectIds
+
+```
+
+
+
 ### 文档新增
 
 ```bash
@@ -969,6 +990,7 @@ new stuModel({ name: "01willy", age: 12, gender: "male", desc: "" }).save(
 - createMany()：创建多个对象
 
 - insertMany()：插入一个对象
+
 ```
 
 ### 文档查询
@@ -1022,9 +1044,10 @@ new stuModel({ name: "01willy", age: 12, gender: "male", desc: "" }).save(
 stuModel.find({ $where: 'this.grades == this.test' || 'obj.grages == obj.test' })
 
 // 函数
-stuModel.find({ $where:function() {
-  return this.grades == this.test || obj.grades === obj.test
-} })
+stuModel.find({ 
+  $where: () => { return this.grades == this.test || obj.grades === obj.test } 
+})
+
 ```
 
 ### 文档更新
@@ -1106,6 +1129,7 @@ const stuModel = mongoose.model("grades", Schema)
 stuModel.find((err, docs) => {
     console.log(docs[0])
 })
+
 /*
     我是pre方法1
     我是pre方法2
@@ -1202,7 +1226,6 @@ router.get("/", async (req, res) => {
 /**
  * 插入操作
  */
-
 router.get("/addUser", async (req, res) => {
     // 给user中添加用户名和密码
     const sql = "insert into users (userid,department_id) values (?,?)" // 构建sql语句
@@ -1282,7 +1305,6 @@ module.exports = UserModel
 
 ```javascript
 // app.js
-
 var express = require('express');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -1297,7 +1319,6 @@ module.exports = app;
 
 ```javascript
 // router/user.js
-
 var express = require('express')
 var router = express.Router()
 const userController = require('../controllers/userController')
@@ -1315,7 +1336,6 @@ module.exports = router
 
 ```js
 // controllers/userController.js
-
 const userService = require('../services/userService')
 
 const userController = {
@@ -1344,7 +1364,6 @@ module.exports = userController
 
 ```js
 // services/userService.js
-
 const userModel = require('../model/userModel')
 
 const userService = {
@@ -1384,4 +1403,3 @@ const userService = {
 module.exports = userService
 ```
 
-## 登录鉴权
