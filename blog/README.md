@@ -108,6 +108,7 @@ html(5)/css(3)，前端页面相关技术
 ## 2024年2月28日
   - docs(前端基础): [Git仓库管理] Husky工程化
   - docs(计算机网络): [计算机网络] JWT信息结构
+  - docs(前端基础): [WEB_API] Push API 信息补充
 
 ## 2024年2月27日
   - docs(前端基础): [Git仓库管理] GitHub Actions 报 403 错误
