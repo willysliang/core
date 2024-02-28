@@ -2,11 +2,15 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-23 14:48:40
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 09:57:32
+ * @ ModifierTime: 2024-02-27 20:46:58
  * @ Description: app 相关
  */
 
 /** -------------------通用常量------------------------- */
+/** 博客地址 */
+export const BLOG_URL = 'https://willysliang.github.io/static_blog'
+/** HOME地址 */
+export const HOME_URL = 'https://willysliang.github.io/core'
 
 /** -------------------本地存储------------------------- */
 /** ip 信息 */

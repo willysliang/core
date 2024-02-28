@@ -8,11 +8,10 @@ Description: Babel 原理
 
 ## Babel 原理
 
-> ```bash
-> ## Babel 原理
-> 
-> https://juejin.cn/post/6844903956905197576
-> https://juejin.cn/post/6844903961820921869
-> ```
->
-> 
+```bash
+## Babel 原理
+
+https://juejin.cn/post/6844903956905197576
+https://juejin.cn/post/6844903961820921869
+```
+
