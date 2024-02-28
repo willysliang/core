@@ -28,6 +28,7 @@ Description: 日志记录
 
 ## 2024年2月28日
   - feat(blog): 博客首页调整
+  - docs(all): [README] 添加README描述信息
 
 ## 2024年2月27日
   - feat(blog): 使用 vuepress 打包搭建静态博客
