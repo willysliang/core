@@ -2,20 +2,20 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 16:41:58
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-21 16:14:07
+ * @ ModifierTime: 2024-02-29 14:13:41
  * @ Description: 用户相关路由
  */
 
-import express from 'express'
+import express, { Router } from 'express'
 import { validateToken } from '../middleware/tokenMiddleware'
 import {
   createRegister,
   createLogin,
   createCurrentUserInfo,
   createSpider,
-} from './controllers/userControlles'
+} from '../controllers/userControlles'
 
-const router = express.Router()
+const router: Router = express.Router()
 
 router.get('/', (_, res) => {
   res.json({

@@ -2,15 +2,15 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-22 10:17:31
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-22 16:47:03
+ * @ ModifierTime: 2024-02-29 14:15:40
  * @ Description: 联系人接口
  */
 
-import { Response, Request, NextFunction } from 'express'
+import { Response, Request, NextFunction, RequestHandler } from 'express'
 import asyncHandler from 'express-async-handler'
 import createError from 'http-errors'
-import { ContactService } from '../../services/ContactService'
-import { isUndefined } from '../../utils/index'
+import { ContactService } from '../services/ContactService'
+import { isUndefined } from '../utils/index'
 
 const contactService = new ContactService()
 
@@ -19,7 +19,7 @@ export const getTokenUserId = (req) =>
   req.user?.id || '65d56ab66e0dceb3d62dbcd5'
 
 /** 查询联系人(根据token) */
-export const searchContactHandler = asyncHandler(
+export const searchContactHandler: RequestHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await contactService.findContactInfoByUserId(
       getTokenUserId(req),
@@ -36,7 +36,7 @@ export const searchContactHandler = asyncHandler(
 )
 
 /** 创建联系人 */
-export const createContactHandler = asyncHandler(
+export const createContactHandler: RequestHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, phone } = req.body
 
@@ -70,7 +70,7 @@ export const createContactHandler = asyncHandler(
  * 根据数据库主键 id 进行相关操作
  */
 /** 查找 */
-export const searchContactByIdHandler = asyncHandler(
+export const searchContactByIdHandler: RequestHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const result = await contactService.searchContactInfoById(id)
@@ -86,7 +86,7 @@ export const searchContactByIdHandler = asyncHandler(
 )
 
 /** 更新 */
-export const putContactByIdHandler = asyncHandler(
+export const putContactByIdHandler: RequestHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const userId = getTokenUserId(req)
@@ -103,7 +103,7 @@ export const putContactByIdHandler = asyncHandler(
   },
 )
 
-export const deleteContactByIdHandler = asyncHandler(
+export const deleteContactByIdHandler: RequestHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const userId = getTokenUserId(req)

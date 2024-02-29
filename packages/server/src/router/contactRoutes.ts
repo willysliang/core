@@ -2,11 +2,11 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-22 10:11:24
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-23 18:51:34
+ * @ ModifierTime: 2024-02-29 14:13:25
  * @ Description: 联系人路由
  */
 
-import express from 'express'
+import express, { Router } from 'express'
 import { validateToken } from '../middleware/tokenMiddleware'
 import {
   searchContactHandler,
@@ -14,9 +14,9 @@ import {
   searchContactByIdHandler,
   putContactByIdHandler,
   deleteContactByIdHandler,
-} from './controllers/contactControlles'
+} from '../controllers/contactControlles'
 
-const router = express.Router()
+const router: Router = express.Router()
 
 router.use(validateToken)
 
