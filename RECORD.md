@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年2月29日
+  - fix(blog): 修复博客拉起编辑错误问题
+
 ## 2024年2月28日
   - feat(blog): 博客首页调整
   - docs(all): [README] 添加README描述信息
