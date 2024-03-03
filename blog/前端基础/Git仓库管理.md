@@ -16,28 +16,191 @@ Description: Git 仓库管理
 
 ### 安装配置git
 
-> ```bash
-> # 安装 Git
-> yum install git -y
->
->
-> # 配置邮箱、用户名（注意：邮箱格式必须要正确）
-> git config --global user.name willysliang	# 设置用户名
-> git config --global user.email willysliang@qq.com	#设置用户邮箱
-> git config user.name	#查看用户名
-> git config user.email	#查看邮箱
-> git show 	#显示所有信息
->
->
-> #适当的地显示颜色
-> git config --global color.ui ture
->
->
-> # 创建仓库
-> mkdir demo	#创建仓库
-> git init	#进行初始化，需要在版本库目录中
-> touch file	#创建文件
-> ```
+```bash
+# 安装 Git
+yum install git -y
+
+
+# 配置邮箱、用户名（注意：邮箱格式必须要正确）
+git config --global user.name willysliang	# 设置用户名
+git config --global user.email willysliang@qq.com	#设置用户邮箱
+git config user.name	#查看用户名
+git config user.email	#查看邮箱
+git show 	#显示所有信息
+
+
+#适当的地显示颜色
+git config --global color.ui ture
+
+
+# 创建仓库
+mkdir demo	#创建仓库
+git init	#进行初始化，需要在版本库目录中
+touch file	#创建文件
+```
+
+#### git init 和 git init --bare 的区别
+
+```bash
+### git init 和 git init --bare 的区别
+- `git init` 创建非裸存储库
+- `git init --bare` 创建裸存储库
+
+裸存储库是没有工作副本的 git 存储库，因此 .git 的内容是该目录的顶级内容。
+使用非裸存储库在本地工作，并使用裸存储库作为中央服务器与其他人共享您的更改。例如，当您在 `github.com` 上创建存储库时，它被创建为一个裸存储库。
+注意：`--bare` 用于远程存储库，而非本地存储库。
+
+
+#### 案例
+1. 在您的计算机中：
+$ git init
+$ touch README
+$ git add README
+$ git commit -m "initial commit"
+
+2. 在服务器上：
+$ cd /www/project
+$ git init --bare
+
+3. 在客户端，你推送：
+$ git push username@server:/www/project main
+
+然后，您可以通过将其添加为远程来保存键入内容。
+服务器端的存储库将通过拉取和推送的方式获得提交，而不是通过您编辑文件然后在服务器中提交文件，因此它是一个裸存储库。
+
+```
+
+#### Git hooks
+
+```bash
+## Git hooks
+Git hooks 是每次 Git 存储库中发生特定事件时自动运行的脚本。它们允许您定制 Git 的内部行为，并在开发生命周期的关键点触发可定制的操作。
+
+Git hooks 的常见用例包括鼓励提交策略、根据存储库的状态改变项目环境，以及实现连续集成工作流。但是，由于脚本是无限可定制的，您可以使用 Git hooks 来自动化或优化开发工作流的几乎任何方面。但如果添加的 Hook 脚本未正常运行，则 Git 操作将不会通过。
+
+
+```
+
+Hook 脚本置于目录 `~/.git/hooks` 中，以可执行文件的形式存在。
+
+```bash
+$ ls -lah .git/hooks
+applypatch-msg.sample     pre-push.sample
+commit-msg.sample         pre-rebase.sample
+fsmonitor-watchman.sample pre-receive.sample
+post-update.sample        prepare-commit-msg.sample
+pre-applypatch.sample     update.sample
+pre-commit.sample         push-to-checkout.sample
+pre-merge-commit.sample
+```
+
+以上常用 hooks 有：
+
+- `pre-commit`
+- `pre-push`
+- `commit-msg`
+
+另外 git hooks 可使用 `core.hooksPath` 自定义脚本位置。
+
+```bash
+# 可通过命令行配置 core.hooksPath
+$ git config 'core.hooksPath' .husky
+
+# 也可通过写入文件配置 core.hooksPath
+$ cat .git/config
+[core]
+  hooksPath = .husky
+```
+
+在前端工程化中，husky 即通过自定义 [`core.hooksPath`](https://git-scm.com/docs/git-config#Documentation/git-config.txt-corehooksPath) 并将 `npm scripts` 写入其中的方式来实现此功能。
+
+[Husky](https://github.com/typicode/husky) 允许您安装钩子，包括用 JavaScript 编写的钩子。
+
+`~/.husky` 目录下手动创建 hook 脚本。
+
+```bash
+# 手动创建 pre-commit hook
+$ vim .husky/pre-commit
+```
+
+在 `pre-commit` 中进行代码风格校验：
+
+```bash
+#!/bin/sh
+
+npm run lint
+```
+
+
+
+#### Git Diff
+
+```bash
+## Git Diff
+当执行 `git fetch` 拉取远程最新代码到本地，但想要在 `git merge` 合并之前查看一些文件的变动时，可以使用 `git diff` 命令。
+注意：如果是少量代码的改动，`git diff` 还是挺方便的，但如果代码量较大，建议使用 GUI 工具。
+
+```
+
+##### 查看变化中的差异
+
+`git diff` 显示暂存区和工作区的差异
+
+```bash
+git diff
+git diff [file] # 具体某个文件
+```
+
+##### 显示暂存区与上次 commit 的差异
+
+`--cached` 和 `--staged` 都可以用于显示暂存区与上次 commit 的差异：
+
+```git
+git diff --cached [file]
+git diff --staged [file]
+```
+
+##### 查看两个分支之间的差异
+
+使用 `git diff <branch>...<other-branch>` 查看 `<branch>` 和 `<other-branch>` 之间的差异 。
+
+- `git diff <branch>...<other-branch>` 比较两个分支。
+- `git diff 76ce3e6...e251d8d` 比较两个特定的提交。
+
+```bash
+$ git diff <branch>...<other-branch>
+$ git diff patch-1...patch-2
+# 显示分支 patch-1 和 patch-2 之间的差异
+```
+
+##### 统计数据
+
+`--stat` 生成差异统计。
+
+```bash
+$ git diff --stat
+
+# app/a.txt    | 2 +-
+# app/b.txt    | 8 ++----
+# 2 files changed, 10 insertions(+), 84 deletions(-)
+```
+
+`--shortstat` 是 `--stat` 选项的简化版本，它不显示具体的文件名及一些图形部分，只输出最后一行统计数据。
+
+显示今天写了多少行代码：
+
+```bash
+git diff --shortstat "@{0 day ago}"
+# 10 files changed, 62 insertions(+), 15 deletions(-)
+```
+
+##### 仅显示修改过的文件名
+
+```bash
+git diff --summary
+```
+
+
 
 ### 文件保存 add 、commit
 
@@ -62,26 +225,27 @@ Description: Git 仓库管理
 > # 查看状态
 > git status	#仓库内文件的状态变化信息
 > git status --short	#或git status -s对status简洁输出
->
->
+> $ git status --porcelain # 跟上述一致，也是为对 status 简洁输出
+> 
+> 
 > # 查看提交记录
 > git log				# 显示当前分支的提交日志
 > git log --oneline	# 简写说明，简洁版的日志 或 git log --pretty=oneline --abbrev-commit
 > git log --stat		# 显示 commit 历史，以及每次 commit 发生变更的文件
 > git log --oneline -number	# 查看最近的 number 个提交数
->
->
+> 
+> 
 > # 获取漂亮的日志信息
 > git log --pretty=format:"%h - %an, %ar : %s"		# 以给定格式有序的打印提交日志的内容、
 > git log --pretty=format:"%Cred(%h)%Creset - %Cgreen(%an, %ar)%Creset : %Cblue%s" # 为输出日志设置颜色
->
->
+> 
+> 
 > # 显示提交历史图表
 > ## （`--graph` 选项可以以**图形**方式展示日志）
 > git log --graph
 > git log --pretty=format:"%h %s" --graph
->
->
+> 
+> 
 > # 基于时间的日志记录
 > ## 可以在特定时间范围内记录条目。非常适合检查每日项目的提交记录
 > git log --since="yesterday" --oneline
@@ -108,21 +272,39 @@ Description: Git 仓库管理
 
 ### 撤销修改 checkout
 
-> ```bash
-> ## 撤销修改 checkout
-> - `git checkout -- readme.txt`：把 readme.txt 文件在工作区的修改全部撤销。
-> - `git checkout -- file`：撤销整个文件的修改。命令中若是没有`--`，就会变成'切换到另一分支'的命令。
->     - 场景1：当你该乱了工作区某个文件的内容，想直接丢弃工作区的修改时，使用命令`git checkout -- file`。
->     - 场景2：当你不但该乱工作区某个文件的内容，还添加到暂存区时，想丢弃修改，则需要分两步：
->         1. `git reset HEAD <file>` 回退到场景1；
->         2. `git checkout -- file` 丢弃所选文件的修改。
->     - 场景3：已经提交了不合适的修改到版本库时，想要撤销本次修改，参考版本回退，但前提是没有推送到远程库。
-> - 注意：使用 checkout 需要你本来就已经存在文件于版本库中，否则会显示找不到该文件。
->
->
-> $ git reset HEAD readme.txt
-> $ git checkout -- readme.txt
-> ```
+```bash
+## 撤销修改 checkout
+- `git checkout -- readme.txt`：把 readme.txt 文件在工作区的修改全部撤销。
+- `git checkout -- file`：撤销整个文件的修改。命令中若是没有`--`，就会变成'切换到另一分支'的命令。
+    - 场景1：当你该乱了工作区某个文件的内容，想直接丢弃工作区的修改时，使用命令`git checkout -- file`。
+    - 场景2：当你不但该乱工作区某个文件的内容，还添加到暂存区时，想丢弃修改，则需要分两步：
+        1. `git reset HEAD <file>` 回退到场景1；
+        2. `git checkout -- file` 丢弃所选文件的修改。
+    - 场景3：已经提交了不合适的修改到版本库时，想要撤销本次修改，参考版本回退，但前提是没有推送到远程库。
+- 注意：使用 checkout 需要你本来就已经存在文件于版本库中，否则会显示找不到该文件。
+
+
+$ git reset HEAD readme.txt
+$ git checkout -- readme.txt
+
+```
+
+
+
+### 拉取代码 fetch/pull
+
+```bash
+## 拉取代码
+注意：在默认模式下，`git pull` 等价于 `git fetch && git merge FETCH_HEAD`。
+
+- 使用 `git pull` 时，Git 会尝试自动合并。它是上下文敏感的，因此 Git 会将任何拉入的提交合并到您当前工作的分支中。`pull` 会直接自动合并提交，而不让您先查看它们。如果你不小心管理你的分支，你可能会经常遇到冲突。
+
+- 使用 `git fetch` 时，Git 从目标分支收集当前分支中不存在的任何提交，并将其存储在本地存储库中。但是，它不会将它们与当前分支合并。如果您需要使存储库保持最新状态，但正在处理更新文件可能会导致冲突时，这一点尤其有用。要将提交集成到当前分支中，必须在之后使用 `merge`。
+
+当你 `fetch` 时，你可以先使用 `diff` 查看更新后的差异之后，再选择 `merge`。
+```
+
+
 
 ### 远程仓库配置相关
 
@@ -188,7 +370,7 @@ Description: Git 仓库管理
 >
 > **3、绑定ssh**
 >
-> ```
+> ```sh
 > #绑定好github上的ssh后，关联本地仓库（origin为远程库名，且关联必须放公钥到github账号列表上，否则推送不了数据）
 > git remote add origin git@github.com:willy-liang/willy.git
 > git remote add gitee git@gitee.com:liangwilly/willy.git
@@ -365,7 +547,7 @@ ssh-keygen（基于密匙的安全验证）：需要依靠密钥进行安全验�
 ```bash
 ## 从一个git仓库拷贝到另一个git仓库
 1、从原地址克隆一份裸版本库
-$ git clone --bare http:  //....(原始仓库地址)
+$ git clone --bare http://....(原始仓库地址)
 
 
 2、以镜像推送的方式上传代码到新的仓库地址
@@ -428,7 +610,7 @@ git push --mirror git@github.com:willysliang/core.git
 >
 > > 注意：在本地提交之前，先 pull 再 push，不然会有冲突
 
-### 拉取子模块
+### 拉取子模块 submodule
 
 #### 添加git子模块
 
@@ -465,7 +647,7 @@ git submodule update --recursive --remote    // (git1.8.2版本以上)
 git pull --recurse-submodules								 // 合并写法
 ```
 
-### 分支管理
+### 分支管理 branch
 
 #### 创建与切换分支
 
@@ -474,11 +656,15 @@ git pull --recurse-submodules								 // 合并写法
 > - 主分支master：要执行的代码。
 > - 子分支：还未写完的代码存放的分支。
 > - `HEAD`严格来说不是指向提交，而是指向`master`，`master`才是指向提交的，所以，`HEAD`指向的就是当前分支。
->
->
+> 
+> 
 > ## 创建与合并分支 switch
 > - 创建并切换到 dev 分支：`$ git switch -c dev`
 > - 直接切换到已有的 master 分支：`$ git switch master`
+> 
+> 
+> - 在不切换分支的情况下查看不同分支的文件：`$ git show [branch_name分支名]:[file_path文件绝对路径]`
+> 
 > ```
 >
 > ```bash
@@ -496,10 +682,10 @@ git pull --recurse-submodules								 // 合并写法
 > ```bash
 > ## 合并分支
 > ### 合并分支概念
-> 每次提交，Git都把它们串成一条时间线，这条时间线就是一个分支。截止到目前，只有一条时间线，在Git里，这个分支叫主分支，即`master`分支。随着不断提交，`master`的线也会越来越长。
+> 每次提交，Git都把它们串成一条时间线，这条时间线就是一个分支。截止到目前，只有一条时间线，在Git里，这个分支叫主分支（一般命名为`master`分支）。随着不断提交，主分支的线也会越来越长。
 > 当我们创建新的分支（如dev），Git新建了一个指针叫`dev`，指向`master`相同的提交，再把`HEAD`指向`dev`，就表示当前在`dev`分支上。
 > Git创建分支，除了增加一个`dev`指针，改改`HEAD`的指向，工作区的文件都没有任何改变。
-> 当完成在`dev`上的工作后，就可以吧`dev`合并到`master`上，就是直接把`master`指向`dev`的当前提交，就完成合并了。
+> 当完成在`dev`上的工作后，就可以把`dev`合并到`master`上，就是直接把`master`指向`dev`的当前提交，就完成合并了。
 > 合并完分支后，甚至可以删除`dev`分支。删除`dev`分支就是把`dev`指针给删掉，删掉后，就剩下一条`master`分支。
 >
 >
@@ -527,16 +713,47 @@ git pull --recurse-submodules								 // 合并写法
 > git log --graph --pretty=oneline --abbrev-commit
 > ```
 
-#### Bug分支
+#### Bug分支 stash
 
-> - `git stash`：把当前工作现场"储藏"，等以后恢复现场后继续工作。
-> - `git stash list`：查看储藏的`stash`。
-> - `git stash apply`：恢复`stash`的内容
-> - 恢复`stash`后，`stash`内容并不删除，所以需要删除
->   - `git stash drop`：删除`stash`内容
->   - ``git stash pop`：恢复的同时把`stash`内容也删了
-> - `git stash apply stash@{0}`：恢复指定的stash（有多次stash时使用）
-> - `git cherry-pick 4c80e2 `：复制一个特定的提交到当前分支（`3c80e2`为其他分支的提交号）
+```bash
+### Bug 分支
+- `git stash`：把当前工作现场"储藏"，等以后恢复现场后继续工作。
+- `git stash list`：查看储藏的`stash`。
+- `git stash apply`：恢复`stash`的内容(恢复`stash`后，`stash`内容并不删除，所以需要删除)
+- `git stash drop`：删除`stash`内容
+- `git stash pop`：恢复的同时把`stash`内容也删了
+- `git stash apply stash@{0}`：恢复指定的stash（有多次stash时使用）
+- `git cherry-pick 4c80e2 `：复制一个特定的提交到当前分支（`3c80e2`为其他分支的提交号）
+
+```
+
+#### cherry-pick
+
+```bash
+### cherry-pick
+Git 中的 cherry-pick 作用是从一个分支中选择一个提交，并将其应用到另一个分支上。
+这与其他方式形成了对比，例如 `merge` 和 `rebase`，它们通常将许多提交应用于另一个分支。
+
+`git cherry-pick <commit-hash>` 会将指定的提交 `commit-hash` 应用于当前分支。这会在当前分支产生一个新的提交，当然它们的哈希值会不一样。
+
+假设您有 `master` 和 `develop` 分支，现在需要将 `develop` 分支的某一个提交，如 `x` 应用到 `master` 分支：
+$ git checkout master # 切换到对应分支（这里是 `master`）
+$ git cherry-pick x # chergit cherry-pick <HashA> <HashB>ry-pick对应的提交（这里是 `x`）
+
+
+应用 `develop` 分支的最近一次提交，可以直接使用分支名：`git cherry-pick develop`
+
+转移多个提交：`git cherry-pick <HashA> <HashB>`
+
+从公共分支中挑选：`git cherry-pick -x <commit-hash>`
+这将生成一个标准化的提交消息。这样以后仍然可以跟踪提交的来源，并且可以避免将来发生合并冲突。
+
+如果在提交中附加了注释，则它们不会遵循 `cherry-pick`。要将它们也带过来，则必须使用：
+`git notes copy <from> <to>`
+
+```
+
+
 
 ### 工作流 git flow
 
@@ -588,84 +805,157 @@ git pull --recurse-submodules								 // 合并写法
 - rebase操作可以把本地未push的分叉提交历史整理成直线；
 - rebase的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
 
-### 标签管理
+### 标签管理 tag
 
-- 打标签目的是记录该版本的发布。
-- 打标签：`git tag -a 0.1.3 -m “Release version 0.1.3`
+```bash
+## 标签管理
+- 打标签的目的是记录该版本的发表。
+
+
+1. 创建标签
+- 创建轻量标签：`git tag <tag_name>`
+- 创建带注释标签：`git tag -a <tag_name> -m "custom message"`
+
+
+2. 查看标签
+- 查看显示本地所有标签：`git tag` 
+- 显示特定标签的标签数据：`git show <tag_name>`
+- 查看远程所有标签：`git ls-remote --tags`
+
+
+3. 推送标签
 - 推送一个本地标签：`git push origin <tagname>`
-- 推送全部未推送过的本地标签：`git push origin --tags`
-- 删除一个本地标签：`git tag -d <tagname>`
-- 删除一个远程标签：`git push origin :refs/tags/<tagname>`
+- 将所有标签推送到远程仓库：`git push --tags`
+
+
+4. 删除标签
+- 删除本地特定标签：`git tag -d <tag_name>` 
+- 删除远程特定标签：`git push -d origin :refs/tags/<tag_name>` 
+
+
+5. 检查标签
+- 检查标签是否仅在本地可用：`git push --tags --dry-run`
+		- `--dry-run` 选项总结了下一次提交中将包含的内容。
+		- 如果上述命令的输出状态为 ‘Everything up-to-date’，则表示没有可推送的标签
+		- 
+```
 
 ```bash
 #当次提交的标签
 git add .
 git commit -m “fixed some bugs”
-git tag -a 0.1.3 -m “version 0.1.3″		#a指定标签名，m说明文字
+git tag -a v0.1.3 -m “version 0.1.3″		#a指定标签名，m说明文字
+
 
 #可查看历史提交的commit id
 git log --pretty=oneline --abbrev-commit
 
+
 #新建一个标签（默认为HEAD，也可指定一个commit id）
 git tag v0.9 f52c633
+
 
 #分享提交标签到远程服务器上
 git push origin master
 git push origin --tags
 git push origin v0.9
 
+
 #切换到已有Tag
 git tag --list  // 查看已有tag列表
 git show v0.9	//查看说明文件:git show tagname
 git checkout [tag/branch/commit]  //切换到指定tag/branch/commit都是此命令
 
+
 #删除本地标签
-git tag -d 0.1.3
+git tag -d v0.1.3
+
 
 #删除远端服务器的标签（需先从本地删除才能远程删除）
-git push origin :refs/tags/0.1.3
+git push origin :refs/tags/v0.1.3
+
 ```
 
-### 忽略特殊文件
+### 忽略特殊文件 gitignore
 
-> **在Git工作区的根目录下创建一个特殊的`.gitignore`文件**，然后把要忽略的文件名填进去，Git就会自动忽略这些文件。
->
-> 忽略文件的原则是：
->
-> 1. 忽略操作系统自动生成的文件，比如缩略图等；
-> 2. 忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没必要放进版本库，比如Java编译产生的`.class`文件；
-> 3. 忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件。
->
-> ```
-> # Windows:Windows会自动在有图片的目录下生成隐藏的缩略图文件，如果有自定义目录，目录下就会有Desktop.ini文件，因此你需要忽略Windows自动生成的垃圾文件：
-> Thumbs.db
-> ehthumbs.db
-> Desktop.ini
->
-> # Python，忽略Python编译产生的.pyc、.pyo、dist等文件或目录
-> *.py[cod]
-> *.so
-> *.egg
-> *.egg-info
-> dist
-> build
->
-> # My configurations:自定义
-> db.ini
-> deploy_key_rsa
->
-> # 排除所有.开头的隐藏文件:
-> .*
-> # 排除所有.class文件:
-> *.class
->
-> # 不排除.gitignore和App.class:
-> !.gitignore
-> !App.class
-> ```
->
-> - 当被`.gitignore`忽略,强制添加到Git：`git add -f App.class`
-> - `.gitignore`规则写错检查：`git check-ignore -v App.class`
+````bash
+## 忽略特殊文件/目录
+再 Git 工作区的根目录下创建一个 `.gitignore` 文件，然后把需要忽略的文件名/文件夹目录填入，Git 提交就会自动忽略这些文件。
+
+忽略文件的原则是：
+  1. 忽略操作系统自动生成的文件；如缩略图等。
+  2. 忽略编译生成的中间文件、可执行文件等。如果一个文件是自动生成的，则该自动生成的文件就没必要放进版本库，如Java编译产生的`.class`文件。
+  3. 忽略带有敏感信息的配置文件。如存放口令的配置文件。
+
+
+- 当被`.gitignore`忽略,强制添加到Git：`git add -f App.class`
+- `.gitignore`规则写错检查：`git check-ignore -v App.class`
+
+````
+
+#### 通用的 `.gitignore` 文件配置
+
+```.gitignore
+# Windows:Windows会自动在有图片的目录下生成隐藏的缩略图文件，如果有自定义目录，目录下就会有Desktop.ini文件，因此你需要忽略Windows自动生成的垃圾文件：
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python，忽略Python编译产生的.pyc、.pyo、dist等文件或目录
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+# My configurations:自定义
+db.ini
+deploy_key_rsa
+
+# 排除所有.开头的隐藏文件:
+.*
+# 排除所有.class文件:
+*.class
+
+# 不排除.gitignore和App.class:
+!.gitignore
+!App.class
+
+```
+
+#### git clean 删除未跟踪的文件或目录
+
+删除未跟踪的文件或目录，是指未写在 `.gitignore` 文件中，并且未使用 `git add` 将变更的文件从工作区添加到暂存区的文件。
+
+要删除未跟踪的文件和目录，您可以执行：
+
+```git
+# 删除未跟踪的文件。
+# f
+$ git clean -f
+
+# 删除未跟踪的文件和目录。
+# d
+$ git clean -fd
+```
+
+如果您还想删除被 `.gitignore` 隐藏的文件，可以使用以下命令：
+
+```git
+# 忽略的文件、未被跟踪的文件和文件夹
+# x
+$ git clean -xfd
+```
+
+如果想要先查看哪些文件可能会被删除，而不执行删除动作，可以执行以下命令：
+
+```git
+# n
+$ git clean -xfdn
+```
+
+
 
 ### 配置别名
 
@@ -874,3 +1164,18 @@ $ npx --no -- commitlint --config commitlint.config.cjs --edit $1
   env:
     GITHUB_TOKEN: ${{ secrets.PAT }}
 ```
+
+## SVN
+
+```bash
+## SVN
+
+
+### Git 和 SVN 的区别
+Git 和 SVN 最大的区别在于 Git 是分布式的，而 SVN 是集中式的。因此不能再离线的情况下使用 SVN。如果服务器出现问题，就没有办法使用 SVN 来提交代码。
+
+SVN 中的分支是整个版本库的复制的一份完整目录，而 Git 的分支是指针指向某次提交，因此 Git 的分支创建更加开销更小 并且分支上的变化不会影响到其他人。SVN 的分支变化会影响到所有的人。
+
+SVN 的概念指令相对于 Git 来说要简单一些，比 Git 更容易上手。
+```
+
