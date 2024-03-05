@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月5日
+  - feat(utils): [indexedDB] IndexedDBHelper indexedDB操作帮手类
+
 ## 2024年3月4日
   - feat(utils): [classUtils] applyMixins/Mixins混入模式实现继承多个父类
 
