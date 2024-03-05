@@ -2,18 +2,18 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-22 21:28:01
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-23 18:09:53
+ * @ ModifierTime: 2024-02-29 14:25:36
  * @ Description: web-push 控制器
  */
 
 import { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
-import { WebPushService } from '../../services/app/webPushService'
+import { WebPushService } from '../services/app/webPushService'
 
 const webPushService = new WebPushService()
 
 export class WebPushController {
-  /** web 端 serviceWork 就绪时保存 pushSubscription */
+  /** web 端 serviceWork 就绪时检查 pushSubscription */
   async checkPushSubscriptionHandler(
     req: Request,
     res: Response,
@@ -36,7 +36,7 @@ export class WebPushController {
     } catch (error) {
       const errorData = {
         code: 500,
-        msg: '保存 pushSubscription 失败~',
+        msg: '检查 pushSubscription 失败~',
         error,
       }
       res.status(errorData.code)

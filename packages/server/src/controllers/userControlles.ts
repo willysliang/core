@@ -2,17 +2,17 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 20:35:16
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-23 14:58:42
+ * @ ModifierTime: 2024-02-29 21:24:08
  * @ Description: 用户接口
  */
 
-import { Response, Request } from 'express'
+import { Response, Request, RequestHandler } from 'express'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { UserService } from '../../services/UserService'
+import { UserService } from '../services/UserService'
 import { SALT_ROUNDS, SECRETKEY } from '@willy/utils'
-import { isUndefined } from '../../utils/index'
+import { isUndefined } from '../utils/index'
 
 const userService = new UserService()
 
@@ -37,9 +37,9 @@ const userService = new UserService()
       .catch((error) => {
         console.error(error)
       })
- * 
+ *
  */
-export const createRegister = asyncHandler(
+export const createRegister: RequestHandler = asyncHandler(
   async (req: Request, res: Response) => {
     const { account, email, password } = req.body
     if (isUndefined(account) || isUndefined(email) || isUndefined(password)) {
@@ -105,52 +105,54 @@ export const createRegister = asyncHandler(
 /**
  * 登录
  */
-export const createLogin = asyncHandler(async (req: Request, res: Response) => {
-  const { account, password } = req.body
+export const createLogin: RequestHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { account, password } = req.body
 
-  if (isUndefined(account) || isUndefined(password)) {
-    res.json({
-      code: 400,
-      msg: 'All fields are mandatory.',
-    })
-    return
-  }
+    if (isUndefined(account) || isUndefined(password)) {
+      res.json({
+        code: 400,
+        msg: 'All fields are mandatory.',
+      })
+      return
+    }
 
-  const user = await userService.getUser(account)
+    const user = await userService.getUser(account)
 
-  // 验证密码是否匹配
-  if (user && bcrypt.compare(user.password, password)) {
-    const token = jwt.sign(
-      {
-        user: {
-          account: user.account,
-          id: user.id || user._id,
+    // 验证密码是否匹配
+    if (user && bcrypt.compare(user.password, password)) {
+      const token = jwt.sign(
+        {
+          user: {
+            account: user.account,
+            id: user.id || user._id,
+          },
         },
-      },
-      SECRETKEY,
-      { expiresIn: '24h' },
-    )
-    res.json({
-      code: 200,
-      msg: 'success',
-      data: { token },
-    })
-  } else {
-    res.json({
-      code: 400,
-      msg: 'account or password is valid',
-    })
-  }
-})
+        SECRETKEY,
+        { expiresIn: '24h' },
+      )
+      res.json({
+        code: 200,
+        msg: 'success',
+        data: { token },
+      })
+    } else {
+      res.json({
+        code: 400,
+        msg: 'account or password is valid',
+      })
+    }
+  },
+)
 
 /**
  * 当前用户信息
  */
-export const createCurrentUserInfo = asyncHandler(
+export const createCurrentUserInfo: RequestHandler = asyncHandler(
   async (req: Request, res: Response) => {
     res.json({
       code: 200,
-      // @ts-ignore
+      // @ts-expect-error 如果报错，则说明 jwt 校验没有通过(没有在请求头中写入 user 信息字段)
       msg: { user: req.user },
     })
   },
@@ -159,12 +161,14 @@ export const createCurrentUserInfo = asyncHandler(
 /**
  * 爬虫信息
  */
-export const createSpider = asyncHandler(async (_: Request, res: Response) => {
-  const data = await userService.spider()
-  console.log('data', data)
-  res.json({
-    code: 200,
-    msg: 'success',
-    data,
-  })
-})
+export const createSpider: RequestHandler = asyncHandler(
+  async (_: Request, res: Response) => {
+    const data = await userService.spider()
+    console.log('data', data)
+    res.json({
+      code: 200,
+      msg: 'success',
+      data,
+    })
+  },
+)

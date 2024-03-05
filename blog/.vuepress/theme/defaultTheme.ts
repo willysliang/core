@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-27 17:39:40
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-28 12:47:38
+ * @ ModifierTime: 2024-02-29 10:21:14
  * @ Description: 默认主题
  */
 
@@ -39,8 +39,8 @@ export default defaultTheme({
   toggleSidebar: '切换侧边栏',
 
   // 文档编辑
-  docsRepo: 'https://gitlab.com/owner/name',
+  docsRepo: 'https://github.com/willysliang/core',
   docsBranch: 'master',
-  docsDir: 'docs',
-  editLinkPattern: ':repo/-/edit/:branch/:path',
+  docsDir: 'blog',
+  editLinkPattern: ':repo/edit/:branch/:path',
 })

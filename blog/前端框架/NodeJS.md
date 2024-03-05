@@ -974,6 +974,44 @@ new stuModel({ name: "01willy", age: 12, gender: "male", desc: "" }).save(
 
 ```bash
 ### ObjectIds
+默认情况下，MongoDB 在 ObjectID 类型的每个文档上创建一个 _id 属性作为唯一的自增值。
+MongoDB `ObjectIds` 通常使用 24 个十六进制字符串表示，如 `5d6ede6a0ba62570afcedd3a`。Mongoose 根据模式路径将 `ObjectIds` 强制转换 24 个字符字符串。
+Mongoose 还可以将其他的值转换为 `ObjectId`。因为 `ObjectId` 是 12 个任意字节。所以任何 12 字节的缓冲区或 12 个字符的字符串都是有效的 `ObjectId`。
+
+`ObjectId` 对创建它们的本地时间进行编码。这意味着可以从文档的 `_id` 中提取文档创建的时间。
+
+
+#### ObjectIds 作为自增值的原因
+mongooseDB 使用 ObjectIds 设置自增值的原因
+虽然在单个进程中递增计数器很简单实现，但是如果存在多个进程(如分片/集群)，当每个进程都需要能够递增计数器，此时无论何时插入文档，都需要递增分布式计数器。此时如果两个进程之间存在显著的网络延迟，则可能导致性能不可靠；如果一个进程停机，则可能导致不可预测的结果。
+因为 ObjectId 冲突的可能性很小，因此 MongoDB 可以分配 ID，这些 ID 在没有进程间通信的分布式系统中可能是唯一的。
+
+```
+
+```js
+const schema = mongoose.Schema({ testId: mongoose.ObjectId })
+const Model = mongoose.model('Test', schema)
+
+
+// testId 是一个 ObjectId，Mongoose 根据您的模式自动将 24 个十六进制字符字符串转换为 ObjectId。
+let doc = new Model({ testId: '313263686172313263686172' })
+doc.testId instanceof mongoose.Types.ObjectId // true
+
+// 获取时间
+doc.testId.getTimestamp() // 1996-02-27T01:50:32.000Z
+doc.testId.getTimestamp() instanceof Date // true
+
+
+// 任何 12 个字符的字符串都是有效的 ObjectId，因为 ObjectId 的唯一定义特性是它们有 12 个字节。
+doc = new Model({ testId: '12char12char' })
+doc.testId instanceof mongoose.Types.ObjectId // true
+doc.testId // '313263686172313263686172'
+
+
+// 类似地，Mongoose 将自动将长度为 12 的缓冲区转换为 ObjectID。
+doc = new Model({ testId: Buffer.from('12char12char') })
+doc.testId instanceof mongoose.Types.ObjectId // true
+doc.testId // 313263686172313263686172
 
 ```
 
@@ -1086,11 +1124,104 @@ stuModel.find({
 
 ```bash
 ### 文档删除
-- deleteOne()：删除符合条件的所有数据
+- deleteOne()：只删除一个文档，即使有多个文档符合条件
+- deleteMany()：删除所有符合条件的文档
+
 - findOneAndRemove()：删除符合条件的一条数据
 - findByIdAndRemove()：通过 id 删除数据（id是唯一的）
 
+- remove()：删除单个文档或符合指定条件的所有文档
+
 ```
+
+#### `db.collection.deleteOne()` 方法
+
+`db.collection.deleteOne()` 只删除一个文档，即使有多个文档符合条件。
+
+```bash
+$ db.articles.find({ artistname: { $in: [ "The Kooks", "Gang of Four", "Bastille" ] } })
+
+# { "_id" : ObjectId("5781d7f248ef8c6b3ffb014d"), "artistname" : "The Kooks" }
+# { "_id" : ObjectId("5781d7f248ef8c6b3ffb014e"), "artistname" : "Bastille" }
+# { "_id" : ObjectId("5781d7f248ef8c6b3ffb014f"), "artistname" : "Gang of Four" }
+```
+
+```bash
+# 对 `db.collection.deleteOne()` 方法使用完全相同的筛选条件
+$ db.articles.deleteOne({ artistname: { $in: [ "The Kooks", "Gang of Four", "Bastille" ] } })
+# { "acknowledged" : true, "deletedCount" : 1 }
+
+
+# 再次查看符合条件的文档数量
+$ db.articles.find({ artistname: { $in: [ "The Kooks", "Gang of Four", "Bastille" ] } })
+# { "_id" : ObjectId("5781d7f248ef8c6b3ffb014e"), "artistname" : "Bastille" }
+# { "_id" : ObjectId("5781d7f248ef8c6b3ffb014f"), "artistname" : "Gang of Four" }
+```
+
+#### `db.collection.deleteMany()` 方法
+
+`db.collection.deleteMany()` 方法删除所有符合条件的文档。
+
+```bash
+$ db.articles.deleteMany({ artistname: { $in: [ "The Kooks", "Gang of Four", "Bastille" ] } })
+
+# { "acknowledged" : true, "deletedCount" : 2 }
+```
+
+#### `db.collection.remove()` 方法
+
+`db.collection.remove()` 方法删除单个文档或符合指定条件的所有文档。
+
+```bash
+# 删除 `article` 名为 `AC/DC` 的所有文档
+$ db.articles.remove({ artistname: "AC/DC" })
+
+# WriteResult({ "nRemoved" : 1 })
+```
+
+#### `justOne` 选项
+
+可以使用 `justOne` 参数将删除操作限制为仅一个文档（就像使用 `db.collection.deleteOne()`）。
+
+```bash
+# 运行一个返回多个文档的查询
+$ db.users.find({ born: { $lt: 1950 } })
+
+# { "_id" : 2, "name" : "Ian Paice", "instrument": "Drums", "born": 1948 }
+# { "_id" : 3, "name" : "Roger Glover", "instrument": "Bass", "born": 1945 }
+# { "_id" : 5, "name" : "Don Airey", "instrument": "Keyboards", "born": 1948 }
+```
+
+```bash
+# 使用 `justOne` 选项删除其中一条记录
+$ db.users.remove({ born: { $lt: 1950 } }, { justOne: 1 })
+
+# WriteResult({ "nRemoved" : 1 })
+
+
+# 运行相同的查询以查看剩余的文档
+$ db.users.find({ born: { $lt: 1950 } })
+
+# { "_id" : 3, "name" : "Roger Glover", "instrument": "Bass", "born": 1945 }
+# { "_id" : 5, "name" : "Don Airey", "instrument": "Keyboards", "born": 1948 }
+```
+
+
+
+#### 删除集合中的所有文档
+
+只需省略任何筛选条件，即可删除集合中的所有文档。
+
+> **注意**：如果您收到一个错误：`remove needs a query`，请检查您是否忘记包含花括号
+
+```bash
+# 删除 `article` 集合中的所有文档
+$ db.articles.remove({})
+
+# WriteResult({ "nRemoved" : 8 })
+```
+
+
 
 ### 前后钩子
 

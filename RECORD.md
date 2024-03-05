@@ -26,6 +26,23 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月5日
+  - feat(utils): [indexedDB] IndexedDBHelper indexedDB操作帮手类
+
+## 2024年3月4日
+  - feat(utils): [classUtils] applyMixins/Mixins混入模式实现继承多个父类
+
+## 2024年3月1日
+  - feat(utils): [fileUtils] 文件类
+    - FileConvertFormatUtils 文件转换格式类
+    - FileConvertFormatUtils 文件加载类
+    - FileConvertFormatUtils 文件优化类
+    - FileAllUtils 使用混合模式继承上述所有基础文件类
+
+## 2024年2月29日
+  - fix(blog): 修复博客拉起编辑错误问题
+  - feat(server): 添加 file 文件上传路由、添加变量类型定义、controllers文件夹位置移动
+
 ## 2024年2月28日
   - feat(blog): 博客首页调整
   - docs(all): [README] 添加README描述信息
