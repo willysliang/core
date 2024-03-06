@@ -1,10 +1,9 @@
-// /* eslint-disable */
 /**
  * @ Author: willy
- * @ CreateTime: 2024-03-01 18:57:30
+ * @ CreateTime: 2024-03-06 12:53:26
  * @ Modifier: willy
- * @ ModifierTime: 2024-03-04 12:59:46
- * @ Description: class 相关的 utils 函数
+ * @ ModifierTime: 2024-03-06 14:15:13
+ * @ Description: class 的混入模式（实现同时继承多个父类）
  */
 
 /** 类的声明 */
@@ -16,6 +15,23 @@ export type UnionToIntersection<U> = (
 ) extends (k: infer I) => void
   ? I
   : never
+
+/**
+ * 使用 Mixins 类的混入方法后的返回类型
+ * const mixins = [class A{}, class B{}]
+ * class AllUtils extends Mixins(class {}, ...mixins) {}
+ * const allUtils = new AllUtils() as IMixinsReturnType<typeof AllUtils>
+ */
+export type IMixinsReturnType<T> = Omit<
+  T,
+  | 'apply'
+  | 'arguments'
+  | 'bind'
+  | 'call'
+  | 'constructor'
+  | 'Symbol'
+  | 'prototype'
+>
 
 /**
  * @function applyMixins 使用混入模式实现继承多个父类
@@ -95,7 +111,7 @@ export const applyMixins = (
       A,
       B,
     )
-    const all = new All('test', 42) as typeof All
+    const all = new All('test', 42) as IMixinsReturnType<typeof All>
     all.a() // 调用 A 的 a 方法，输出 "a: test"
     all.b() // 调用 B 的 b 方法，输出 "b: 42"
  */
@@ -118,31 +134,11 @@ export function Mixins<
 
   // 将 mixins 中的所有方法拷贝到 Base 类
   mixins.forEach((mixin) => {
-    // Object.getOwnPropertyNames(mixin.prototype).forEach((name) => {
-    //   const descriptor = Object.getOwnPropertyDescriptor(mixin.prototype, name)
-    //   if (descriptor && name !== 'constructor') {
-    //     Object.defineProperty(Base.prototype, name, descriptor)
-    //   }
-    // })
-    const mixinProto =
-      typeof mixin.prototype === 'object' ? mixin.prototype : {}
-    const mixinDescriptors = Object.getOwnPropertyDescriptors(mixinProto)
-    const mixinKeys = Object.keys(mixinDescriptors).filter((key) => {
-      const descriptor = mixinDescriptors[key]
-      return (
-        key !== 'constructor' &&
-        !descriptor.get &&
-        !descriptor.set &&
-        !descriptor.value?.[Symbol.toStringTag] &&
-        key !== 'apply' &&
-        key !== 'arguments' &&
-        key !== 'bind' &&
-        key !== 'call'
-      )
-    })
-    mixinKeys.forEach((key) => {
-      const descriptor = mixinDescriptors[key]
-      Object.defineProperty(Base.prototype, key, descriptor)
+    Object.getOwnPropertyNames(mixin.prototype).forEach((name) => {
+      const descriptor = Object.getOwnPropertyDescriptor(mixin.prototype, name)
+      if (descriptor && name !== 'constructor') {
+        Object.defineProperty(Base.prototype, name, descriptor)
+      }
     })
   })
 

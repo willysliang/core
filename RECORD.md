@@ -26,6 +26,11 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月6日
+  - fix(utils): [file] 
+    baseFileUtils、classMixinUtils 通用方法迁移
+    classMixinUtils/Mixins 修复Mixins方法无法给函数使用async语法糖
+
 ## 2024年3月5日
   - feat(utils): [indexedDB] IndexedDBHelper indexedDB操作帮手类
 

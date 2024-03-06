@@ -1,13 +1,13 @@
 /**
  * @ Author: willy
- * @ CreateTime: 2024-02-29 15:41:54
+ * @ CreateTime: 2024-03-06 12:55:30
  * @ Modifier: willy
- * @ ModifierTime: 2024-03-04 14:05:02
- * @ Description: 文件工具类
+ * @ ModifierTime: 2024-03-06 14:13:22
+ * @ Description: 基础的文件工具类
  */
 
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-import { Mixins } from './classUtils'
+import { IMixinsReturnType, Mixins } from './classMixinUtils'
 
 /**
  * @class FileConvertFormatUtils 文件转换格式类
@@ -18,7 +18,6 @@ import { Mixins } from './classUtils'
  * @class FileConvertFormatUtils 文件加载类
  * @function downloadBlob 下载 Blob 对象中的内容
  * @function downloadOnlineImageToLocal 下载线上图片到本地显示
- * @function compressImage 将 base64 图片进行压缩
  * @function generatePdf 生成 PDF 文档
  *
  *
@@ -190,6 +189,10 @@ export class FileLoadUtils {
     // 返回Blob对象
     return blob
   }
+
+  async b() {
+    return await new Promise((resolve) => resolve('111'))
+  }
 }
 
 /**
@@ -257,5 +260,7 @@ export class FileOptimizeUtils {
 
 /** 文件汇总类 */
 const fileMixins = [FileConvertFormatUtils, FileLoadUtils, FileOptimizeUtils]
-export class FileAllUtils extends Mixins(class {}, ...fileMixins) {}
-export const fileAllUtils = new FileAllUtils() as typeof FileAllUtils
+export class BaseFileAllUtils extends Mixins(class {}, ...fileMixins) {}
+export const basefileAllUtils = new BaseFileAllUtils() as IMixinsReturnType<
+  typeof BaseFileAllUtils
+>
