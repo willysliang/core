@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月8日
+  - feat(utils): [excel] ReadExcelUtils、ExportExcelUtils 读写excel
+
 ## 2024年3月6日
   - fix(utils): [file] 
     baseFileUtils、classMixinUtils 通用方法迁移
