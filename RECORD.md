@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月11日
+  - feat(MP): 迁移 music-player 子项目
+
 ## 2024年3月8日
   - feat(utils): [excel] ReadExcelUtils、ExportExcelUtils 读写excel
 
