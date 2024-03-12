@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>willys music</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+
+    <!-- serviceWorker 的demo 调用 -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('./serviceWorker.js', {
+              scope: './serviceWorkerLoad.html',
+            })
+            .then((registration) => {
+              console.log(
+                'ServiceWorker registration successful with scope: ',
+                registration.scope,
+              )
+
+              // 当前 serviceWorker 的登记状态
+              const serviceWorker =
+                registration.installing ||
+                registration.waiting ||
+                registration.active
+              if (serviceWorker) {
+                console.log('serviceWorker.state: ' + serviceWorker.state)
+                serviceWorker.addEventListener('statechange', (e) => {
+                  console.log('serviceWorker state is ' + e.target.state)
+                })
+              }
+            })
+            .catch((err) => {
+              console.log('ServiceWorker registration failed: ', err)
+            })
+        })
+      } else {
+        console.log('该浏览器不支持 ServiceWorker API')
+      }
+    </script>
+  </body>
+</html>

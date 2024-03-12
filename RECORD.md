@@ -26,6 +26,20 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月12日
+  - fix(all): [pnpm] 安装依赖问题修复
+
+## 2024年3月11日
+  - feat(MP): 迁移 music-player 子项目
+
+## 2024年3月8日
+  - feat(utils): [excel] ReadExcelUtils、ExportExcelUtils 读写excel
+
+## 2024年3月6日
+  - fix(utils): [file] 
+    baseFileUtils、classMixinUtils 通用方法迁移
+    classMixinUtils/Mixins 修复Mixins方法无法给函数使用async语法糖
+
 ## 2024年3月5日
   - feat(utils): [indexedDB] IndexedDBHelper indexedDB操作帮手类
 

@@ -1,0 +1,7 @@
+// flex布局
+@mixin flex($direction: rows, $justifyContent: flex-start, $alignment: center) {
+	display: flex;
+	flex-direction: $direction;
+	justify-content: $justifyContent;
+	align-items: $alignment;
+}

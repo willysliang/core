@@ -1582,14 +1582,28 @@ img {
 
 ### 垂直方式 vertical-align
 
-> ```bash
-> ## 垂直方式 vertical-align
-> - 只针对行内元素或行内块元素(table标签也可以设置)
-> - vertical-align: baseline(默认值)       top(顶部对齐)      middle(中部对齐)      bottom(底部对齐)
-> - `vertical-align`解决图片底部默认空白缝隙问题(图片底侧会有一个空白缝隙，原因是行内块元素会合文字的基线对齐)
->   - 解决方案1：给图片添加`vertical-align:middle | top | bottom`(强制给图片一个默认高度)
->   - 解决方案2：把图片转换为块级元素`display:block`，使得`vertical-align` 属性失效。
-> ```
+```bash
+## 垂直方式 vertical-align
+- 只针对 display 为 inline / inline-block / table-cell 的元素。
+
+- `vertical-align` 解决图片底部默认空白缝隙问题(图片底侧会有一个空白缝隙，原因是行内块元素会合文字的基线对齐)
+  - 解决方案1：给图片添加 `vertical-align:middle | top | bottom`(强制给图片一个默认高度)
+  - 解决方案2：把图片转换为块级元素 `display:block`，使得 `vertical-align` 属性失效。
+
+语法：`vertical-align: baseline | top | bottom | middle | text-top | text-bottom | sub | super | length units`
+vertical-align 的关键字
+  - `baseline` — 默认值。将元素与父元素的基线对齐。
+  - `top` — 将元素与一行中最高元素的顶部对齐。
+  - `bottom` — 将元素与底部对齐。
+  - `middle` — 将元素与其父元素的中心对齐。
+  - `text-top` — 使用其父元素行中最高字体的顶部对齐元素。
+  - `text-bottom` — 使用其父元素行中最高字体的底部对齐元素。
+  - `sub` — 将元素对齐到其父元素的基线下标。它的行为更像 `<sub>` 标签。
+  - `super` — 将元素与父元素的基线上标对齐。它的行为更像 `<sup>` 标签
+
+```
+
+
 
 ### 元素的可见性`overflow`
 
@@ -2443,7 +2457,6 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 		- 重新编译的时间可能会很慢。
 > ```
 >
-> 
 
 ## Html5
 

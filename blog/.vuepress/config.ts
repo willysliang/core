@@ -1,14 +1,13 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:19:37
- * @ Modifier: willy
- * @ ModifierTime: 2024-02-28 12:53:07
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-03-12 23:02:57
  * @ Description: 配置文件
  */
 
 import { viteBundler } from '@vuepress/bundler-vite'
 import { defineUserConfig } from 'vuepress'
-// import theme from './theme/theme'
 import theme from './theme/defaultTheme'
 
 export default defineUserConfig({

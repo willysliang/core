@@ -1,0 +1,114 @@
+:root {
+	/* 主题色 */
+	--theme-color: rgb(51 65 85); // 字体色
+	--theme-second-color: #7b7373; // 次级背景色，常用作叙述性字体
+	--theme-bg-color: #fff; // 主背景色
+	--theme-second-bg-color: rgb(
+		247 234 234
+	); // 次级背景颜色，常用作在主背景色下，该背景色可以展现出
+
+	--theme-tool-color: #e23652; // 工具字体色
+	--theme-tool-bg-color: #e60026; // 工具背景色
+	--theme-tool-second-bg-color: #ccc; // 工具次级背景色，常用作该工具停滞、未抵达等状态展现
+	--theme-border-color: #e23652; // 边框色
+	--theme-border-second-color: #ccc; // 边框次级色
+	--theme-icon-color: #ccc; // icon 默认颜色
+
+	/* 按钮颜色 */
+	--theme-button-color: #fff; // 按钮主色
+	--theme-button-second-color: #e23652; // 按钮次级色
+	--theme-button-bg-color: #e60026; // 按钮主背景色
+	--theme-button-second-bg-color: #e23652; // 按钮次级背景色
+
+	/* 列表色 */
+	--theme-tab-bg-color: #eeeaea; // 奇数行背景色
+	--theme-tab-hover-color: rgb(232 209 209); // 鼠标悬停行颜色
+
+	/* 同化element UI */
+	// --el-color-primary: #e60026 !important;
+}
+
+html.dark {
+	background-color: #000;
+	color: #fff;
+	filter: grayscale(95%);	// 网页变灰色
+}
+
+/* icon色号 */
+.icon-main {
+	color: var(--theme-icon-color);
+}
+
+.bg-main {
+	@apply bg-gray-50;
+	@apply dark:bg-[#171718];
+}
+
+.hover-bg-main {
+	&:hover {
+		background-color: var(--theme-second-bg-color);
+	}
+}
+
+/* 鼠标悬浮搜索框所在列的颜色 */
+.hover-text {
+	@apply cursor-pointer;
+
+	&:hover {
+		color: var(--theme-tool-bg-color);
+	}
+}
+
+/* 搜索框中与关键字相关内容的颜色 */
+.text-active {
+	color: var(--theme-second-color);
+}
+
+.text-main {
+	color: var(--theme-color);
+}
+
+/* 叙述字体 */
+.desc-main {
+	color: var(--theme-second-color);
+}
+
+/* 工具字体 */
+.tool-main {
+	color: var(--theme-tool-color);
+}
+
+/* 边框背景色 */
+.border-main {
+	@apply border border-solid;
+	border-color: var(--theme-border-color);
+}
+
+/* 按钮 */
+.button {
+	@apply rounded-full h-8 text-sm transition-all;
+	@apply box-border;
+	@apply items-center;
+	color: var(--theme-button-color);
+	background-color: var(--theme-button-bg-color);
+
+	&:hover {
+		background-color: var(--theme-button-second-bg-color);
+	}
+}
+
+.button-outline {
+	@apply rounded-full h-8 text-sm transition-all border;
+
+	&:hover {
+		color: var(--theme-button-second-color);
+		border-color: var(--theme-button-second-bg-color);
+	}
+	@apply box-border;
+	@apply items-center;
+}
+
+.button-active {
+	color: var(--theme-button-second-color);
+	@apply cursor-pointer;
+}
