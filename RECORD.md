@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月12日
+  - fix(all): [pnpm] 安装依赖问题修复
+
 ## 2024年3月11日
   - feat(MP): 迁移 music-player 子项目
 
