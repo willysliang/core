@@ -21,7 +21,8 @@
     "dev:mp": "pnpm -F \"@willy/mp\" serve",
     "build:mp": "pnpm -F \"@willy/mp\" build",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "clean": "pnpm recursive clean --yes"
   },
   "lint-staged": {
     "*.{js,ts,tsx,vue}": [
