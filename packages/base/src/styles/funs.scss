@@ -17,17 +17,17 @@ $state-prefix: 'is-' !default;
  * @example bem('block', 'element', 'modifier') => 'w-block__element--modifier'
  */
 @function bem($block, $element: '', $modifier: '') {
-  $name: $namespace + $common-separator + $block;
+	$name: $namespace + $common-separator + $block;
 
-  @if $element != '' {
-    $name: $name + $element-separator + $element;
-  }
+	@if $element != '' {
+		$name: $name + $element-separator + $element;
+	}
 
-  @if $modifier != '' {
-    $name: $name + $modifier-separator + $modifier;
-  }
+	@if $modifier != '' {
+		$name: $name + $modifier-separator + $modifier;
+	}
 
-  @return $name;
+	@return $name;
 }
 
 /**
@@ -35,13 +35,13 @@ $state-prefix: 'is-' !default;
  * @example getVarName('button', 'text-color') => '--w-button-text-color'
  */
 @function getVarName($args...) {
-  $name: '--' + $namespace;
-  @each $item in $args {
-    @if $item != '' {
-      $name: $name + '-' + $item;
-    }
-  }
-  @return $name;
+	$name: '--' + $namespace;
+	@each $item in $args {
+		@if $item != '' {
+			$name: $name + '-' + $item;
+		}
+	}
+	@return $name;
 }
 
 /**
@@ -49,7 +49,7 @@ $state-prefix: 'is-' !default;
  * @example getCssVar('button', 'text-color') => var(--w-button-text-color)
  */
 @function getCssVar($args...) {
-  @return var(#{getVarName($args)});
+	@return var(#{getVarName($args)});
 }
 
 /**
@@ -57,7 +57,7 @@ $state-prefix: 'is-' !default;
  * @example getCssVarWithDefault(('button', 'text-color'), red) => var(--w-button-text-color, red)
  */
 @function getCssVarWithDefault($args, $default) {
-  @return var(#{getVarName($args)}, #{$default});
+	@return var(#{getVarName($args)}, #{$default});
 }
 
 /**
@@ -76,60 +76,60 @@ $state-prefix: 'is-' !default;
       90% ecf5ff
  */
 @mixin set-color-mix-level($type, $number, $mode: 'light', $mix-color: #fff) {
-  $colors: map.deep-merge(
-    (
-      $type: (
-        '#{$mode}-#{$number}':
-          mix(
-            $mix-color,
-            map.get($colors, $type, 'base'),
-            math.percentage(math.div($number, 10))
-          ),
-      ),
-    ),
-    $colors
-  ) !global;
+	$colors: map.deep-merge(
+		(
+			$type: (
+				'#{$mode}-#{$number}':
+				mix(
+					$mix-color,
+					map.get($colors, $type, 'base'),
+					math.percentage(math.div($number, 10))
+				),
+			),
+		),
+		$colors
+	) !global;
 }
 
 /** 根据列表 map 来设置变量及相应值 */
 @mixin set-map-css-var($map, $name: 'color') {
-  :root {
-    @each $key, $value in $map {
-      // 检查是否还是 map
-      @if type-of($value) == map {
-        @each $subKey, $subValue in $value {
-          // 如果属性名为 base，则直接取 key 作为变量名
-          @if $subKey == 'base' {
-            #{ getVarName($name, $key) }: $subValue;
-          }
-          #{ getVarName($name, $key, $subKey) }: $subValue;
-        }
-      } @else {
-        // 非 map 的直接输出
-        #{ getVarName($name, $key) }: $value;
+	:root {
+		@each $key, $value in $map {
+			// 检查是否还是 map
+			@if type-of($value) == map {
+				@each $subKey, $subValue in $value {
+					// 如果属性名为 base，则直接取 key 作为变量名
+					@if $subKey == 'base' {
+						#{ getVarName($name, $key) }: $subValue;
+					}
+					#{ getVarName($name, $key, $subKey) }: $subValue;
+				}
+			} @else {
+				// 非 map 的直接输出
+				#{ getVarName($name, $key) }: $value;
 
-        @if $key == 'base' {
-          #{ getVarName($name) }: $value;
-        }
-      }
-    }
-  }
+				@if $key == 'base' {
+					#{ getVarName($name) }: $value;
+				}
+			}
+		}
+	}
 }
 
 /** px 转换 rem */
 @function p2r($item) {
-  @return calc($item / 75) * 5 * 1rem;
+	@return calc($item / 75) * 5 * 1rem;
 }
 
 /** 宽高 */
 @mixin wh($width, $height) {
-  width: p2r($width);
-  height: p2r($height);
+	width: p2r($width);
+	height: p2r($height);
 }
 
 // background: #fff url("image.jpg") no-repeat right top fixed;
 @mixin wh-bg(
-  $width,
+	$width,
   $height,
   $url: '',
   $bgcolor: transparent,
@@ -138,98 +138,93 @@ $state-prefix: 'is-' !default;
   $repeat: no-repeat,
   $attachment: scroll
 ) {
-  @include wh($width, $height);
-  background-image: url($url);
-  background-repeat: no-repeat;
-  background-size: $size;
-  background-position: $position;
-  background-repeat: $repeat;
-  background-color: $bgcolor;
-  background-attachment: $attachment;
+	@include wh($width, $height);
+	background-image: url($url);
+	background-size: $size;
+	background-position: $position;
+	background-repeat: $repeat;
+	background-color: $bgcolor;
+	background-attachment: $attachment;
 }
 
 %flex {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 %fullScreen {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  z-index: 1;
-  // z-index: var(#{getVarName('z-index', 'popup')});
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+
+	// z-index: var(#{getVarName('z-index', 'popup')});
 }
 
 /* 溢出省略号 @param {Number} 行数 */
 @mixin text-ell($rowCount: 1) {
-  @if $rowCount <=1 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  } @else {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: $rowCount;
-    -webkit-box-orient: vertical;
-  }
+	@if $rowCount <=1 {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	} @else {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: $rowCount;
+		-webkit-box-orient: vertical;
+	}
 }
 
 /** 滚动条 */
-@mixin scrollbar(
-  $color: #a356ff,
-  $foreground-color: #eee,
-) {
-  -webkit-overflow-scrolling: touch;
+@mixin scrollbar($background-color: #a356ff, $foreground-color: #eee) {
+	-webkit-overflow-scrolling: touch;
 
-  /* Firefox隐藏滚动条 */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+	/* Firefox隐藏滚动条 */
+	scrollbar-width: none;
+	-ms-overflow-style: none;
 
-  /* 定义滚动条样式（高宽及背景）,仅支持 WebKit 内核的浏览器 */
-  &::-webkit-scrollbar {
-    /* 滚动条宽度， width：对应竖滚动条的宽度  height：对应横滚动条的高度*/
-    width: p2r(2);
-    background-color: transparent;
-  }
+	/* 定义滚动条样式（高宽及背景）,仅支持 WebKit 内核的浏览器 */
+	&::-webkit-scrollbar {
+		/* 滚动条宽度， width：对应竖滚动条的宽度  height：对应横滚动条的高度 */
+		width: p2r(2);
+		background-color: transparent;
+	}
 
-  /*定义滚动条轨道（凹槽）样式*/
-  ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 p2r(6) transparent; /* 较少使用 */
-    border-radius: p2r(4);
-  }
+	/* 定义滚动条轨道（凹槽）样式 */
+	::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 p2r(6) transparent; /* 较少使用 */
+		border-radius: p2r(4);
+	}
 
-  /*定义滑块 样式*/
-  &::-webkit-scrollbar-thumb {
-    width: p2r(10);
-    background-color: $color;
-    border-radius: p2r(10);
-  }
+	/* 定义滑块 样式 */
+	&::-webkit-scrollbar-thumb {
+		width: p2r(10);
+		background-color: $background-color;
+		border-radius: p2r(10);
+	}
 
-  // 标准版本（目前仅限 Firefox）
-  scrollbar-color: $foreground-color $background-color;
+	// 标准版本（目前仅限 Firefox）
+	scrollbar-color: $foreground-color $background-color;
 }
 
 @mixin notScrollbar() {
-  -webkit-overflow-scrolling: touch;
-  /* Firefox隐藏滚动条 */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+	-webkit-overflow-scrolling: touch;
 
-  /*定义滚动条样式（高宽及背景）*/
-  &::-webkit-scrollbar {
-    width: p2r(0);
-  }
+	/* Firefox隐藏滚动条 */
+	scrollbar-width: none;
+	-ms-overflow-style: none;
 
-  /*定义滑块 样式*/
-  &::-webkit-scrollbar-thumb {
-    width: p2r(0);
-  }
+	/* 定义滚动条样式（高宽及背景） */
+	&::-webkit-scrollbar {
+		width: p2r(0);
+	}
+
+	/* 定义滑块 样式 */
+	&::-webkit-scrollbar-thumb {
+		width: p2r(0);
+	}
 }
 
 /**
@@ -243,7 +238,7 @@ $state-prefix: 'is-' !default;
  * @param {string} $urlDis 禁用时显示图片，仅限 $type='img' 时发挥作用
  */
 @mixin btn(
-  $type: '',
+	$type: '',
   $width: 0,
   $height: 0,
   $urlNormal: '',
@@ -251,41 +246,41 @@ $state-prefix: 'is-' !default;
   $urlPress: '',
   $urlDis: ''
 ) {
-  transition: all 0.3s;
-  cursor: pointer;
+	transition: all 0.3s;
+	cursor: pointer;
 
-  @if ($type == 'img') {
-    @include wh-bg($width, $height, $urlNormal);
-  }
+	@if  $type == 'img' {
+		@include wh-bg($width, $height, $urlNormal);
+	}
 
-  &:hover {
-    @if $type == 'brightness' {
-      filter: brightness(1.2);
-    } @else if ($type == 'img' and $urlHover != '') {
-      @include wh-bg($width, $height, $urlHover);
-    } @else {
-      opacity: 0.8;
-    }
-  }
+	&:hover {
+		@if $type == 'brightness' {
+			filter: brightness(1.2);
+		} @else if $type == 'img' and $urlHover != '' {
+			@include wh-bg($width, $height, $urlHover);
+		} @else {
+			opacity: 0.8;
+		}
+	}
 
-  &:active {
-    @if $type == 'brightness' {
-      filter: brightness(0.8);
-    } @else if ($type == 'img' and $urlPress != '') {
-      @include wh-bg($width, $height, $urlPress);
-    } @else {
-      opacity: 0.6;
-    }
-  }
+	&:active {
+		@if $type == 'brightness' {
+			filter: brightness(0.8);
+		} @else if $type == 'img' and $urlPress != '' {
+			@include wh-bg($width, $height, $urlPress);
+		} @else {
+			opacity: 0.6;
+		}
+	}
 
-  &.disabled {
-    @if $type == 'brightness' {
-      filter: brightness(0.6);
-    } @else if ($type == 'img' and $urlDis != '') {
-      @include wh-bg($width, $height, $urlDis);
-    } @else {
-      opacity: 0.4;
-    }
-    cursor: not-allowed;
-  }
+	&.disabled {
+		@if $type == 'brightness' {
+			filter: brightness(0.6);
+		} @else if $type == 'img' and $urlDis != '' {
+			@include wh-bg($width, $height, $urlDis);
+		} @else {
+			opacity: 0.4;
+		}
+		cursor: not-allowed;
+	}
 }
