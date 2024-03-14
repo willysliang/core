@@ -28,6 +28,7 @@ Description: 日志记录
 
 ## 2024年3月14日
   - fix(MP): 添加catch捕获防止运行报错
+  - chore(all): [stylelint] 添加scss ignoreAtRules
 
 ## 2024年3月12日
   - fix(all): [pnpm] 安装依赖问题修复
