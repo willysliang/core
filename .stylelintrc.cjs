@@ -35,6 +35,8 @@ module.exports = {
           'each',
           'include',
           'mixin',
+          'else',
+          'return',
         ],
       },
     ],
