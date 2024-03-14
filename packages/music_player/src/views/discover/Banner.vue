@@ -20,7 +20,7 @@ import type { Banner } from '@/types/discover'
 const { banners } = toRefs(useDiscoverStore())
 const { getBanners } = useDiscoverStore()
 onBeforeMount(async () => {
-  await getBanners()
+  await getBanners().catch(() => {})
 })
 
 /***
@@ -52,11 +52,11 @@ const handlePlayer = (banner: Banner) => {
 
 <style lang="scss">
 .swiper-slide {
-	@apply sm:w-full md:w-full lg:w-1/2 xl:w-1/3 2xl:w-1/4 px-2.5;
+  @apply sm:w-full md:w-full lg:w-1/2 xl:w-1/3 2xl:w-1/4 px-2.5;
 }
 
 .banner-image {
-	@apply rounded-lg cursor-pointer transition-all object-cover;
-	@apply hover:shadow hover:opacity-80;
+  @apply rounded-lg cursor-pointer transition-all object-cover;
+  @apply hover:shadow hover:opacity-80;
 }
 </style>

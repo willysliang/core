@@ -24,11 +24,13 @@ export const useDiscoverStore = defineStore('discover', () => {
 
   /***
    * 推荐歌单
-  */
+   */
   const personalizedSongList = ref<PersonalizedSongList[]>([]) // 推荐歌单数据
   const getPersonalizedSongList = async () => {
     if (personalizedSongList.value.length > 0) return undefined
-    personalizedSongList.value = await usePersonalizedSongList()
+    try {
+      personalizedSongList.value = await usePersonalizedSongList()
+    } catch {}
   }
 
   return {

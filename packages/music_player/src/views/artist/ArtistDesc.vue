@@ -16,7 +16,7 @@ const props = defineProps<{ id: number }>()
 const artistDesc = ref<ArtistDesc>()
 
 onMounted(async () => {
-  artistDesc.value = await useArtistDesc(props.id)
+  artistDesc.value = await useArtistDesc(props.id).catch(() => {})
 })
 </script>
 

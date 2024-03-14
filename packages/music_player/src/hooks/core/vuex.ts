@@ -185,7 +185,7 @@ class Store {
   /** 接受一个类型和有效载荷参数，并调用与类型匹配的 action 函数。注意，我们将 commit 和 state 作为参数传递给 action 函数，以便在需要更改状态时使用 */
   dispatch = (type, payload) => {
     if (!this.mutations[type]) {
-      throw new Error(`Action "${type}" not found`)
+      throw new Error(`Action "${type}" not found. Payload: ${payload}`)
     }
     return this.actions[type]({ commit: this.commit, state: this.state })
   }

@@ -27,8 +27,8 @@ export const useUserStore = defineStore({
   },
   actions: {
     /** 登录 */
-    async login (phone: string, password: string) {
-      const res = await useLogin(phone, $md5(password))
+    async login(phone: string, password: string) {
+      const res = await useLogin(phone, $md5(password)).catch(() => {})
       this.token = res?.token || ''
       this.cookie = res?.cookie || ''
       document.cookie = res?.cookie || ''
@@ -40,7 +40,7 @@ export const useUserStore = defineStore({
     },
 
     /** 检查登录状态 */
-    async checkLogin (cookie = '') {
+    async checkLogin(cookie = '') {
       try {
         const { data } = await useLoginStatus(null)
         this.profile = data.profile
@@ -52,13 +52,13 @@ export const useUserStore = defineStore({
     },
 
     /** 清除信息 */
-    resetData () {
+    resetData() {
       this.token = ''
       Storage.clear()
     },
 
     /** 退出登录 */
-    async LOGOUT () {
+    async LOGOUT() {
       try {
         // await useLogout(this.uid)
         this.resetData()

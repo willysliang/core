@@ -18,7 +18,7 @@ import { useRouter } from 'vue-router'
 const topListDetailData = ref<TopListDetail[]>([] as TopListDetail[])
 const getTopListDetailData = async () => {
   if (topListDetailData.value.length) return
-  topListDetailData.value = await useTopListDetail()
+  topListDetailData.value = await useTopListDetail().catch(() => {})
 }
 onBeforeMount(getTopListDetailData)
 
