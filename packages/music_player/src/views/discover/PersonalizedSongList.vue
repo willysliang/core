@@ -19,7 +19,7 @@ import { Pages } from '@/router/constant'
 const { personalizedSongList } = toRefs(useDiscoverStore())
 const { getPersonalizedSongList } = useDiscoverStore()
 onBeforeMount(async () => {
-  await getPersonalizedSongList()
+  await getPersonalizedSongList().catch(() => {})
 })
 
 /* 跳转歌单详情页 */
@@ -52,17 +52,17 @@ const navToPlayList = (id: number) => {
 
 <style lang="scss">
 .grids {
-	display: grid;
-	grid-auto-flow: row;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 1.25rem;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
 
-	@media (min-width: 1024px) {
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-	}
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 
-	@media (min-width: 1536px) {
-		grid-template-columns: repeat(10, minmax(0, 1fr));
-	}
+  @media (min-width: 1536px) {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+  }
 }
 </style>

@@ -17,8 +17,12 @@ import { Pages } from '@/router/constant'
 
 const personalizedPrivateContent = ref<PersonalizedPrivateContent[]>([])
 const getPersonalizedPrivateContent = async () => {
-  if (personalizedPrivateContent.value.length) return
-  personalizedPrivateContent.value = await usePersonalizedPrivateContentList(4)
+  try {
+    if (personalizedPrivateContent.value.length) return
+    personalizedPrivateContent.value = await usePersonalizedPrivateContentList(
+      4,
+    )
+  } catch {}
 }
 onBeforeMount(getPersonalizedPrivateContent)
 

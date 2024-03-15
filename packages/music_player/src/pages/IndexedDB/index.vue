@@ -103,7 +103,7 @@ const editId = ref(null)
 const searchName = ref('')
 const getList = async () => {
   if (searchName.value) {
-    const res = await searchByName(searchName.value)
+    const res = await searchByName(searchName.value).catch(() => {})
     tableData.value = [res]
   } else {
     const res = await readAll()

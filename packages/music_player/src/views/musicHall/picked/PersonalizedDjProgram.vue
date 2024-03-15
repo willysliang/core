@@ -18,7 +18,7 @@ import { Pages } from '@/router/constant'
 const djProgram = ref<DjProgram[]>([] as DjProgram[])
 const getDjProgram = async () => {
   if (djProgram.value.length) return
-  djProgram.value = await usePersonalizedDjProgram()
+  djProgram.value = await usePersonalizedDjProgram().catch(() => {})
 }
 onBeforeMount(getDjProgram)
 

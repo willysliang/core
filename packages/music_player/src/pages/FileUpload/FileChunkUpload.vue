@@ -207,7 +207,7 @@ const handleResume = async () => {
     container.file.name,
     container.hash,
   )
-  await uploadChunks(uploadedList)
+  await uploadChunks(uploadedList).catch(() => {})
 }
 
 /** 文件改变 */
@@ -243,33 +243,35 @@ const calculateHash = (fileChunkList: IFileChunk[]): Promise<string> =>
 
 /** 文件上传 */
 const handleUpload = async () => {
-  if (!container.file) return false
-  state.status = Status.uploading
-  const fileChunkList = createFileChunk(container.file)
-  container.hash = await calculateHash(fileChunkList)
+  try {
+    if (!container.file) return false
+    state.status = Status.uploading
+    const fileChunkList = createFileChunk(container.file)
+    container.hash = await calculateHash(fileChunkList)
 
-  const { shouldUpload, uploadedList } = await verifyUpload(
-    container.file.name,
-    container.hash,
-  )
-  if (!shouldUpload) {
-    ElMessage.success(
-      'skip upload：file upload success, check /target directory',
+    const { shouldUpload, uploadedList } = await verifyUpload(
+      container.file.name,
+      container.hash,
     )
-    state.status = Status.wait
-    return false
-  }
+    if (!shouldUpload) {
+      ElMessage.success(
+        'skip upload：file upload success, check /target directory',
+      )
+      state.status = Status.wait
+      return false
+    }
 
-  state.data = fileChunkList.map(({ file }, index) => ({
-    fileHash: container.hash,
-    index,
-    hash: container.hash + ' - ' + index,
-    chunk: file,
-    size: file.size,
-    percentage: uploadedList.includes(index) ? 100 : 0,
-  }))
+    state.data = fileChunkList.map(({ file }, index) => ({
+      fileHash: container.hash,
+      index,
+      hash: container.hash + ' - ' + index,
+      chunk: file,
+      size: file.size,
+      percentage: uploadedList.includes(index) ? 100 : 0,
+    }))
 
-  await uploadChunks(uploadedList)
+    await uploadChunks(uploadedList)
+  } catch {}
 }
 </script>
 

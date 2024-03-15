@@ -104,7 +104,7 @@ export const usePlayerStore = defineStore({
       return findIndex(state.playList, (song) => song.id === state.playId)
     },
     /** 下一首歌 */
-    nextSong (state): Song {
+    nextSong(state): Song {
       const { playListCount, currentSongIndex } = this
       if (currentSongIndex === playListCount - 1) {
         return first(state.playList)
@@ -114,7 +114,7 @@ export const usePlayerStore = defineStore({
       }
     },
     /** 上一首歌 */
-    prevSong (state): Song | undefined {
+    prevSong(state): Song | undefined {
       const { currentSongIndex } = this
       if (currentSongIndex === -1) return undefined
       if (currentSongIndex === 0) {
@@ -131,11 +131,11 @@ export const usePlayerStore = defineStore({
      * 播放流程
      */
     /** 初始化播放 */
-    init () {
+    init() {
       this.audio.volume = this.volume / 100
     },
     /** 播放定时器 */
-    interval () {
+    interval() {
       if (this.isPlaying && !this.sliderInput) {
         this.currentTime = Number.parseInt(this.audio.currentTime.toString())
         this.duration = Number.parseInt(this.audio.duration.toString())
@@ -143,7 +143,7 @@ export const usePlayerStore = defineStore({
       }
     },
     /** 播放结束 */
-    playEnd () {
+    playEnd() {
       switch (this.loopType) {
         case 0:
           this.replaySong()
@@ -163,26 +163,31 @@ export const usePlayerStore = defineStore({
      * 歌曲接口
      */
     /** 获取播放视频接口 */
-    async getPlay (id: number) {
+    async getPlay(id: number) {
       if (id === this.playId || !id) return undefined
       this.isPlaying = false
-      const res = await useSongUrl(id)
-      this.audio.src = res.url
-      this.audio.play().then(() => {
-        this.isPlaying = true
-        this.songUrl = res
-        this.playId = id
-        this.getSongDetail(id)
-      })
+      const res = await useSongUrl(id).catch(() => {})
+      this.audio.src = res!.url
+      this.audio
+        .play()
+        .then(() => {
+          this.isPlaying = true
+          this.songUrl = res!
+          this.playId = id
+          this.getSongDetail(id)
+        })
+        .catch(() => {})
     },
     /** 获取歌曲详情 */
-    async getSongDetail (id: number) {
+    async getSongDetail(id: number) {
       // this.song = await useSongDetail(this.playId)
-      this.song = await useSongDetail(id)
-      this.pushPlayList(false, this.song)
+      try {
+        this.song = await useSongDetail(id)
+        this.pushPlayList(false, this.song)
+      } catch {}
     },
     /** 播放列表添加音乐 */
-    pushPlayList (replace: boolean, ...list: Song[]) {
+    pushPlayList(replace: boolean, ...list: Song[]) {
       if (replace || this.playListCount <= 0) {
         this.playList = list
         return undefined
@@ -199,7 +204,7 @@ export const usePlayerStore = defineStore({
      * 播放图标触发事件
      */
     /** 切换循环模式 */
-    toggleLoop () {
+    toggleLoop() {
       if (this.loopType >= 2) {
         this.loopType = 0
       } else {
@@ -207,7 +212,7 @@ export const usePlayerStore = defineStore({
       }
     },
     /** 播放控制按钮：播放、暂停 */
-    togglePlay () {
+    togglePlay() {
       if (!this.song.id) return undefined
       this.isPlaying = !this.isPlaying
       if (this.isPlaying) {
@@ -216,13 +221,13 @@ export const usePlayerStore = defineStore({
         this.audio.pause()
       }
     },
-    togglePrevSong () {
+    togglePrevSong() {
       if (this.prevSong) {
         this.getPlay(this.prevSong?.id)
       }
     },
     /** 顺序播放：切换下一首歌 */
-    toggleNextSong () {
+    toggleNextSong() {
       // 如果循环模式为随机播放，则在列表中随机寻找歌曲播放
       if (this.loopType === 2) {
         this.randomPlay()
@@ -232,7 +237,7 @@ export const usePlayerStore = defineStore({
       }
     },
     /** 重新播放当前歌曲 */
-    replaySong () {
+    replaySong() {
       setTimeout(() => {
         this.currentTime = 0
         this.audio.play()
@@ -244,7 +249,7 @@ export const usePlayerStore = defineStore({
      * 歌曲列表长度为 1 ，则重复播放该歌曲
      * 歌曲列表长度为 2 ，则随机播放歌曲
      */
-    randomPlay () {
+    randomPlay() {
       switch (this.playListCount) {
         case 0:
           break
@@ -260,20 +265,20 @@ export const usePlayerStore = defineStore({
      * 播放按钮
      */
     /** 播放全部 */
-    playAll (list: Song[]) {
+    playAll(list: Song[]) {
       this.pushPlayList(true, ...list)
       if (this.playListCount > 0) {
         this.getPlay(first(this.playList).id)
       }
     },
     /** 继续播放 */
-    setPlay () {
+    setPlay() {
       if (!this.song.id) return
       this.audio.play()
       this.isPlaying = true
     },
     /** 暂停播放 */
-    setPause () {
+    setPause() {
       if (!this.song.id) return
       this.audio.pause()
       this.isPlaying = false
@@ -283,7 +288,7 @@ export const usePlayerStore = defineStore({
      * 播放滚动条
      */
     /** 修改播放时间 */
-    onSliderChange (val) {
+    onSliderChange(val) {
       try {
         this.currentTime = val
         this.sliderInput = false
@@ -291,7 +296,7 @@ export const usePlayerStore = defineStore({
       } catch {}
     },
     /** 播放时间拖动中 */
-    onSliderInput () {
+    onSliderInput() {
       this.sliderInput = true
     },
 
@@ -299,7 +304,7 @@ export const usePlayerStore = defineStore({
      * 歌曲列表
      */
     /** 清空歌曲列表 及 相关联的状态列表 */
-    clearPlayList () {
+    clearPlayList() {
       // 清空状态条
       this.currentTime = 0
       this.sliderInput = false

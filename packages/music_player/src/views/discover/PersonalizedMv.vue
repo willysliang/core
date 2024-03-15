@@ -20,7 +20,7 @@ const router = useRouter()
 const personalizedMv = ref<PersonalizedMv[]>([] as PersonalizedMv[])
 const getPersonalizedMv = async () => {
   if (personalizedMv.value.length) return
-  personalizedMv.value = await usePersonalizedMv()
+  personalizedMv.value = await usePersonalizedMv().catch(() => {})
 }
 onBeforeMount(async () => {
   getPersonalizedMv()
