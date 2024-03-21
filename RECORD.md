@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月21日
+  - feat(utils): [algorithm] 添加算法子模块
+
 ## 2024年3月14日
   - fix(MP): 添加catch捕获防止运行报错
   - chore(all): [stylelint] 添加scss ignoreAtRules
