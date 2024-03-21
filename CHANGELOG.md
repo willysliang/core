@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-03-21)
+
+[Full Changelog](https://github.com/willysliang/core/compare/v1.0.2...v2.0.0)
+
+**Merged pull requests:**
+
+- update blog [\#2](https://github.com/willysliang/core/pull/2) ([willysliang](https://github.com/willysliang))
+
 ## [v1.0.2](https://github.com/willysliang/core/tree/v1.0.2) (2024-03-11)
 
 [Full Changelog](https://github.com/willysliang/core/compare/v1.0.1...v1.0.2)
