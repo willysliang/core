@@ -887,21 +887,21 @@ getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav,
 
 > ```js
 >window.onload = function () {
->     let div = document.getElementsByTagName("div")[0];
->     let style = getAttr(div, 'width')
->     console.log(style)
+>      let div = document.getElementsByTagName("div")[0];
+>      let style = getAttr(div, 'width')
+>      console.log(style)
 > }
 > 
 > // 获取class或id 标签的指定样式
 >function getAttr(obj, attr) {
->     let style;
->    if (obj.currentStyle) {   //当有这个属性的时候currentStyle(即在IE中时)
+>      let style;
+>      if (obj.currentStyle) {   //当有这个属性的时候currentStyle(即在IE中时)
 >        style = obj.currentStyle[attr]; //兼容IE
->    }
->     else {
+>      }
+>      else {
 >        style = getComputedStyle(obj, false)[attr]; //主流浏览器
->     }
->     return style;
+>      }
+>      return style;
 >}
 > ```
 
@@ -942,7 +942,9 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
     <button id="myBtn" class="btn">Toggle</button>
     <script>
       let btn = document.getElementById("myBtn"); 
-      btn.addEventListener("click", function() { this.classList.toggle("active"); });
+      btn.addEventListener("click", () => { 
+        this.classList.toggle("active"); 
+      });
     </script>
   </body>
 </html>
