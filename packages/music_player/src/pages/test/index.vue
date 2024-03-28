@@ -12,16 +12,19 @@
  -->
 
 <script setup lang="ts">
-import {
-  onMounted,
-  ref,
-  computed,
-  watch,
-  onBeforeMount,
-  onActivated,
-} from 'vue'
-import { useRoute } from 'vue-router'
 import { demoPages } from '../constant'
+import Test from './test.vue'
+import { ref } from 'vue'
+
+const isShow = ref<boolean>(false)
+
+const handleClick = () => {
+  isShow.value = true
+}
+
+const handleClose = () => {
+  isShow.value = false
+}
 // import VirtualList from './VirtualList.vue'
 
 // eslint-disable-next-line no-undef
@@ -30,9 +33,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const add = () => {
-  console.log('add')
-}
+// const add = () => {
+//   console.log('add')
+// }
 
 /* const data = ref<Array<any>>([])
 for (let i = 1; i <= 1000000; i++) {
@@ -44,8 +47,10 @@ for (let i = 1; i <= 1000000; i++) {
 </script>
 
 <template>
-  <div>按钮</div>
+  <div @click="handleClick">按钮</div>
   <button target-key="btn">添加target-key的按钮</button>
+
+  <Test v-model="isShow" @close="handleClose" />
 
   <!--  <VirtualList :list-data="data">
     <template #default="{ listItem }">

@@ -46,7 +46,7 @@ declare global {
 }
 
 /** 跳出错误函数 */
-export function throwError (
+export function throwError(
   name: string,
   content = '程序错误',
   data?: any,
@@ -70,7 +70,7 @@ export class IndexedDBHelper {
   /** 数据库请求对象 */
   private readonly dbReq?: IDBOpenDBRequest
 
-  constructor (config: IndexedDBConfig) {
+  constructor(config: IndexedDBConfig) {
     if (IndexedDBHelper.dbInstance) {
       return IndexedDBHelper.dbInstance
     }
@@ -92,12 +92,12 @@ export class IndexedDBHelper {
   }
 
   /** 去除 proxy（主要针对 vue3 中响应式数据内置的 proxy 对象） */
-  private removeProxy (data) {
+  private removeProxy(data) {
     return JSON.parse(JSON.stringify(data))
   }
 
   /** 添加单条数据 */
-  public add (storeName: string, data: any): Promise<any> {
+  public add(storeName: string, data: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const req = this.beginTransaction(storeName).add(this.removeProxy(data))
 
@@ -116,7 +116,7 @@ export class IndexedDBHelper {
   }
 
   /** 获取单条数据 */
-  public get (storeName: string, primaryKey: string): Promise<any> {
+  public get(storeName: string, primaryKey: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const req = this.beginTransaction(storeName).get(primaryKey)
 
@@ -135,7 +135,7 @@ export class IndexedDBHelper {
   }
 
   /** 获取所有数据 */
-  public getAll (storeName: string): Promise<any[]> {
+  public getAll(storeName: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const req = this.beginTransaction(storeName).openCursor()
       const res: any[] = []
@@ -160,7 +160,7 @@ export class IndexedDBHelper {
   }
 
   /** 通过索引获取相应数据 */
-  public getByIndex (storeName: string, indexName: string): Promise<any> {
+  public getByIndex(storeName: string, indexName: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const req = this.beginTransaction(storeName).index(indexName).openCursor()
       const res: any[] = []
@@ -185,7 +185,7 @@ export class IndexedDBHelper {
   }
 
   /** 更新数据 */
-  public update (
+  public update(
     storeName: string,
     data: any,
     primaryKey?: string,
@@ -208,7 +208,7 @@ export class IndexedDBHelper {
   }
 
   /** 删除数据 */
-  public delete (storeName: string, primaryKey: string): Promise<any> {
+  public delete(storeName: string, primaryKey: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const req = this.beginTransaction(storeName).delete(primaryKey)
 
@@ -226,7 +226,7 @@ export class IndexedDBHelper {
     })
   }
 
-  public count (storeName: string): Promise<any> {
+  public count(storeName: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const req = this.beginTransaction(storeName, 'readonly').count()
 
@@ -245,13 +245,13 @@ export class IndexedDBHelper {
   }
 
   /** 打开数据库 */
-  private open (): IDBOpenDBRequest {
+  private open(): IDBOpenDBRequest {
     const { dbName, version } = this.dbInfo as IndexedDBConfig
     return this.indexedDb!.open(dbName, version)
   }
 
   /** 初始化助手 */
-  private initRequestHandler (): void {
+  private initRequestHandler(): void {
     const dbReq = this.dbReq
     /** 连接被阻止 */
     dbReq!.onerror = (event) => {
@@ -264,7 +264,7 @@ export class IndexedDBHelper {
     }
 
     /** 成功打开数据库 */
-    dbReq!.onsuccess = (event) => {
+    dbReq!.onsuccess = (_) => {
       console.log('数据库连接成功')
       this.db = dbReq!.result
       this.dbInfo!.initCb?.()
@@ -289,7 +289,7 @@ export class IndexedDBHelper {
   }
 
   /** 建表 */
-  private createStore (store: IndexedDBStore, db: IDBDatabase = this.db!): void {
+  private createStore(store: IndexedDBStore, db: IDBDatabase = this.db!): void {
     const { name, primaryKey, indexList } = store
     const newStore = db.createObjectStore(name, {
       keyPath: primaryKey, // 主键
@@ -302,7 +302,7 @@ export class IndexedDBHelper {
     })
   }
 
-  private beginTransaction (
+  private beginTransaction(
     storeName: string,
     mode: TransactionMode = 'readwrite',
   ): IDBObjectStore {
