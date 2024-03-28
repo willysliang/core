@@ -1568,21 +1568,36 @@ for..of循环迭代：c,cilly
 
 ## 象征属性 Symbol
 
-- 特点
+```bash
+## 象征属性 Symbol
+只有两种原始类型可以用作对象属性键：
+	1. 字符串类型（数字会被自动转换为字符串）
+	2. Symbol 类型
 
+
+- symbol 是一种基本数据类型，`Symbol()` 函数会返回 symbol 类型的值，该类型具有静态属性和静态方法。
+    - 它的静态属性会暴露几个内建的成员对象。
+    - 它的静态方法会保护全局的 symbol 注册，且类似内建对象类，但因为不支持 `new Symbol()`，所以作为构造函数它并不完整。
+- 每个从 `Symbol()` 返回的 symbol 值都是唯一的。即使创建许多具有相同描述的 symbol，它们的值也是不同。描述只是一个标签，不影响任何东西。
+- 一个 symbol 值能表示对象属性的标识符 (该数据类型仅有的目的)。
+
+
+### symbol 的特点
   - Symbol属性值唯一，避免了常量值重复问题
-
   - Symbol不能与其他类型的值进行运算
-
   - Symbol可以转换为字符串和布尔值，但不能转为数字
-
   - for in、for of 遍历时不会遍历Symbol属性。
+注意：Symbol是函数，但并不是构造函数
 
-  - > 注意：Symbol是函数，但并不是构造函数
 
-- **symbol** 是一种基本数据类型。`Symbol()`函数会返回**symbol**类型的值，该类型具有静态属性和静态方法。它的静态属性会暴露几个内建的成员对象；它的静态方法会暴露全局的symbol注册，且类似于内建对象类，但作为构造函数来说它并不完整，因为它不支持语法："`new Symbol()`"。
+### symbol 不会自动转换为字符串
+JS 中的大多数值都支持字符串的隐式转换，但 symbol 不会被自动转换。
+这是一种防止混乱的“语言保护”，因为字符串和 symbol 有本质上的区别，不应该意外地将它们转换成另一个。
+显示一个 symbol 值的方法：
+	1. 通过 `Symbol('symbol定义的值').toString()` 转换。
+	2. 通过获取 `symbol.desciption` 属性，只显示描述。
 
-- 每个从`Symbol()`返回的symbol值都是唯一的。一个symbol值能作为对象属性的标识符(该数据类型仅有的目的)。
+```
 
 
 ```js
@@ -1591,6 +1606,33 @@ let s2 = Symbol('foo');
 console.log(s1 == s2); // false
 console.log(s1.toString() == s2.toString());  // true
 ```
+
+#### 隐藏属性
+
+> symbol 允许创建对象的隐藏属性，代码的任何其他部分都不能意外访问或重写这些属性。
+>
+> ```js
+> // 属于另一个代码库
+> const user = {name: 'Willy'}
+> 
+> // 添加标识符
+> const flag = Symbol('flag')
+> user[flag] = 'Their flag value'
+> 
+> // 定义变量
+> const id = Symbol('id')
+> user[id] = 1
+> 
+> console.log(user[id]) // 可以使用 symbol 作为键来访问数据
+> 
+> ```
+>
+> 在上述代码中，由于 `user` 对象属于另一个代码库，所以向它添加字段是不安全的，因为我们可能会影响代码库中的其他预定义行为。但 symbol 属性不会被意外访问到。第三方代码不会知道新定义的 symbol，因此将 symbol 添加到 `user` 对象是安全的。
+>
+> 另外，假设另一个脚本希望在 `user` 中有自己的标识符，以实现自己的目的。
+>
+> - 使用 symbol 作为标识符，标识符与标识符之前不会冲突，因为 symbol 总是不同的，即使它们有相同的名字。
+> - 但如果使用字符串`flag`而不是用 symbol，就会出现冲突，后者会覆盖前者的内容。
 
 #### 避免值重复
 
@@ -1635,7 +1677,7 @@ console.log(getEating(evening, "noodles"));
 #### 可迭代对象
 
 - 拥有`Symbol.iterator`函数的对象被称为可迭代对象，即可以在对象中使用`for..of`循环
-- `symbol`让对象的内部数据和用户数据井水不犯河水。由于`sysmbol`无法在 JSON 里表示，因此不用担心给 Express API 传入带有不合适的`Symbol.iterator`属性的数据。另外，对于那种混合了内置函数和用户数据的对象，可以用`symbol`来确保用户数据不会跟内置属性冲突。
+- `symbol`让对象的内部数据和用户数据隔离。由于`sysmbol`无法在 JSON 里表示，因此不用担心给 Express API 传入带有不合适的`Symbol.iterator`属性的数据。另外，对于那种混合了内置函数和用户数据的对象，可以用`symbol`来确保用户数据不会跟内置属性冲突。
 
 ```js
 const fibonacci = {
@@ -1680,7 +1722,7 @@ console.log(obj.iterator());
 
 - `MyClass` 的实例是可迭代对象，可以遍历对象上面的属性。但是上面的类有个潜在的缺陷，假设有个恶意用户给 `MyClass` 构造函数传了一个带有`iterator`属性的对象。当在实例上使用`for/of`会抛出`TypeError: obj is not iterable`异常。可以看出传入对象的 `iterator`函数覆盖了类的 `iterator`属性。会产生类似原型污染的安全问题，无脑复制用户数据会对一些特殊属性，比如`__proto__`和`constructor`带来问题。
 
-####  复用同一个Symbol值for/keyFor
+####  复用同一个Symbol值：for/keyFor
 
 - **`Symbol.for(key)`** 方法会根据给定的键 `key`来从运行时的 symbol 注册表中找到对应的 symbol，如果找到则返回它；否则，新建一个与该键关联的 symbol，并放入全局 symbol 注册表中。
 
@@ -1699,7 +1741,7 @@ Symbol.keyFor(s1) // "foo"
 Symbol.keyFor(s2) // undefined
 ```
 
-#### 私有属性
+
 
 #### 实例：模块的 Singleton 模式
 
@@ -1723,7 +1765,9 @@ const a = require('./a.js');
 console.log(a)	// { name: 'xili' }
 ```
 
-### Symbol.prototype.description
+
+
+#### Symbol.prototype.description
 
 > 当我们在 JS 中创建一个 `Symbol` 时，可以指定一个描述，用于以后的调试。取回这个描述的过程有点乏味。我们必须重新构造 `Symbol`，并借助 `toString()` 方法访问描述。
 >
@@ -1735,6 +1779,8 @@ console.log(a)	// { name: 'xili' }
 > console.log(symbol.description) // This is a Symbol
 > ```
 >
+
+
 
 ## 代理对象 Proxy
 
