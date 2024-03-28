@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年3月28日
+  - style(MP): [all] 代码格式化
+
 ## 2024年3月21日
   - feat(utils): [algorithm] 添加算法子模块
 
