@@ -2151,6 +2151,22 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
 ## 字符串 String 
 
+### 特殊字符
+
+| 字符                                    | 描述                                                         |
+| :-------------------------------------- | :----------------------------------------------------------- |
+| `\n`                                    | 换行                                                         |
+| `\r`                                    | 在 Windows 文本文件中，两个字符 `\r\n` 的组合代表一个换行。而在非 Windows 操作系统上，它就是 `\n`。这是历史原因造成的，大多数的 Windows 软件也理解 `\n`。 |
+| `\'`, `\"`                              | 引号                                                         |
+| `\\`                                    | 反斜线                                                       |
+| `\t`                                    | 制表符                                                       |
+| `\b`, `\f`, `\v`                        | 退格，换页，垂直标签 —— 为了兼容性，现在已经不使用了。       |
+| `\xXX`                                  | 具有给定十六进制 Unicode `XX` 的 Unicode 字符，例如：`'\x7A'` 和 `'z'` 相同。 |
+| `\uXXXX`                                | 以 UTF-16 编码的十六进制代码 `XXXX` 的 Unicode 字符，例如 `\u00A9` —— 是版权符号 `©` 的 Unicode。它必须正好是 4 个十六进制数字。 |
+| `\u{X…XXXXXX}`（1 到 6 个十六进制字符） | 具有给定 UTF-32 编码的 Unicode 符号。一些罕见的字符用两个 Unicode 符号编码，占用 4 个字节。这样我们就可以插入长代码了。 |
+
+
+
 ### 查找字符串
 
 > #### 查找某子字符串的下标
@@ -4270,120 +4286,256 @@ person
 
 ### 数组调用方法
 
-> ```bash
-> ## 数组内置方法
-> 1. push()：向数组的末尾添加一个或多个元素，并返回数组的新长度。
-> 2. pop()：删除数组的最后一个元素并返回该元素。
-> 3. unshift()：向数组的开头添加一个或多个元素，并返回数组的新长度。
-> 4. shift()：删除数组开头的第一个元素，并返回该元素。
-> 5. sort()：对数组元素进行排序，并返回数组。
-> 6. join()：把数组的所有元素拼接成一个字符串并返回。
-> 7. a.concat(b)：把b数组添加到a数组最后面。
-> 8. slice(start, end)：截取起始位置到结束位置的部分数据(返回新数组)
+```bash
+## 数组内置方法
+1. push()：向数组的末尾添加一个或多个元素，并返回数组的新长度。
+2. pop()：删除数组的最后一个元素并返回该元素。
+3. unshift()：向数组的开头添加一个或多个元素，并返回数组的新长度。
+4. shift()：删除数组开头的第一个元素，并返回该元素。
+5. sort()：对数组元素进行排序，并返回数组。
+6. join()：把数组的所有元素拼接成一个字符串并返回。
+7. a.concat(b)：把b数组添加到a数组最后面。
+8. slice(start, end)：截取起始位置到结束位置的部分数据(返回新数组)
+
+9. splice()：会直接改变原来的数组
+    - 在指定位置添加元素：结果变量 = 数组变量.splice(制定位置,0,新增元素..)`var b = a.splice(1,0,"ABC");`
+    - 在指定位置删除元素：结果变量 = 数组变量.splice(指定位置,删除个数)`var b = a.splice(1, 2)`
+    - 在指定位置替换元素：结果变量 = 数组变量.splice(指定位置,删除个数,新增元素)`var b = a.splice(1,2,'A','D)`
+    
+    
+### 数组内置方法的区别
+- 不改变原数组的方法：`concat、join、slice、map、forEach、filter、every、reduce、entries、find、JSON.parse(JSON.stringify(arr))`
+- 改变原数组的方法：`pop()、push()、reverse()、unshift()、shift()、sort()、splice()、fill()`
+
+```
+
+
+
+### 数组错误的使用
+
+> 数组是一种特殊的对象，因此其行为也像一个对象。使用方括号来访问属性 arr[0] 实际上是来自于对象的语法。它其实与 obj[key] 相同，其中 arr 是对象，而数字用作键（key）。
+>
+> 数组扩展了对象，提供了特殊的方法来处理有序的数据集合以及 length 属性。但本质上数组仍然是一个对象。
+>
+> 例如，它是通过引用来复制的：
+>
+> ```js
+> /** 通过引用来复制 */
+> const fruits = ['Apple', 'Orange']
+> const arr = fruits // 通过引用复制
+> console.log(fruits === arr) // true
+> arr.push('Pear')
+> console.log(fruits, fruits === arr) // ['Apple', 'Orange', 'Pear'] true
 > 
-> 9. splice()：会直接改变原来的数组
->     - 在指定位置添加元素：结果变量 = 数组变量.splice(制定位置,0,新增元素..)`var b = a.splice(1,0,"ABC");`
->     - 在指定位置删除元素：结果变量 = 数组变量.splice(指定位置,删除个数)`var b = a.splice(1, 2)`
->     - 在指定位置替换元素：结果变量 = 数组变量.splice(指定位置,删除个数,新增元素)`var b = a.splice(1,2,'A','D)`
->     
->     
-> ### 数组内置方法的区别
-> - 不改变原数组的方法：`concat、join、slice、map、forEach、filter、every、reduce、entries、find、JSON.parse(JSON.stringify(arr))`
-> - 改变原数组的方法：`pop()、push()、reverse()、unshift()、shift()、sort()、splice()、fill()`
 > ```
+>
+> 但数组真正的特殊是它们的内部实现，JS引擎把这些元素一个接一个存储在连续的内存区域，并且做了一些其他优化，使得数组的运行非常快。
+>
+> 但如果我们不像“有序集合”那样使用数组，而是像常规对象那样使用数组，则会导致数组内置的优化无法生效。
+>
+> 因为数组是基于对象的，我们可以给它添加任何属性。例如，从技术上可以如此做：
+>
+> ```js
+> const fruits = ['Apple']
+> fruits[9999] = 5 // 分配索引远大于数组长度的属性
+> fruits.age = 25 // 创建一个具有任意名称的属性
+> console.log(fruits) // (10000) ['Apple', empty × 9998, 5, age: 25]
+> 
+> ```
+>
+> 当 JS引擎发现我们在使用常规对象一样使用数组，则针对数组的优化不再适用，导致对应的优化被关闭，这些优化给数组带来的优势也就荡然无存。
+>
+> 数组误用几种方式：
+>
+> - 添加一个非数字的属性，比如 `arr.test = 5`。
+> - 制造空洞，比如：添加 `arr[0]`，然后添加 `arr[1000]` (它们中间什么都没有)。
+> - 以倒序填充数组，比如 `arr[1000]`，`arr[999]` 等等。
+>
+> 请将数组视为作用于 **有序数据** 的特殊结构。它们为此提供了特殊的方法。数组在 JavaScript 引擎内部是经过特殊调整的，使得更好地作用于连续的有序数据，所以请以正确的方式使用数组。如果你需要任意键值，那很有可能实际上你需要的是常规对象 `{}`。
+
+
 
 ### 类数组对象
 
-> ```bash
-> ## 类数组对象
-> 类数组特点
-> 	1. 拥有 length 属性，其它属性(索引)为非负整数（对象中的索引会被当做字符串来处理）
-> 	2. 类数组对象可以通过索引访问对象，但没有数组的内置方法，如 `push、forEach、indexOf` 等。
-> 
-> 类数组是一个普通对象，而真实的数组是 Array 类型。
-> 常见的类数组有：函数的参数 arguments、DOM 对象列表(比如通过 document.querySelectorAll 得到的列表)
-> 
-> 
-> 类数组转换为数组的方法：
->     1. `Array.prototype.slice.call(arrayLike, start)`
->     2. `[...arrayLike]`
->     3. `Array.from(arrayLike)`
-> ```
->
-> ```js
-> // 类数组
-> let arrLike = {
->   "0": 'willy',
->   "1": 'cilly',
->   "2": 'jance',
->   "length": 3
-> }
-> 
-> // 同款数组
-> let arr = ['willy', 'cilly', 'jance'];
-> ```
+```bash
+## 类数组对象
+类数组特点
+	1. 拥有 length 属性，其它属性(索引)为非负整数（对象中的索引会被当做字符串来处理）
+	2. 类数组对象可以通过索引访问对象，但没有数组的内置方法，如 `push、forEach、indexOf` 等。
 
-### 类数组转为数组Array.from()
+类数组是一个普通对象，而真实的数组是 Array 类型。
+常见的类数组有：函数的参数 arguments、DOM 对象列表(比如通过 document.querySelectorAll 得到的列表)
 
-> ```bash
-> ## 类数组转换为数组 Array.from()
-> Array.from 方法用于将两类对象转为真正的数组(生成浅拷贝的数组实例)：
-> 	1. 类似数组的对象（array-like object）
-> 	2. 可遍历（iterable）的对象。
-> 
-> 
-> - `Array.from(arrayLike[, mapFn[, thisArg]])`
->     - `arrayLike`：想要转换成数组的伪数组对象或可迭代对象。
->     - `mapFn`(可选)：如果指定了该参数，新数组中的每个元素会执行该回调函数。
->     - `thisArg`(可选)：可选参数，执行回调函数 `mapFn` 时 `this` 对象。
-> ```
->
-> ```js
-> const array1 = {
->   "0": "1",
->   "1": "2",
->   "2": "4",
->   "length": 3,
-> }
-> let array11 = Array.from(array1) // [ '1', '2', '4' ]
-> 
-> // 方法还可以接收第二个参数，作用类似于数组的map方法，用来对每个元素进行处理，将处理后的值放入返回的数组
-> let array12 = Array.from(array1, item => item * 2)	// [ 2, 4, 8 ]
-> 
-> // 类数组对象转换为数组
-> Array.from({ length: 5 }, (v, i) => i); // [0, 1, 2, 3, 4]
-> 
-> // 对数组的修改
-> Array.from([1, 2, 3], x => x + x); // [2, 4, 6]
-> 
-> // 字符串转换为数组
-> console.log(Array.from('foo'));	// ["f", "o", "o"]
-> ```
 
-### 查找数据 find / findIndex / includes / indexOf
+类数组转换为数组的方法：
+    1. `Array.prototype.slice.call(arrayLike, start)`
+    2. `[...arrayLike]`
+    3. `Array.from(arrayLike)`
 
-> - **`find(val, index, arr)`**：用于找出第一个符合条件的数组成员，如果没有找到返回undefined
-> - **`findIndex()`**：用于找出第一个符合条件的数组成员的位置，如果没什么找到返回-1
-> - - (fromIndex：可选，从定义的索引位置开始查找目标值，如果为负值，则按array.length+fromIndex位置开始查找，默认为0)
->
-> ```js
-> /** find */
-> const aryString1 = [{ id: 1, name: '张三' }, { id: 2, name: '李四' }];
-> let target = aryString1.find((item,index) => item.id == 1);
-> console.log(target)   //{id: 1,name: '张三'}
-> 
-> /** findIndex */
-> let index = [10, 20, 50].findIndex((item,inedx) => item > 15)
-> console.log(index)	// 1
-> 
-> /** includes */
-> let result1 = [1, 2, 3, 4, 5].includes(5)	// true
-> let result2 = [1, 2, 3, 4, 5].includes(3, 2)	// true
-> console.log(result1, result2)  // true true
-> ```
->
-> ### includes 扩展
->
+```
+
+```js
+// 类数组
+let arrLike = {
+  "0": 'willy',
+  "1": 'cilly',
+  "2": 'jance',
+  "length": 3
+}
+
+// 同款数组
+let arr = ['willy', 'cilly', 'jance'];
+```
+
+
+
+### 转换
+
+#### 类数组转为数组 Array.from
+
+```bash
+## 类数组转换为数组 Array.from()
+Array.from 方法用于将两类对象转为真正的数组(生成浅拷贝的数组实例)：
+	1. 类似数组的对象（array-like object）
+	2. 可遍历（iterable）的对象。
+
+
+- `Array.from(arrayLike[, mapFn[, thisArg]])`
+    - `arrayLike`：想要转换成数组的伪数组对象或可迭代对象。
+    - `mapFn`(可选)：如果指定了该参数，新数组中的每个元素会执行该回调函数。
+    - `thisArg`(可选)：可选参数，执行回调函数 `mapFn` 时 `this` 对象。
+
+```
+
+```js
+const array1 = {
+  "0": "1",
+  "1": "2",
+  "2": "4",
+  "length": 3,
+}
+let array11 = Array.from(array1) // [ '1', '2', '4' ]
+
+// 方法还可以接收第二个参数，作用类似于数组的map方法，用来对每个元素进行处理，将处理后的值放入返回的数组
+let array12 = Array.from(array1, item => item * 2)	// [ 2, 4, 8 ]
+
+// 类数组对象转换为数组
+Array.from({ length: 5 }, (v, i) => i); // [0, 1, 2, 3, 4]
+
+// 对数组的修改
+Array.from([1, 2, 3], x => x + x); // [2, 4, 6]
+
+// 字符串转换为数组
+console.log(Array.from('foo'));	// ["f", "o", "o"]
+
+```
+
+
+
+#### 字符串与数组转换 split / join
+
+- `split()`方法是将一个字符串按照某一分隔符进行拆分为数组，而`join()`则正好相反。
+- `join()`方法用于把数组中的所有元素放入一个字符串，元素是通过指定的分隔符进行分隔的。
+- 使用`concat`函数,在字符串后面追加一个或多个字符
+
+```js
+// 数组转换为字符串
+let arr = [1, 2, 3];	
+let res = arr.join(",");	// 1,2,3
+
+// 字符串转换为数组
+let strs = "1,2,3"
+let resultArr = strs.split(','); // [ '1', '2', '3' ]
+
+// 字符串拼接
+let str = "13"
+let strAdd = str.concat("4", "-6")	// 134-6
+
+// 数组拼接
+let arr = [1, 2, 3]
+const res = arr.concat(3, 4) // [1, 2, 3, 3, 4]
+```
+
+
+
+#### 数组类型转换 map(Number)
+
+- 将string数组转换为number数组：`strArr.map(Number);`
+- 将number数组转换为string数组：`numArr.map(String);`
+
+```js
+let arr = ['1', '2', 3]
+let numArr = arr.map(Number)
+let strArr = numArr.map(String)
+console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3' ]
+```
+
+
+
+#### 数组转换为键值对列表 entries
+
+- `array.entries()`方法返回一个数组的迭代对象(`Iterator`)，该对象包含数组的键值对(key/value)
+
+```js
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+let iteraotrs = fruits.entries();
+for(let [key, value] of iteraotrs) {
+  console.log(key, value)
+}
+
+// 等价于 array.next()
+let result = fruits.entries()
+console.log(result.next().value[0], result.next().value[1])  // 0, Orange
+console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Mango']
+```
+
+
+
+#### 多数值转数组 Array.of
+
+- `Array.of()`用于将一组数值转换为数组，该方法主要目的是弥补数组构造函数`Array()`的不足，因为参数个数不同，会导致`Array()`的行为有差异。
+- `Array.of()`可用替代`Array() 或 new Array()`，并且不存在由于参数不同而导致的重载，它的行为非常统一。
+
+```js
+Array.of() // []
+Array.of(undefined) // [undefined]
+Array.of(1) // [1]
+Array.of(1, 2) // [1, 2]
+```
+
+
+
+### 查找
+
+#### 查找数据  find / findIndex / includes / indexOf
+
+- **`find(val, index, arr)`**：用于找出第一个符合条件的数组成员，如果没有找到返回undefined
+- **`findIndex()`**：用于找出第一个符合条件的数组成员的位置，如果没什么找到返回-1
+    - (fromIndex：可选，从定义的索引位置开始查找目标值，如果为负值，则按array.length+fromIndex位置开始查找，默认为0)
+
+```js
+/** find */
+const aryString1 = [{ id: 1, name: '张三' }, { id: 2, name: '李四' }];
+let target = aryString1.find((item,index) => item.id == 1);
+console.log(target)   //{id: 1,name: '张三'}
+
+
+/** findIndex */
+let index = [10, 20, 50].findIndex((item,inedx) => item > 15)
+console.log(index)	// 1
+
+
+/** includes */
+let result1 = [1, 2, 3, 4, 5].includes(5)	// true
+let result2 = [1, 2, 3, 4, 5].includes(3, 2)	// true
+console.log(result1, result2)  // true true
+
+```
+
+
+
+#### includes 与 indexOf 、Object.is 的区别
+
 > `includes` 类似于 `indexOf`：
 >
 > ```js
@@ -4415,30 +4567,74 @@ person
 
 
 
-### 字符串与数组转换 split / join
+#### 获取相应索引的元素 at
 
-> - `split()`方法是将一个字符串按照某一分隔符进行拆分为数组，而`join()`则正好相反。
-> - `join()`方法用于把数组中的所有元素放入一个字符串，元素是通过指定的分隔符进行分隔的。
-> - 使用`concat`函数,在字符串后面追加一个或多个字符
->
-> ```js
-> // 数组转换为字符串
-> let arr = [1, 2, 3];	
-> let res = arr.join(",");	// 1,2,3
-> 
-> // 字符串转换为数组
-> let strs = "1,2,3"
-> let resultArr = strs.split(','); // [ '1', '2', '3' ]
-> 
-> // 字符串拼接
-> let str = "13"
-> let strAdd = str.concat("4", "-6")	// 134-6
-> 
-> // 数组拼接
-> let arr = [1, 2, 3]
-> const res = arr.concat(3, 4) // [1, 2, 3, 3, 4]
-> ```
->
+```bash
+### 获取相应索引的元素：Array.prototype.at(i)
+- `arr.at(i)`：
+	- 如果 i >= 0，则与 arr[i] 完全相同。
+	- 如果 i 为负数，则从数组的尾部向前开始计算。
+
+```
+
+```js
+const fruits = ['Apple', 'Orange', 'Plum']
+
+// 常规获取数组最后一个元素
+const lastItem = fruits[fruits.length - 1] // Plum
+
+// 使用 at 获取最后一个元素
+const lastItem2 = fruits.at(-1) // Plum
+
+```
+
+
+
+### 队列与栈
+
+```bash
+## 队列与栈
+栈遵循后进先出法则 LIFO（Last-In-First-Out），队列遵循先进先出 FIFO（First-In-First-Out）。
+
+  队列（queue）的方法
+    - push：在末端添加一个元素
+    - shift：取出队列首端的一个元素，整个队列往前移，使得原先排第二的元素排在第一个。
+
+  栈的方法：
+    - push：在末端添加一个元素
+    - pop：从末端取出一个元素
+
+
+
+### 性能
+push/pop 方法运行的比较快，而 shift/unshift 比较慢。
+
+1. shift / unshift
+只获取并移除索引 0 对应的元素是不够的。其它元素也需要被重新编号。
+		1. 移除索引为 0 的元素。
+		2. 把所有的元素向左移动，把索引 1 改成 0，2 改成 1 以此类推，对其重新编号。
+		3. 更新 length 属性。
+数组里的元素越多，移动它们就要花越多的时间，也就意味着越多的内存操作。
+unshift 也是一样：为了在数组的首端添加元素，我们首先需要将现有的元素向右移动，增加它们的索引值。
+
+
+2. pop / push
+pop 方法不需要移动任何东西，因为其它元素都保留了各自的索引。这就是为什么 pop 会特别快。
+push 方法也是一样的。
+```
+
+```js
+const fruits = ['Apple', 'Orange', 'Pear']
+
+console.log(fruits.push('Banana')) // 添加 "Banana" 并返回数组长度
+console.log(fruits.pop()) // 移除 "Pear" 并返回
+
+console.log(fruits.shift()) // 移除 "Apple" 并返回
+console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" 并返回数组长度
+
+```
+
+
 
 ### 迭代遍历的方法
 
@@ -4543,7 +4739,7 @@ person
 > [1, 2, 3, 1].findIndex(item => item > 1) // 1
 > ```
 
-### for..of  与 for…in
+#### for..of  与 for…in
 
 > ```bash
 > ## for…in（ES3）和 for…of（ES6）
@@ -4612,7 +4808,7 @@ person
 > })
 > ```
 
-### 迭代方法对比
+#### 迭代方法对比
 
 > ```bash
 > ### for...of、for...in、forEach、map 区别
@@ -4625,7 +4821,9 @@ person
 > map: 只能遍历数组，不能中断，返回值是修改后的数组。
 > ```
 
-### `reduce`方法同时实现map和filter
+
+
+#### `reduce`方法同时实现map和filter
 
 - 假设有一个数列，希望更新它的每一项(map的功能)，然后筛选出一部分(filter的功能)。
   如果先使用map然后使用filter的话，则需遍历这个数组两遍。
@@ -4643,17 +4841,7 @@ let result = arr.reduce((item, next) => {
 console.log(result);  // [ 220, 260, 120, 80, 140, 180 ]
 ```
 
-### 数组类型转换 map(Number)
 
-- 将string数组转换为number数组：`strArr.map(Number);`
-- 将number数组转换为string数组：`numArr.map(String);`
-
-```js
-let arr = ['1', '2', 3]
-let numArr = arr.map(Number)
-let strArr = numArr.map(String)
-console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3' ]
-```
 
 ### 创建数组并赋值 fill / map
 
@@ -4671,6 +4859,8 @@ console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3'
 > 		let c = Array.from({ length: 3 })	// [undefined, undefined, undefined]
 > 		let d = Array.from({ length: 3 }).map(_ => 0)	// [0, 0, 0]
 > ```
+
+
 
 ### 拷贝数组元素到指定位置 copyWith()
 
@@ -4692,6 +4882,8 @@ console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3'
 > arr.copyWithin(0,3,10);
 > console.log(arr)    // [ 3, 4, 5, 6, 7, 8, 9, 7, 8, 9 ]
 > ```
+
+
 
 ### 排序sort()
 
@@ -4736,6 +4928,8 @@ arr2.sort(function (x, y) {
 })
 ```
 
+
+
 ### 平铺数组 flat
 
 > - `Array.prototype.flat()`用于将嵌套的数组“拉平”，变成一维数组。该方法返回一个新数组，对原数据没有影响
@@ -4769,34 +4963,7 @@ arr2.sort(function (x, y) {
 > ```
 >
 
-### 数组转换为键值对列表`entries()`
 
-- `array.entries()`方法返回一个数组的迭代对象(`Iterator`)，该对象包含数组的键值对(key/value)
-
-```js
-var fruits = ["Banana", "Orange", "Apple", "Mango"];
-let iteraotrs = fruits.entries();
-for(let [key, value] of iteraotrs) {
-  console.log(key, value)
-}
-
-// 等价于 array.next()
-let result = fruits.entries()
-console.log(result.next().value[0], result.next().value[1])  // 0, Orange
-console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Mango']
-```
-
-### 多数值转数组Array.of()
-
-> - `Array.of()`用于将一组数值转换为数组，该方法主要目的是弥补数组构造函数`Array()`的不足，因为参数个数不同，会导致`Array()`的行为有差异。
-> - `Array.of()`可用替代`Array() 或 new Array()`，并且不存在由于参数不同而导致的重载，它的行为非常统一。
->
-> ```js
-> Array.of() // []
-> Array.of(undefined) // [undefined]
-> Array.of(1) // [1]
-> Array.of(1, 2) // [1, 2]
-> ```
 
 ### 数组去重
 
