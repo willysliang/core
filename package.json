@@ -6,7 +6,12 @@
   "version": "1.0.0",
   "type": "module",
   "keywords": [
-    "willy"
+    "willy",
+    "TypeScript",
+    "Vue3",
+    "music-player",
+    "blog",
+    "utils"
   ],
   "engines": {
     "node": ">=16.14"
@@ -82,5 +87,8 @@
     "stylelint-declaration-block-no-ignored-properties": "^2.7.0",
     "stylelint-order": "^6.0.3",
     "typescript": "^5.0.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {}
   }
 }
