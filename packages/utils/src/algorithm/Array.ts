@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-03-21 15:41:42
  * @ Modifier: willy
- * @ ModifierTime: 2024-03-21 21:14:11
+ * @ ModifierTime: 2024-04-02 15:43:09
  * @ Description: 数组相关的题目
  */
 
@@ -189,3 +189,83 @@ console.log(isContinuous([11, 0, 9, 0, 10])) // true，两个王可以代表12�
 console.log(isContinuous([0, 5, 3, 1, 4])) // true，0可以代表任何数字，在这里可以视作2
 console.log(isContinuous([2, 6, 4, 5, 3])) // true，2到6已经构成顺子
 console.log(isContinuous([1, 3, 0, 7, 0])) // false，即使有两个王，也不能
+
+/** **************************************************************************************** */
+/** ----------------------------------- 数组中的逆序对 ------------------------------------------ */
+/** **************************************************************************************** */
+/**
+ * 数组中的逆序对
+ *  题目：
+      在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组。
+    思路：
+      使用归并排序的递归分治方式来解决逆序对问题
+        - mergeSort函数负责递归分治
+        - merge函数负责合并两个排序好的数组段，并计算逆序对的数量
+        - reversePairs函数是提供给外部调用的接口
+    计算：[7, 5, 6, 4]
+      从左到右，第一个数字是7，与它后面的每个数字（5, 6, 4）比较，因为7大于所有这些数字，所以，这里有3个逆序对：(7, 5), (7, 6), (7, 4)。
+      接下来看数字5，它后面有两个数字（6, 4）。5只大于4，所以这里有1个逆序对：(5, 4)。
+      然后是数字6，它后面只有一个数字4，而6大于4，因此这里有1个逆序对：(6, 4)。
+      最后是数字4，它后面没有数字了，所以不会形成更多的逆序对。
+      因此，整个数组中逆序对的数量是3 (来自数字7) + 1 (来自数字5) + 1 (来自数字6) = 5。
+ */
+/**
+ * @function reversePairs 数组中的逆序对
+ * @param {number[]} numbers 无序的数组
+ * @returns  {number} 逆序对的总数
+ * @description ,求出这个数组中的逆序对的总数P
+ */
+export const reversePairs = (numbers: Array<number>): number => {
+  /** 合并两个排序的数组段 left和right，并计算跨越这两部分的逆序对数量 */
+  const merge = (
+    nums: Array<number>,
+    left: Array<number>,
+    right: Array<number>,
+  ): number => {
+    let i = 0 // 左指针
+    let j = 0 // 右指针
+    let k = 0 // num 的索引
+    let count = 0 // 记录逆序对数量
+
+    /**
+     * 对 left 和 right 数组进行重新排序（保证了下次递归不会再次重复计算）
+     *  1. 如果 left 的当前元素 <= right 的当前元素，则不存在逆序对
+     *  2. 如果 left 的当前元素 > right 的当前元素，则存在逆序对
+     *      因为left和right都已排序，所以left中从当前元素到末尾的所有元素都与right的当前元素形成逆序对
+     */
+    while (i < left.length && j < right.length) {
+      if (left[i] <= right[j]) {
+        nums[k++] = left[i++]
+      } else {
+        nums[k++] = right[j++]
+        count += left.length - i // 计算逆序对数量
+      }
+    }
+
+    // 如果left或right有剩余的元素，直接追加到nums数组的末尾
+    while (i < left.length) nums[k++] = left[i++]
+    while (j < right.length) nums[k++] = right[j++]
+
+    return count
+  }
+
+  /** 归并排序，同时计算逆序对的数量 */
+  const mergeSort = (nums: Array<number>): number => {
+    // 如果数组长度 <= 1，不存在逆序对
+    if (nums.length <= 1) return 0
+
+    // 计算中间位置，分割左右两边数组
+    const mid = Math.floor(nums.length / 2)
+    const left = nums.slice(0, mid)
+    const right = nums.slice(mid)
+
+    // 对左右部分递归进行归并排序，并计算左右变量内部各自的逆序对数量，最后加上合并时计算的跨越两部分的逆序对数量
+    return mergeSort(left) + mergeSort(right) + merge(nums, left, right)
+  }
+
+  return mergeSort(numbers)
+}
+
+logger.warn('数组中的逆序对', reversePairs.name)
+console.log(reversePairs([7, 5, 6, 4])) // 5
+console.log(reversePairs([1, 20, 6, 4, 5])) // 5
