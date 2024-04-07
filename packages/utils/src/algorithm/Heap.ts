@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-04-02 15:48:03
  * @ Modifier: willy
- * @ ModifierTime: 2024-04-03 19:12:34
+ * @ ModifierTime: 2024-04-07 11:14:28
  * @ Description: 堆 - Heap
  */
 
@@ -272,6 +272,12 @@ console.log(medianFinder.findMedian()) // 2
       2. 从第 k 个数开始，和大顶堆的最大值进行比较，若比最大值小，则交换两个数的位置，重新构建大顶堆。
       3. 一次遍历之后大顶堆里的数就是整个数据里最小的 k 个数。
       时间复杂度 nlogk。
+ */
+/**
+ * @function getLeastNumbers 最小的 K 个数
+ * @param {number} nums 无序的数组
+ * @param {number} k k个最小数
+ * @returns {number[]}
  */
 export const getLeastNumbers = (nums: number[], k: number): number[] => {
   if (k === 0 || nums.length === 0) return []
