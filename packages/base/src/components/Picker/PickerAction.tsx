@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-04 21:47:21
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 11:25:41
+ * @ ModifierTime: 2024-04-11 18:38:59
  * @ Description: 选择器 - 操作区
  */
 
@@ -32,15 +32,15 @@ export const WPickerAction: FunctionalComponent<
   }
 
   return (
-    <div class="w-picker__action">
+    <div className="w-picker__action">
       <div
-        class={createBEM('picker', 'button')(['default', 'cancel'])}
+        className={createBEM('picker', 'button')(['default', 'cancel'])}
         onClick={() => handleButton('cancel')}
       >
         取消
       </div>
       <div
-        class={createBEM('picker', 'button')(['default', 'confirm'])}
+        className={createBEM('picker', 'button')(['default', 'confirm'])}
         onClick={() => handleButton('confirm')}
       >
         确定
