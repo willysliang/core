@@ -3,7 +3,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-02 20:48:20
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 11:25:20
+ * @ ModifierTime: 2024-04-11 19:39:43
  * @ Description: 移动端 - 选择器
  */
 
@@ -51,6 +51,7 @@ export default defineComponent({
 
     return () => (
       <>
+        {/* @ts-expect-error 忽略未使用 JSX 组件而导致的报错 */}
         <WPopover
           visible={props.visible}
           showArrow={false}
@@ -59,11 +60,12 @@ export default defineComponent({
           {{
             content: () => (
               <>
-                <div class="w-picker">
+                <div className="w-picker">
                   <WPickerAction
                     onCancel={() => handleChangeVisible(false)}
                     onConfirm={handleConfirm}
                   />
+                  {/* @ts-expect-error 忽略JSX使用props报错信息 */}
                   <WPickerOptions
                     {...props}
                     v-model:modelValue={selectValue.value}
