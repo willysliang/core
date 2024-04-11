@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年4月11日
+  - feat(utils): [http] [FetchRequest] 封装fetch网络请求
+
 ## 2024年3月29日
   - style(all): [editorconfig] 配置文件格式化
 
