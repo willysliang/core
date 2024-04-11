@@ -30,6 +30,7 @@ Description: 日志记录
   - feat(utils): [http] [FetchRequest] 封装fetch网络请求
   - feat(next): 添加 Nextjs Demo
   - fix(base): [Picker] 修复打包报错问题
+  - build(ci/cd): 添加可触发 CI/CD 的分支
 
 ## 2024年3月29日
   - style(all): [editorconfig] 配置文件格式化
