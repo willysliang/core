@@ -6,7 +6,12 @@
   "version": "1.0.0",
   "type": "module",
   "keywords": [
-    "willy"
+    "willy",
+    "TypeScript",
+    "Vue3",
+    "music-player",
+    "blog",
+    "utils"
   ],
   "engines": {
     "node": ">=16.14"
@@ -20,6 +25,8 @@
     "blog:deploy": "pnpm -F \"@willy/blog\" deploy",
     "dev:mp": "pnpm -F \"@willy/mp\" serve",
     "build:mp": "pnpm -F \"@willy/mp\" build",
+    "dev:next": "pnpm -F \"@willy/nextjs-app\" dev",
+    "build:next": "pnpm -F \"@willy/nextjs-app\" build",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "prepare": "husky install",
     "clean": "pnpm recursive clean --yes"
@@ -82,5 +89,8 @@
     "stylelint-declaration-block-no-ignored-properties": "^2.7.0",
     "stylelint-order": "^6.0.3",
     "typescript": "^5.0.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {}
   }
 }

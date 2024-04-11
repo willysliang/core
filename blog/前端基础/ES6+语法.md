@@ -52,12 +52,12 @@ Description: ES6+ 语法
 > ```.babelrc
 > /* 在根目录下新建`.babelrc`文件 */
 > {
-> "presets": [ // 设置转码规则
->  "es2015",
->  "@babel/env",
->  "@babel/preset-react",
-> ],
-> "plugins": [] // 设置插件
+>   "presets": [ // 设置转码规则
+>      "es2015",
+>      "@babel/env",
+>      "@babel/preset-react",
+>   ],
+>   "plugins": [] // 设置插件
 > }
 > ```
 
@@ -1231,6 +1231,1170 @@ Boolean('') // false
 > ```
 >
 
+## 运算符扩展
+
+### 解构赋值
+
+> - 数组解构按照一一对应的关系从数组中提取值，然后将值赋值给变量
+> - 解构赋值的规则是，只要等号右边的值不是对象或数组，就先将其转为对象。由于`undefined`和`null`无法转为对象，所以对它们进行解构赋值，都会报错。
+> - 作用：交换变量值、从函数返回多值、函数参数定义、提取JSON数据、函数默认值、遍历Map结构、暴露模块指定方法
+>
+> ```js
+> /* 数组 */
+> let arr = [1, 2, 3];
+> let [a, b, c, d] = arr; // a=1, b=2, c=3, d=undefined
+> let [ , , third] = arr; // third为3
+> let [head, ...tail] = arr; // tail为 2,3
+> 
+> /* 对象 */
+> let person = {name: 'willy', age: 20};
+> let { name, age } = person;
+> let {name: myName, age: myAge} = person;    //赋别名
+> console.log(name, myName, age, myAge);  // willy willy 20 20
+> 
+> /* Set结构 */
+> let [x, y, z] = new Set([1, 2, 3]); // x为1
+> 
+> /* Iterator接口数据 */
+> function* fibs() {
+>   let a = 0, b = 1;
+>   while (true) {
+>     yield a;
+>     [a, b] = [b, a + b];
+>   }
+> }
+> let [first, second, third, fourth, fifth, sixth] = fibs(); // sixth为5
+> 
+> /* 字符串 */
+> const [a, b, c, d, e] = 'hello';  // c="l"
+> 
+> /* 数值和布尔值：数值和布尔值的包装对象都有toString对象，因此都能取值 */
+> let {toString: s} = 123;
+> s === Number.prototype.toString // true
+> let {toString: s} = true;
+> s === Boolean.prototype.toString // true
+> 
+> let { prop: x } = undefined; // TypeError
+> let { prop: y } = null; // TypeError
+> ```
+>
+> #### 使用解构删除不必要属性
+>
+> - 通过定义新的变量来接收那些不必要的属性，可使得不必要属性不存在剩余参数中（即所想取的值都在剩余参数中）
+>
+> ```js
+> // 通过定义 _internal, tooBig 接收此两个属性的值，这样使得剩余参数中不存在此两个属性 
+> let { _internal, tooBig, ...cleanObject } = {
+>   el1: '1',
+>   _internal: "secret",
+>   tooBig: {},
+>   el2: '2',
+>   el3: '3'
+> };
+> console.log(cleanObject);  // {el1: '1', el2: '2', el3: '3'}
+> ```
+>
+> #### 函数参数中解构嵌套对象
+>
+> ```js
+> var car = {
+>   model: 'bmw 2018',
+>   engine: {
+>     v6: true,
+>     vin: 12345
+>   }
+> }
+> // 通过结构只获取 car 中 model 属性和 engine 的 vin 属性
+> const modelAndVIN = ({ model, engine: { vin } }) => {
+>   console.log(`model: ${model} vin: ${vin}`);
+> }
+> modelAndVIN(car);  // => model: bmw 2018  vin: 12345
+> ```
+>
+> #### 连续解构赋值
+>
+> ````js
+> let obj = {
+>   p: [
+>     'Hello',
+>     { y: 'World' }
+>   ]
+> };
+> let { p, p: [x, { y }] } = obj;
+> x // "Hello"
+> y // "World"
+> p // ["Hello", {y: "World"}]
+> ````
+>
+> ### 值互换
+>
+> ```js
+> var x = 1;
+> var y = 2;
+> [x,y] = [y,x];
+> ```
+>
+> ### 函数和属性增强写法
+>
+> ```js
+> const name = 'Kobe', age = 17;
+> //ES5
+> const obj1 = {
+>   name: name, age: age,
+>   run: function(){}, eat: function(){}
+> }
+> 
+> //ES6
+> const obj2 = { name, age, run(){}, eat(){} }
+> ```
+
+### 可变参数 arguments
+
+- 虽然arguments对象并不是一个数组而是一个伪数组，但是访问单个参数的方式与访问数组元素的方式相同.
+
+- 在js中无需明确指出参数名，就能访问它们；存放所有的参数
+
+- 引用属性 arguments.length检测函数的参数个数
+
+- 用 arguments 对象判断传递给函数的参数个数，即可模拟函数重载
+
+- > 注意：箭头函数无法调用arguments
+
+```js
+function doAdd() {
+  if (arguments.length == 1) {
+    console.log(arguments[0] + 5);
+  } else if (arguments.length == 2) {
+    console.log(arguments[0] + arguments[1]);
+  }
+}
+doAdd(10);	//输出 "15"
+doAdd(40, 20);	//输出 "60"
+
+function doConcat() {
+  let s = "";
+  for (let i = 0; i < arguments.length; i++) {
+    s += arguments[i] + " ";
+  }
+  console.log(s);
+  return s;
+}
+doConcat("name", "age");	//输出name age
+```
+
+### 剩余(`rest`)参数
+
+剩余参数语法允许将一个不定数量的参数表示为一个数组。
+
+> 注意：剩余参数之后不能再有其他参数（即只能是最后一个参数），否则会报错。
+
+```js
+//剩余参数（不定长可变参）
+function sum(a, b, ...num) {//可以给多个参数到sum函数里面
+  console.log(num);	// 2, 3, 4, 5, 6, 7, 8, 9
+}
+sum(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+```
+
+#### 剩余参数和 `arguments`对象的区别
+
+- 剩余参数只包含那些没有对应形参的实参，而 arguments 对象包含了传给函数的所有实参。
+- `arguments`对象不是一个真正的数组，而剩余参数是真正的` Array`实例，也就是说你能够在它上面直接使用所有的数组方法，比如 `sort、map、forEach或pop`。
+- `arguments`对象还有一些附加的属性 （如callee属性：返回当前函数的引用(匿名函数可以使用该属性实现递归调用)）。
+
+#### 剩余参数与解构配合
+
+```js
+let arr1 = ['a', 'b', 'c'];
+let [s1, ...s2] = arr1;
+console.log(s2);  //[ 'b', 'c' ]
+```
+
+### 扩展运算符`...`
+
+> ```bash
+> ## 扩展运算符 ...
+> 用于取出参数对象中的所有可遍历属性，拷贝到当前对象之中
+>     1. 复制数组 `const a2 = [...a1]`
+>     2. 合并数组 `[...arr1, ...arr2, ...arr3]`
+>     3. 与解构赋值结合`const [first, ...rest] = [1, 2, 3, 4, 5]; //...rest:2,3,4,5`
+> 
+> 注意0：如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错
+> 注意1：任何定义了遍历器(Iterator)接口的对象，都可以用扩展运算符转为真正的数组。
+> 注意2: 扩展运算符取出的数据只是浅拷贝，当其属性值为复杂数据类型时，被扩展对象与扩展对象两者共用内存空间。
+> ```
+>
+> ```js
+> //1. 合并、复制数组
+> let ary1 = [1, 2, 3],ary2 = [4, 5, 6];
+> let ary3 = [...ary1, ...ary2];	//等价于 let ary3 = ary1.push(...ary2);
+> let ary4 = [...ary1];
+> console.log(ary3, ary4);
+> 
+> //2. 遍历、拷贝数组
+> let bar = { a: 1, b: 2 };
+> let baz = { ...bar }; // 等价于 az = Object.assign({}, bar);
+> 
+> //将数组转换为参数数列
+> function Add(x, y){
+>   return x + y;
+> }
+> console.log(Add(...[4, 38])) // 42
+> 
+> //将伪数组(字符串)转为真正的数组
+> let a = 'hello';
+> console.log(a, '=>', ...a);
+> 
+> 
+> /* 将元素组织成对象 */
+> const obj = {a: 1, b: 2, c: 3};
+> const {a, ...rest} = obj;
+> console.log(rest, rest.b);    // {b: 2, c: 3}  2
+> (function({a, ...obj}) {
+>   console.log(obj);    // 输出 {b: 2, c: 3}
+> }({a: 1, b: 2, c: 3}));
+> 
+> /* 将对象扩展为元素 */
+> const obj1 = {a: 1, b: 2, c: 3};
+> const newObj ={...obj1, d: 4};
+> console.log(newObj);  // {a: 1, b: 2, c: 3, d: 4}
+> ```
+
+### 模板字符串
+
+> ````js
+> //模板字符串解析变量
+> let name = `willy`;
+> let obj = { //模板字符串换行
+> name: 'willy',
+> age: 22,
+> sex: '男'
+> }
+> const sayHello = () => `hello, my name is ${name}`; //在模板字符串调用函数
+> let str = `${name}-->name:${obj.name},age:${obj.age},sex:${obj.sex},${sayHello()}`
+> console.log(str);
+> 
+> let start = str.startsWith('willy');	//头部是否为willy
+> let end = str.endsWith('willy');	//尾部是否为willy
+> let strCpoy = str.repeat(1);	//重复一次
+> console.log(start, end, strCpoy);    //true true
+> ````
+
+### 空值合并运算符`??`
+
+> ```bash
+> ## 空值合并运算符 ??
+> - 在读取对象属性时，若某个属性值为`null 或 undefined`，有时需要为它们指定默认值。常见做法是通过`||`运算符指定默认值。
+> 
+> - `||`运算符不仅在属性值为`undefined`和`null`时生效，在属性值为空字符串或`false`或`0`时也会生效。
+> 
+> - Null判断运算符`??`只有运算符左侧值为`null`或`undefined`时才会返回右侧的值（即只关心左侧的值是否为 `null` 或 `undefined`，而不在乎是否为虚值）
+> ```
+>
+> ```js
+> const response = { settings: { headerText: 0 } }
+> const headerText = response.settings.headerText || 'default Text'
+> const headerText1 = response.settings.headerText ?? "default Text1"
+> 
+> 
+> const data = {
+>   nullValue: null,
+>   height: 400,
+>   animationDuration: 0,
+>   headerText: '',
+>   showSplashScreen: false,
+> }
+> console.log(data.undefinedValue ?? 'some other default') // 'some other default'
+> console.log(data.nullValue ?? 'some other default') // 'some other default'
+> console.log(data.headerText ?? 'Hello, world!') // ''
+> console.log(data.animationDuration ?? 300) // 0
+> console.log(data.showSplashScreen ?? true) // false
+> ```
+
+### 可选链判断运算符`?.`
+
+> ```bash
+> ## 可选链判断运算符 ?.
+> - 当需要读取对象的深层次属性时，往往需要判断属性的上一层对象是否存在
+> - 可选链操作符` ?.` 允许读取位于连接对象链深处的属性的值，而不必明确验证链中的每个引用是否有效。
+> - `?.`与`.`的区别在于，在引用为null 或 undefined 的情况下不会引起错误，而是使得该表达式短路并返回`undefined`
+> 
+> 
+> ### 可选链 ?. 用法
+> a?.x		// 等同于 	a == null ? undefined : a.x
+> a?.[x]	// 等同于	a == null ? undefined : a[x]
+> a?.b()	// 等同于	a == null ? undefined : a.b()
+> a?.()		// 等同于	a == null ? undefined : a()
+> 
+> 
+> ### 可选链的替代方案：&&
+> - 缺点：
+> 		- 语法冗长
+> 		- 如果失败，`&&` 返回其左侧，而 `?.` 始终返回 undefined
+> 		- `&&` 对所有的虚值的左侧都失败，而 `?.` 只对 undefined 和 null 失败。
+> - 案例：`user && user.address && user.address.street // undefined`
+> 
+> 
+> 
+> ### 可选链的替代方案：解构赋值
+> - 缺点：使用解构来处理链式属性的访问，这会不美观。
+>     const { address: { street = undefined } = {} } = user
+>     street // undefined
+> ```
+>
+> ```javascript
+> // 错误的写法（如果body属性 或 user属性不存在，则会报错）
+> const  firstName = message.body.user.firstName || 'default';
+> 
+> // 正确的写法（可选链的替代方案 &&）
+> const firstName = (
+>   message
+>   && message.body
+>   && message.body.user
+>   && message.body.user.firstName
+> ) || 'default';
+> 
+> 
+> /* 引入可选链 ?. 的优化写法 */
+> const  firstName = message.body.user.firstName || 'default';
+> ```
+
+### 逻辑赋值运算符
+
+> - 这三个二元运算符`||=`、`&&=`、`??=`相当于先进行逻辑运算，然后根据运算结果，再视情况进行赋值运算。
+> - 它们的一个用途是，为变量或属性设置默认值。
+>
+> | 赋值运算符 | 相当于         | 仅当 a 是 |                                                              |
+> | ---------- | -------------- | --------- | ------------------------------------------------------------ |
+> | `a ||= b`  | `a || (a = b)` | `false`   | 如果左侧为`false`，则评估右侧表达式并将其分配给左侧变量      |
+> | `a &&= b`  | `a && (a = b)` | `true`    | 如果左侧为`true`，则评估右侧表达式并将其分配给左侧的变量     |
+> | `a ??= b`  | `a ?? (a = b)` | `null`    | 如果左侧值为 `null` 或 `undefined`，则评估右侧表达式并将其分配给左侧的变量 |
+>
+> ```js
+> /** 或赋值运算符 */
+> x ||= y		// 等同于	x || (x = y)
+> user.id ||= 1	// 等同于 user.id = user.id || 1
+> 
+> 
+> /** 与赋值运算符 */
+> x &&= y		// 等同于	x && (x = y)
+> 
+> 
+> /** Null 赋值运算符 */
+> x ??= y		// 等同于	x ?? (x = y)
+> opts.foo ??= 'bar'	// 等同于 opts.foo = opts.foo ?? 'bar'; 或 opts.foo ?? (opts.foo = 'bar')
+> ```
+
+### 代码复用`Object[key]`
+
+> - 把`Object.key`写成`Object[key]`，这种做法构成了编写可重用代码的基础，如element UI的表单验证。可用作封装通用的表单验证函数。
+>
+> ```js
+> // object validation rules
+> const schema = {
+>   first: {
+>     required: true
+>   },
+>   last: {
+>     required: true
+>   }
+> };
+> // universal validation function
+> const validate = (schema, values) => {
+>   for (field in schema) {
+>     if (schema[field].required) {
+>       if (!values[field]) {
+>         return false;
+>       }
+>     }
+>   }
+>   return true;
+> }
+> console.log(validate(schema, { first: 'Bruce' }));  // false
+> console.log(validate(schema, { first: 'Bruce', last: 'Wayne' }));  // true
+> ```
+
+### 幂运算符（`**` 和 `**=`）
+
+> - ES7 中引入了**幂运算符（Exponentiation operator）`**`**`，`**` 具有与 `Math.pow(..)` 等效的计算结果。例如：`a ** b` 是 `Math.pow(a, b)` 的简写，`a **= b` 是 `a = a ** b` 的简写
+> - 幂赋值运算符使一个变量为底数、以右值为指数的指数运算（乘方）结果赋给该变量。
+> - 幂运算符`**`的特点是右结合，多个指数运算符连用时，是从最右边开始计算的
+>
+> ```js
+> 2 ** 3	// 8
+> Math.pow(2, 3)	// 8
+> 
+> 4 ** 3 ** 2 // 相当于 4 ** (3 ** 2) = 262144
+> 
+> let b = 4;	
+> b **= 3	// 等同 b = b * b * b;
+> ```
+
+## 数值 Number
+
+```bash
+## 数值 Number
+数字（Number）有两种类型：
+	1. 常规的数字以 64 位的格式 `IEEE-754` 存储，又称 "双精度浮点数"。
+	2. BigInt 用于表示任意长度的整数。因为常规Number类型的整数只能安全地表示在 `-(2^53 - 1) ~ (2^53 - 1)` 的范围内，超出这个范围的整数值可能丢失精度。使用BigInt，可以安全地处理更大或更小的整数，而不用担心精度问题。这对于需要高精度整数运算的应用程序，如加密、高精度计时器、处理大量数据等场景非常有用。
+
+
+### 数值展示扩展
+- 二进制需要添加前缀`0b`，八进制需要添加前缀`0o`
+- 数值可使用下划线`_`作为分隔符：`1_0000_00_000 === 10**12;   0.000_001 === 1e10_000`（数值分隔符没有指定间隔位数，小数点及指数e前后不能有分隔符，两个分隔符不能相连）
+
+
+
+### 实例方法
+- ES6 将全局方法 `parseInt()` 和 `parseFloat()`移植到Number 对象上，如`Number.parseInt(12.34)`
+- `Number.isFinite(Num)`：检查数字是否为有限的，即不是`Infinity`则为`true`（若参数类型不是数值则一律为false）
+- `Number.isNaN(Num)`：检查一个值是否为`NaN`，非`NaN`则为false
+- `Numer.isInteger(Num)`：判断一个数值是否为整数
+- `Number.MAX_SAFE_INTEGER` 和 `Number.MIN_SAFE_INTEGER` 表示安全整数的上下限，JS能准确表达整数范围在 `-2^53` 到 `2^53` 之间的数
+- `Number.isSafeInteger(Num)` 则是用来判断一个整数是否落在安全整数范围之内
+
+```
+
+
+
+### 安全数
+
+> - `2^53`是js内置的最大整数值(不安全)，`2^53+1`是会被摄入成`2^53`
+> - **Number.MAX_SAFE_INTEGER**是js里整数的安全的最大值，由于js用的IEEE 754双精度浮点，可以安全地表示`[-2^53+1, 2^53-1]`这个范围，比这更大的表示 **Infinity**，与之相对的是 **Number.MIN_VALUE** 
+>
+> ```js
+> Math.pow(2, 53) === Math.pow(2, 53) + 1 // true
+> ```
+
+
+
+### 大整数 BigInt
+
+> - `BigInt` 一种用于大整数运算的新原始数据类型，表示大于 2⁵³ 的数字。后缀为 `n`。
+> - `BigInt(value)` 只用来表示整数，没有位数的限制，任何位数的整数都可以精确表示。
+> - BigInt 和 Number 不是严格相等的，但是宽松相等。
+> - 可以通过typeof操作符来判断变量是否为BigInt类型（返回字符串"bigint"）
+> - 可以通过`Object.prototype.toString`方法来判断变量是否为BigInt类型（返回字符串"[object BigInt]"）
+>
+> ```js
+> /* BigInt类型 */
+> let max1 = Number.MAX_SAFE_INTEGER;    // 最大安全整数
+> let max11 = max1 + 1, max12 = max1 + 2
+> max11 === max12   // true
+> 
+> let max2 = BigInt(Number.MAX_SAFE_INTEGER);
+> let max21 = max2 + 1n, max22 = max2 + 2n
+> max21 === max22   // false
+> 
+> 
+> // 判断是否为 BigInt 类型
+> typeof 1n === 'bigint'; // true 
+> typeof BigInt('1') === 'bigint'; // true 
+> Object.prototype.toString.call(1n) === '[object BigInt]'; // true
+> 
+> // BigInt 与 Number 类型的对比
+> 10n === 10 // false 
+> 10n == 10  // true 
+> ```
+>
+> ![image-20210331160240361](./image/image-20210331160240361.png)
+
+
+
+### 进制转换：toString(base)
+
+```bash
+### 进制转换 toString(base)
+`Number.prototype.toString(base)` 返回在给定 base 进制数字系统中 num 的字符串表示形式。
+	- base 的范围可以从 2 到 36。默认情况下是 10。
+	- `base=16` 常用于十六进制颜色，字符编码等，数字可以是 0..9 或 A..F。
+	- `base=2` 主要用于调试按位操作，数字可以是 0 或 1。
+	- `base=36` 是最大进制，数字可以是 0..9 或 A..Z。所有拉丁字母都被用于了表示数字。对于 36 进制来说，一个有趣且有用的例子是，当我们需要将一个较长的数字标识符转换成较短的时候，例如做一个短的 URL。可以简单地使用基数为 36 的数字系统表示：`123456..toString(36) // 2n9c`
+	
+
+#### 使用两个点调用一个方法（如 `123456..toString(36)`）
+- 如果我们想直接在一个数字上调用一个方法，比如上面例子中的 toString，那么我们需要在它后面放置两个点 ..。
+- 如果我们放置一个点：123456.toString(36)，那么就会出现一个 error，因为 JavaScript 语法隐含了第一个点之后的部分为小数部分。如果我们再放一个点，那么 JavaScript 就知道小数部分为空，现在使用该方法。
+- 也可以写成 (123456).toString(36)。
+
+```
+
+```js
+const num = 255
+console.log(num.toString(16)) // ff
+console.log(num.toString(2)) // 11111111
+console.log((123456).toString(36)) // 2n9c
+
+```
+
+
+
+### 特殊的数字类型
+
+```bash
+### 特殊的数字类型
+- 包括浮点数和整数。特殊的数字类型有：`NaN、Infinity、-Infinity`
+
+1. NaN
+    - NaN（Not a Number），表示不是数字，但它本质是一个特殊数字。
+    - 当运算操作符错误时，一般会得到 NaN
+    - NaN 具有传染性，即 NaN 参与任何运算，结果都为 NaN
+    - NaN 与任何值都不相等
+
+2. Infinity
+    - 表示数据超出 JS 可表示的范围，是一个特殊的数字
+    - 与其他数据类型进行操作运算时，结果还是 Infinity
+    - 任何数字除以 0 得到 Infinity
+```
+
+
+
+#### 数值判定：isFinite 与 isNaN
+
+```bash
+### 数值判定：isFinite 和 isNaN
+`NaN、Infinity、-Infinity` 属于 number 类型，但不是“普通”数字，因此，`isFinite()` 和 `isNaN()` 用于检查它们的特殊函数：
+
+1. Number.isNaN(value)
+用来检查一个值是否为 NaN。如果参数类型不是 NaN，`Number.isNaN` 一律返回 false。
+
+2. Number.isFinite(value)
+用来检查一个数值是否为有限的（finite），即不是`Infinity`。
+如果参数是一个数值则返回 true，否则返回 false（如：NaN、null、undefined、正无穷大、负无穷大或字符串，则会返回false）
+
+- 它们与传统的全局方法 `isFinite()`和`isNaN()`的区别在于，传统方法先调用`Number()`将非数值的值转为数值，再进行判断，而这两个新方法只对数值有效，`Number.isFinite()`对于非数值一律返回`false`, `Number.isNaN()`只有对于`NaN`才返回`true`，非`NaN`一律返回`false`。
+
+注意：在所有数字函数中，包括 isFinite，空字符串或仅有空格的字符串均被视为 0。
+
+
+
+#### 与 Object.is 进行比较
+有一个特殊的内建方法 Object.is，它类似于 `===` 一样对值进行比较，但它对于两种边缘情况更可靠：
+	1. 它适用于 NaN：`Object.is(NaN, NaN) === true`，这是件好事。
+	2. 值 0 和 -0 是不同的：`Object.is(0, -0) === false`，从技术上讲这是对的，因为在内部，数字的符号位可能会不同，即使其他所有位均为零。
+在所有其他情况下，`Object.is(a, b)` 与 `a === b` 相同。
+
+这种比较方式经常被用在 JavaScript 规范中。当内部算法需要比较两个值是否完全相同时，它使用 Object.is（内部称为 SameValue）。
+```
+
+```js
+Number.isFinite(15); // true
+Number.isFinite(0.8); // true
+Number.isFinite(NaN); // false
+Number.isFinite(Infinity); // false
+Number.isFinite(-Infinity); // false
+Number.isFinite('foo'); // false
+Number.isFinite('15'); // false
+Number.isFinite(true); // false
+
+
+// 判断一个数是否为 NaN 的唯一方式
+Number.isNaN(NaN) // true
+Number.isNaN(15) // false
+Number.isNaN('15') // false
+Number.isNaN(true) // false
+Number.isNaN(9/NaN) // true
+Number.isNaN('true' / 0) // true
+Number.isNaN('true' / 'true') // true
+
+
+/** 与 ES5 的方法对比 */
+isFinite(25) // true
+isFinite("25") // true
+Number.isFinite(25) // true
+Number.isFinite("25") // false
+isNaN(NaN) // true
+isNaN("NaN") // true
+Number.isNaN(NaN) // true
+Number.isNaN("NaN") // false
+Number.isNaN(1) // false
+```
+
+
+
+### 数字分隔符
+
+> - 为了增加更大数字的可读性，从 ES2021 开始，我们可以在数字中使用下划线（`_`）作为分隔符。
+> - 数字分隔符可以在数字之间创建可视化分隔符，通过 _ 下划线来分割数字，使数字更具可读性，可以放在数字内的任何地方
+> - 该新特性也支持在八进制中使用
+>
+> ```js
+> const money = 1_000_000_00_0		// => 等价于 const money = 1000000000
+> const num = 0o123_456		// => 等价于 const num = 0o123456
+> ```
+>
+> 数字组之间的视觉分离：
+>
+> ```js
+> console.log(1_234_456_789.01) // 1234456789.01
+> console.log(1_000_000_000) // 1000000000
+> 
+> const fileSystemPermission = 0b111_111_000 // 504
+> const bytes = 0b1111_10101011_11110000_00001101 // 262926349
+> const words = 0xa0_b0_c0 // 10531008
+> ```
+>
+> 我们还可以在分数和指数中使用分隔符：
+>
+> ```js
+> 0.000_001 // 0.000001
+> 1e10_000 // Infinity
+> 
+> const massOfElectronInKg = 9.109_383_56e-31 // 9.10938356e-31
+> const trillionInShortScale = 1e1_2 // 1000000000000
+> ```
+>
+> 分隔符的位置有两种限制：
+>
+> - 我们只能在两位数之间加下划线。因此，以下所有数字都是非法的：
+>
+> ```js
+> 3_.141
+> 3._141
+> 
+> 1_e12
+> 1e_12
+> 
+> _1464301
+> 1464301_
+> 
+> 0_b111111000
+> 0b_111111000
+> ```
+>
+> - 我们不能连续使用多个下划线：
+>
+> ```js
+> 123__456 // 不允许
+> ```
+>
+> 这些限制背后的动机是保持解析简单并避免奇怪的边缘情况。
+>
+> 以下解析数字的函数不支持分隔符：
+>
+> - `Number()`
+> - `parseInt()`
+> - `parseFloat()`
+>
+> ```js
+> console.log(Number('123_456')) // NaN
+> console.log(parseInt('123_456')) // 123
+> console.log(parseFloat('123_456.123')) // 123
+> ```
+>
+> 理由是数字分隔符用于代码。其他类型的输入应该以不同的方式处理。
+>
+> #### 下划线（`_`）作为 `bigint` 文本中的分隔符
+>
+> `Bigint` 通常用于代表金融技术领域的货币。我们可以在 `bigint` 类型中使用下划线（`_`）作为分隔符：
+>
+> ```js
+> const massOfEarthInKg = 1_000_00n // 100000n
+> ```
+>
+> 与数字一样，有两个限制：
+>
+> - 我们只能在两位数之间加一个下划线。
+> - 我们最多可以连续使用一个下划线。
+
+
+
+### 位运算符/计算
+
+```bash
+## 位运算
+1. 按位与 `&`
+`&` 以特定的方式组合操作二进制中对应的位，如果对应的位都为1，则结果为1，如果任意一个位是 0 则结果就是 0。
+
+
+2. 按位或 `|`
+`|` 运算符跟 `&` 的区别在于如果对应的位中任一操作数位1，则结果就是 1。
+    
+
+3. 按位异或 `^`
+`^` 如果对应两个操作位有且仅有一个 1 时结果为 1，其他都是 0。
+
+
+4. 按位非 `~`
+`~` 运算符是对位取反，1 变 0，0 变 1。即是求二进制的反码。
+
+
+5. 左移 `<<`
+`<<` 运算符使指定值的二进制数所有位都左移指定次数，其移动规则：转化位二进制后，丢弃高位，低位补零。
+
+
+6. 右移 `>>`
+`>>` 操作符会将指定操作数的二进制位向右移动指定位数。向右被移出的位被丢弃，拷贝最左侧的位以填充左侧。由于新的最左侧的位总是和以前相同，符号位没有被改变。所以被称作“符号传播”。
+
+
+7. 无符号右移 `>>>`
+>>>该操作符会将第一个操作数向右移动指定的位数。向右被移出的位被丢弃，左侧用0填充。因为符号位变成了 0，所以结果总是非负的。（即便右移 0 个比特，结果也是非负的。）
+对于非负数，有符号右移和无符号右移总是返回相同的结果。例如， 9 >>> 2 得到 2 和 9 >> 2 相同。
+```
+
+```js
+// 1的二进制表示为: 00000000 00000000 00000000 00000001
+// 2的二进制表示为: 00000000 00000000 00000000 00000010
+// 3的二进制表示为: 00000000 00000000 00000000 00000011
+
+console.log(1 & 3)     // 1
+
+console.log(1 | 3)     // 3
+
+console.log(1 ^ 3)		// 2
+
+console.log(~ 1)			// -2
+
+console.log(1 << 2)		// 4
+
+console.log(1 >> 1)		// 0
+
+console.log(9 >>> 2)	// 2
+```
+
+#### 判断奇偶性
+
+> - 由于偶数的最低位为 0，奇数为 1，所以取模运算可以用位操作来代替。
+> - 0是一个特殊的偶数。对一个数字`num & 1`可以判断奇偶数，负数同样使用
+> - 位运算：`偶数 & 1 = 0，奇数 & 1 = 1`
+>
+> ```js
+> if (value % 2) {
+>   // 奇数
+> } else {
+>   // 偶数 
+> }
+> 
+> 
+> 
+> // 位操作
+> if (value & 1) {
+>   // 奇数
+> } else {
+>   // 偶数
+> }
+> console.log(3 & 1);  // 1
+> console.log(4 & 1);  // 0
+> ```
+
+#### 取整
+
+> ```js
+> ~~10.12 // 10
+> ~~10 // 10
+> ~~'1.5' // 1
+> ~~undefined // 0
+> ~~null // 0
+> 
+> 
+> 6.83 >> 0		// 6
+> 6.83 << 0		// 6
+> 6.83 | 0		// 6
+> -6.83 >>> 0	// 6
+> ~~6.83 			// 6
+> ```
+>
+> - **对一个数字`num | 0`可以取整，负数同样使用**
+>
+> ```js
+> console.log(1.3 | 0);  // 1
+> console.log(-1.9 | 0);  // -1
+> ```
+
+#### 值替换
+
+> ```js
+> /** 使用解构来完成值替换 */
+> let arr = [12, -2]
+> [arr[0], arr[1]] = [arr[1], arr[0]];
+> console.log(arr); // [-2,12]
+> 
+> 
+> /** 使用 ^ 来完成值替换 */
+> var a = 5
+> var b = 8
+> a ^= b
+> b ^= a
+> a ^= b
+> console.log(a)   // 8
+> console.log(b)   // 5
+> ```
+
+#### 位掩码
+
+> ```js
+> const a = 1
+> const b = 2
+> const c = 4
+> const options = a | b | c
+> // 选项 b 是否在选项中
+> if (b & options) {
+> 	...
+> }
+> ```
+
+#### 指数操作符
+
+> ```js
+> Math.pow(2, 10));  // 1024
+> 2**10;           // 1024
+> ```
+
+#### 计算精度问题
+
+> - 浮点数精度问题：浮点数值最高精度是17位小数，但进行算数计算时其精确度远不如整数。
+> - 所以可通过截取小数点前面的位数来当做真正的数字（`toFixed()`方法）
+>
+> ```js
+> const result = 0.1 + 0.2；	//结果为0.30000000000000004
+> const mul = 0.07*100;		//结果为7.000000000000001
+> 
+> // 解决方案
+> console.log((0.1 + 0.2).toFixed(12) == 0.3)
+> ```
+>
+> #### 不同进制表示法
+>
+> ```js
+> 29  // 10进制
+> 035  // 8进制29      原来的方式
+> 0o35  // 8进制29      ES6的方式
+> 0x1d  // 16进制29
+> 0b11101  // 2进制29
+> ```
+>
+> #### 精确到指定位数的小数
+>
+> ```js
+> const round = (n, decimals = 0) => Number(`${Math.round(`${n}e${decimals}`)}e-${decimals}`)
+> round(1.345, 2)  // 1.35
+> round(1.345, 1)  // 1.3
+> 
+> 1.345.toFixed(2) // 1.35
+> 1.345.toFixed(1) // 1.3
+> ```
+
+#### rgb值和16进制颜色值互转
+
+> ```js
+> /**
+>  * @hexoToRGB 16进制颜色值转 RGB
+>  * @param {String} hex 16进制颜色字符串
+>  * @return {String} RGB颜色字符
+>  */
+> export function hexoToRGB (hex) {
+>   const tranHex = hex.replace('#', '0x')
+>   const r = tranHex >> 16
+>   const g = tranHex >> 8 & 0xff
+>   const b = tranHex & 0xff
+>   return `rgb(${r}, ${g}, ${b})`
+> }
+> 
+> /**
+>  * @RGBToHex 16进制颜色值转 RGB
+>  * @param {String} rgb RGB颜色字符串
+>  * @return {String} 16进制颜色字符串
+>  */
+> export function RGBToHex (rgb) {
+>   const rgbArr = rgb.split(/[^\d]+/)
+>   const color = rgbArr[1] << 16 | rgbArr[2] << 8 | rgbArr[3]
+>   return `#${color.toString(16)}`
+> }
+> 
+> ```
+
+
+
+### Math 对象
+
+```bash
+### Math 对象
+- Math对象不是构造函数，它具有数学常数和函数的属性和方法。跟数学相关的运算（求绝对值、取整、最大值等）可使用。
+- Math.PI()：圆周率
+- Math.abs(值)：绝对值
+- Math.floor(值)：向下取整
+- Math.ceil(值)：向上取整
+- Math.round(值)：四舍五入，注意负数的取值，如：-3.5 结果为-3
+- Math.max(值)：最大值	
+- Math.min(值)：最小值
+- Math.random()：返回的是取值范围为`0 ~ 1` 的一个随机数
+- `Math.trunc(Num)`：用于去除一个数的小数部分后返回整数部分，对于控制和无法截取整数的值返回 `NaN`（IE 浏览器不支持这个方法）
+- `Math.sign` 方法用来判断一个数到底是正数、负数、还是零。对于非数值会先将其转换为数值，可返回`+1、-1、0、-0、NaN`
+
+```
+
+| 原来数值 | `Math.floor` | `Math.ceil` | `Math.round` | `Math.trunc` |
+| :------- | :----------- | :---------- | :----------- | ------------ |
+| `3.1`    | `3`          | `4`         | `3`          | `3`          |
+| `3.6`    | `3`          | `4`         | `4`          | `3`          |
+| `-1.1`   | `-2`         | `-1`        | `-1`         | `-1`         |
+| `-1.6`   | `-2`         | `-1`        | `-2`         | `-1`         |
+
+
+
+#### 获取选定区间的随机数
+
+```js
+/**
+ * @function random 获取选定区间的随机数
+ * @param {number} min 最小值
+ * @param {number} max 最大值
+ * @returns {number}
+ * @desc 注意：此随机方法包括下限，但不包括上限。
+ * @eaample random(10, 12) 将随机 10 或 11，但从不随机 12
+ */
+const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
+
+```
+
+
+
+## 字符串 String 
+
+### 特殊字符
+
+| 字符                                    | 描述                                                         |
+| :-------------------------------------- | :----------------------------------------------------------- |
+| `\n`                                    | 换行                                                         |
+| `\r`                                    | 在 Windows 文本文件中，两个字符 `\r\n` 的组合代表一个换行。而在非 Windows 操作系统上，它就是 `\n`。这是历史原因造成的，大多数的 Windows 软件也理解 `\n`。 |
+| `\'`, `\"`                              | 引号                                                         |
+| `\\`                                    | 反斜线                                                       |
+| `\t`                                    | 制表符                                                       |
+| `\b`, `\f`, `\v`                        | 退格，换页，垂直标签 —— 为了兼容性，现在已经不使用了。       |
+| `\xXX`                                  | 具有给定十六进制 Unicode `XX` 的 Unicode 字符，例如：`'\x7A'` 和 `'z'` 相同。 |
+| `\uXXXX`                                | 以 UTF-16 编码的十六进制代码 `XXXX` 的 Unicode 字符，例如 `\u00A9` —— 是版权符号 `©` 的 Unicode。它必须正好是 4 个十六进制数字。 |
+| `\u{X…XXXXXX}`（1 到 6 个十六进制字符） | 具有给定 UTF-32 编码的 Unicode 符号。一些罕见的字符用两个 Unicode 符号编码，占用 4 个字节。这样我们就可以插入长代码了。 |
+
+
+
+### 查找字符串
+
+> #### 查找某子字符串的下标
+>
+> - `indexOf(searchValue, startIndex?)`：返回某个子字符串值在字符串中首次出现的下标位置，若检索的子字符串值不存在则返回 -1
+> - `lastIndex(子字符串)`： 返回字符串当中子字符串最后一次出现的下标位置；若没有则返回-1
+>
+> #### 查找是否包含某子字符串
+>
+> - `startsWith(value,start)`：检测字符串中是否以value开头，从start位置开始但不包括start，返回布尔值
+> - `endsWith(value,start)`：检测字符串中是否以value结尾，从start位置开始但不包括start，返回布尔值
+> - `includes(value,start) `：检测字符串中是否有value，从start位置但不包括start开始找，返回布尔值
+>
+> #### 查找指定下标所在位置
+>
+> - `at(index)`：返回参数指定位置的字符，若参数位置超出字符串范围则返回undefined
+>
+> #### 正则检索字符串
+>
+> - `search() `：用于检索字符串中指定的子字符串，或检索与正则表达式相匹配的子字符串；若没有找到任何匹配的子串，则返回 -1
+> - `match() `：可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配
+> - `matchAll()`：返回一个正则表达式在当前字符串的所有匹配
+
+### 字符串补全长度 pad
+
+> - `padStart(n, str)`用于头部补全，并以新字符串返回
+> - `padEnd(n, str)`用于尾部补全，并以新字符串返回
+> - （第一个参数是字符串补全生效的最大长度，第二个参数是用来补全的字符串）
+> - 用途：常用于数值补全指定位数、提示字符串格式
+>
+> ````js
+> // 限定长度数字，当数字位数不足时在前面用0补齐
+> '12'.padStart(10, '0') // "0000000012"
+> '123456'.padStart(10, '0') // "0000123456"
+> 
+> // 提示字符串格式
+> '12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
+> '09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
+> ````
+
+### 重复复制字符串：repeat
+
+> `String.repeat(n)`：将原字符串重复n次（n若为小数会向下取整），并作为一个新字符串返回。
+
+### 消除字符串空格：trim
+
+> - `trim()`：两侧去空格，返回新字符串
+> - `trimStart()、trimLeft()`消除字符串头部的空格，返回新字符串
+> - `trimEnd()、trimRight()`消除尾部的空格，返回新字符串
+> - 注意：消除的是空格键、tab键、换行符等不可见的空白符号
+>
+> ```js
+> const str = '  an dy   ';
+> str.trim()			// "an dy"
+> str.trimStart()	// "an dy  " 
+> str.trimEnd()		// "  an dy"
+> ```
+
+### 字符串替换：replace
+
+> - `replace(旧字符串，新字符串)`： 用新字符串替换旧字符串
+>     - replce(/旧字符串/ig,新字符串)：`i`表示不区分大小写，`g`表示全文搜索
+> - `replaceAll(searchValue, replacement)`：全文所有符合规则的字符都会被替换，替换规则可以是字符串或正则表达式，返回一个新字符串
+>     - 如果`searchValue`是一个不带有`g`修饰符的正则表达式，`replaceAll()`会报错，而`replace()`不会
+>     - replacement可使用一些特殊字符串
+>         - `$&`：匹配的字符串
+>         - `$` `：匹配结果前面的文本
+>         - `$'`：匹配结果后面的文本
+>         - `$n`：匹配成功的第`n`组内容，`n`是从1开始的自然数。这个参数生效的前提是，第一个参数必须是正则表达式
+>         - `$$`：指代美元符号`$`
+>
+> ```js
+> const str = 'aabbcc'
+> str.replace(/b/, 'd');	// 不报错，aaddcc
+> str.replaceAll(/b/, 'd');	// 报错
+> 
+> 
+> /* replacement特殊字符串含义 */
+> // $& 表示匹配的字符串，即`b`本身
+> // 所以返回结果与原字符串一致
+> 'abbc'.replaceAll('b', '$&')
+> // 'abbc'
+> 
+> // $` 表示匹配结果之前的字符串
+> // 对于第一个`b`，$` 指代`a`
+> // 对于第二个`b`，$` 指代`ab`
+> 'abbc'.replaceAll('b', '$`')
+> // 'aaabc'
+> 
+> // $' 表示匹配结果之后的字符串
+> // 对于第一个`b`，$' 指代`bc`
+> // 对于第二个`b`，$' 指代`c`
+> 'abbc'.replaceAll('b', `$'`)
+> // 'abccc'
+> 
+> // $1 表示正则表达式的第一个组匹配，指代`ab`
+> // $2 表示正则表达式的第二个组匹配，指代`bc`
+> 'abbc'.replaceAll(/(ab)(bc)/g, '$2$1')
+> // 'bcab'
+> 
+> // $$ 指代 $
+> 'abc'.replaceAll('b', '$$')
+> // 'a$c'
+> ```
+
+### 截取字符串 substring
+
+> - `substr(start,length)`：将字符串从star位置开始截取到start位置，截取length个字符
+> - `substring(start,end) `： 将字符串从start位置开始截取到end位置，但不包括end；end可以省略，表示一直截取到结束
+> - `split(“分隔符”) `：将字符串转成数组，返回为一个新数组
+> - `slice(start, end?)`： 将字符串从start位置开始截取到end位置，但不包括end；
+>
+> #### `substr`与`substring`的区别
+>
+> ```js
+> /**
+> 	* `substr` 第二个参数是子字符串的长度
+> 	* `substring` 第二个参数是子字符串的结束位置
+> 	*/ 
+> 'hello world'.substr(1, 3) // 'ell'
+> 'hello world'.substring(1, 3) // 'el'
+> 
+> 
+> /**
+> 	* `substr` 允许使用负数作为起始位置参数
+> 	* `substring`会将子字符串将使负开始位置变为 0（零）
+> 	*/ 
+> 'hello world'.substr(-2, 4) // 'ld'
+> 'hello world'.substring(-2, 5) // 'hello'
+> 'hello world'.substring(0, 5) // 'hello'
+> 
+> 
+> // `slice` 是获取子字符串的另一个方法。它没有被弃用为 `substr`，并且支持负索引
+> 'hello world'.slice(2, 4) // 'll'
+> 'hello world'.slice(-10, 5) // 'ello'
+> 'hello world'.slice(-5) // 'world'
+> ```
+
+### 子串字符访问 chatAt(index)  或 string[index]
+
+> 有两种方法可以访问字符串的单个字符：
+>
+> - 使用 `charAt[index]` 方法
+> - 使用括号表示法，如 `'hello'[1]`
+>
+> 在这两种情况下，`'hello'[1]` 和 `'hello'.charAt(1)` 都将返回第二个字符 `e`。
+>
+> #### charAt(i) 与 string[i] 的区别
+>
+> - 第二种方式是 ECMA5 的标准，在现代浏览器中受支持。在非常旧的浏览器（如 IE6、7）中不支持它。（我不认为我们仍然需要支持这些版本的 IE）。
+>
+>
+> | 方法                   | 索引的范围为 `0` 和 `string.length - 1` | 其他情况下  |
+> | ---------------------- | --------------------------------------- | ----------- |
+> | `string.charAt(index)` | 第一个和最后一个                        | `''`        |
+> | `string[index]`        | 第一个和最后一个                        | `undefined` |
+>
+> 如果不传递适当的索引（不是整数或超出范围），在某些边缘情况下我们将得到不同的结果。
+>
+> ```js
+> 'hello'[NaN] // undefined
+> 'hello'.charAt(NaN) // 'h'
+> 
+> 'hello'[undefined] // undefined
+> 'hello'.charAt(undefined) // 'h'
+> 
+> 'hello'[true] // undefined
+> 'hello'.charAt(true) // 'e'
+> 
+> 'hello'['00'] // undefined
+> 'hello'.charAt('00') // 返回 h，因为它将首先尝试将 00 转换为数字
+> 
+> 'hello'[1.5] // undefined
+> 'hello'.charAt(1.23) // 返回 e，因为它将 1.23 四舍五入到数字 1
+> ```
+>
+> 如果索引超出可选范围：
+>
+> ```js
+> 'hello'[100] // undefined
+> 'hello'.charAt(100) // ''
+> ```
+>
+> #### 为什么 `'hello'.charAt(true)` 返回 `e`？
+>
+> `charAt(index)` 方法首先尝试将索引转换为数字。由于 `Number(true) == 1`，`charAt(true)` 将返回一个索引位置的字符，即第二个字符。
+
+### 转编码：encodeURIComponent() 
+
+> - encodeURIComponent() 函数可把字符串作为 URI 组件进行编码。
+> - 该方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( ) 。
+> - 其他字符（比如 ：;/?:@&=+$,# 这些用于分隔 URI 组件的标点符号），都是由一个或多个十六进制的转义序列替换的。
+>
+> ```js
+> let url = "http://w3cschool.cc/my test.php?name=ståle&car=saab";
+> let a = encodeURIComponent(url);
+> console.log(a);	// http%3A%2F%2Fw3cschool.cc%2Fmy%20test.php%3Fname%3Dst%C3%A5le%26car%3Dsaab
+> ```
+
+###  斜杠转义：String.raw()
+
+> - `Sting.raw()`返回一个斜杠都被转义的字符串（即在斜杠前再加一个斜杠），常用于模板字符串的处理方法
+> - `String.raw()`本质上是一个正常的函数，只是专用于模板字符串的标签函数。若写成正常函数形式，其第一个参数为具有`raw`属性的对象，且`raw`属性值为数组；`raw`属性等同于模板字符串解析后得到的数组
+>
+> ```js
+> `Hi\n${1+2}`	// 换行输出3
+> String.raw`Hi\n${1+2}`	// 输出Hi\n3
+> String.raw`Hi\\n` === "Hi\\\\n"	// true
+> 
+> 
+> /* 正常函数写法 */
+> String.raw({raw: ['foo', "bar"]}, 1 + 2) === `foo${1 + 2}bar`	// true
+> 
+> 
+> /* String.raw()实现原理 */
+> String.raw = function (str, ...values) {
+>   let output = "";
+>   let index;
+>   for (index = 0; index < values.length; index++) {
+>     output += str.raw[index] + values[index];
+>   }
+>   output += str.raw[index];
+>   return output;
+> }
+> ```
+
+
+
 ## 垃圾回收(GC)机制
 
 > ```bash
@@ -1739,6 +2903,18 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 
 ## 函数式编程 Function
 
+```bash
+## 函数式编程 Function
+- 参数（parameter）是函数声明中括号内列出的变量（它是函数声明时的术语）。
+- 参数（argument）是调用函数时传递给函数的值（它是函数调用时的术语）。
+
+- 如果一个函数被调用，但有参数（argument）未被提供，那么相应的值就会变成 undefined。
+
+
+```
+
+
+
 ### 函数的定义
 
 > ```bash
@@ -1794,6 +2970,112 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 > foo.bind({}).name // "bound foo"
 > (function(){}).bind({}).name // "bound "
 > ```
+
+
+
+### 构造器和 `new`操作符 
+
+- 构造函数在技术上是常规函数，但有两个约定：
+    1. 它们的命名以大写字母开头。
+    2. 它们只能由 `new` 操作符来执行。
+- 当一个函数被使用 `new` 操作符执行时，它会按照以下步骤：
+    1. 一个新的空对象被创建并分配给 this。
+    2. 函数体执行，通常它会修改 this，为其添加新的属性。
+    3. 返回 this 的值。
+- 如果需要多次创建，相对于字面量创建对象要简短得多，且更易于阅读。
+
+```js
+function User(name) {
+  // this = {} //（隐式创建）
+  this.name = name
+  this.isAdmin = false
+  // return this //（隐式返回）
+}
+const user = new User('Willy')
+console.log(user.name, user.isAdmin) // Willy, false
+
+
+/** 等同于下面的对象写法 */
+const user2 = {
+  name: 'Willy',
+  isAdmin: false,
+}
+
+```
+
+
+
+#### `new function() { ... }`
+
+- 任何函数（除了箭头函数没有自身的 this）都可以用作构造器，即可以通过 `new` 来运行。
+- 如果有许多用于创建单个复杂对象的逻辑，则可以将它们封装在一个立即执行的构造函数中（这个构造函数不能被再次调用，因为它不保存在任何地方，只是被创建和调用，因此这个实现旨在封装构建单个对象的代码，而无需将来复用）
+
+```js
+//  创建一个立即执行函数，并使用 new 调用它
+const user = new function() {
+  this.name = 'Willy'
+  this.isAdmin = false
+  
+  // ...用于用户创建的其他代码
+  // 也许是复杂的逻辑和语句
+  // 局部变量等
+}
+```
+
+
+
+#### 是否通过 `new` 来创建：`new.target`
+
+- 在一个函数内部可以使用 `new.target` 属性来检查它是否被使用 `new` 进行调用。
+    - `new.target`的值：对于常规调用，它为 `undefined`；对于使用 `new` 的调用则等于该函数。
+    - `new.target` 可用在函数内部来判断该函数是被通过 new 调用的 ‘构造器模式’，还是没被通过 new 调用的 ‘常规模式’。
+
+```js
+function Test() {
+  console.log(new.target)
+}
+Test() // undefined
+new Test() // function Test(){ ... }
+
+
+function User(name) {
+  // 如果没有通过 new 运行，则会添加 new
+  if (!new.target) return new User(name)
+  this.name = name
+}
+const user1 = User('Willy') // 将调用重定向到新用户
+console.log(user1.name) // Willy
+
+```
+
+
+
+#### 构造函数的 Return
+
+- 只有在 return 的值为复杂数据类型的对象，才会不返回自身的 this。
+    - 如果构造函数没有 return 语句，则返回自身的 this。
+    - 如果 return 返回一个对象，则返回这个对象，而不是 this。
+    - 如果 return 返回的是一个原始数据类型，则返回自身的 this。
+
+```js
+function User1(name) {
+  return { name }
+}
+function User2(name) {
+  this.name = name
+  return 1 // 会返回 this
+}
+function User2(name) {
+  this.name = name
+}
+const user1 = new User1('user1') // {name:'user1'}
+const user2 = new User2('user2') // User2 {name: 'user2'}
+const user3 = new User2('user3') // User2 {name: 'user3'}
+console.log(user1, user2, user3)
+
+```
+
+
 
 ### 纯函数
 
@@ -3000,1260 +4282,260 @@ person
 > personA.spell();
 > ```
 
-## 运算符扩展
-
-### 解构赋值
-
-> - 数组解构按照一一对应的关系从数组中提取值，然后将值赋值给变量
-> - 解构赋值的规则是，只要等号右边的值不是对象或数组，就先将其转为对象。由于`undefined`和`null`无法转为对象，所以对它们进行解构赋值，都会报错。
-> - 作用：交换变量值、从函数返回多值、函数参数定义、提取JSON数据、函数默认值、遍历Map结构、暴露模块指定方法
->
-> ```js
-> /* 数组 */
-> let arr = [1, 2, 3];
-> let [a, b, c, d] = arr; // a=1, b=2, c=3, d=undefined
-> let [ , , third] = arr; // third为3
-> let [head, ...tail] = arr; // tail为 2,3
-> 
-> /* 对象 */
-> let person = {name: 'willy', age: 20};
-> let { name, age } = person;
-> let {name: myName, age: myAge} = person;    //赋别名
-> console.log(name, myName, age, myAge);  // willy willy 20 20
-> 
-> /* Set结构 */
-> let [x, y, z] = new Set([1, 2, 3]); // x为1
-> 
-> /* Iterator接口数据 */
-> function* fibs() {
->   let a = 0, b = 1;
->   while (true) {
->     yield a;
->     [a, b] = [b, a + b];
->   }
-> }
-> let [first, second, third, fourth, fifth, sixth] = fibs(); // sixth为5
-> 
-> /* 字符串 */
-> const [a, b, c, d, e] = 'hello';  // c="l"
-> 
-> /* 数值和布尔值：数值和布尔值的包装对象都有toString对象，因此都能取值 */
-> let {toString: s} = 123;
-> s === Number.prototype.toString // true
-> let {toString: s} = true;
-> s === Boolean.prototype.toString // true
-> 
-> let { prop: x } = undefined; // TypeError
-> let { prop: y } = null; // TypeError
-> ```
->
-> #### 使用解构删除不必要属性
->
-> - 通过定义新的变量来接收那些不必要的属性，可使得不必要属性不存在剩余参数中（即所想取的值都在剩余参数中）
->
-> ```js
-> // 通过定义 _internal, tooBig 接收此两个属性的值，这样使得剩余参数中不存在此两个属性 
-> let { _internal, tooBig, ...cleanObject } = {
->   el1: '1',
->   _internal: "secret",
->   tooBig: {},
->   el2: '2',
->   el3: '3'
-> };
-> console.log(cleanObject);  // {el1: '1', el2: '2', el3: '3'}
-> ```
->
-> #### 函数参数中解构嵌套对象
->
-> ```js
-> var car = {
->   model: 'bmw 2018',
->   engine: {
->     v6: true,
->     vin: 12345
->   }
-> }
-> // 通过结构只获取 car 中 model 属性和 engine 的 vin 属性
-> const modelAndVIN = ({ model, engine: { vin } }) => {
->   console.log(`model: ${model} vin: ${vin}`);
-> }
-> modelAndVIN(car);  // => model: bmw 2018  vin: 12345
-> ```
->
-> #### 连续解构赋值
->
-> ````js
-> let obj = {
->   p: [
->     'Hello',
->     { y: 'World' }
->   ]
-> };
-> let { p, p: [x, { y }] } = obj;
-> x // "Hello"
-> y // "World"
-> p // ["Hello", {y: "World"}]
-> ````
->
-> ### 值互换
->
-> ```js
-> var x = 1;
-> var y = 2;
-> [x,y] = [y,x];
-> ```
->
-> ### 函数和属性增强写法
->
-> ```js
-> const name = 'Kobe', age = 17;
-> //ES5
-> const obj1 = {
->   name: name, age: age,
->   run: function(){}, eat: function(){}
-> }
-> 
-> //ES6
-> const obj2 = { name, age, run(){}, eat(){} }
-> ```
-
-### 可变参数 arguments
-
-- 虽然arguments对象并不是一个数组而是一个伪数组，但是访问单个参数的方式与访问数组元素的方式相同.
-
-- 在js中无需明确指出参数名，就能访问它们；存放所有的参数
-
-- 引用属性 arguments.length检测函数的参数个数
-
-- 用 arguments 对象判断传递给函数的参数个数，即可模拟函数重载
-
-- > 注意：箭头函数无法调用arguments
-
-```js
-function doAdd() {
-  if (arguments.length == 1) {
-    console.log(arguments[0] + 5);
-  } else if (arguments.length == 2) {
-    console.log(arguments[0] + arguments[1]);
-  }
-}
-doAdd(10);	//输出 "15"
-doAdd(40, 20);	//输出 "60"
-
-function doConcat() {
-  let s = "";
-  for (let i = 0; i < arguments.length; i++) {
-    s += arguments[i] + " ";
-  }
-  console.log(s);
-  return s;
-}
-doConcat("name", "age");	//输出name age
-```
-
-### 剩余(`rest`)参数
-
-剩余参数语法允许将一个不定数量的参数表示为一个数组。
-
-> 注意：剩余参数之后不能再有其他参数（即只能是最后一个参数），否则会报错。
-
-```js
-//剩余参数（不定长可变参）
-function sum(a, b, ...num) {//可以给多个参数到sum函数里面
-  console.log(num);	// 2, 3, 4, 5, 6, 7, 8, 9
-}
-sum(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-```
-
-#### 剩余参数和 `arguments`对象的区别
-
-- 剩余参数只包含那些没有对应形参的实参，而 arguments 对象包含了传给函数的所有实参。
-- `arguments`对象不是一个真正的数组，而剩余参数是真正的` Array`实例，也就是说你能够在它上面直接使用所有的数组方法，比如 `sort、map、forEach或pop`。
-- `arguments`对象还有一些附加的属性 （如callee属性：返回当前函数的引用(匿名函数可以使用该属性实现递归调用)）。
-
-#### 剩余参数与解构配合
-
-```js
-let arr1 = ['a', 'b', 'c'];
-let [s1, ...s2] = arr1;
-console.log(s2);  //[ 'b', 'c' ]
-```
-
-### 扩展运算符`...`
-
-> ```bash
-> ## 扩展运算符 ...
-> 用于取出参数对象中的所有可遍历属性，拷贝到当前对象之中
->     1. 复制数组 `const a2 = [...a1]`
->     2. 合并数组 `[...arr1, ...arr2, ...arr3]`
->     3. 与解构赋值结合`const [first, ...rest] = [1, 2, 3, 4, 5]; //...rest:2,3,4,5`
-> 
-> 注意0：如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错
-> 注意1：任何定义了遍历器(Iterator)接口的对象，都可以用扩展运算符转为真正的数组。
-> 注意2: 扩展运算符取出的数据只是浅拷贝，当其属性值为复杂数据类型时，被扩展对象与扩展对象两者共用内存空间。
-> ```
->
-> ```js
-> //1. 合并、复制数组
-> let ary1 = [1, 2, 3],ary2 = [4, 5, 6];
-> let ary3 = [...ary1, ...ary2];	//等价于 let ary3 = ary1.push(...ary2);
-> let ary4 = [...ary1];
-> console.log(ary3, ary4);
-> 
-> //2. 遍历、拷贝数组
-> let bar = { a: 1, b: 2 };
-> let baz = { ...bar }; // 等价于 az = Object.assign({}, bar);
-> 
-> //将数组转换为参数数列
-> function Add(x, y){
->   return x + y;
-> }
-> console.log(Add(...[4, 38])) // 42
-> 
-> //将伪数组(字符串)转为真正的数组
-> let a = 'hello';
-> console.log(a, '=>', ...a);
-> 
-> 
-> /* 将元素组织成对象 */
-> const obj = {a: 1, b: 2, c: 3};
-> const {a, ...rest} = obj;
-> console.log(rest, rest.b);    // {b: 2, c: 3}  2
-> (function({a, ...obj}) {
->   console.log(obj);    // 输出 {b: 2, c: 3}
-> }({a: 1, b: 2, c: 3}));
-> 
-> /* 将对象扩展为元素 */
-> const obj1 = {a: 1, b: 2, c: 3};
-> const newObj ={...obj1, d: 4};
-> console.log(newObj);  // {a: 1, b: 2, c: 3, d: 4}
-> ```
-
-### 模板字符串
-
-> ````js
-> //模板字符串解析变量
-> let name = `willy`;
-> let obj = { //模板字符串换行
-> name: 'willy',
-> age: 22,
-> sex: '男'
-> }
-> const sayHello = () => `hello, my name is ${name}`; //在模板字符串调用函数
-> let str = `${name}-->name:${obj.name},age:${obj.age},sex:${obj.sex},${sayHello()}`
-> console.log(str);
-> 
-> let start = str.startsWith('willy');	//头部是否为willy
-> let end = str.endsWith('willy');	//尾部是否为willy
-> let strCpoy = str.repeat(1);	//重复一次
-> console.log(start, end, strCpoy);    //true true
-> ````
-
-### 空值合并运算符`??`
-
-> ```bash
-> ## 空值合并运算符 ??
-> - 在读取对象属性时，若某个属性值为`null 或 undefined`，有时需要为它们指定默认值。常见做法是通过`||`运算符指定默认值。
-> 
-> - `||`运算符不仅在属性值为`undefined`和`null`时生效，在属性值为空字符串或`false`或`0`时也会生效。
-> 
-> - Null判断运算符`??`只有运算符左侧值为`null`或`undefined`时才会返回右侧的值（即只关心左侧的值是否为 `null` 或 `undefined`，而不在乎是否为虚值）
-> ```
->
-> ```js
-> const response = { settings: { headerText: 0 } }
-> const headerText = response.settings.headerText || 'default Text'
-> const headerText1 = response.settings.headerText ?? "default Text1"
-> 
-> 
-> const data = {
->   nullValue: null,
->   height: 400,
->   animationDuration: 0,
->   headerText: '',
->   showSplashScreen: false,
-> }
-> console.log(data.undefinedValue ?? 'some other default') // 'some other default'
-> console.log(data.nullValue ?? 'some other default') // 'some other default'
-> console.log(data.headerText ?? 'Hello, world!') // ''
-> console.log(data.animationDuration ?? 300) // 0
-> console.log(data.showSplashScreen ?? true) // false
-> ```
-
-### 可选链判断运算符`?.`
-
-> ```bash
-> ## 可选链判断运算符 ?.
-> - 当需要读取对象的深层次属性时，往往需要判断属性的上一层对象是否存在
-> - 可选链操作符` ?.` 允许读取位于连接对象链深处的属性的值，而不必明确验证链中的每个引用是否有效。
-> - `?.`与`.`的区别在于，在引用为null 或 undefined 的情况下不会引起错误，而是使得该表达式短路并返回`undefined`
-> 
-> 
-> ### 可选链 ?. 用法
-> a?.x		// 等同于 	a == null ? undefined : a.x
-> a?.[x]	// 等同于	a == null ? undefined : a[x]
-> a?.b()	// 等同于	a == null ? undefined : a.b()
-> a?.()		// 等同于	a == null ? undefined : a()
-> 
-> 
-> ### 可选链的替代方案：&&
-> - 缺点：
-> 		- 语法冗长
-> 		- 如果失败，`&&` 返回其左侧，而 `?.` 始终返回 undefined
-> 		- `&&` 对所有的虚值的左侧都失败，而 `?.` 只对 undefined 和 null 失败。
-> - 案例：`user && user.address && user.address.street // undefined`
-> 
-> 
-> 
-> ### 可选链的替代方案：解构赋值
-> - 缺点：使用解构来处理链式属性的访问，这会不美观。
->     const { address: { street = undefined } = {} } = user
->     street // undefined
-> ```
->
-> ```javascript
-> // 错误的写法（如果body属性 或 user属性不存在，则会报错）
-> const  firstName = message.body.user.firstName || 'default';
-> 
-> // 正确的写法（可选链的替代方案 &&）
-> const firstName = (
->   message
->   && message.body
->   && message.body.user
->   && message.body.user.firstName
-> ) || 'default';
-> 
-> 
-> /* 引入可选链 ?. 的优化写法 */
-> const  firstName = message.body.user.firstName || 'default';
-> ```
-
-### 逻辑赋值运算符
-
-> - 这三个二元运算符`||=`、`&&=`、`??=`相当于先进行逻辑运算，然后根据运算结果，再视情况进行赋值运算。
-> - 它们的一个用途是，为变量或属性设置默认值。
->
-> | 赋值运算符 | 相当于         | 仅当 a 是 |                                                              |
-> | ---------- | -------------- | --------- | ------------------------------------------------------------ |
-> | `a ||= b`  | `a || (a = b)` | `false`   | 如果左侧为`false`，则评估右侧表达式并将其分配给左侧变量      |
-> | `a &&= b`  | `a && (a = b)` | `true`    | 如果左侧为`true`，则评估右侧表达式并将其分配给左侧的变量     |
-> | `a ??= b`  | `a ?? (a = b)` | `null`    | 如果左侧值为 `null` 或 `undefined`，则评估右侧表达式并将其分配给左侧的变量 |
->
-> ```js
-> /** 或赋值运算符 */
-> x ||= y		// 等同于	x || (x = y)
-> user.id ||= 1	// 等同于 user.id = user.id || 1
-> 
-> 
-> /** 与赋值运算符 */
-> x &&= y		// 等同于	x && (x = y)
-> 
-> 
-> /** Null 赋值运算符 */
-> x ??= y		// 等同于	x ?? (x = y)
-> opts.foo ??= 'bar'	// 等同于 opts.foo = opts.foo ?? 'bar'; 或 opts.foo ?? (opts.foo = 'bar')
-> ```
-
-### 代码复用`Object[key]`
-
-> - 把`Object.key`写成`Object[key]`，这种做法构成了编写可重用代码的基础，如element UI的表单验证。可用作封装通用的表单验证函数。
->
-> ```js
-> // object validation rules
-> const schema = {
->   first: {
->     required: true
->   },
->   last: {
->     required: true
->   }
-> };
-> // universal validation function
-> const validate = (schema, values) => {
->   for (field in schema) {
->     if (schema[field].required) {
->       if (!values[field]) {
->         return false;
->       }
->     }
->   }
->   return true;
-> }
-> console.log(validate(schema, { first: 'Bruce' }));  // false
-> console.log(validate(schema, { first: 'Bruce', last: 'Wayne' }));  // true
-> ```
-
-### 幂运算符（`**` 和 `**=`）
-
-> - ES7 中引入了**幂运算符（Exponentiation operator）`**`**`，`**` 具有与 `Math.pow(..)` 等效的计算结果。例如：`a ** b` 是 `Math.pow(a, b)` 的简写，`a **= b` 是 `a = a ** b` 的简写
-> - 幂赋值运算符使一个变量为底数、以右值为指数的指数运算（乘方）结果赋给该变量。
-> - 幂运算符`**`的特点是右结合，多个指数运算符连用时，是从最右边开始计算的
->
-> ```js
-> 2 ** 3	// 8
-> Math.pow(2, 3)	// 8
-> 
-> 4 ** 3 ** 2 // 相当于 4 ** (3 ** 2) = 262144
-> 
-> let b = 4;	
-> b **= 3	// 等同 b = b * b * b;
-> ```
->
-
-## 数值 Number
-
-> ```bash
-> ## 数值 Number
-> - 二进制需要添加前缀`0b`，八进制需要添加前缀`0o`
-> - 数值可使用下划线`_`作为分隔符：`1_0000_00_000 === 10**12;   0.000_001 === 1e10_000`（数值分隔符没有指定间隔位数，小数点及指数e前后不能有分隔符，两个分隔符不能相连）
-> 
-> 
-> 
-> ### 实例方法
-> - ES6将全局方法`parseInt() 和 parseFloat()`移植到`Number`对象上，`Number.parseInt(12.34)`
-> - `Number.isFinite(Num)`：检查数字是否为有限的，即不是`Infinity`则为`true`（若参数类型不是数值则一律为false）
-> - `Number.isNaN(Num)`：检查一个值是否为`NaN`，非`NaN`则为false
-> - `Numer.isInteger(Num)`：判断一个数值是否为整数
-> - `Number.MAX_SAFE_INTEGER` 和 `Number.MIN_SAFE_INTEGER` 表示安全整数的上下限，JS能准确表达整数范围在 `-2^53` 到 `2^53` 之间的数
-> - `Number.isSafeInteger(Num)` 则是用来判断一个整数是否落在安全整数范围之内
-> 
-> ```
-
-### 特殊的数字类型
-
-> - 包括浮点数和整数。特殊的数字类型有：`NaN、Infinity`
-> - NaN
->   - NaN(Not a Number)，表示不是数字，但它其实是一个特殊数字。
->   - 当运算操作符错误时，一般会得到NaN
->   - NaN具有传染性，即NaN参与任何运算，结果都为NaN
->   - NaN与任何值都不相等
-> - Infinity
->   - 表示数据超过了JS可表示的范围，是一个特殊的数字
->   - 与其他数据类型进行操作运算时，结果还是Infinity
->   - 任何数字除以0得到Infinity
->
-> ```js
-> /* inNaN() 与 isFinite() 函数 */
-> console.log(NaN === NaN); // false
-> // 判断一个数是否为NaN的唯一方式
-> console.log(isNaN(NaN)); // true
-> console.log(isFinite(Infinity));  // false
-> console.log(isFinite(NaN)); // false
-> console.log(isFinite(1)); // true
-> ```
-
-### 安全数
-
-> - `2^53`是js内置的最大整数值(不安全)，`2^53+1`是会被摄入成`2^53`
-> - **Number.MAX_SAFE_INTEGER**是js里整数的安全的最大值，由于js用的IEEE 754双精度浮点，可以安全地表示`[-2^53+1, 2^53-1]`这个范围，比这更大的表示 **Infinity**，与之相对的是 **Number.MIN_VALUE** 
->
-> ```js
-> Math.pow(2, 53) === Math.pow(2, 53) + 1 // true
-> ```
-
-### BigInt 大整数
-
-> - `BigInt` 一种用于大整数运算的新原始数据类型，表示大于 2⁵³ 的数字。后缀为 `n`。
-> - `BigInt(value)` 只用来表示整数，没有位数的限制，任何位数的整数都可以精确表示。
-> - BigInt 和 Number 不是严格相等的，但是宽松相等。
-> - 可以通过typeof操作符来判断变量是否为BigInt类型（返回字符串"bigint"）
-> - 可以通过`Object.prototype.toString`方法来判断变量是否为BigInt类型（返回字符串"[object BigInt]"）
->
-> ```js
-> /* BigInt类型 */
-> let max1 = Number.MAX_SAFE_INTEGER;    // 最大安全整数
-> let max11 = max1 + 1, max12 = max1 + 2
-> max11 === max12   // true
-> 
-> let max2 = BigInt(Number.MAX_SAFE_INTEGER);
-> let max21 = max2 + 1n, max22 = max2 + 2n
-> max21 === max22   // false
-> 
-> 
-> // 判断是否为 BigInt 类型
-> typeof 1n === 'bigint'; // true 
-> typeof BigInt('1') === 'bigint'; // true 
-> Object.prototype.toString.call(1n) === '[object BigInt]'; // true
-> 
-> // BigInt 与 Number 类型的对比
-> 10n === 10 // false 
-> 10n == 10  // true 
-> ```
->
-> ![image-20210331160240361](./image/image-20210331160240361.png)
-
-### 数字分隔符
-
-> - 为了增加更大数字的可读性，从 ES2021 开始，我们可以在数字中使用下划线（`_`）作为分隔符。
-> - 数字分隔符可以在数字之间创建可视化分隔符，通过 _ 下划线来分割数字，使数字更具可读性，可以放在数字内的任何地方
-> - 该新特性也支持在八进制中使用
->
-> ```js
-> const money = 1_000_000_00_0		// => 等价于 const money = 1000000000
-> const num = 0o123_456		// => 等价于 const num = 0o123456
-> ```
->
-> 数字组之间的视觉分离：
->
-> ```js
-> console.log(1_234_456_789.01) // 1234456789.01
-> console.log(1_000_000_000) // 1000000000
-> 
-> const fileSystemPermission = 0b111_111_000 // 504
-> const bytes = 0b1111_10101011_11110000_00001101 // 262926349
-> const words = 0xa0_b0_c0 // 10531008
-> ```
->
-> 我们还可以在分数和指数中使用分隔符：
->
-> ```js
-> 0.000_001 // 0.000001
-> 1e10_000 // Infinity
-> 
-> const massOfElectronInKg = 9.109_383_56e-31 // 9.10938356e-31
-> const trillionInShortScale = 1e1_2 // 1000000000000
-> ```
->
-> 分隔符的位置有两种限制：
->
-> - 我们只能在两位数之间加下划线。因此，以下所有数字都是非法的：
->
-> ```js
-> 3_.141
-> 3._141
-> 
-> 1_e12
-> 1e_12
-> 
-> _1464301
-> 1464301_
-> 
-> 0_b111111000
-> 0b_111111000
-> ```
->
-> - 我们不能连续使用多个下划线：
->
-> ```js
-> 123__456 // 不允许
-> ```
->
-> 这些限制背后的动机是保持解析简单并避免奇怪的边缘情况。
->
-> 以下解析数字的函数不支持分隔符：
->
-> - `Number()`
-> - `parseInt()`
-> - `parseFloat()`
->
-> ```js
-> console.log(Number('123_456')) // NaN
-> console.log(parseInt('123_456')) // 123
-> console.log(parseFloat('123_456.123')) // 123
-> ```
->
-> 理由是数字分隔符用于代码。其他类型的输入应该以不同的方式处理。
->
-> #### 下划线（`_`）作为 `bigint` 文本中的分隔符
->
-> `Bigint` 通常用于代表金融技术领域的货币。我们可以在 `bigint` 类型中使用下划线（`_`）作为分隔符：
->
-> ```js
-> const massOfEarthInKg = 1_000_00n // 100000n
-> ```
->
-> 与数字一样，有两个限制：
->
-> - 我们只能在两位数之间加一个下划线。
-> - 我们最多可以连续使用一个下划线。
-
-### 位运算符/计算
-
-```bash
-## 位运算
-1. 按位与 `&`
-`&` 以特定的方式组合操作二进制中对应的位，如果对应的位都为1，则结果为1，如果任意一个位是 0 则结果就是 0。
-
-
-2. 按位或 `|`
-`|` 运算符跟 `&` 的区别在于如果对应的位中任一操作数位1，则结果就是 1。
-    
-
-3. 按位异或 `^`
-`^` 如果对应两个操作位有且仅有一个 1 时结果为 1，其他都是 0。
-
-
-4. 按位非 `~`
-`~` 运算符是对位取反，1 变 0，0 变 1。即是求二进制的反码。
-
-
-5. 左移 `<<`
-`<<` 运算符使指定值的二进制数所有位都左移指定次数，其移动规则：转化位二进制后，丢弃高位，低位补零。
-
-
-6. 右移 `>>`
-`>>` 操作符会将指定操作数的二进制位向右移动指定位数。向右被移出的位被丢弃，拷贝最左侧的位以填充左侧。由于新的最左侧的位总是和以前相同，符号位没有被改变。所以被称作“符号传播”。
-
-
-7. 无符号右移 `>>>`
->>>该操作符会将第一个操作数向右移动指定的位数。向右被移出的位被丢弃，左侧用0填充。因为符号位变成了 0，所以结果总是非负的。（即便右移 0 个比特，结果也是非负的。）
-对于非负数，有符号右移和无符号右移总是返回相同的结果。例如， 9 >>> 2 得到 2 和 9 >> 2 相同。
-```
-
-```js
-// 1的二进制表示为: 00000000 00000000 00000000 00000001
-// 2的二进制表示为: 00000000 00000000 00000000 00000010
-// 3的二进制表示为: 00000000 00000000 00000000 00000011
-
-console.log(1 & 3)     // 1
-
-console.log(1 | 3)     // 3
-
-console.log(1 ^ 3)		// 2
-
-console.log(~ 1)			// -2
-
-console.log(1 << 2)		// 4
-
-console.log(1 >> 1)		// 0
-
-console.log(9 >>> 2)	// 2
-```
-
-#### 判断奇偶性
-
-> - 由于偶数的最低位为 0，奇数为 1，所以取模运算可以用位操作来代替。
-> - 0是一个特殊的偶数。对一个数字`num & 1`可以判断奇偶数，负数同样使用
-> - 位运算：`偶数 & 1 = 0，奇数 & 1 = 1`
->
-> ```js
-> if (value % 2) {
->   // 奇数
-> } else {
->   // 偶数 
-> }
-> 
-> 
-> 
-> // 位操作
-> if (value & 1) {
->   // 奇数
-> } else {
->   // 偶数
-> }
-> console.log(3 & 1);  // 1
-> console.log(4 & 1);  // 0
-> ```
-
-#### 取整
-
-> ```js
-> ~~10.12 // 10
-> ~~10 // 10
-> ~~'1.5' // 1
-> ~~undefined // 0
-> ~~null // 0
-> 
-> 
-> 6.83 >> 0		// 6
-> 6.83 << 0		// 6
-> 6.83 | 0		// 6
-> -6.83 >>> 0	// 6
-> ~~6.83 			// 6
-> ```
->
-> - **对一个数字`num | 0`可以取整，负数同样使用**
->
-> ```js
-> console.log(1.3 | 0);  // 1
-> console.log(-1.9 | 0);  // -1
-> ```
-
-#### 值替换
-
-> ```js
-> /** 使用解构来完成值替换 */
-> let arr = [12, -2]
-> [arr[0], arr[1]] = [arr[1], arr[0]];
-> console.log(arr); // [-2,12]
-> 
-> 
-> /** 使用 ^ 来完成值替换 */
-> var a = 5
-> var b = 8
-> a ^= b
-> b ^= a
-> a ^= b
-> console.log(a)   // 8
-> console.log(b)   // 5
-> ```
-
-#### 位掩码
-
-> ```js
-> const a = 1
-> const b = 2
-> const c = 4
-> const options = a | b | c
-> // 选项 b 是否在选项中
-> if (b & options) {
-> 	...
-> }
-> ```
-
-#### 指数操作符
-
-> ```js
-> Math.pow(2, 10));  // 1024
-> 2**10;           // 1024
-> ```
-
-#### 计算精度问题
-
-> - 浮点数精度问题：浮点数值最高精度是17位小数，但进行算数计算时其精确度远不如整数。
-> - 所以可通过截取小数点前面的位数来当做真正的数字（`toFixed()`方法）
->
-> ```js
-> const result = 0.1 + 0.2；	//结果为0.30000000000000004
-> const mul = 0.07*100;		//结果为7.000000000000001
-> 
-> // 解决方案
-> console.log((0.1 + 0.2).toFixed(12) == 0.3)
-> ```
->
-> #### 不同进制表示法
->
-> ```js
-> 29  // 10进制
-> 035  // 8进制29      原来的方式
-> 0o35  // 8进制29      ES6的方式
-> 0x1d  // 16进制29
-> 0b11101  // 2进制29
-> ```
->
-> #### 精确到指定位数的小数
->
-> ```js
-> const round = (n, decimals = 0) => Number(`${Math.round(`${n}e${decimals}`)}e-${decimals}`)
-> round(1.345, 2)  // 1.35
-> round(1.345, 1)  // 1.3
-> 
-> 1.345.toFixed(2) // 1.35
-> 1.345.toFixed(1) // 1.3
-> ```
->
-
-#### rgb值和16进制颜色值互转
-
-> ```js
-> /**
->  * @hexoToRGB 16进制颜色值转 RGB
->  * @param {String} hex 16进制颜色字符串
->  * @return {String} RGB颜色字符
->  */
-> export function hexoToRGB (hex) {
->   const tranHex = hex.replace('#', '0x')
->   const r = tranHex >> 16
->   const g = tranHex >> 8 & 0xff
->   const b = tranHex & 0xff
->   return `rgb(${r}, ${g}, ${b})`
-> }
-> 
-> /**
->  * @RGBToHex 16进制颜色值转 RGB
->  * @param {String} rgb RGB颜色字符串
->  * @return {String} 16进制颜色字符串
->  */
-> export function RGBToHex (rgb) {
->   const rgbArr = rgb.split(/[^\d]+/)
->   const color = rgbArr[1] << 16 | rgbArr[2] << 8 | rgbArr[3]
->   return `#${color.toString(16)}`
-> }
-> 
-> ```
-
-### Math 对象
-
-> - Math对象不是构造函数，它具有数学常数和函数的属性和方法。跟数学相关的运算（求绝对值、取整、最大值等）可使用。
-> - Math.PI()：圆周率
-> - Math.abs(值)：绝对值
-> - Math.floor(值)：向下取整
-> - Math.ceil(值)：向上取整
-> - Math.round(值)：四舍五入，注意-3.5 结果为-3
-> - Math.max(值)：最大值	
-> - Math.min(值)：最小值
-> - Math.random()：返回的是取值范围为`0 ~ 1` 的一个随机数
-> - `Math.trunc(Num)`：用于去除一个数的小数部分后返回整数部分，对于控制和无法截取整数的值返回`NaN`
-> - `Math.sign`方法用来判断一个数到底是正数、负数、还是零。对于非数值会先将其转换为数值，可返回`+1、-1、0、-0、NaN`
-
-#### 获取选定区间的随机数
-
-```js
-/**
- * @function random 获取选定区间的随机数
- * @param {number} min 最小值
- * @param {number} max 最大值
- * @returns {number}
- * @desc 注意：此随机方法包括下限，但不包括上限。
- * @eaample random(10, 12) 将随机 10 或 11，但从不随机 12
- */
-const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
-
-```
-
-
-
-### Date 对象
-
-> - Date对象是构造函数，需实例化后才能使用，Date实例用来处理日期和时间
->
-> ```bash
-> ## 获取时间戳的三种方式
-> new Date().getTime()
-> +new Date
-> Date.now()
-> ```
-
-#### Date.prototype.toLocaleString() 获取月份名称
-
-> ```js
-> console.log(new Date()) // Wed May 05 2021 15:31:36 GMT+0800 (中国标准时间)
-> 
-> // 使用 `Date` 对象的内置 getMonth 方法获取当前月份作为值
-> let moonLanding = new Date().getMonth()
-> console.log(moonLanding) // 4
-> 
-> 
-> // Date.prototype.toLocaleString()  返回该日期对象的字符串，该字符串格式因不同语言而不同
-> const today = new Date()
-> console.log(today.toLocaleString('default', { month: 'long' })) // "五月"
-> console.log(today.toLocaleString('en-GB', { month: 'long' })) // "May"
-> console.log(today.toLocaleString('ko-KR', { month: 'long' })) // "5월"
-> 
-> 
-> /* 自定义 Options */
-> let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
-> // 请求参数 (options) 中包含参数星期 (weekday)，并且该参数的值为长类型 (long)
-> let options = {
-> weekday: "long", 
-> year: "numeric", 
-> month: "long", 
-> day: "numeric",
-> hour12: false,
-> };
-> alert(date.toLocaleString("de-DE", options));	// "Donnerstag, 20. Dezember 2012"
-> ```
->
-> **自定义方法**
->
-> ```js
-> const getMonthName = (val) => {
-> const month = [
-> 'January',
-> 'February',
-> 'March',
-> 'April',
-> 'May',
-> 'June',
-> 'July',
-> 'August',
-> 'September',
-> 'October',
-> 'November',
-> 'December'
-> ]
-> return month[val]
-> }
-> 
-> let moonLanding = new Date().getMonth()
-> console.log(getMonthName(moonLanding)) // "September"
-> ```
-
-### 数值判定：isFinite() & isNaN()
-
-> - `Number.isFinite(value)`函数：用来检查一个数值是否为有限的（finite），即不是`Infinity`。
-> - 如果参数是一个数值则返回`true`，否则返回`false`（如`NaN`、null、undefined、正无穷大、负无穷大或字符串，则会返回false）
-> - `Number.isNaN()`用来检查一个值是否为`NaN`。如果参数类型不是`NaN`，`Number.isNaN`一律返回`false`。
-> - 它们与传统的全局方法`isFinite()`和`isNaN()`的区别在于，传统方法先调用`Number()`将非数值的值转为数值，再进行判断，而这两个新方法只对数值有效，`Number.isFinite()`对于非数值一律返回`false`, `Number.isNaN()`只有对于`NaN`才返回`true`，非`NaN`一律返回`false`。
->
-> ```js
-> Number.isFinite(15); // true
-> Number.isFinite(0.8); // true
-> Number.isFinite(NaN); // false
-> Number.isFinite(Infinity); // false
-> Number.isFinite(-Infinity); // false
-> Number.isFinite('foo'); // false
-> Number.isFinite('15'); // false
-> Number.isFinite(true); // false
-> 
-> 
-> Number.isNaN(NaN) // true
-> Number.isNaN(15) // false
-> Number.isNaN('15') // false
-> Number.isNaN(true) // false
-> Number.isNaN(9/NaN) // true
-> Number.isNaN('true' / 0) // true
-> Number.isNaN('true' / 'true') // true
-> 
-> 
-> /** 与 ES5 的方法对比 */
-> isFinite(25) // true
-> isFinite("25") // true
-> Number.isFinite(25) // true
-> Number.isFinite("25") // false
-> isNaN(NaN) // true
-> isNaN("NaN") // true
-> Number.isNaN(NaN) // true
-> Number.isNaN("NaN") // false
-> Number.isNaN(1) // false
-> ```
-
-## 字符串 String 
-
-### 查找字符串
-
-> #### 查找某子字符串的下标
->
-> - `indexOf(searchValue, startIndex?)`：返回某个子字符串值在字符串中首次出现的下标位置，若检索的子字符串值不存在则返回 -1
-> - `lastIndex(子字符串)`： 返回字符串当中子字符串最后一次出现的下标位置；若没有则返回-1
->
-> #### 查找是否包含某子字符串
->
-> - `startsWith(value,start)`：检测字符串中是否以value开头，从start位置开始但不包括start，返回布尔值
-> - `endsWith(value,start)`：检测字符串中是否以value结尾，从start位置开始但不包括start，返回布尔值
-> - `includes(value,start) `：检测字符串中是否有value，从start位置但不包括start开始找，返回布尔值
->
-> #### 查找指定下标所在位置
->
-> - `at(index)`：返回参数指定位置的字符，若参数位置超出字符串范围则返回undefined
->
-> #### 正则检索字符串
->
-> - `search() `：用于检索字符串中指定的子字符串，或检索与正则表达式相匹配的子字符串；若没有找到任何匹配的子串，则返回 -1
-> - `match() `：可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配
-> - `matchAll()`：返回一个正则表达式在当前字符串的所有匹配
-
-### 字符串补全长度 pad
-
-> - `padStart(n, str)`用于头部补全，并以新字符串返回
-> - `padEnd(n, str)`用于尾部补全，并以新字符串返回
-> - （第一个参数是字符串补全生效的最大长度，第二个参数是用来补全的字符串）
-> - 用途：常用于数值补全指定位数、提示字符串格式
->
-> ````js
-> // 限定长度数字，当数字位数不足时在前面用0补齐
-> '12'.padStart(10, '0') // "0000000012"
-> '123456'.padStart(10, '0') // "0000123456"
-> 
-> // 提示字符串格式
-> '12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
-> '09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
-> ````
-
-### 重复复制字符串：repeat
-
-> `String.repeat(n)`：将原字符串重复n次（n若为小数会向下取整），并作为一个新字符串返回。
-
-### 消除字符串空格：trim
-
-> - `trim()`：两侧去空格，返回新字符串
-> - `trimStart()、trimLeft()`消除字符串头部的空格，返回新字符串
-> - `trimEnd()、trimRight()`消除尾部的空格，返回新字符串
-> - 注意：消除的是空格键、tab键、换行符等不可见的空白符号
->
-> ```js
-> const str = '  an dy   ';
-> str.trim()			// "an dy"
-> str.trimStart()	// "an dy  " 
-> str.trimEnd()		// "  an dy"
-> ```
-
-### 字符串替换：replace
-
-> - `replace(旧字符串，新字符串)`： 用新字符串替换旧字符串
->   - replce(/旧字符串/ig,新字符串)：`i`表示不区分大小写，`g`表示全文搜索
-> - `replaceAll(searchValue, replacement)`：全文所有符合规则的字符都会被替换，替换规则可以是字符串或正则表达式，返回一个新字符串
->   - 如果`searchValue`是一个不带有`g`修饰符的正则表达式，`replaceAll()`会报错，而`replace()`不会
->   - replacement可使用一些特殊字符串
->     - `$&`：匹配的字符串
->     - `$` `：匹配结果前面的文本
->     - `$'`：匹配结果后面的文本
->     - `$n`：匹配成功的第`n`组内容，`n`是从1开始的自然数。这个参数生效的前提是，第一个参数必须是正则表达式
->     - `$$`：指代美元符号`$`
->
-> ```js
-> const str = 'aabbcc'
-> str.replace(/b/, 'd');	// 不报错，aaddcc
-> str.replaceAll(/b/, 'd');	// 报错
-> 
-> 
-> /* replacement特殊字符串含义 */
-> // $& 表示匹配的字符串，即`b`本身
-> // 所以返回结果与原字符串一致
-> 'abbc'.replaceAll('b', '$&')
-> // 'abbc'
-> 
-> // $` 表示匹配结果之前的字符串
-> // 对于第一个`b`，$` 指代`a`
-> // 对于第二个`b`，$` 指代`ab`
-> 'abbc'.replaceAll('b', '$`')
-> // 'aaabc'
-> 
-> // $' 表示匹配结果之后的字符串
-> // 对于第一个`b`，$' 指代`bc`
-> // 对于第二个`b`，$' 指代`c`
-> 'abbc'.replaceAll('b', `$'`)
-> // 'abccc'
-> 
-> // $1 表示正则表达式的第一个组匹配，指代`ab`
-> // $2 表示正则表达式的第二个组匹配，指代`bc`
-> 'abbc'.replaceAll(/(ab)(bc)/g, '$2$1')
-> // 'bcab'
-> 
-> // $$ 指代 $
-> 'abc'.replaceAll('b', '$$')
-> // 'a$c'
-> ```
-
-### 截取字符串 substring
-
-> - `substr(start,length)`：将字符串从star位置开始截取到start位置，截取length个字符
-> - `substring(start,end) `： 将字符串从start位置开始截取到end位置，但不包括end；end可以省略，表示一直截取到结束
-> - `split(“分隔符”) `：将字符串转成数组，返回为一个新数组
-> - `slice(start, end?)`： 将字符串从start位置开始截取到end位置，但不包括end；
->
-> #### `substr`与`substring`的区别
->
-> ```js
-> /**
-> 	* `substr` 第二个参数是子字符串的长度
-> 	* `substring` 第二个参数是子字符串的结束位置
-> 	*/ 
-> 'hello world'.substr(1, 3) // 'ell'
-> 'hello world'.substring(1, 3) // 'el'
-> 
-> 
-> /**
-> 	* `substr` 允许使用负数作为起始位置参数
-> 	* `substring`会将子字符串将使负开始位置变为 0（零）
-> 	*/ 
-> 'hello world'.substr(-2, 4) // 'ld'
-> 'hello world'.substring(-2, 5) // 'hello'
-> 'hello world'.substring(0, 5) // 'hello'
-> 
-> 
-> // `slice` 是获取子字符串的另一个方法。它没有被弃用为 `substr`，并且支持负索引
-> 'hello world'.slice(2, 4) // 'll'
-> 'hello world'.slice(-10, 5) // 'ello'
-> 'hello world'.slice(-5) // 'world'
-> ```
-
-### 子串字符访问 chatAt(index)  或 string[index]
-
-> 有两种方法可以访问字符串的单个字符：
->
-> - 使用 `charAt[index]` 方法
-> - 使用括号表示法，如 `'hello'[1]`
->
-> 在这两种情况下，`'hello'[1]` 和 `'hello'.charAt(1)` 都将返回第二个字符 `e`。
->
-> #### charAt(i) 与 string[i] 的区别
->
-> - 第二种方式是 ECMA5 的标准，在现代浏览器中受支持。在非常旧的浏览器（如 IE6、7）中不支持它。（我不认为我们仍然需要支持这些版本的 IE）。
->
-> 
->| 方法                   | 索引的范围为 `0` 和 `string.length - 1` | 其他情况下  |
-> | ---------------------- | --------------------------------------- | ----------- |
-> | `string.charAt(index)` | 第一个和最后一个                        | `''`        |
-> | `string[index]`        | 第一个和最后一个                        | `undefined` |
-> 
->如果不传递适当的索引（不是整数或超出范围），在某些边缘情况下我们将得到不同的结果。
-> 
->```js
-> 'hello'[NaN] // undefined
-> 'hello'.charAt(NaN) // 'h'
-> 
-> 'hello'[undefined] // undefined
-> 'hello'.charAt(undefined) // 'h'
-> 
-> 'hello'[true] // undefined
-> 'hello'.charAt(true) // 'e'
-> 
-> 'hello'['00'] // undefined
-> 'hello'.charAt('00') // 返回 h，因为它将首先尝试将 00 转换为数字
-> 
-> 'hello'[1.5] // undefined
-> 'hello'.charAt(1.23) // 返回 e，因为它将 1.23 四舍五入到数字 1
-> ```
-> 
->如果索引超出可选范围：
-> 
->```js
-> 'hello'[100] // undefined
-> 'hello'.charAt(100) // ''
-> ```
-> 
->#### 为什么 `'hello'.charAt(true)` 返回 `e`？
-> 
->`charAt(index)` 方法首先尝试将索引转换为数字。由于 `Number(true) == 1`，`charAt(true)` 将返回一个索引位置的字符，即第二个字符。
-
-### 转编码：encodeURIComponent() 
-
-> - encodeURIComponent() 函数可把字符串作为 URI 组件进行编码。
-> - 该方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( ) 。
-> - 其他字符（比如 ：;/?:@&=+$,# 这些用于分隔 URI 组件的标点符号），都是由一个或多个十六进制的转义序列替换的。
->
-> ```js
-> let url = "http://w3cschool.cc/my test.php?name=ståle&car=saab";
-> let a = encodeURIComponent(url);
-> console.log(a);	// http%3A%2F%2Fw3cschool.cc%2Fmy%20test.php%3Fname%3Dst%C3%A5le%26car%3Dsaab
-> ```
-
-###  斜杠转义：String.raw()
-
-> - `Sting.raw()`返回一个斜杠都被转义的字符串（即在斜杠前再加一个斜杠），常用于模板字符串的处理方法
-> - `String.raw()`本质上是一个正常的函数，只是专用于模板字符串的标签函数。若写成正常函数形式，其第一个参数为具有`raw`属性的对象，且`raw`属性值为数组；`raw`属性等同于模板字符串解析后得到的数组
->
-> ```js
-> `Hi\n${1+2}`	// 换行输出3
-> String.raw`Hi\n${1+2}`	// 输出Hi\n3
-> String.raw`Hi\\n` === "Hi\\\\n"	// true
-> 
-> 
-> /* 正常函数写法 */
-> String.raw({raw: ['foo', "bar"]}, 1 + 2) === `foo${1 + 2}bar`	// true
-> 
-> 
-> /* String.raw()实现原理 */
-> String.raw = function (str, ...values) {
->   let output = "";
->   let index;
->   for (index = 0; index < values.length; index++) {
->     output += str.raw[index] + values[index];
->   }
->   output += str.raw[index];
->   return output;
-> }
-> ```
-
 ## 数组 Array 
 
 ### 数组调用方法
 
-> ```bash
-> ## 数组内置方法
-> 1. push()：向数组的末尾添加一个或多个元素，并返回数组的新长度。
-> 2. pop()：删除数组的最后一个元素并返回该元素。
-> 3. unshift()：向数组的开头添加一个或多个元素，并返回数组的新长度。
-> 4. shift()：删除数组开头的第一个元素，并返回该元素。
-> 5. sort()：对数组元素进行排序，并返回数组。
-> 6. join()：把数组的所有元素拼接成一个字符串并返回。
-> 7. a.concat(b)：把b数组添加到a数组最后面。
-> 8. slice(start, end)：截取起始位置到结束位置的部分数据(返回新数组)
+```bash
+## 数组内置方法
+1. push()：向数组的末尾添加一个或多个元素，并返回数组的新长度。
+2. pop()：删除数组的最后一个元素并返回该元素。
+3. unshift()：向数组的开头添加一个或多个元素，并返回数组的新长度。
+4. shift()：删除数组开头的第一个元素，并返回该元素。
+5. sort()：对数组元素进行排序，并返回数组。
+6. join()：把数组的所有元素拼接成一个字符串并返回。
+7. a.concat(b)：把b数组添加到a数组最后面。
+8. slice(start, end)：截取起始位置到结束位置的部分数据(返回新数组)
+
+9. splice()：会直接改变原来的数组
+    - 在指定位置添加元素：结果变量 = 数组变量.splice(制定位置,0,新增元素..)`var b = a.splice(1,0,"ABC");`
+    - 在指定位置删除元素：结果变量 = 数组变量.splice(指定位置,删除个数)`var b = a.splice(1, 2)`
+    - 在指定位置替换元素：结果变量 = 数组变量.splice(指定位置,删除个数,新增元素)`var b = a.splice(1,2,'A','D)`
+    
+    
+### 数组内置方法的区别
+- 不改变原数组的方法：`concat、join、slice、map、forEach、filter、every、reduce、entries、find、JSON.parse(JSON.stringify(arr))`
+- 改变原数组的方法：`pop()、push()、reverse()、unshift()、shift()、sort()、splice()、fill()`
+
+```
+
+
+
+### 数组错误的使用
+
+> 数组是一种特殊的对象，因此其行为也像一个对象。使用方括号来访问属性 arr[0] 实际上是来自于对象的语法。它其实与 obj[key] 相同，其中 arr 是对象，而数字用作键（key）。
+>
+> 数组扩展了对象，提供了特殊的方法来处理有序的数据集合以及 length 属性。但本质上数组仍然是一个对象。
+>
+> 例如，它是通过引用来复制的：
+>
+> ```js
+> /** 通过引用来复制 */
+> const fruits = ['Apple', 'Orange']
+> const arr = fruits // 通过引用复制
+> console.log(fruits === arr) // true
+> arr.push('Pear')
+> console.log(fruits, fruits === arr) // ['Apple', 'Orange', 'Pear'] true
 > 
-> 9. splice()：会直接改变原来的数组
->     - 在指定位置添加元素：结果变量 = 数组变量.splice(制定位置,0,新增元素..)`var b = a.splice(1,0,"ABC");`
->     - 在指定位置删除元素：结果变量 = 数组变量.splice(指定位置,删除个数)`var b = a.splice(1, 2)`
->     - 在指定位置替换元素：结果变量 = 数组变量.splice(指定位置,删除个数,新增元素)`var b = a.splice(1,2,'A','D)`
->     
->     
-> ### 数组内置方法的区别
-> - 不改变原数组的方法：`concat、join、slice、map、forEach、filter、every、reduce、entries、find、JSON.parse(JSON.stringify(arr))`
-> - 改变原数组的方法：`pop()、push()、reverse()、unshift()、shift()、sort()、splice()、fill()`
 > ```
+>
+> 但数组真正的特殊是它们的内部实现，JS引擎把这些元素一个接一个存储在连续的内存区域，并且做了一些其他优化，使得数组的运行非常快。
+>
+> 但如果我们不像“有序集合”那样使用数组，而是像常规对象那样使用数组，则会导致数组内置的优化无法生效。
+>
+> 因为数组是基于对象的，我们可以给它添加任何属性。例如，从技术上可以如此做：
+>
+> ```js
+> const fruits = ['Apple']
+> fruits[9999] = 5 // 分配索引远大于数组长度的属性
+> fruits.age = 25 // 创建一个具有任意名称的属性
+> console.log(fruits) // (10000) ['Apple', empty × 9998, 5, age: 25]
+> 
+> ```
+>
+> 当 JS引擎发现我们在使用常规对象一样使用数组，则针对数组的优化不再适用，导致对应的优化被关闭，这些优化给数组带来的优势也就荡然无存。
+>
+> 数组误用几种方式：
+>
+> - 添加一个非数字的属性，比如 `arr.test = 5`。
+> - 制造空洞，比如：添加 `arr[0]`，然后添加 `arr[1000]` (它们中间什么都没有)。
+> - 以倒序填充数组，比如 `arr[1000]`，`arr[999]` 等等。
+>
+> 请将数组视为作用于 **有序数据** 的特殊结构。它们为此提供了特殊的方法。数组在 JavaScript 引擎内部是经过特殊调整的，使得更好地作用于连续的有序数据，所以请以正确的方式使用数组。如果你需要任意键值，那很有可能实际上你需要的是常规对象 `{}`。
+
+
 
 ### 类数组对象
 
-> ```bash
-> ## 类数组对象
-> 类数组特点
-> 	1. 拥有 length 属性，其它属性(索引)为非负整数（对象中的索引会被当做字符串来处理）
-> 	2. 类数组对象可以通过索引访问对象，但没有数组的内置方法，如 `push、forEach、indexOf` 等。
-> 
-> 类数组是一个普通对象，而真实的数组是 Array 类型。
-> 常见的类数组有：函数的参数 arguments、DOM 对象列表(比如通过 document.querySelectorAll 得到的列表)
-> 
-> 
-> 类数组转换为数组的方法：
->     1. `Array.prototype.slice.call(arrayLike, start)`
->     2. `[...arrayLike]`
->     3. `Array.from(arrayLike)`
-> ```
->
-> ```js
-> // 类数组
-> let arrLike = {
->   "0": 'willy',
->   "1": 'cilly',
->   "2": 'jance',
->   "length": 3
-> }
-> 
-> // 同款数组
-> let arr = ['willy', 'cilly', 'jance'];
-> ```
+```bash
+## 类数组对象
+类数组特点
+	1. 拥有 length 属性，其它属性(索引)为非负整数（对象中的索引会被当做字符串来处理）
+	2. 类数组对象可以通过索引访问对象，但没有数组的内置方法，如 `push、forEach、indexOf` 等。
 
-### 类数组转为数组Array.from()
+类数组是一个普通对象，而真实的数组是 Array 类型。
+常见的类数组有：函数的参数 arguments、DOM 对象列表(比如通过 document.querySelectorAll 得到的列表)
 
-> ```bash
-> ## 类数组转换为数组 Array.from()
-> Array.from 方法用于将两类对象转为真正的数组(生成浅拷贝的数组实例)：
-> 	1. 类似数组的对象（array-like object）
-> 	2. 可遍历（iterable）的对象。
-> 
-> 
-> - `Array.from(arrayLike[, mapFn[, thisArg]])`
->     - `arrayLike`：想要转换成数组的伪数组对象或可迭代对象。
->     - `mapFn`(可选)：如果指定了该参数，新数组中的每个元素会执行该回调函数。
->     - `thisArg`(可选)：可选参数，执行回调函数 `mapFn` 时 `this` 对象。
-> ```
->
-> ```js
-> const array1 = {
->   "0": "1",
->   "1": "2",
->   "2": "4",
->   "length": 3,
-> }
-> let array11 = Array.from(array1) // [ '1', '2', '4' ]
-> 
-> // 方法还可以接收第二个参数，作用类似于数组的map方法，用来对每个元素进行处理，将处理后的值放入返回的数组
-> let array12 = Array.from(array1, item => item * 2)	// [ 2, 4, 8 ]
-> 
-> // 类数组对象转换为数组
-> Array.from({ length: 5 }, (v, i) => i); // [0, 1, 2, 3, 4]
-> 
-> // 对数组的修改
-> Array.from([1, 2, 3], x => x + x); // [2, 4, 6]
-> 
-> // 字符串转换为数组
-> console.log(Array.from('foo'));	// ["f", "o", "o"]
-> ```
 
-### 查找数据 find / findIndex / includes / indexOf
+类数组转换为数组的方法：
+    1. `Array.prototype.slice.call(arrayLike, start)`
+    2. `[...arrayLike]`
+    3. `Array.from(arrayLike)`
 
-> - **`find(val, index, arr)`**：用于找出第一个符合条件的数组成员，如果没有找到返回undefined
-> - **`findIndex()`**：用于找出第一个符合条件的数组成员的位置，如果没什么找到返回-1
-> - - (fromIndex：可选，从定义的索引位置开始查找目标值，如果为负值，则按array.length+fromIndex位置开始查找，默认为0)
->
-> ```js
-> /** find */
-> const aryString1 = [{ id: 1, name: '张三' }, { id: 2, name: '李四' }];
-> let target = aryString1.find((item,index) => item.id == 1);
-> console.log(target)   //{id: 1,name: '张三'}
-> 
-> /** findIndex */
-> let index = [10, 20, 50].findIndex((item,inedx) => item > 15)
-> console.log(index)	// 1
-> 
-> /** includes */
-> let result1 = [1, 2, 3, 4, 5].includes(5)	// true
-> let result2 = [1, 2, 3, 4, 5].includes(3, 2)	// true
-> console.log(result1, result2)  // true true
-> ```
->
-> ### includes 扩展
->
+```
+
+```js
+// 类数组
+let arrLike = {
+  "0": 'willy',
+  "1": 'cilly',
+  "2": 'jance',
+  "length": 3
+}
+
+// 同款数组
+let arr = ['willy', 'cilly', 'jance'];
+```
+
+
+
+### 转换
+
+#### 类数组转为数组 Array.from
+
+```bash
+## 类数组转换为数组 Array.from()
+Array.from 方法用于将两类对象转为真正的数组(生成浅拷贝的数组实例)：
+	1. 类似数组的对象（array-like object）
+	2. 可遍历（iterable）的对象。
+
+
+- `Array.from(arrayLike[, mapFn[, thisArg]])`
+    - `arrayLike`：想要转换成数组的伪数组对象或可迭代对象。
+    - `mapFn`(可选)：如果指定了该参数，新数组中的每个元素会执行该回调函数。
+    - `thisArg`(可选)：可选参数，执行回调函数 `mapFn` 时 `this` 对象。
+
+```
+
+```js
+const array1 = {
+  "0": "1",
+  "1": "2",
+  "2": "4",
+  "length": 3,
+}
+let array11 = Array.from(array1) // [ '1', '2', '4' ]
+
+// 方法还可以接收第二个参数，作用类似于数组的map方法，用来对每个元素进行处理，将处理后的值放入返回的数组
+let array12 = Array.from(array1, item => item * 2)	// [ 2, 4, 8 ]
+
+// 类数组对象转换为数组
+Array.from({ length: 5 }, (v, i) => i); // [0, 1, 2, 3, 4]
+
+// 对数组的修改
+Array.from([1, 2, 3], x => x + x); // [2, 4, 6]
+
+// 字符串转换为数组
+console.log(Array.from('foo'));	// ["f", "o", "o"]
+
+```
+
+
+
+#### 字符串与数组转换 split / join
+
+- `split()`方法是将一个字符串按照某一分隔符进行拆分为数组，而`join()`则正好相反。
+- `join()`方法用于把数组中的所有元素放入一个字符串，元素是通过指定的分隔符进行分隔的。
+- 使用`concat`函数,在字符串后面追加一个或多个字符
+
+```js
+// 数组转换为字符串
+let arr = [1, 2, 3];	
+let res = arr.join(",");	// 1,2,3
+
+// 字符串转换为数组
+let strs = "1,2,3"
+let resultArr = strs.split(','); // [ '1', '2', '3' ]
+
+// 字符串拼接
+let str = "13"
+let strAdd = str.concat("4", "-6")	// 134-6
+
+// 数组拼接
+let arr = [1, 2, 3]
+const res = arr.concat(3, 4) // [1, 2, 3, 3, 4]
+```
+
+
+
+#### 数组类型转换 map(Number)
+
+- 将string数组转换为number数组：`strArr.map(Number);`
+- 将number数组转换为string数组：`numArr.map(String);`
+
+```js
+let arr = ['1', '2', 3]
+let numArr = arr.map(Number)
+let strArr = numArr.map(String)
+console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3' ]
+```
+
+
+
+#### 数组转换为键值对列表 entries
+
+- `array.entries()`方法返回一个数组的迭代对象(`Iterator`)，该对象包含数组的键值对(key/value)
+
+```js
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+let iteraotrs = fruits.entries();
+for(let [key, value] of iteraotrs) {
+  console.log(key, value)
+}
+
+// 等价于 array.next()
+let result = fruits.entries()
+console.log(result.next().value[0], result.next().value[1])  // 0, Orange
+console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Mango']
+```
+
+
+
+#### 多数值转数组 Array.of
+
+- `Array.of()`用于将一组数值转换为数组，该方法主要目的是弥补数组构造函数`Array()`的不足，因为参数个数不同，会导致`Array()`的行为有差异。
+- `Array.of()`可用替代`Array() 或 new Array()`，并且不存在由于参数不同而导致的重载，它的行为非常统一。
+
+```js
+Array.of() // []
+Array.of(undefined) // [undefined]
+Array.of(1) // [1]
+Array.of(1, 2) // [1, 2]
+```
+
+
+
+### 查找
+
+#### 查找数据  find / findIndex / includes / indexOf
+
+- **`find(val, index, arr)`**：用于找出第一个符合条件的数组成员，如果没有找到返回undefined
+- **`findIndex()`**：用于找出第一个符合条件的数组成员的位置，如果没什么找到返回-1
+    - (fromIndex：可选，从定义的索引位置开始查找目标值，如果为负值，则按array.length+fromIndex位置开始查找，默认为0)
+
+```js
+/** find */
+const aryString1 = [{ id: 1, name: '张三' }, { id: 2, name: '李四' }];
+let target = aryString1.find((item,index) => item.id == 1);
+console.log(target)   //{id: 1,name: '张三'}
+
+
+/** findIndex */
+let index = [10, 20, 50].findIndex((item,inedx) => item > 15)
+console.log(index)	// 1
+
+
+/** includes */
+let result1 = [1, 2, 3, 4, 5].includes(5)	// true
+let result2 = [1, 2, 3, 4, 5].includes(3, 2)	// true
+console.log(result1, result2)  // true true
+
+```
+
+
+
+#### includes 与 indexOf 、Object.is 的区别
+
 > `includes` 类似于 `indexOf`：
 >
 > ```js
@@ -4285,30 +4567,74 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
 
 
-### 字符串与数组转换 split / join
+#### 获取相应索引的元素 at
 
-> - `split()`方法是将一个字符串按照某一分隔符进行拆分为数组，而`join()`则正好相反。
-> - `join()`方法用于把数组中的所有元素放入一个字符串，元素是通过指定的分隔符进行分隔的。
-> - 使用`concat`函数,在字符串后面追加一个或多个字符
->
-> ```js
-> // 数组转换为字符串
-> let arr = [1, 2, 3];	
-> let res = arr.join(",");	// 1,2,3
-> 
-> // 字符串转换为数组
-> let strs = "1,2,3"
-> let resultArr = strs.split(','); // [ '1', '2', '3' ]
-> 
-> // 字符串拼接
-> let str = "13"
-> let strAdd = str.concat("4", "-6")	// 134-6
-> 
-> // 数组拼接
-> let arr = [1, 2, 3]
-> const res = arr.concat(3, 4) // [1, 2, 3, 3, 4]
-> ```
->
+```bash
+### 获取相应索引的元素：Array.prototype.at(i)
+- `arr.at(i)`：
+	- 如果 i >= 0，则与 arr[i] 完全相同。
+	- 如果 i 为负数，则从数组的尾部向前开始计算。
+
+```
+
+```js
+const fruits = ['Apple', 'Orange', 'Plum']
+
+// 常规获取数组最后一个元素
+const lastItem = fruits[fruits.length - 1] // Plum
+
+// 使用 at 获取最后一个元素
+const lastItem2 = fruits.at(-1) // Plum
+
+```
+
+
+
+### 队列与栈
+
+```bash
+## 队列与栈
+栈遵循后进先出法则 LIFO（Last-In-First-Out），队列遵循先进先出 FIFO（First-In-First-Out）。
+
+  队列（queue）的方法
+    - push：在末端添加一个元素
+    - shift：取出队列首端的一个元素，整个队列往前移，使得原先排第二的元素排在第一个。
+
+  栈的方法：
+    - push：在末端添加一个元素
+    - pop：从末端取出一个元素
+
+
+
+### 性能
+push/pop 方法运行的比较快，而 shift/unshift 比较慢。
+
+1. shift / unshift
+只获取并移除索引 0 对应的元素是不够的。其它元素也需要被重新编号。
+		1. 移除索引为 0 的元素。
+		2. 把所有的元素向左移动，把索引 1 改成 0，2 改成 1 以此类推，对其重新编号。
+		3. 更新 length 属性。
+数组里的元素越多，移动它们就要花越多的时间，也就意味着越多的内存操作。
+unshift 也是一样：为了在数组的首端添加元素，我们首先需要将现有的元素向右移动，增加它们的索引值。
+
+
+2. pop / push
+pop 方法不需要移动任何东西，因为其它元素都保留了各自的索引。这就是为什么 pop 会特别快。
+push 方法也是一样的。
+```
+
+```js
+const fruits = ['Apple', 'Orange', 'Pear']
+
+console.log(fruits.push('Banana')) // 添加 "Banana" 并返回数组长度
+console.log(fruits.pop()) // 移除 "Pear" 并返回
+
+console.log(fruits.shift()) // 移除 "Apple" 并返回
+console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" 并返回数组长度
+
+```
+
+
 
 ### 迭代遍历的方法
 
@@ -4413,7 +4739,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > [1, 2, 3, 1].findIndex(item => item > 1) // 1
 > ```
 
-### for..of  与 for…in
+#### for..of  与 for…in
 
 > ```bash
 > ## for…in（ES3）和 for…of（ES6）
@@ -4482,7 +4808,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > })
 > ```
 
-### 迭代方法对比
+#### 迭代方法对比
 
 > ```bash
 > ### for...of、for...in、forEach、map 区别
@@ -4495,7 +4821,9 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > map: 只能遍历数组，不能中断，返回值是修改后的数组。
 > ```
 
-### `reduce`方法同时实现map和filter
+
+
+#### `reduce`方法同时实现map和filter
 
 - 假设有一个数列，希望更新它的每一项(map的功能)，然后筛选出一部分(filter的功能)。
   如果先使用map然后使用filter的话，则需遍历这个数组两遍。
@@ -4513,17 +4841,7 @@ let result = arr.reduce((item, next) => {
 console.log(result);  // [ 220, 260, 120, 80, 140, 180 ]
 ```
 
-### 数组类型转换 map(Number)
 
-- 将string数组转换为number数组：`strArr.map(Number);`
-- 将number数组转换为string数组：`numArr.map(String);`
-
-```js
-let arr = ['1', '2', 3]
-let numArr = arr.map(Number)
-let strArr = numArr.map(String)
-console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3' ]
-```
 
 ### 创建数组并赋值 fill / map
 
@@ -4541,6 +4859,8 @@ console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3'
 > 		let c = Array.from({ length: 3 })	// [undefined, undefined, undefined]
 > 		let d = Array.from({ length: 3 }).map(_ => 0)	// [0, 0, 0]
 > ```
+
+
 
 ### 拷贝数组元素到指定位置 copyWith()
 
@@ -4562,6 +4882,8 @@ console.log(arr, numArr, strArr); // [ '1', '2', 3 ] [ 1, 2, 3 ] [ '1', '2', '3'
 > arr.copyWithin(0,3,10);
 > console.log(arr)    // [ 3, 4, 5, 6, 7, 8, 9, 7, 8, 9 ]
 > ```
+
+
 
 ### 排序sort()
 
@@ -4606,6 +4928,8 @@ arr2.sort(function (x, y) {
 })
 ```
 
+
+
 ### 平铺数组 flat
 
 > - `Array.prototype.flat()`用于将嵌套的数组“拉平”，变成一维数组。该方法返回一个新数组，对原数据没有影响
@@ -4639,34 +4963,7 @@ arr2.sort(function (x, y) {
 > ```
 >
 
-### 数组转换为键值对列表`entries()`
 
-- `array.entries()`方法返回一个数组的迭代对象(`Iterator`)，该对象包含数组的键值对(key/value)
-
-```js
-var fruits = ["Banana", "Orange", "Apple", "Mango"];
-let iteraotrs = fruits.entries();
-for(let [key, value] of iteraotrs) {
-  console.log(key, value)
-}
-
-// 等价于 array.next()
-let result = fruits.entries()
-console.log(result.next().value[0], result.next().value[1])  // 0, Orange
-console.log(result.next().value, result.next().value)  // [ 2, 'Apple' ] [3, 'Mango']
-```
-
-### 多数值转数组Array.of()
-
-> - `Array.of()`用于将一组数值转换为数组，该方法主要目的是弥补数组构造函数`Array()`的不足，因为参数个数不同，会导致`Array()`的行为有差异。
-> - `Array.of()`可用替代`Array() 或 new Array()`，并且不存在由于参数不同而导致的重载，它的行为非常统一。
->
-> ```js
-> Array.of() // []
-> Array.of(undefined) // [undefined]
-> Array.of(1) // [1]
-> Array.of(1, 2) // [1, 2]
-> ```
 
 ### 数组去重
 
@@ -4869,6 +5166,72 @@ console.log(unique44)
 >   4. `Object.assign`：忽略enumerable为false的属性，只拷贝对象自身的可枚举属性
 > - 注意：因为操作中引入集成属性会让问题复杂化，大多数时候我们只关心对象自身的属性。所以尽量不要用`for...in`循环，而用`Object.keys()`代替。
 
+
+
+### 对象的原始值转换
+
+```bash
+## 对象的原始值转换
+JS 不允许自定义运算符对对象的处理方式，无法实现特殊对象的处理方法来处理加法（或其他运算）。
+在此类运算的情况下，对象会被转换为原始值，然后对这些原始值进行运算，并得到运算结果（也是原始值）
+重要的限制：`obj1 + obj2`（或者其他数学运算）的结果不能是另一个对象。
+
+例如，无法使用对象来表示向量或矩阵，把它们相加并期望得到一个'总和'向量作为结果。
+因此，由于从技术上无法实现此类运算，所以在实际项目中不存在对对象的数学运算。
+
+
+### 对象到原始值的转换规则
+1. 如果 `obj[Symbol.toPrimitive](hint)` 这个方法存在，则调用。
+2. 如果对象没有 `Symbol.toPrimitive` 方法，JavaScript 引擎会退回到旧的转换方法，尝试 valueOf 和 toString。
+	2-1. 如果 hint 是 `number` 或 `default`：尝试调用 `obj.valueOf()`，如果不存在则调用 `obj.toString()`
+	2-2. 如果 hint 是 `string`：尝试调用 `obj.toString()`，如果不存在则调用 `obj.valueOf()`
+
+注意：所有这些方法都必须返回一个原始值才能工作（如果已定义）。
+在实际使用中，通常只实现 obj.toString() 作为字符串转换的“全能”方法就足够了，该方法应该返回对象的“人类可读”表示，用于日志记录或调试。
+
+
+```
+
+#### Symbol.toPrimitive
+
+```bash
+### Symbol.toPrimitive
+在JavaScript中，当对象需要转换为原始值时，Symbol.toPrimitive 方法会被调用，并接受一个名为 "hint" 的参数。这个 "hint" 参数指示了预期转换的目标类型，它有三种可能的值："number"、"string" 和 "default"。这些hints指导了Symbol.toPrimitive方法如何将对象转换为相应的原始值。
+
+1. "number"：当 JavaScript 期望得到一个数字时，会使用这个 hint。这种情况出现在进行数字运算时，或者在使用一些数学和数字相关的方法时，比如比较运算符（除了严格相等和不等运算符）。
+
+2. "string"：当操作的上下文期望一个字符串时，比如在对象用作属性名时，或者在与字符串相关联的操作（如alert 或字符串拼接）中，JavaScript 会使用这个 hint。
+
+3. "default"：当运算符不确定预期类型时，会使用 'default' hint。最常见的是加法运算，因为加法既可以应用于数字也可以应用于字符串。此外，等于运算符（`==`）也会触发 'default' hint，因为它进行宽松比较，允许类型转换。
+
+```
+
+```js
+const obj = {
+  [Symbol.toPrimitive](hint) {
+    console.log('hint', hint)
+
+    switch (hint) {
+      case 'number':
+        return 24
+      case 'string':
+        return 'Hi~Willy'
+      case 'default':
+        return 'This is default value'
+      default:
+        return null
+    }
+  },
+}
+
+console.log(+obj) // "number" hint，结果为 24
+console.log(`${obj}`) // "string" hint，结果为"Hi~Willy"
+console.log(obj == 'This is default value') // "default" hint，结果为true
+
+```
+
+
+
 ### 属性的遍历
 
 > ```bash
@@ -4954,21 +5317,21 @@ console.log(unique44)
 > 
 > 
 > //  Object.entries 的实现
->   // Generator函数的版本
->   function* entries(obj) {
->     for (let key of Object.keys(obj)) {
->       yield [key, obj[key]];
->     }
+> // Generator函数的版本
+> function* entries(obj) {
+>   for (let key of Object.keys(obj)) {
+>     yield [key, obj[key]];
 >   }
+> }
 > 
->   // 非Generator函数的版本
->   function entries(obj) {
->     let arr = [];
->     for (let key of Object.keys(obj)) {
->       arr.push([key, obj[key]]);
->     }
->     return arr;
+> // 非Generator函数的版本
+> function entries(obj) {
+>   let arr = [];
+>   for (let key of Object.keys(obj)) {
+>     arr.push([key, obj[key]]);
 >   }
+>   return arr;
+> }
 > ```
 >
 > #### 【典例】午餐订单商品的数量排序
@@ -5359,12 +5722,11 @@ styles['class'] // 返回 'foo'
 
 > - 为了配置`Promise.any()`方法，引入一个错误对象`AggergateError`，在一个错误对象内可封装多个错误。如果某个单一操作同时引发多个错误，需要同时抛出这些错误，则可以抛出一个AggregateError错误对象，把各种错误都放在这个对象里。
 > - AggregateError本身是一个构造函数，用来生成AggregateError实例对象
->
-> ````js
-> AggregateError(errors[, message])
-> 	- errors：数组，它的每个成员都是一个错误对象，必输项
-> 	- message：字符串，表示AggregateError抛出时的提示信息，可选
+>- AggregateError(errors[, message])
+>     - errors：数组，它的每个成员都是一个错误对象，必输项
+>     - message：字符串，表示AggregateError抛出时的提示信息，可选
 > 
+> ````js
 > try {
 >   throw new AggregateError([
 >     new Error('ERROR_11112'),
@@ -5387,9 +5749,9 @@ styles['class'] // 返回 'foo'
 >
 > ```js
 > const obj = {
-> name: 'UI',
-> get age() { return 18 }
-> [Symbol('foo')]: 123
+>   name: 'UI',
+>   get age() { return 18 }
+>   [Symbol('foo')]: 123
 > }
 > 
 > console.log(JSON.stringify(Object.getOwnPropertyDescriptors(obj), null, 2))
@@ -5524,6 +5886,77 @@ styles['class'] // 返回 'foo'
 > Object.getPrototypeOf(null)	// TypeError: Cannot convert undefined or null to object
 > Object.getPrototypeOf(undefined)	// TypeError: Cannot convert undefined or null to object
 > ```
+
+
+
+## Date 对象
+
+> - Date对象是构造函数，需实例化后才能使用，Date实例用来处理日期和时间
+>
+> ```bash
+> ## 获取时间戳的三种方式
+> new Date().getTime()
+> +new Date
+> Date.now()
+> 
+> ```
+
+#### Date.prototype.toLocaleString() 获取月份名称
+
+> ```js
+> console.log(new Date()) // Wed May 05 2021 15:31:36 GMT+0800 (中国标准时间)
+> 
+> // 使用 `Date` 对象的内置 getMonth 方法获取当前月份作为值
+> let moonLanding = new Date().getMonth()
+> console.log(moonLanding) // 4
+> 
+> 
+> // Date.prototype.toLocaleString()  返回该日期对象的字符串，该字符串格式因不同语言而不同
+> const today = new Date()
+> console.log(today.toLocaleString('default', { month: 'long' })) // "五月"
+> console.log(today.toLocaleString('en-GB', { month: 'long' })) // "May"
+> console.log(today.toLocaleString('ko-KR', { month: 'long' })) // "5월"
+> 
+> 
+> /* 自定义 Options */
+> let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
+> // 请求参数 (options) 中包含参数星期 (weekday)，并且该参数的值为长类型 (long)
+> let options = {
+>   weekday: "long", 
+>   year: "numeric", 
+>   month: "long", 
+>   day: "numeric",
+>   hour12: false,
+> };
+> alert(date.toLocaleString("de-DE", options));	// "Donnerstag, 20. Dezember 2012"
+> ```
+>
+> **自定义方法**
+>
+> ```js
+> const getMonthName = (val) => {
+>   const month = [
+>     'January',
+>     'February',
+>     'March',
+>     'April',
+>     'May',
+>     'June',
+>     'July',
+>     'August',
+>     'September',
+>     'October',
+>     'November',
+>     'December'
+>   ]
+>   return month[val]
+> }
+> 
+> let moonLanding = new Date().getMonth()
+> console.log(getMonthName(moonLanding)) // "September"
+> ```
+
+
 
 ## JSON 对象
 

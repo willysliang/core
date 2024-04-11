@@ -11,16 +11,19 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/tracker/track.gif', (req, res, next) => {
+router.get('/tracker/track.gif', (_, res, next) => {
   try {
     // 处理埋点数据
     // ...
 
     // 返回 1x1像素的透明 gif 图像
-    const buffer = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
+    const buffer = Buffer.from(
+      'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+      'base64',
+    )
     res.writeHead(200, {
-      'ContentType': 'image/gif',
-      'ContentLength': buffer.length,
+      ContentType: 'image/gif',
+      ContentLength: buffer.length,
     })
     console.log('buffer', buffer)
     res.end(buffer)
