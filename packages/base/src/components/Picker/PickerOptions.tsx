@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-01-09 17:49:58
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 11:25:46
+ * @ ModifierTime: 2024-04-11 18:38:50
  * @ Description: 选择器选项区
  */
 
@@ -52,11 +52,13 @@ export default defineComponent({
     })
 
     return () => (
-      <div class="w-picker-options">
+      <div className="w-picker-options">
         {showLabel.value && (
-          <div class="w-picker-options__label">{labelValue.value}</div>
+          <div className="w-picker-options__label">
+            {labelValue.value as string}
+          </div>
         )}
-        <ul class="w-picker-options__column">
+        <ul className="w-picker-options__column">
           {props.options.map((option) => (
             <li onClick={() => selectItem(option)}>
               <span>{getItem(option, 'label')}</span>
