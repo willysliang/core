@@ -1,12 +1,18 @@
 # Changelog
 
-## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-03-21)
+## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-04-11)
 
-[Full Changelog](https://github.com/willysliang/core/compare/v1.0.2...v2.0.0)
+[Full Changelog](https://github.com/willysliang/core/compare/v1.0.3...v2.0.0)
 
 **Merged pull requests:**
 
+- Develop [\#4](https://github.com/willysliang/core/pull/4) ([willysliang](https://github.com/willysliang))
+- Develop [\#3](https://github.com/willysliang/core/pull/3) ([willysliang](https://github.com/willysliang))
 - update blog [\#2](https://github.com/willysliang/core/pull/2) ([willysliang](https://github.com/willysliang))
+
+## [v1.0.3](https://github.com/willysliang/core/tree/v1.0.3) (2024-04-11)
+
+[Full Changelog](https://github.com/willysliang/core/compare/v1.0.2...v1.0.3)
 
 ## [v1.0.2](https://github.com/willysliang/core/tree/v1.0.2) (2024-03-11)
 
