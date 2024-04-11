@@ -49,5 +49,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'off', // 可使用断言
     // '@typescript-eslint/no-var-requires': 'off', // 可使用 require
     'no-use-before-define': ['error', { classes: false }], // class可以在定义之前使用变量（防止引用自身报错）
+    'prefer-promise-reject-errors': 'off',
+    'no-async-promise-executor': 'off',
   },
 }

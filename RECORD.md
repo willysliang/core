@@ -26,6 +26,19 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年4月11日
+  - feat(utils): [http] [FetchRequest] 封装fetch网络请求
+  - feat(next): 添加 Nextjs Demo
+
+## 2024年3月29日
+  - style(all): [editorconfig] 配置文件格式化
+
+## 2024年3月28日
+  - style(MP): [all] 代码格式化
+
+## 2024年3月21日
+  - feat(utils): [algorithm] 添加算法子模块
+
 ## 2024年3月14日
   - fix(MP): 添加catch捕获防止运行报错
   - chore(all): [stylelint] 添加scss ignoreAtRules
@@ -41,7 +54,7 @@ Description: 日志记录
   - feat(utils): [excel] ReadExcelUtils、ExportExcelUtils 读写excel
 
 ## 2024年3月6日
-  - fix(utils): [file] 
+  - fix(utils): [file]
     baseFileUtils、classMixinUtils 通用方法迁移
     classMixinUtils/Mixins 修复Mixins方法无法给函数使用async语法糖
 
@@ -114,7 +127,7 @@ Description: 日志记录
   - feat(utils): [file] 添加文件类
 
 ## 2024年1月22日21点33分
-  - feat(utils): [common] 
+  - feat(utils): [common]
     - deepEqual 深度对比两个值是否相等
     - removeDuplicates 删除数组的重复项对象
 
@@ -140,7 +153,7 @@ Description: 日志记录
 ## 2024年1月7日23:10:22
   - feat(utils): [dom] DOM相关工具类整理
   - chore(stylelint): 修改stylelint格式化
-  
+
 ## 2024年1月7日19点38分
   - fix(comp): 更改文件驼峰命名
 

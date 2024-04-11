@@ -13,6 +13,7 @@ import store from '@/store'
 
 // import 'amfe-flexible'
 import '@/styles/index.scss'
+import './useCase'
 
 const app = createApp(App)
 

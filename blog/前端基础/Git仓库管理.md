@@ -623,7 +623,8 @@ git push --mirror git@github.com:willysliang/core.git
 - 添加过子模块的仓库，如果想重新克隆，在克隆仓库后需要在仓库目录下执行`git submodule init`和`git submodule update`，如果不执行，子模块中会没有文件
   1. `git clone 仓库地址`
   2. `cd 克隆的仓库文件夹名`
-  3. `git submodule init` 4. `git submodule update`
+  3. `git submodule init` 
+  4. `git submodule update`
 
 #### 更改子模块的分支
 

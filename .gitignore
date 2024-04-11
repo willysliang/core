@@ -12,6 +12,7 @@ dist
 ./core
 dist-ssr
 *.local
+vite.config.ts.*.mjs
 
 # Editor directories and files
 # .vscode/*

@@ -2089,18 +2089,18 @@ function create() {
 
 ### 字符串String
 
-- 数字0、NaN、空字符串""、false、undefined、null都会被识别为false。
-- undefined：未定义或未初始化的变量，都为undefined。
-- undefined和null的区别：如果变量为null，说明变量存在，只不过值是空值null。
+- `数字0、NaN、空字符串""、false、undefined、null` 都会被识别为 false。
+- `undefined`：未定义或未初始化的变量，都为 undefined。
+- `undefined `和 `null `的区别：如果变量为 null，说明变量存在，只不过值是空值 null。
 
 ![image-20210331160948708](./image/image-20210331160948708.png)
 
 ### 数据类型转换
 
-- **转换为字符串类型：**x.toString()或String(x)
-  - String(100 + 23)  // 从表达式中的数值返回字符串
-  - (100 + 23).toString()
-- **转换为数字类型：**Number(x)、paseIntI(x)、paseFloat(x)
+- **转换为字符串类型：**`str.toString()` 或 `String(str)`
+  - `String(100 + 23)`  // 从表达式中的数值返回字符串
+  - `(100 + 23).toString()`
+- **转换为数字类型：**`Number(x)、paseIntI(x)、paseFloat(x)`
   - Number(x)：通过该方法转化的数字类型保留原来值的内容
   - paseIntI(x)：通过该方法只能保留整数部分（返回的是一个整数）
   - paseFloat(x)：可以保留原来值内容，如果是非数字的字符串，直接保留数字部分

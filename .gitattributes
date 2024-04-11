@@ -1,0 +1,8 @@
+# 确保所有文本文件在提交时使用LF作为行结束符
+* text=auto eol=lf
+
+# 对于Windows上的批处理文件，保持CRLF
+*.bat text eol=crlf
+
+# 对特定文件或目录禁用行结束符转换:如果有些文件或目录不需要行结束符转换，可以设置为二进制类型以避免转换
+binary_files/* -text
