@@ -29,6 +29,7 @@ Description: 日志记录
 ## 2024年4月11日
   - feat(utils): [http] [FetchRequest] 封装fetch网络请求
   - feat(next): 添加 Nextjs Demo
+  - fix(base): [Picker] 修复打包报错问题
 
 ## 2024年3月29日
   - style(all): [editorconfig] 配置文件格式化
