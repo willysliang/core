@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年4月12日
+  - feat(utils): [algorithm/Classic/KMeans] 聚类算法 - K 均值
+
 ## 2024年4月11日
   - feat(utils): [http] [FetchRequest] 封装fetch网络请求
   - feat(next): 添加 Nextjs Demo
