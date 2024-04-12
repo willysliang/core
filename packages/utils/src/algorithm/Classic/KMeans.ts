@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-04-12 18:07:05
  * @ Modifier: willy
- * @ ModifierTime: 2024-04-12 18:08:43
+ * @ ModifierTime: 2024-04-12 19:55:53
  * @ Description: KMeans - K 均值
  */
 
@@ -19,14 +19,13 @@ interface ICluster {
 
 /**
  * @class KMeans K均值
- * @description
-    KMeans 类的构造函数接收数据点、簇的数量 k，以及最大迭代次数 maxIterations（可选）作为参数，并存储为实例属性。
-      euclideanDistance：静态方法，计算两个点之间的欧几里得距离。
-      initializeCentroids：初始化质心，简单地从数据点中随机选择。
-      assignPointsToCentroids：将点分配给最近的质心，形成簇。
-      recalculateCentroids：重新计算簇的质心。
-      centroidsChanged：检查质心是否变化。
-      run 方法是算法的主要逻辑。它首先初始化质心，然后不断迭代更新簇和质心，直到质心不再变化或达到最大迭代次数为止。最终返回形成的簇数组
+ * @memberof KMeans.constructor KMeans 类的构造函数接收数据点、簇的数量 k，以及最大迭代次数 maxIterations（可选）作为参数，并存储为实例属性
+ * @memberof KMeans.euclideanDistance 计算两个点之间的欧几里得距离
+ * @memberof KMeans.initializeCentroids 初始化质心，简单地从数据点中随机选择
+ * @memberof KMeans.assignPointsToCentroids 将点分配给最近的质心，形成簇
+ * @memberof KMeans.recalculateCentroids 重新计算质心
+ * @memberof KMeans.centroidsChanged 检查质心是否变化
+ * @memberof KMeans.run 运行算法(心脏): 先初始化质心，然后不断迭代更新簇和质心，直到质心不再变化或达到最大迭代次数为止。最终返回形成的簇数组
  */
 export class KMeans {
   /** 一个包含多个点的数组，其中每个点是一个数值数组，表示在多维空间中的坐标 */
