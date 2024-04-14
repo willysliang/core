@@ -1,8 +1,8 @@
 <!--
  * @ Author: willy
  * @ CreateTime: 2023-12-22 16:03:59
- * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 11:35:56
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-04-14 23:13:41
  * @ Description: slider 模块
  -->
 
@@ -11,7 +11,7 @@ import { useAppIndexStore } from '@/store/app'
 import { storeToRefs } from 'pinia'
 import { Github, MailReview, TagOne } from '@icon-park/vue-next'
 import WIconPark from '@comp/IconPark.vue'
-import { copyText, randomColor } from '@willy/utils'
+import { extrasDom, randomColor } from '@willy/utils'
 import { panda } from '../../../../../assets/index'
 
 const { userInfo, tags } = storeToRefs(useAppIndexStore())
@@ -29,7 +29,7 @@ const { userInfo, tags } = storeToRefs(useAppIndexStore())
       <a :href="userInfo.github" target="_blank">
         <WIconPark :icon="Github" theme="filled" :size="18" />
       </a>
-      <span @click="copyText(userInfo.phone)">
+      <span @click="extrasDom.copyText(userInfo.phone)">
         <WIconPark :icon="MailReview" theme="filled" :size="18" />
       </span>
     </div>
@@ -66,7 +66,6 @@ const { userInfo, tags } = storeToRefs(useAppIndexStore())
 .userinfo {
   --userinfo-nickname-size: var(--text-size-md);
   --userinfo-sign-size: var(--text-size-sm);
-
   border-radius: var(--card-border-radius);
   background-color: var(--card-bg-color);
   width: 100%;
@@ -178,6 +177,7 @@ const { userInfo, tags } = storeToRefs(useAppIndexStore())
 
   &__icon {
     @extend %flex;
+
     img {
       max-width: 100%;
       max-height: var(--col-height);

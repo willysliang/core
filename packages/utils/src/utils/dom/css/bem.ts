@@ -1,9 +1,9 @@
 /**
- * @ Author: willy
- * @ CreateTime: 2024-01-03 15:22:53
- * @ Modifier: willy
- * @ ModifierTime: 2024-01-03 17:16:59
- * @ Description: css 相关的工具类
+ * @ Author: willysliang
+ * @ CreateTime: 2024-04-13 13:24:41
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-04-13 13:26:03
+ * @ Description: BEM CSS架构
  */
 
 /**
@@ -55,12 +55,3 @@ export const createBEM = (
 }
 
 export type BEM = ReturnType<typeof createBEM>
-
-/**
- * @descption 从页面中删除所有 CSS 样式（包括内联样式和链接的CSS）
- */
-export const removeAllCssStyle = () => {
-  document
-    .querySelectorAll('style,link[rel="stylesheet"]')
-    .forEach((item) => item.remove())
-}
