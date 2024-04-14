@@ -1,13 +1,13 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-23 14:59:38
- * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 11:55:49
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-04-13 13:40:33
  * @ Description: app 相关的辅助函数
  */
 
 import { IP_INFO_KEY__ } from '../../constants/index'
-import { MyStorage } from './storage'
+import { MyStorage } from '../cache/storage'
 
 export interface IIpInfo {
   /** IP地址 */
@@ -48,14 +48,3 @@ export const getIpInfo = async (): Promise<IIpInfo> => {
       })
   })
 }
-
-export const isBrowser = typeof window !== 'undefined'
-
-/**
- * @description 当前容器是否为移动端
- */
-export const isMobile: boolean =
-  isBrowser &&
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    window.navigator.userAgent,
-  )
