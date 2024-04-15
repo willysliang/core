@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <main>单页面应用 - 简洁版</main>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+
+  <script>
+    const pages = {
+      '/': {
+        title: 'Home',
+        content: `<h1>欢迎来到我的网站！</h1>
+          <p>这是我的网站主页</p>
+          <h2>相关链接</h2>`
+      },
+      '/about': {
+        title: 'About',
+        content: `<h1>关于我</h1>
+          <p>我喜欢吃吃喝喝！</p>
+          <h2>相关链接</h2>`
+      },
+      '/contact': {
+        title: 'Contact',
+        content: `<h1>联系我</h1>
+          <p>我可以通过 email 联系到我</p>
+          <h2>相关链接</h2>`
+      },
+    }
+
+    const links = document.querySelectorAll('a')
+    links.forEach(link => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault()
+        const path = event.target.pathname
+        window.history.pushState({}, pages[path].title, path)
+        document.querySelector('main').innerHTML = pages[path].content
+        document.title = pages[path].title
+      })
+    })
+  </script>
+</body>
+</html>
