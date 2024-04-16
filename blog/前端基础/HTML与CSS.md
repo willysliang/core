@@ -1296,6 +1296,7 @@ img {
 > overflow:hidden;	// 超出内容框的隐藏
 > text-overflow:ellipsis;	// 用省略号显示超出的部分
 > 
+> 
 > //两行超出隐藏
 > overflow: hidden;	// 超出的隐藏显示
 > text-overflow:ellipsis;	// 省略号显示溢出部分
@@ -2289,16 +2290,24 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 	- 每一个 BFC 区域都是独立个体，互不影响。可利用这一特性让不同 BFC 区域之间的布局不产生影响。
 > 
 > 
-> ### 形成 BFC 的条件（一般是让盒子脱标（即是脱离标准文档流））
+> 
+> ### BFC 特性
+> - BFC 在 Web 页面上是一个独立的容器，容器内外的元素互不影响
+> - 和标准文档流一样，BFC 内的两个相邻块级元素垂直方向的边距会发生重叠
+> - BFC 不会与浮动元素的盒子重叠
+> - BFC 在计算高度时会把浮动元素计算进去
+> 
+> 
+> ### 形成 BFC 的条件（一般是让盒子脱离标准文档流）
 > 只要元素满足下面任一条件即可触发 BFC 特性：
->   - 根元素(body 标签)
->   - 浮动元素：float 值不为 none
->   - 设置定位脱离文档流：position（absolute、fixed）
+>   - 根元素 (html/body 标签)
+>   - 浮动元素 (float 值不为 none)
+>   - 绝对定位元素 (position 为 absolute、fixed)
 >   - display 为 inline-block、flex、inline-flex、table-cell、table-caption
->   		- 弹性布局flex、
->   		- 表格单元格table-cell、table-caption、
->   		- 行内块显示模式inline-block/inline-flex
->   - 设置 overflow 值不为 visible （hidden、auto、scroll）
+>   		- 弹性布局 flex
+>   		- 表格单元格 table-cell、table-caption、
+>   		- 行内块显示模式 inline-block/inline-flex
+>   - overflow 值不为 visible （hidden、auto、scroll）
 > 
 > 
 > ### BFC 的原理
@@ -2319,7 +2328,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >       解决：可在 div 外包裹一层容器，并触发该容器生成一个 BFC。则两个 div 便不属于同一个 BFC，也就不会产生 margin 重叠。
 > 
 > 2. 清除浮动的影响
-> 		- 块级子元素浮动，如果块级父元素没有设置高度，则其会有高度塌陷的情况发生。
+> 		- 当父元素没有设置高度，且子元素为浮动元素的情况下，父元素会发生高度坍塌，上下边界重合，即浮动元素无法撑开父元素。
 > 		- 原因：子元素触发触动后，均开启 BFC，父元素不会被子元素撑开。
 > 		- 解决方法：
 > 			由第六条原理得，计算 BFC 的高度时，浮动元素也参与计算。
