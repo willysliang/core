@@ -1957,12 +1957,13 @@ function del() {
 - `location.assign(str)`：用来跳转到其他的页面
 - `location.replace()`：使用一个新的页面替换当前页面，调用完毕也会跳转页面。但不会生成历史记录，不能使用``history.back()`返回本来的页面
 
-- hash 返回url中#后面的内容，包含#
-- host 主机名，包括端口
-- hostname 主机名
+- hash: 返回url中`#`后面的内容，包含`#`
+- host: 主机名，包括端口
+- hostname: 主机名
 - pathname url中的路径部分
-- protocol 协议 一般是http、https
+- protocol 协议 一般是`http、https`
 - search 查询字符串
+
 ```
 
 
