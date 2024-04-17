@@ -107,6 +107,9 @@ html(5)/css(3)，前端页面相关技术
 # 2024
 
 
+## 2024年4月17日
+  - docs(前端算法): [手写&原理] 构建一个 VirtualDOM
+
 ## 2024年4月15日
   - docs(后端基础): [Nginx] 地址匹配 location、重定向 rewrite
   - docs(前端算法): [手写&原理] 自定义事件函数 EventEmitter、单页面应用 singlePage
