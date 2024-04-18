@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-04-17 22:03:54
  * @ Modifier: willy
- * @ ModifierTime: 2024-04-17 22:05:57
+ * @ ModifierTime: 2024-04-18 14:04:39
  * @ Description: 构建一个虚拟 DOM
  */
 
@@ -179,7 +179,9 @@ export class VirtualDOM {
       if (
         !newVChildren.find((nc) => {
           const newKey = typeof nc === 'string' ? null : nc.props.key
-          return newKey === oldChild?.props?.key
+          const oldChildKey =
+            typeof oldChild === 'string' ? null : oldChild?.props?.key
+          return newKey === oldChildKey
         })
       ) {
         const nodeToRemove = parentElement.children[oldIndex]
