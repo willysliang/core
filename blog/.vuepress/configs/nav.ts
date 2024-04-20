@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
- * @ Modifier: willy
- * @ ModifierTime: 2024-02-27 21:04:11
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-04-21 00:42:04
  * @ Description: 导航栏
  */
 
@@ -36,6 +36,9 @@ const getDirectoryPathFileNames = (
     '计算机网络',
   ]
 
+  // 忽略的md名单 （只要 md 文件名存在这个名，则忽略这个文件的构建）
+  const ignoreMdList = ['前端面试']
+
   // files 参数是包含文件名的数组
   files.forEach((file) => {
     const filePath = path.join(directoryPath, file)
@@ -51,10 +54,13 @@ const getDirectoryPathFileNames = (
         const curFileName = curFileNames
           .slice(0, curFileNames.length - 1)
           .join('')
-        result.push({
-          filePath: `/${prefix}/${curFileName}`,
-          fileName: curFileName,
-        })
+
+        if (!ignoreMdList.some((item) => curFileName.includes(item))) {
+          result.push({
+            filePath: `/${prefix}/${curFileName}`,
+            fileName: curFileName,
+          })
+        }
       }
     }
   })
@@ -84,10 +90,10 @@ const getAllFile = (rootDirectoryPath) => {
 }
 
 /**
- * 
+ *
  * @param allFile 所有的文件
  * @returns {any[]} 返回所有导航项
- * 
+ *
  * @description 逻辑分项
     1. 字符串类型
     2. 对象类型
@@ -132,10 +138,6 @@ const shareNavs = [
     children: [
       { text: 'HOME', link: 'https://willysliang.github.io/core' },
       { text: 'Vue3.x', link: 'https://v3.cn.vuejs.org/' },
-      {
-        text: 'Element Plus',
-        link: 'https://element-plus.gitee.io/zh-CN/guide/design.html',
-      },
     ],
   },
 ]

@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年4月21日
+  - chore(blog): 设置忽略的 md 文件名的名单
+
 ## 2024年4月20日
   - fix(utils): [FetchRequest] 修复query-string报错
 
