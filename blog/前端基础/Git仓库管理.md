@@ -759,6 +759,10 @@ $ git cherry-pick x # chergit cherry-pick <HashA> <HashB>ry-pick对应的提交�
 如果在提交中附加了注释，则它们不会遵循 `cherry-pick`。要将它们也带过来，则必须使用：
 `git notes copy <from> <to>`
 
+
+### 在 cherry-pick 中遇到冲突
+使用 `git cherry-pick --about` 来取消这次 cherry-pick 操作，并尝试回到执行 cherry-pick 之前的状态。
+
 ```
 
 
