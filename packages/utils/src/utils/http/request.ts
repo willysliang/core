@@ -2,11 +2,9 @@
  * @ Author: willy
  * @ CreateTime: 2024-04-08 17:57:02
  * @ Modifier: willy
- * @ ModifierTime: 2024-04-11 15:10:35
+ * @ ModifierTime: 2024-04-20 22:04:42
  * @ Description: fetch 请求封装
  */
-
-import queryString from 'query-string'
 
 type IMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 interface IRequestConfig {
@@ -36,6 +34,36 @@ export class FetchRequest {
     this.baseUrl = baseUrl
   }
 
+  /**
+   * @memberof FetchRequest#customStringify 将对象的键值对转换为URL编码的字符串格式
+   * @example
+      const obj = {
+        name: 'John Doe',
+        age: 30,
+        job: 'Developer',
+        hobbies: null, // 这个键值对不会出现在结果字符串中
+      }
+      customStringify(obj) // "name=John%20Doe&age=30&job=Developer"
+   */
+  private customStringify(queryParams: Record<string, any>): string {
+    const keys = Object.keys(queryParams)
+    // 使用Array的map方法遍历所有键，将每个键值对转换为字符串形式
+    const queryParts = keys
+      .map((key) => {
+        const value = queryParams[key]
+        // 如果值为undefined或null，则不包括在结果字符串中
+        if (value === undefined || value === null) {
+          return ''
+        }
+        // 使用encodeURIComponent确保键和值被正确地URL编码
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+      })
+      .filter((part) => part) // 过滤掉空字符串，即那些值为undefined或null的键值对
+
+    // 使用join方法将所有键值对连接起来，并以&符号分隔
+    return queryParts.join('&')
+  }
+
   /** 请求拦截器 */
   private interceptorsRequest({
     url,
@@ -54,7 +82,7 @@ export class FetchRequest {
     if (['GET', 'DELETE'].includes(method)) {
       // fetch 对 GET 请求不支持参数传在 body，所以需要手动拼接到 url 中
       if (params) {
-        queryParams = queryString.stringify(params)
+        queryParams = this.customStringify(params)
         url = `${url}?${queryParams}`
       }
     } else {

@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年4月20日
+  - fix(utils): [FetchRequest] 修复query-string报错
+
 ## 2024年4月14日
   - refactor(utils): [all] 重构 - 优化文件结构
 
