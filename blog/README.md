@@ -109,6 +109,7 @@ html(5)/css(3)，前端页面相关技术
 
 ## 2024年4月20日
   - docs(前端基础): [Nodejs] FNM
+  - docs(前端框架): [Nodejs] PM2
 
 ## 2024年4月18日
   - docs(前端算法): [手写&原理] deepGetProp函数、sleep休眠函数
