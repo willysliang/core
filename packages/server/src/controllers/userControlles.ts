@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 20:35:16
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-29 21:24:08
+ * @ ModifierTime: 2024-04-22 17:42:07
  * @ Description: 用户接口
  */
 
@@ -11,7 +11,7 @@ import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { UserService } from '../services/UserService'
-import { SALT_ROUNDS, SECRETKEY } from '@willy/utils'
+import { SALT_ROUNDS, SECRETKEY } from '../config/constants'
 import { isUndefined } from '../utils/index'
 
 const userService = new UserService()

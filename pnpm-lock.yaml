@@ -645,9 +645,6 @@ importers:
       '@types/node':
         specifier: ^20.8.9
         version: 20.11.26
-      '@willy/utils':
-        specifier: workspace:^
-        version: link:../utils
       axios:
         specifier: ^1.6.7
         version: 1.6.7(debug@4.3.4)

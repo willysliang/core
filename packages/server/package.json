@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "node服务器",
   "scripts": {
-    "start": "nodemon --exec ts-node ./app.ts"
+    "start": "nodemon --exec ts-node ./app.ts",
+    "pm2": "pm2 start --env development"
   },
   "keywords": [],
   "author": "",
@@ -11,7 +12,6 @@
   "dependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^20.8.9",
-    "@willy/utils": "workspace:^",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
