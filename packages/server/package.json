@@ -2,6 +2,10 @@
   "name": "@willy/server",
   "version": "1.0.0",
   "description": "node服务器",
+  "main": "./app.ts",
+  "bin": {
+    "willy": "./app.ts"
+  },
   "scripts": {
     "start": "nodemon --exec ts-node ./app.ts",
     "test": "node --tls-min-v1.0 -r ts-node/register ./app.ts",
@@ -30,6 +34,7 @@
     "mongoose": "^8.1.3",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.3",
+    "pm2": "^5.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.0.2",
     "web-push": "^3.6.7"
