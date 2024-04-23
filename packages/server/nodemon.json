@@ -1,7 +1,8 @@
 {
   "restartable": "rs",
   "ignore": [".git", "node_modules/", "dist/", "coverage/"],
-  "watch": ["src/"],
+  "watch": ["src/**/*.ts", "./app.ts"],
+  "exec": "ts-node ./app.ts",
   "execMap": {
     "ts": "node -r ts-node/register"
   },
