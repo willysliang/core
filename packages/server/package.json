@@ -4,7 +4,9 @@
   "description": "node服务器",
   "scripts": {
     "start": "nodemon --exec ts-node ./app.ts",
-    "pm2": "pm2 start --env development"
+    "test": "node --tls-min-v1.0 -r ts-node/register ./app.ts",
+    "test1": "node --tls-min-v1.0 ./app.js",
+    "pm2": "pm2 start ecosystem.config.js --env production --only server"
   },
   "keywords": [],
   "author": "",
