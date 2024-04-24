@@ -242,36 +242,65 @@ img {
 
 ### 内联框架 iframe
 
-> ```bash
-> ## 内联框架 iframe
-> 注意：HTML5 不再支持使用 frame, iframe 只有 src 属性。
-> 
-> iframe 的优点：
-> 1. 程序调入静态页面比较方便。
-> 2. 页面和程序分离。
-> 
-> iframe 的缺点：
-> 1. 样式/脚本需要额外链入，会增加请求（加载JS会具备安全隐患）。
-> 2. 搜索引擎对 iframe 不友好，如果是动态网页可使用 include，但必须去除它的 `<html><head><title><body>` 标签。
-> 3. iframe 的框架结构可能会导致页面混杂（如产生滚动条）
-> 
-> 4.  iframe 会阻塞主页面加载
->     window 的 onload 事件需要在所有 iframe 加载完毕后(包含里面的元素)才会触发。
->     但在 Safari 和 Chrome 中可通过 JS 动态设置的 iframe 的 `src` 属性上所绑定的链接来避免这种阻塞情况。
-> 
-> 5. iframe 和主页面共享连接池
->     浏览器只能开少量的连接到 web 服务器（http只能同时发送6个请求），但因为主页面和其中的 iframe 是共享这些连接的。
->     这意味着 iframe 在加载资源时可能用光所有的可用连接，从而阻塞了主页面资源的加载。
->     但可通过在主页面上的重要的元素加载完毕后，在动态设置 iframe 的 src 属性上所绑定的链接来优化这个问题。
-> 
-> 
-> ### 微前端上的 iframe 的缺点
-> 1. url 不同步。浏览器刷新，iframe 的 url 状态丢失、后退前进按钮无法使用。
-> 2. DOM 结构不共享。想象以下屏幕右下角 1/4 的 iframe 里有一个带遮罩层的弹框，同时我们要求和这个弹框要浏览器居中显示，还要浏览器 resize 时自动居中...（但该功能难以实现）
-> 3. 全局上下文完全隔离，内存变量不共享。iframe 内外系统的通信、数据同步等需求，主应用的 cookie 要透传到根据域名到不同的子应用中实现免登效果。
-> 4. 慢。每次子应用进入都是一次浏览器上下文重建、资源重新加载的过程。
-> ```
->
+```bash
+## 内联框架 iframe
+iframe 标签允许我们将来自其他来源（其他网站）的内容嵌入到我们的网页中。
+从技术上讲，iframe 创建了一个新的嵌套浏览上下文。这意味着 iframe 中的任何内容都不会干扰父页面，反之亦然。JavaScript 和 CSS 不会泄漏到 iframe 或从 iframe 中泄漏。
+
+注意：HTML5 不再支持使用 frame, iframe 只有 src 属性。
+
+iframe 的优点：
+	1. 程序调入静态页面比较方便。
+	2. 页面和程序分离。
+
+iframe 的缺点：
+	1. 样式/脚本需要额外链入，会增加请求（加载JS会具备安全隐患）。
+	2. 搜索引擎对 iframe 不友好，如果是动态网页可使用 include，但必须去除它的 `<html><head><title><body>` 标签。
+	3. iframe 的框架结构可能会导致页面混杂（如产生滚动条）
+	4.  iframe 会阻塞主页面加载
+    	window 的 onload 事件需要在所有 iframe 加载完毕后(包含里面的元素)才会触发。
+    	但在 Safari 和 Chrome 中可通过 JS 动态设置的 iframe 的 `src` 属性上所绑定的链接来避免这种阻塞情况。
+	5. iframe 和主页面共享连接池
+    	浏览器只能开少量的连接到 web 服务器（http只能同时发送6个请求），但因为主页面和其中的 iframe 是共享这些连接的。
+    	这意味着 iframe 在加载资源时可能用光所有的可用连接，从而阻塞了主页面资源的加载。
+    	但可通过在主页面上的重要的元素加载完毕后，在动态设置 iframe 的 src 属性上所绑定的链接来优化这个问题。
+
+
+
+### sandbox 属性允许限制 iframe 中允许的操作
+  - `allow-forms` 允许提交表单
+  - `allow-modals` 允许打开模态窗口，包括在 JavaScript 调用 `alert()`
+  - `allow-orientation-lock` 允许锁定屏幕方向
+  - `allow-popups` 允许弹出窗口、使用 `window.open()` 和 `target="_blank"` 链接
+  - `allow-same-origin` 将正在加载的资源视为同一来源
+  - `allow-scripts` 让加载的 iframe 运行脚本（但不创建弹出窗口）。
+  - `allow-top-navigation` 允许访问 iframe 以访问顶级浏览上下文
+
+
+
+### 微前端上的 iframe 的缺点
+1. url 不同步。浏览器刷新，iframe 的 url 状态丢失、后退前进按钮无法使用。
+2. DOM 结构不共享。想象以下屏幕右下角 1/4 的 iframe 里有一个带遮罩层的弹框，同时我们要求和这个弹框要浏览器居中显示，还要浏览器 resize 时自动居中...（但该功能难以实现）
+3. 全局上下文完全隔离，内存变量不共享。iframe 内外系统的通信、数据同步等需求，主应用的 cookie 要透传到根据域名到不同的子应用中实现免登效果。
+4. 慢。每次子应用进入都是一次浏览器上下文重建、资源重新加载的过程。
+
+```
+
+```html
+<iframe src="page.html" />
+
+<iframe src="https://example.com/page.html" />
+
+<iframe src="page.html" width="800" height="400" />
+
+<iframe srcdoc="<p>Hello iframe!</p>" />
+
+
+```
+
+
+
+
 
 ### 盒子 `div`
 
