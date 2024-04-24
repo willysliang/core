@@ -26,7 +26,7 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    
+
     // "allowJs": true, // 允许在ts中使用普通 JS 代码
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -44,20 +44,27 @@
     /* 别名地址 */
     "baseUrl": ".",
     "paths": {
-      "@packages/*": ["packages/*"],
-    },
+      "@packages/*": ["packages/*"]
+    }
   },
   "types": ["vite/client", "**/*.d.ts"],
   "include": [
-    "packages/**/*.ts", 
-    "packages/**/*.d.ts", 
-    "packages/**/*.tsx", 
-    "packages/**/*.vue", 
+    "packages/**/*.ts",
+    "packages/**/*.d.ts",
+    "packages/**/*.tsx",
+    "packages/**/*.vue",
     "types/**/*.d.ts",
     "types/**/*.ts",
     "blog/**/*.js",
     "blog/**/*.ts",
+    "packages/utils/src/algorithm/test.js"
   ],
-  "exclude": ["node_modules", "tests/server/**/*.ts", "dist", "**/*.js", "./public"],
+  "exclude": [
+    "node_modules",
+    "tests/server/**/*.ts",
+    "dist",
+    "**/*.js",
+    "./public"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

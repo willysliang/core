@@ -257,18 +257,20 @@ Description: ES6+ 语法
 > 
 > 
 > /** instanceof */
-> console.log(2 instanceof Number);                    // false
-> console.log(true instanceof Boolean);                // false 
-> console.log('str' instanceof String);                // false 
-> console.log([] instanceof Array);                    // true
-> console.log({} instanceof Object);                   // true
-> console.log(function(){} instanceof Function);       // true
-> console.log(Function instanceof Object)							// true
-> console.log(Object instanceof Function)							// true
+> 2 instanceof Number     	// false
+> true instanceof Boolean 	// false 
+> 'str' instanceof String	  // false 
+> [] instanceof Array				// true
+> [] instanceof Object			// true
+> {} instanceof Object			// true
+> function(){} instanceof Function	// true
+> Function instanceof Object	// true
+> Object instanceof Function	// true
+> 
 > // 原型链
 > function obj1(){}
 > const obj2 = new obj1()
-> console.log(obj2 instanceof obj1)	// true
+> obj2 instanceof obj1	// true
 > 
 > 
 > /**  constructor 给对象修改原型 */

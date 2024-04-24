@@ -1973,6 +1973,7 @@ while (true) {
 > 
 > ### Promise 和 setTimeout 的区别
 > Promise 是微任务，setTimeout 是宏任务，同一个事件循环中，promise.then总是先于 setTimeout 执行。
+> 
 > ```
 
 ### Promise创建
@@ -2024,27 +2025,27 @@ new Promise((resolve, reject) => {
 >
 > ```js
 > new Promise((resolve, reject) => {
->   setTimeout(() => {
->     resolve('Hello World')
->   }, 1000)
+>     setTimeout(() => {
+>        resolve('Hello World')
+>     }, 1000)
 > }).then(res => {
->   console.log(res + 'start')
->   return res + '111'
+>     console.log(res + 'start')
+>     return res + '111'
 > }).then(res => {
->   console.log(res)
->   return res + '222'
+>     console.log(res)
+>     return res + '222'
 > }).then(res => {
->   console.log(res)
->   return Promise.reject(res + 'error')
+>     console.log(res)
+>     return Promise.reject(res + 'error')
 > }).then(res => {
->   // 此部分不执行，所以不输出
->   console.log(res)
->   return res + '333'
+>     // 此部分不执行，所以不输出
+>     console.log(res)
+>     return res + '333'
 > }).catch(err => {
->   console.log(err)
->   return err + '444'
+>     console.log(err)
+>     return err + '4 44'
 > }).then(res => {
->   console.log(res + 'end');
+>     console.log(res + 'end');
 > })
 > 
 > /* Hello Worldstart
