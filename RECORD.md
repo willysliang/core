@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年4月25日
+  - feat(utils): [hooks/tracker] Tracker 日志埋点上报
+
 ## 2024年4月22日
   - chore(server): 引入 pm2 服务
 
