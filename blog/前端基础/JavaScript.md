@@ -1700,46 +1700,48 @@ function del() {
 >     - window.resizeBy()
 > ```
 
-#### 错误捕获
+### 错误捕获
 
-> ```bash
-> ## 页面错误捕获
-> 
-> ### 即时错误
-> - `window.onerror = function(msg, url, row, col, error) { ... }`
-> 		- msg 为异常基本信息
-> 		- source 为发生异常 JavaScript 文件的 url
-> 		- row 为发生错误的行号
-> - 添加监听错误事件：`window.addEventListener("error", callbackFn)`
-> - 注意：window.onerror 只能捕获即时运行错误（即只能捕获到在 window 发生的即时错误）。
-> 
-> 
-> 
-> ### 跨域 js 的运行错误
-> - window.onerror 默认无法捕获 '跨域' 的 js 运行错误；
-> - 需要在 window.onerror 的基础之上，做如下操作：
-> 		- 在引入第三方的跨域文件里，加入如下响应头：`Access-Control-Allow-Origin:*;` 以表示允许跨域。
-> 		- 引入第三方跨域文件时，在 `<script>` 标签中增加 `crossOrigin` 属性。
-> 		- 因为无法获取出错的文件名和错误信息，所以需要把 '堆栈' 信息作为 msg 打印出来。
-> 		
-> 
-> 
-> ### Object.onerror
-> - window.onerror 只能捕获即时运行错误，无法捕获资源加载错误。
-> 	原理是：资源加载错误，并不会向上冒泡，Object.onerror 捕获后就会终止(不会冒泡到window)，所以 window.onerror 并不能捕获资源加载错误。
-> 
-> 1. 方式1：`Object.onerror`。
-> 	img标签、script标签等节点都可以添加 onerror 事件来捕获资源加载的错误。
-> 
-> 2.方式2：`performance.getEntries`。
-> 	可以获取所有已加载资源的加载时长，通过这种方式可以间接拿到没有加载的资源错误。
-> 
-> 	举例：
-> 		1. 浏览器打开一个网站，按 F12 在控制台下输入 `performance.getEntries().forEach(item => { console.log(item.name) })`
-> 				- `performance.getEntries()` 返回的是数组，打印出来的资源是已经成功加载的资源。
-> 		2. 再输入 `document.getElementsByTagName('img')` 就会显示所有 '需要加载' 的 img 集合。
-> 		3. 于是，`document.getElementsByTagName('img')` 获取的资源数组减去通过 `performance.getEntries()` 获取的资源数组，剩下的就是没有成功加载的，这种方式可以 '间接' 捕获到资源加载错误。
-> ```
+```bash
+## 页面错误捕获
+
+### 即时错误
+- `window.onerror = function(msg, url, row, col, error) { ... }`
+		- msg 为异常基本信息
+		- source 为发生异常 JavaScript 文件的 url
+		- row 为发生错误的行号
+- 添加监听错误事件：`window.addEventListener("error", callbackFn)`
+- 注意：window.onerror 只能捕获即时运行错误（即只能捕获到在 window 发生的即时错误）。
+
+
+
+### 跨域 js 的运行错误
+因为受浏览器同源策略的影响，window.onerror 默认无法捕获与当前页面 '跨域' JS 脚本的运行错误。
+- 需要在 window.onerror 的基础之上，做如下操作：
+		- 在引入第三方的跨域文件里，加入如下响应头：`Access-Control-Allow-Origin:*;` 以表示允许跨域。
+		- 引入第三方跨域文件时，在 `<script>` 标签中增加 `crossOrigin` 属性。
+		- 因为无法获取出错的文件名和错误信息，所以需要把 '堆栈' 信息作为 msg 打印出来。
+		
+
+
+### Object.onerror
+- window.onerror 只能捕获即时运行错误，无法捕获资源加载错误。
+	原理是：资源加载错误，并不会向上冒泡，Object.onerror 捕获后就会终止(不会冒泡到window)，所以 window.onerror 并不能捕获资源加载错误。
+
+1. 方式1：`Object.onerror`。
+	img标签、script标签等节点都可以添加 onerror 事件来捕获资源加载的错误。
+
+2.方式2：`performance.getEntries`。
+	可以获取所有已加载资源的加载时长，通过这种方式可以间接拿到没有加载的资源错误。
+
+	举例：
+		1. 浏览器打开一个网站，按 F12 在控制台下输入 `performance.getEntries().forEach(item => { console.log(item.name) })`
+				- `performance.getEntries()` 返回的是数组，打印出来的资源是已经成功加载的资源。
+		2. 再输入 `document.getElementsByTagName('img')` 就会显示所有 '需要加载' 的 img 集合。
+		3. 于是，`document.getElementsByTagName('img')` 获取的资源数组减去通过 `performance.getEntries()` 获取的资源数组，剩下的就是没有成功加载的，这种方式可以 '间接' 捕获到资源加载错误。
+```
+
+
 
 ### 定时器
 
