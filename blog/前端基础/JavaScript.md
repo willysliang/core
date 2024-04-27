@@ -776,38 +776,62 @@ delete ele.dataset.message
 
 ### DOM访问
 
-> ```bash
-> ### DOM 访问
-> - 通过Id获取单个标签：document.getElementById，返回Object类型
-> - 通过类名获取标签：document.getElementByClassName，返回一个数组
-> - 通过标签名获取标签：document.getElementsByTagName，返回一个数组
-> - H5中query查询Selector选择器：querySelctor()
-> - 查询所有选择器：querySelctorAll(标签名/类名/id名等等)
-> 
-> 注意：因为id是单数，所以不用s，name等可以多个，为复数，所以需要s
-> ```
->
-> ```js
-> // 元素的节点访问
-> 节点.parentNode						：获取父元素
-> 
-> 节点.previousSibling			 ：上一个兄弟节点		
-> 节点.nextSibling					：下一个兄弟节点
-> 节点.previousElementSibling：上一个兄弟元素（处理兼容： 节点.previousElementSibling || 节点）
-> 节点.nextElementSibling		：下一个兄弟元素（处理兼容问题： 节点.nextElementSibling || 节点）
-> 
-> 节点.firstChild						：获取第一个子节点		
-> 节点.lastChild						：最后的子节点
-> 节点.firstElementChild		：获取第一个子元素（处理兼容问题：节点.firstElementChild || 节点）
-> 节点.lastElementChild			：最后的子元素		（处理兼容问题：节点.lastElementChild || 节点）
-> 
-> 节点自己.parentNode.children[index] ：获取随意的兄弟节点
-> 节点.childNodes						：获取所有子节点
-> 节点.children							：获取所有子元素
-> 
-> document.body							:获取body节点
-> document.documentElement	:获取html节点
-> ```
+```bash
+### DOM 访问
+- 通过Id获取单个标签：document.getElementById，返回Object类型
+- 通过类名获取标签：document.getElementByClassName，返回一个数组
+- 通过标签名获取标签：document.getElementsByTagName，返回一个数组
+- H5中query查询Selector选择器：querySelctor()
+- 查询所有选择器：querySelctorAll(标签名/类名/id名等等)
+
+注意：因为id是单数，所以不用s，name等可以多个，为复数，所以需要s
+
+
+
+### 元素的节点访问
+节点.parentNode						：获取父元素
+
+节点.previousSibling			 ：上一个兄弟节点		
+节点.nextSibling					：下一个兄弟节点
+节点.previousElementSibling：上一个兄弟元素（处理兼容： 节点.previousElementSibling || 节点）
+节点.nextElementSibling		：下一个兄弟元素（处理兼容问题： 节点.nextElementSibling || 节点）
+
+节点.firstChild						：获取第一个子节点		
+节点.lastChild						：最后的子节点
+节点.firstElementChild		：获取第一个子元素（处理兼容问题：节点.firstElementChild || 节点）
+节点.lastElementChild			：最后的子元素		（处理兼容问题：节点.lastElementChild || 节点）
+
+节点自己.parentNode.children[index] ：获取随意的兄弟节点
+节点.childNodes						：获取所有子节点
+节点.children							：获取所有子元素
+
+document.body							:获取body节点
+document.documentElement	:获取html节点
+
+```
+
+
+
+#### 获取父元素
+
+- 使用 `Element.closest()` 方法来检查元素是否在某个父元素中。
+
+```js
+document.addEventListener('click', (e) => {
+  if (!e.target.matches('.click-me')) return
+  alert('想屁吃')
+})
+```
+
+这将永远不会运行，因为点击事件的目标几乎总是 `.text-large` 或 `.text-small` 元素。仅当您单击按钮中的文本之外时才有效。
+为了解决这个问题，我们可以使用 `Element.closest()` 方法。
+
+```js
+document.addEventListener('click', e => { if (!e.target.closest('.click-me'))
+return alert('想屁吃') })
+```
+
+
 
 #### 匹配对应父元素的标签
 
