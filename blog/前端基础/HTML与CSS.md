@@ -196,6 +196,34 @@ img {
 
 
 
+#### alt 和 title 的区别
+
+```bash
+### ait 和 title 的区别
+- `alt` 属性是当元素不能正常呈现时用作元素内容的替代文本。img 标签是使用 `alt` 属性的最常用标签。当无法加载图像时，浏览器将在其位置显示 `alt` 文本，以便用户了解包含图像的含义。
+- `title` 属性是将鼠标悬停在元素上时看到的工具提示文本，是对图片的描述和进一步的说明。
+
+注意：浏览器并非总是会显示图像。当有下列情况时，`alt` 属性可以为图像提供替代的信息：
+	- 非可视化浏览器（Non-visual browsers）（比如有视力障碍的人使用的音频浏览器）
+	- 用户选择不显示图像（比如为了节省带宽，或出于隐私等考虑不加载包括图片在内的第三方资源文件）
+	- 图像文件无效，或是使用了[不支持的格式](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/img#Supported_image_formats)
+	- 浏览器禁用图像等
+
+推荐做法: 始终为 `<img>` 标签使用 `alt` 属性，以提供一些有用的信息。
+谷歌和其他搜索引擎无法读取图像，但可以看到 `alt` 文本。设置 `alt` 属性是 SEO（搜索引擎优化）的一个良好实践。
+通常不会为 `<img>` 设置 `title` 属性，除非它确实提供了有关图像的更多信息。
+
+
+#### 确保在 `img` 标签上始终包含 `alt` 属性
+使用 CSS 为任何缺少或空白 `alt` 属性的 `img` 提供红色轮廓：
+img:not([alt]), img[alt=''] { outline: 8px solid red; }
+
+```
+
+
+
+
+
 ### 表格table
 
 > - cellspacing 设置td与td之间的距离
@@ -407,48 +435,79 @@ iframe 的缺点：
 
 ### 超链接 a
 
-> ```bash
-> ## 锚链接 a
-> - 给超链接起一个名字，作用是 在本页面或者其他页面的的不同位置进行跳转。
-> - 比如说，在网页底部有一个向上箭头，点击箭头后回到顶部，这个就可以利用锚链接。
-> 
-> 
-> ### 返回页面顶部示例
-> 首先我们要创建一个锚点 ，即是使用`name`属性或者`id`属性给那个特定的位置起个名字。
-> `<a href="a.html#name1">回到顶部</a>`
-> 
-> 
-> ### 属性说明
-> - `href`：目标URL
-> - `title`：悬停文本。
-> - `name`：主要用于设置一个锚点的名称。
-> - `target`：告诉浏览器用什么方式来打开目标页面。
->     - `_self`：在同一个网页中显示（默认值）
->     - `_blank`：**在新的窗口中打开**。
->     - `_parent`：在父窗口中显示
->     - `_top`：在顶级窗口中显示
-> ```
+```bash
+## 锚链接 a
+- 给超链接起一个名字，作用是 在本页面或者其他页面的的不同位置进行跳转。
+- 比如说，在网页底部有一个向上箭头，点击箭头后回到顶部，这个就可以利用锚链接。
+
+
+### 属性说明
+- `href`：目标URL
+- `title`：悬停文本。
+- `name`：主要用于设置一个锚点的名称。
+- `target`：告诉浏览器用什么方式来打开目标页面。
+    - `_self`：在同一个网页中显示（默认值）
+    - `_blank`：**在新的窗口中打开**。
+    - `_parent`：在父窗口中显示
+    - `_top`：在顶级窗口中显示
+
+
+### 返回页面顶部示例
+首先我们要创建一个锚点 ，即是使用`name`属性或者`id`属性给那个特定的位置起个名字。
+`<a href="a.html#name1">回到顶部</a>`
+
+```
+
+
+
+#### 所有链接都在新标签打开
+
+```bash
+### 所有链接都在新标签打开
+将 `target="_blank"` 属性设置为单个链接将在新选项卡中打开它。
+在一个真实的用例中，您希望在一个新选项卡中打开页面上的所有链接，这是很少见的。一个只收集外部资源链接的网站可能就是一个例子。
+在这种情况下，您只需将其设置为 `base` 标签，而不是将属性添加到所有链接：
+注意:就像我们说的那样，链接会在新窗口中打开，即使链接中没有 `target="_blank"` 属性。这是因为 `base` 元素的 `target` 属性已经被设置为 `"_blank"` 了。
+你还可以为所有 `a` 标签上 `href` 属性为空的链接添加一个 URL 指向。
+
+```
+
+```html
+<head>
+  <base href="https://www.baidu.com" />
+  <base target="_blank" />
+</head>
+<body>
+  <a href="https://www.baidu.com">百度一下，你就知道</a>
+</body>
+```
+
+
 
 #### 使用 a 标签下载文件，浏览器会直接打开的解决方案
 
-> ```bash
-> ## 使用 a 标签下载文件，浏览器会直接打开的解决方案
-> - 问题描述：使用 a 标签打开一个如 excel 的文件地址，浏览器会下载文件，但如图片的链接就不会下载。
-> - 在使用 a 标签进行下载文件时，chrome 浏览器是会打开支持预览的文件（如 txt、json 等），而不是下载文件到本地。
-> 
-> 
-> ### 1. 使用a标签 + download属性
-> 如 `<a href="/user/test/xxx.txt">点击下载</a>` 把文件路径给 a 标签的 href 属性，这样当用户点开链接时就会直接下载文件。
-> 但如 txt、png、jpg 等这些浏览器支持直接打开的文件是不会执行下载任务的，而是会直接打开文件，这时就需要给 a 标签添加一个 download 属性，如 `<a href="/user/test/xxx.txt" download="文件名.txt">点击下载</a>`。
-> 
-> 
-> ### 2. 即使使用a标签的download属性，浏览器仍然会打开文件
-> 原因：服务器端返回的response中，content-type为text/plain，即数据以纯文本形式(text/json/xml/html)进行编码，其中不含任何控件或格式字符。chrome浏览器直接打开了该文本，并没有下载。
-> 解决方案：浏览器对 txt、json 等文件直接打开是因为浏览器对这些类型的文件支持阅览，可以设置 `Content-type:application/octet-stream` 来告知浏览器这是一个字节流，浏览器处理字节流的默认方式就是下载。
-> 		- Content-Type设置为application/octet-stream是二进制的下载流，导致强制下载。
-> 如果是公共读类型的文件也可以直接在链接后面加上，比如：`window.open('https://xxx.json?response-content-type=application%2Foctet-stream')`。
-> ```
->
+```bash
+## 使用 a 标签下载文件，浏览器会直接打开的解决方案
+- 问题描述：使用 a 标签打开一个如 excel 的文件地址，浏览器会下载文件，但如图片的链接就不会下载。
+- 在使用 a 标签进行下载文件时，chrome 浏览器是会打开支持预览的文件（如 txt、json 等），而不是下载文件到本地。
+
+
+### 1. 使用a标签 + download属性
+如 `<a href="/user/test/xxx.txt">点击下载</a>` 把文件路径给 a 标签的 href 属性，这样当用户点开链接时就会直接下载文件。
+但如 txt、png、jpg 等这些浏览器支持直接打开的文件是不会执行下载任务的，而是会直接打开文件，这时就需要给 a 标签添加一个 download 属性，如 `<a href="/user/test/xxx.txt" download="文件名.txt">点击下载</a>`。
+
+
+### 2. 即使使用a标签的download属性，浏览器仍然会打开文件
+原因：服务器端返回的response中，content-type为text/plain，即数据以纯文本形式(text/json/xml/html)进行编码，其中不含任何控件或格式字符。chrome浏览器直接打开了该文本，并没有下载。
+解决方案：浏览器对 txt、json 等文件直接打开是因为浏览器对这些类型的文件支持阅览，可以设置 `Content-type:application/octet-stream` 来告知浏览器这是一个字节流，浏览器处理字节流的默认方式就是下载。
+		- Content-Type设置为application/octet-stream是二进制的下载流，导致强制下载。
+如果是公共读类型的文件也可以直接在链接后面加上，比如：`window.open('https://xxx.json?response-content-type=application%2Foctet-stream')`。
+
+```
+
+
+
+## 通用属性
 
 ### 省略的HTML布尔属性的值
 
@@ -475,6 +534,136 @@ iframe 的缺点：
 > ```html
 > <input readonly />
 > ```
+
+
+
+### 语言属性 lang
+
+```bash
+## 语言属性 lang
+HTML 文档的内容可以是多种不同的语言。为了指定文档的主要语言，我们可以在根元素上使用 `lang` 属性。
+我们还可以在页面中使用 `lang` 属性来划分与文档主语言不同语言的特定元素或部分。
+对于特定于语言的样式，在 lang 属性选择器上使用 lang 伪类。
+
+注意: `lang` 属性不能应用于以下元素（不包含不推荐使用的标签）：`br、iframe、script、base、param`
+
+
+### 设置lang属性的好处
+- 根据 `lang` 属性来设定不同语言的 `css` 样式，或者字体
+- 告诉搜索引擎做精确的识别
+- 让语法检查程序做语言识别
+- 帮助翻译工具做识别
+- 帮助网页阅读程序做识别等等
+```
+
+```html
+<html lang="zh">
+  <head>
+    <style>
+      [lang='en'] p {
+        font-size: 1.2em;
+        color: plum;
+      }
+    </style>
+  </head>
+  <body>
+    <p lang="en">为 p 元素设置了 `lang` 属性，并设置了 `en`（英语）语言，如果我们想要给它设置样式，我们可以使用 `[lang]` 属性选择器来选择具有特定语言属性的所有元素或元素的子元素。</p>
+  </body>
+</html>
+```
+
+
+
+#### :lang 伪类
+
+```bash
+### `[lang]` 属性选择器不知道该元素的语言
+使用基于 `[lang]` 属性选择器的特定于语言的样式的问题在于，选择器实际上并不知道元素的语言。它就像任何其他属性选择器一样。
+如果一个文档包含多个不同语言的嵌套元素，这可能会成为一个问题。
+    <section lang="zh">
+      <p>注意：xxx</p>
+      <blockquote lang="en">
+        <p>I am Superman</p>
+      </blockquote>
+    </section>
+    <style>
+    [lang='en'] p {
+      padding: 10px;
+      border: 1px solid;
+      border-left: 5px solid rebeccapurple;
+      color: rebeccapurple;
+      border-radius: 5px;
+    }
+
+    [lang='zh'] p {
+      padding: 10px;
+      border: 1px solid;
+      border-left: 5px solid plum;
+      color: plum;
+      border-radius: 5px;
+    }
+    </style>
+
+因为 CSS 没有优先考虑更接近的父级的概念。因此，无论哪个 `lang` 属性谁更接近谁，都会根据我们声明的 CSS 样式的顺序设置样式。所以这里的样式设置为了 `zh`，但我们本想区分两者。
+
+
+
+### `:lang` 伪类
+- `:lang` 是一个语言选择器，会根据 `html` 设置的语言应用对应的样式。可以有两种方式设置 `lang` 属性的样式：
+		- 它使用所选元素的实际语言
+		- 它可以应用于任何元素，而不是直接基于 `lang` 属性
+- `:lang` 伪类用于根据元素的内容语言选择元素。元素的内容语言由以下三个因素决定：
+		- 任何 `lang` 属性
+		- 元标签，例如 `<meta http-equiv="content-language" content="en">`
+		- HTTP 头，例如 `Content-language: en`
+这意味着 `:lang` 伪类即使在没有指定 `lang` 属性的情况下也可以使用。
+
+
+### `:lang` 和嵌套
+作为一个伪类，`:lang` 最好用于特定的元素，而不是子元素。
+使用与上面相同的示例，我们可以切换到使用 `:lang()` 属性来选择 `p` 元素。但是，我们不必选择指定语言的子 `p` 元素，而是可以选择本身属于指定语言的 `p` 元素。
+    p:lang(zh) { color: rebeccapurple; }
+    p:lang(en) { color: plum; }
+即使 `p` 元素本身没有 `lang` 属性，我们仍然可以使用伪类，因为 `p` 元素的内容语言是从其父级继承的。
+
+```
+
+
+
+### data 标签
+
+```bash
+## data 标签
+`data` 元素表示其内容，以及值属性中这些内容的机器可读形式。Edge、Firefox 和 Safari 都支持 `<data>` 元素。
+`value` 属性是必需的，其值必须以机器可读的格式表示元素的内容。
+
+元素可以与页面中的脚本一起使用，当脚本有一个文本值与一个人类可读的值一起存储时。（用法近似于 `data-*`）
+
+```
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      data:hover::after {
+        content: ' (ID ' attr(value) ')';
+        font-size: 0.7em;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li><data value="398">Mini Ketchup</data></li>
+      <li><data value="399">Jumbo Ketchup</data></li>
+      <li><data value="400">Mega Jumbo Ketchup</data></li>
+    </ul>
+  </body>
+</html>
+
+```
+
+
 
 ## Emmet(缩写)语法
 
@@ -1249,17 +1438,7 @@ iframe 的缺点：
 > | 边距（margin）和填充（padding） | 各个方向都存在                                              | 各个方向都存在                             | 只有水平方向存在。垂直方向会被忽略。 尽管`border`和`padding`在`content`周围，但垂直方向上的空间取决于`'line-height'` |
 > | 浮动（float）                   | -                                                           | -                                          | 就像一个`block`元素，可以设置垂直边距和填充。                |
 
-### 语言属性 lang
 
-> ```bash
-> ## 设置lang属性的好处
-> - 根据lang属性来设定不同语言的css样式，或者字体
-> - 告诉搜索引擎做精确的识别
-> - 让语法检查程序做语言识别
-> - 帮助翻译工具做识别
-> - 帮助网页阅读程序做识别等等 
-> 
-> ```
 
 ### 字体属性 font
 
