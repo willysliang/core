@@ -700,8 +700,6 @@ element.className = 'new-class'; // className is a DOMString that you can set
 
 
 
-
-
 ### DOM方法
 
 ```bash
@@ -827,8 +825,11 @@ document.addEventListener('click', (e) => {
 为了解决这个问题，我们可以使用 `Element.closest()` 方法。
 
 ```js
-document.addEventListener('click', e => { if (!e.target.closest('.click-me'))
-return alert('想屁吃') })
+document.addEventListener('click', e => { 
+  if (!e.target.closest('.click-me')) {
+    return alert('想屁吃') 
+  }
+})
 ```
 
 

@@ -1,8 +1,8 @@
 <!--
- * @ Author: willysliang
- * @ Create Time: 2022-11-25 11:07:23
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-01 11:27:21
+ * @ Author: willy
+ * @ CreateTime: 2022-11-25 11:07:23
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-05-08 20:29:32
  * @ Description: 拖拽组件
  -->
 
@@ -137,22 +137,22 @@ const group = reactive({
 
 <style lang="scss">
 .board {
-	background-color: #fff;
+  background-color: #fff;
 
-	.task {
-		min-height: 35rem;
+  .task {
+    min-height: 35rem;
 
-		.task-desc {
-			overflow: hidden; // 超出的隐藏显示
-			text-overflow: ellipsis; // 省略号显示溢出部分
-			display: flex;
-			line-clamp: 2;
-			-webkit-line-clamp: 2; // 限制在一个块元素显示的文本行数
-			-webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列顺序
-			word-wrap: break-word;
-			line-height: 1rem;
-			height: 2rem;
-		}
-	}
+    .task-desc {
+      overflow: hidden; // 超出的隐藏显示
+      text-overflow: ellipsis; // 省略号显示溢出部分
+      display: flex;
+      line-clamp: 2;
+      -webkit-line-clamp: 2; // 限制在一个块元素显示的文本行数
+      -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列顺序
+      word-wrap: break-word;
+      line-height: 1rem;
+      height: 2rem;
+    }
+  }
 }
 </style>
