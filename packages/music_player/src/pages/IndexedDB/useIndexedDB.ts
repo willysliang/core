@@ -312,7 +312,7 @@ export class IndexedDBHelper {
       throwError(IndexedDBHelper.name, '事务创建失败!', event)
     }
     transaction!.oncomplete = (event) => {
-      console.log('数据库修改结束，事务完成')
+      console.log('数据库修改结束，事务完成', event)
     }
 
     return transaction!.objectStore(storeName)

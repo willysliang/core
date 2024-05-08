@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年5月8日
+  - feat(mp): [Dragger] 原生拖拽组件
+
 ## 2024年4月26日
   - feat(utils): [utils/http] AjaxHttp
 ## 2024年4月25日

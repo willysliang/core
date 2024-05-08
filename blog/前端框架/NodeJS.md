@@ -277,7 +277,7 @@ const uselessMiddlewareError = (req, res, next) => {
 
 洋葱模型执行示意图：
 请求 -> 中间件1(前置处理) -> 中间件2(前置处理) -> 中间件3(前置处理) -> 业务处理 -> 中间件3(后置处理) -> 中间件2(后置处理) -> 中间件1(后置处理) -> 最终结果的响应。
-	
+
 
 在洋葱模型中，请求从外层开始，依次经过每个中间件函数的前置处理，然后进入业务处理结果，最后依次经过每个中间件函数的后置处理，最终得到响应结果。
 
@@ -368,7 +368,7 @@ koa.listen(3000)
 
 
 
-## Express 
+## Express
 
 ```bash
 ## Express 中间件
@@ -504,12 +504,12 @@ app.get("/example/c", [cb0, cb1, cb2])
 	- request.url
 	- request.httpVersion
 	- request.headers
-	
+
 2. express 内置
 	- request.path
 	- request.query
 	- request.ip		获取 IP 地址
-	
+
 	- request.get('请求头中某个属性名') 	获取请求头
 
 ```
@@ -719,7 +719,7 @@ const result = ejs.render(
 
 console.log(result)
 
-/* 
+/*
 <!-- 输出 result 转化为以下内容 -->
 <ul>
     <li>a</li>
@@ -750,9 +750,9 @@ const result = ejs.render(
 
 console.log(result)
 
-/* 
+/*
 <!-- 输出 result 转化为以下内容 -->
-<button>登录</button> 
+<button>登录</button>
 */
 
 ```
@@ -848,6 +848,10 @@ mongoose.model(modelName, schemaObj, collection, skipInit, connection)
 
 ```
 
+
+
+### 连接 MongoDB
+
 ```ts
 /**
  * db.connect.js
@@ -882,7 +886,67 @@ module.exports = function (success = null, error = null) {
 
 ```
 
-### 字段定义及约束 Schema 
+
+
+### 删除数据库
+
+```bash
+### 删除库
+在 MongoDB 中，您可以通过切换到该数据库并运行 `db.dropDatabase()` 方法或 `dropDatabase` 命令来删除数据库。
+
+```
+
+#### `db.dropDatabase()` 方法
+
+首先，让我们检查一下我们的数据库列表：
+
+```bash
+$ show databases
+# or
+$ show dbs
+# local  0.000GB
+# user   0.000GB
+# test   0.005GB
+```
+
+切换到 `user` 数据库，使用 `db.dropDatabase()` 方法删除当前数据库。
+
+```bash
+$ use user
+$ db.dropDatabase()
+# { "dropped" : "user", "ok" : 1 }
+```
+
+再次查看数据库列表：
+
+```bash
+$ show databases
+# local  0.000GB
+# test   0.005GB
+```
+
+可以看到，`user` 数据库已删除
+
+#### `dropDatabase` 命令
+
+您也可以使用 `dropDatabase` 命令来做同样的事情。
+
+```bash
+$ use test
+$ db.runCommand( { dropDatabase: 1 } )
+# { "dropped" : "test", "ok" : 1 }
+```
+
+我们的数据库列表再次减少：
+
+```bash
+$ show databases
+# local  0.000GB
+```
+
+
+
+### 字段定义及约束 Schema
 
 ```bash
 ### 模型的配置对象 Schema 和 SchemaType
@@ -1082,8 +1146,8 @@ doc.testId // 313263686172313263686172
 stuModel.find({ $where: 'this.grades == this.test' || 'obj.grages == obj.test' })
 
 // 函数
-stuModel.find({ 
-  $where: () => { return this.grades == this.test || obj.grades === obj.test } 
+stuModel.find({
+  $where: () => { return this.grades == this.test || obj.grades === obj.test }
 })
 
 ```
@@ -1097,12 +1161,12 @@ stuModel.find({
 			- conditions：查询条件
 			- doc：需要修改的数据（插入的数据）
 			- [options]：控制选项
-					- safe (boolean)： 默认为true。安全模式。 
-					- upsert (boolean)： 默认为false。如果不存在则创建新记录。 
-					- multi (boolean)： 默认为false。是否更新多个查询记录。 
-					- runValidators： 如果值为true，执行Validation验证。 
-					- setDefaultsOnInsert： 如果upsert选项为true，在新建时插入文档定义的默认值。 
-					- strict (boolean)： 以strict模式进行更新。 
+					- safe (boolean)： 默认为true。安全模式。
+					- upsert (boolean)： 默认为false。如果不存在则创建新记录。
+					- multi (boolean)： 默认为false。是否更新多个查询记录。
+					- runValidators： 如果值为true，执行Validation验证。
+					- setDefaultsOnInsert： 如果upsert选项为true，在新建时插入文档定义的默认值。
+					- strict (boolean)： 以strict模式进行更新。
 					- overwrite (boolean)： 默认为false。禁用update-only模式，允许覆盖记录。
 
 
@@ -1279,11 +1343,11 @@ stuModel.find((err, docs) => {
 ### 关系型数据库与非关系型数据库的区别
 关系型数据库最典型的数据结构是表，由二维表及其之间的联系所组成的一个数据组织。
   优点：
-    1. 易于维护：都是使用表结构，格式一致。 
+    1. 易于维护：都是使用表结构，格式一致。
     2. 使用方便：SQL语言通用，可用于复杂查询。
-    3. 复杂操作：支持SQL，可用于一个表以及多个表之间非常复杂的查询。 
-  缺点： 
-    1. 读写性能比较差，尤其是海量数据的高效率读写。 
+    3. 复杂操作：支持SQL，可用于一个表以及多个表之间非常复杂的查询。
+  缺点：
+    1. 读写性能比较差，尤其是海量数据的高效率读写。
     2. 固定的表结构，灵活度稍欠。
     3. 高并发读写需求，传统关系型数据库来说，硬盘I/O是一个很大的瓶颈。
 
@@ -1291,7 +1355,7 @@ stuModel.find((err, docs) => {
   优点：
     1. 格式灵活：存储数据的格式可以是key,value形式、文档形式、图片形式等，使而关系型数据库只支持基础类型。
     2. 速度快：nosql 可以使用硬盘或者随机存储器作为载体，而关系型数据库只能使用硬盘。
-    3. 高扩展性。 
+    3. 高扩展性。
     4. 成本低：nosql数据库部署简单，基本都是开源软件。
   缺点：
     1. 不提供sql支持。
@@ -1601,8 +1665,8 @@ module.exports = userService
     -i 或 --instance：启用多少个实例，可用于负载均衡，如果 -i 0 或者 -i max，则根据当前机器核数确定实例数目。
     --ignore-watch：排除监听的目录或文件，可以是特定的文件名，也可以是正则。
     完整命令示例：pm2 start index2.js --watch -i max -n willy
- 
- 
+
+
  #### 查看这状态信息
  - 查看详细状态信息: `$ pm2 show (appname|id)`
  - 查看所有启动的进程列表: `$ pm2 list`
@@ -1621,7 +1685,7 @@ module.exports = userService
 如果使用命令行参数定义一些选项，那么在每次启动进程时，都需要敲上一大堆的命令，非常繁琐；
 所以可以使用配置文件来将命令行参数进行配置，配置文件里的配置项跟命令行参数是基本一致的。
 
-如下 pm2 的配置文件 ecosystem.config.js ，然后在项目中运行 `$ pm2 start ecosystem.config.js`  
+如下 pm2 的配置文件 ecosystem.config.js ，然后在项目中运行 `$ pm2 start ecosystem.config.js`
 
 ```
 

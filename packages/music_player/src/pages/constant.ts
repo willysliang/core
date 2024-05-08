@@ -92,7 +92,7 @@ export const demoPages = {
     name: 'DRAG',
     title: '拖拽组件',
     icon: HandDrag,
-    component: () => import('./Dragger/index.vue'),
+    component: () => import('./Dragger/guide.vue'),
   },
   BARRAGE: {
     path: 'Barrage',
