@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-05-08 20:28:05
  * @ Modifier: willy
- * @ ModifierTime: 2024-05-08 20:37:34
+ * @ ModifierTime: 2024-05-09 14:10:18
  * @ Description: 拖拽相关的导航
  -->
 
@@ -25,25 +25,23 @@ const navList = [
     component: vueDragger,
   },
 ]
-const actNav = ref(navList[0])
-const handleClickNav = (nav) => {
-  if (actNav.value.value === nav.value) return
-  actNav.value = nav
+const actNavIdx = ref(0)
+const handleClickNav = (index) => {
+  if (actNavIdx.value === index) return
+  actNavIdx.value = index
 }
 </script>
 
 <template>
   <div class="mb-4">
     <el-button
-      v-for="nav in navList"
+      v-for="(nav, index) in navList"
       :key="nav.value"
       :type="nav.type"
-      @click="handleClickNav(nav)"
+      @click="handleClickNav(index)"
     >
       {{ nav.name }}
     </el-button>
   </div>
-  <component :is="actNav.component"></component>
+  <component :is="navList[actNavIdx].component"></component>
 </template>
-
-<style lang="scss" scoped></style>

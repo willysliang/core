@@ -28,6 +28,9 @@
 # 更新记录
 
 
+## 2024年5月9日
+  - feat(mp): [Dragger] 原生拖拽组件
+
 ## 2023年9月23日17点34分
   - feat(hooks/core/vuex): VUEX 原理
 
@@ -57,7 +60,7 @@
   - feat(pages): 修复类型约束报错问题
   - feat(layout): 路由组件缓存
   - feat(layout -> header -> themeSetting): 可手动设置需要缓存的路由组件 ComponentCacheSetting
-  - bug(src\hooks\useRouteCache.ts): 
+  - bug(src\hooks\useRouteCache.ts):
       - 问题描述：当前仅能设置一个缓存的数组，所以会导致一级路由与二级路由共用同一个记录
       - 场景复现：可查看 (src\App.vue) 与 (src\components\layout\main\index.vue) 中的 getCache 是获取同一个记录
       - 问题导致：会导致不合理的组件缓存增加（一级跟二级路由共用同一个数据）
@@ -116,8 +119,8 @@
   - feat(views -> demo -> ParticleAnimation): ParticlePicture 图片粒子化
 
 ## 2023年1月5日15:34:09
-  - chore(pnpm i tslib): 引入 tslib 适配ES7装饰器Decorator 
-  - feat(layout): 格子背景色、ts适配ES7装饰器Decorator 
+  - chore(pnpm i tslib): 引入 tslib 适配ES7装饰器Decorator
+  - feat(layout): 格子背景色、ts适配ES7装饰器Decorator
   - feat(views -> demo -> Communication): Web Worker 线程
 
 ## 2022年12月14日10:17:14
