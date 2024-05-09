@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-05-08 20:20:58
  * @ Modifier: willy
- * @ ModifierTime: 2024-05-09 14:09:53
+ * @ ModifierTime: 2024-05-09 18:00:15
  * @ Description: 原生拖拽组件
  -->
 
@@ -26,7 +26,7 @@ const list = ref(
  */
 // 用于保存被拖拽的项的索引
 const draggingIndex = ref(-1)
-const dragStart = (event: DragEvent, index: number) => {
+const handleDragStart = (event: DragEvent, index: number) => {
   draggingIndex.value = index
 
   if (event?.dataTransfer) {
@@ -35,7 +35,7 @@ const dragStart = (event: DragEvent, index: number) => {
     event.dataTransfer.setData('text/html', index.toString())
   }
 }
-const dragDrop = (index: number) => {
+const handleDragDrop = (index: number) => {
   if (draggingIndex.value < 0 || draggingIndex.value === index) return
   ;[list.value[draggingIndex.value], list.value[index]] = [
     list.value[index],
@@ -58,12 +58,12 @@ const updatePosition = (event: TouchEvent) => {
     clientY: event.touches[0].clientY,
   }
 }
-const touchStart = (event: TouchEvent, index: number) => {
+const handleTouchStart = (event: TouchEvent, index: number) => {
   draggingIndex.value = index
   updatePosition(event)
 }
 
-const touchMove = (event: TouchEvent) => updatePosition(event)
+const handleTouchMove = (event: TouchEvent) => updatePosition(event)
 
 /** 找出顶层的 element 的索引 */
 const getElementIndex = (rootEl, element): number => {
@@ -84,7 +84,7 @@ const getElementIndex = (rootEl, element): number => {
   return -1
 }
 
-const touchEnd = () => {
+const handleTouchEnd = () => {
   const main = document.querySelector(`.draggable-main`) as any
   const curItem = document.elementFromPoint(
     lastTouchPosition.value.clientX,
@@ -109,12 +109,12 @@ const touchEnd = () => {
       :key="`${index}-${item.label}`"
       class="draggable-item inline-block m-2"
       :draggable="true"
-      @dragstart="dragStart($event, index)"
+      @dragstart="handleDragStart($event, index)"
       @dragover.prevent
-      @drop="dragDrop(index)"
-      @touchstart="touchStart($event, index)"
-      @touchmove="touchMove($event)"
-      @touchend="touchEnd"
+      @drop="handleDragDrop(index)"
+      @touchstart="handleTouchStart($event, index)"
+      @touchmove="handleTouchMove($event)"
+      @touchend="handleTouchEnd"
     >
       <el-button :type="item.type" tag="div" text bg>
         {{ item.label }}
@@ -123,7 +123,7 @@ const touchEnd = () => {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .draggable-item {
   cursor: move;
   user-select: none;
