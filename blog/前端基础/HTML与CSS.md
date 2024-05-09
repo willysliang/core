@@ -2756,21 +2756,77 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > ![image-20211213234815669](./image/image-20211213234815669.png)
 >
 
+
+
 ### 拖拽 dragger
 
-> - **拖拽元素**：通过为元素增加 `draggable="true"` 来设置此元素是否可以进行拖拽操作，其中图片、链接默认是开启拖拽的。
->
-> - **拖拽元素的事件监听**：（应用于拖拽元素）
->   - `ondragstart`当拖拽开始时调用
->   - `ondragleave` 当**鼠标离开拖拽元素时**调用
->   - `ondragend` 当拖拽结束时调用
->   - `ondrag` 整个拖拽过程都会调用
-> - **目标元素**:若把元素A拖拽到元素B里，那么元素B就是目标元素。页面中任何一个元素都可以成为目标元素。
-> - **目标元素的事件监听**：（应用于目标元素）
->   - `ondragenter` 当拖拽元素进入时调用
->   - `ondragover` 当拖拽元素停留在目标元素上时，就会连续一直触发（不管拖拽元素此时是移动还是不动的状态）
->   - `ondrop` 当在目标元素上松开鼠标时调用
->   - `ondragleave` 当鼠标离开目标元素时调用
+```bash
+## 拖拽 dragger
+### 拖拽元素
+在HTML5标准中，通过为元素增加 `draggable="true"` 来设置此元素是否可以进行拖拽操作，其中图片、链接默认是开启拖拽的。
+
+draggable属性：设置元素是否可拖动。语法：<element draggable="true | false | auto" >
+	- true: 可以拖动
+	- false: 禁止拖动
+	- auto: 跟随浏览器定义是否可以拖动
+
+
+### 拖动
+每一个可拖动的元素，在拖动过程中，都会经历三个过程，拖动开始-->拖动过程中--> 拖动结束。
+目标元素: 若把元素A拖拽到元素B里，那么元素B就是目标元素。页面中任何一个元素都可以成为目标元素。
+
+拖拽元素的事件：（应用于拖拽元素）
+  - `dragstart`: 当拖拽开始时触发
+  - `dragleave`: 当鼠标离开拖拽元素时触发
+  - `drag` 整个元素被拖拽时一直触发
+  - `dragend` 当拖拽结束时触发
+
+目标元素的事件：（应用于目标元素）
+  - `dragenter`: 当被拖动元素进入目标元素所占据的屏幕空间时触发
+  - `dragover`: 当被拖动元素停留在目标元素上时，就会连续一直触发（不管拖拽元素此时是移动还是不动的状态）
+  - `drop`: 当在目标元素上松开鼠标时触发(释放元素，一般需要取消浏览器默认行为)
+  - `dragleave`: 当被拖动元素没有放下就离开目的地元素时触发
+	- 注意：dragenter 和 dragover 事件的默认行为是拒绝接受任何被拖放的元素。因此，我们必须阻止浏览器这种默认行为。`e.preventDefault();`
+
+```
+
+
+
+#### DataTransfer 对象
+
+```bash
+### DataTransfer 对象
+与拖放操作所触发的事件同时派发的对象是 DragEvent，它派生于MouseEvent，具有 Event 与 MouseEvent 对象的所有功能，并增加了 dataTransfer 属性。该属性用于保存拖放的数据和交互信息，返回DataTransfer对象。
+
+
+属性：
+  - type: 只读属性。它返回一个我们在dragstart事件中设置的拖动数据格式的数组。 格式顺序与拖动操作中包含的数据顺序相同
+  - files: 返回拖动操作中的文件列表。包含一个在数据传输上所有可用的本地文件列表。如果拖动操作不涉及拖动文件，此属性是一个空列表。
+  - dropEffect: 获取当前选定的拖放操作的类型或将操作设置为新类型。它应该始终设置成effectAllowed的可能值之一【none、move、copy、link】。dragover事件处理程序中针对放置目标来设置dropEffect。
+  - effectAllowed: 指定拖放操作所允许的效果。必须是其中之一【 none, copy, copyLink, copyMove, link, linkMove, move, all, uninitialized】默认为uninitialized 表示允许所有的效果。ondragstart 处理程序中设置 effectAllowed 属性
+
+方法：
+- `void setData(format, data)`: 将拖动操作的拖动数据设置为指定的数据和类型。format可以是MIME类型
+- `String getData(format)`: 返回指定格式的数据，format与setData()中一致
+- `void clearData([format])`: 删除给定类型的拖动操作的数据。如果给定类型的数据不存在，此方法不执行任何操作。如果不给定参数，则删除所有类型的数据。
+- `void setDragImage(img, xOffset, yOffset)`: 指定一副图像，当拖动发生时，显示在光标下方。大多数情况下不用设置，因为被拖动的节点被创建成默认图片。x,y参数分别指示图像的水平、垂直偏移量
+
+```
+
+```js
+//IE10及之前版本，不支持扩展的MIME类型名
+//Firefox 5版本之前，不能正确的将url和text映射为text/uri-list 和text/plain
+var dataTransfer = event.dataTransfer;
+
+//读取文本,
+var text = dataTransfer.getData("Text");
+
+//读取URL,
+var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
+
+```
+
+
 
 ### 地理定位 navigator
 
