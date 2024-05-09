@@ -26,6 +26,9 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年5月9日
+  - feat(mp/utils): [Tracker] 埋点上报功能整理
+
 ## 2024年5月8日
   - feat(mp): [Dragger] 原生拖拽组件
 
