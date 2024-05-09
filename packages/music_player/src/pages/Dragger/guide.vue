@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-05-08 20:28:05
  * @ Modifier: willy
- * @ ModifierTime: 2024-05-09 14:10:18
+ * @ ModifierTime: 2024-05-09 17:56:08
  * @ Description: 拖拽相关的导航
  -->
 
@@ -10,6 +10,7 @@
 import { ref } from 'vue'
 import vueDragger from './index.vue'
 import NativeDragger from './NativeDragger.vue'
+import SplitView from './SplitView.vue'
 
 const navList = [
   {
@@ -24,8 +25,14 @@ const navList = [
     type: 'danger',
     component: vueDragger,
   },
+  {
+    name: '拆分视图',
+    value: 'split-view',
+    type: 'primary',
+    component: SplitView,
+  },
 ]
-const actNavIdx = ref(0)
+const actNavIdx = ref(2)
 const handleClickNav = (index) => {
   if (actNavIdx.value === index) return
   actNavIdx.value = index

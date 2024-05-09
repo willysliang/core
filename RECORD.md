@@ -27,6 +27,9 @@ Description: 日志记录
 
 
 ## 2024年5月9日
+  - feat(mp): [split-view] 拆分视图
+
+## 2024年5月9日
   - feat(mp/utils): [Tracker] 埋点上报功能整理
 
 ## 2024年5月8日
