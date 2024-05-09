@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2022-11-25 11:07:23
  * @ Modifier: willy
- * @ ModifierTime: 2024-05-08 20:29:32
+ * @ ModifierTime: 2024-05-09 14:34:43
  * @ Description: 拖拽组件
  -->
 
@@ -12,6 +12,9 @@ import draggable from 'vuedraggable'
 import IconPark from '@comp/common/IconPark.vue'
 import { Bug } from '@icon-park/vue-next'
 
+/**
+ * 注意：如果给每个拖拽的 item 添加上绝对定位，则可以避免在拖拽过程中导致上下拖拽替换的现象
+ */
 const tasklist = ref([
   {
     title: '待处理',
