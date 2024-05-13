@@ -26,7 +26,7 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    
+
     // "allowJs": true, // 允许在ts中使用普通 JS 代码
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -52,17 +52,17 @@
       "@type/*": ["./src/types/*"],
       "@store/*": ["./src/store/*"],
       "@api/*": ["./src/api/module/*"],
-      "@utils/*": ["./src/utils/*"],
+      "@util/*": ["./src/utils/*"],
       "@img/*": ["./src/assets/*"],
       "@styles/*": ["./src/styles/*"],
     },
   },
   "types": ["vite/client", "**/*.d.ts"],
   "include": [
-    "./src/**/*.ts", 
-    "./src/**/*.d.ts", 
-    "./src/**/*.tsx", 
-    "./src/**/*.vue", 
+    "./src/**/*.ts",
+    "./src/**/*.d.ts",
+    "./src/**/*.tsx",
+    "./src/**/*.vue",
     "./types/**/*.d.ts",
     "./types/**/*.ts",
     "./config/**/*.ts",
