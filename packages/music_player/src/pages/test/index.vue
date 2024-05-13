@@ -15,6 +15,7 @@
 import { demoPages } from '../constant'
 import Test from './test.vue'
 import { ref } from 'vue'
+import './test'
 
 // eslint-disable-next-line no-undef
 defineOptions({
