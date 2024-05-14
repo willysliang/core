@@ -902,9 +902,34 @@ getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav,
 >   - insertCell(index) (只有tr能调用)
 >   - deleteCell(index) (只有tr能调用)
 
+
+
+#### 将给定 CSS 代码注入到当前文档
+
+```js
+const injectCSS = (css) => {
+  let el = document.createElement('style')
+  el.type = 'text/css'
+  el.innerText = css
+  document.head.appendChild(el)
+  return el
+}
+
+injectCSS('body { background-color: #000 }')
+// '<style type="text/css">body { background-color: #000 }</style>'
+```
+
+
+
 #### 获取和设置CSS样式
 
-> 
+```js
+const styles = window.getComputedStyle(ele, null)
+
+const bgColor = styles.backgroundColor
+const textSizeAdjust = styles['-webkit-text-size-adjust']
+const bgColor = styles.getPropertyValue('background-color')
+```
 
 
 
@@ -1398,6 +1423,65 @@ trigger(ele, 'mousedown')
 const e = document.createEvent('CustomEvent')
 e.initCustomEvent('hello', true, true, { message: 'Hello World' })
 ele.dispatchEvent(e) // 触发事件
+```
+
+
+
+#### 案例
+
+##### 将光标移动到输入框的末尾
+
+```html
+<input type="text" id="fullName" />
+<button id="edit">编辑</button>
+
+<script>
+  const fullNameEle = document.getElementById('fullName')
+  const editEle = document.getElementById('edit')
+
+  editEle.addEventListener('click', function (e) {
+    // 聚焦 fullName 元素
+    fullNameEle.focus()
+
+    // 将光标移动到最后
+    const length = fullNameEle.value.length
+    fullNameEle.setSelectionRange(length, length)
+  })
+</script>
+```
+
+
+
+#### 文本内容不可选中/不可复制
+
+```bash
+1. css 方式实现
+使用 `user-select: none` 不可选中，也就不可以复制
+`body { user-select: none; }`
+
+
+2. JS 方式实现
+  - 监听 `selectstart` 事件，禁止选中。
+  - 监听 `copy` 事件，不可复制。
+当用户选中一片区域时（包括点击），将触发 `selectstart` 事件，Selection API 将会选中一片区域。禁止选中区域（使用 `preventDefault` 阻止事件的默认行为）即可实现页面文本不可复制。
+```
+
+```css
+body {
+  user-select: none;
+}
+```
+
+```js
+// 不可选中
+document.documentElement.onselectstart = (e) => {
+  e.preventDefault()
+}
+
+// 不可复制
+document.documentElement.oncopy = (e) => {
+  e.preventDefault()
+}
 ```
 
 
