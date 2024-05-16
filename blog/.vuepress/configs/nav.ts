@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
- * @ Modifier: willysliang
- * @ ModifierTime: 2024-04-21 00:42:04
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-05-16 14:51:14
  * @ Description: 导航栏
  */
 
@@ -34,6 +34,7 @@ const getDirectoryPathFileNames = (
     '后端基础',
     '构建工具',
     '计算机网络',
+    '学海无涯',
   ]
 
   // 忽略的md名单 （只要 md 文件名存在这个名，则忽略这个文件的构建）
@@ -134,10 +135,14 @@ const allNavs = getAllNav(allFile)
 // 分享的导航栏
 const shareNavs = [
   {
-    text: '生态系统',
+    text: 'HOME',
     children: [
-      { text: 'HOME', link: 'https://willysliang.github.io/core' },
-      { text: 'Vue3.x', link: 'https://v3.cn.vuejs.org/' },
+      { text: '记录', link: '/RECORD' },
+      { text: '活动页', link: 'https://willysliang.github.io/core' },
+      {
+        text: '提交日志',
+        link: 'https://api.github.com/repos/willysliang/core/commits',
+      },
     ],
   },
 ]
