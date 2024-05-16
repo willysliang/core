@@ -3,7 +3,7 @@ import type { SongUrl, Song } from '@/types/song'
 import { first } from 'lodash'
 
 /* 获取音乐url */
-export async function useSongUrl (id: number) {
+export async function useSongUrl(id: number) {
   const { data } = await http.get<{ data: SongUrl[] }>({
     url: '/api/song/url',
     params: {
@@ -21,5 +21,5 @@ export const useSongDetail = async (id: number) => {
       ids: id,
     },
   })
-  return first(songs)
+  return first(songs)!
 }
