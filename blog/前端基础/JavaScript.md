@@ -1006,7 +1006,6 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 #### 从 DOM 元素中移除所有子元素
 
 ```bash
-## 从 Dom 元素中移除所有子元素
 给定 DOM 中的一个项目列表，使用 `querySelector()` 获取它，如下所示：
 	const item = document.querySelector('.ele')
 
@@ -1018,6 +1017,28 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
   	item.removeChild(item.firstChild)
 	}
 当所有子元素都被移除时，循环结束。
+```
+
+
+
+#### 在指定元素的开头之前或末尾之后插入 HTML 字符串
+
+```bash
+使用位置为 `beforebeagin` 的 `Element.insertAdjacentHTML()` 解析 `htmlString` 并将其插入 `el` 开始之前。
+
+使用位置为 `afterend` 的 `Element.insertAdjacentHTML()` 解析 `htmlString` 并将其插入 `el` 末尾之后。
+
+```
+
+```js
+const insertBefore = (position, el, htmlString) =>
+  el.insertAdjacentHTML(position, htmlString)
+
+insertBefore('beforebegin', document.querySelector('#myId'), '<p>before</p>')
+// <p>before</p> <div id="myId">...</div>
+
+insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
+// <div id="myId">...</div> <p>after</p>
 ```
 
 
