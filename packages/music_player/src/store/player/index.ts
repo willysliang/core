@@ -107,7 +107,7 @@ export const usePlayerStore = defineStore({
     nextSong(state): Song {
       const { playListCount, currentSongIndex } = this
       if (currentSongIndex === playListCount - 1) {
-        return first(state.playList)
+        return first(state.playList)!
       } else {
         const nextSongIndex: number = currentSongIndex + 1
         return state.playList[nextSongIndex]
@@ -257,7 +257,7 @@ export const usePlayerStore = defineStore({
           this.replaySong()
           break
         default:
-          this.getPlay(sample(this.playList).id)
+          this.getPlay(sample(this.playList)!.id)
       }
     },
 
@@ -268,7 +268,7 @@ export const usePlayerStore = defineStore({
     playAll(list: Song[]) {
       this.pushPlayList(true, ...list)
       if (this.playListCount > 0) {
-        this.getPlay(first(this.playList).id)
+        this.getPlay(first(this.playList)!.id)
       }
     },
     /** 继续播放 */
@@ -329,7 +329,7 @@ export const usePlayerStore = defineStore({
  * @usePlayerInit 播放初始化
  */
 export const usePlayerInit = () => {
-  let timer: NodeJS.Timer
+  let timer: NodeJS.Timeout
   const { init, interval, playEnd } = usePlayerStore()
   const { ended } = storeToRefs(usePlayerStore())
 
@@ -358,6 +358,6 @@ export const usePlayerInit = () => {
   // 清除定时器
   onUnmounted(() => {
     console.log('清除定时器')
-    clearInterval(timer)
+    if (timer) clearInterval(timer)
   })
 }
