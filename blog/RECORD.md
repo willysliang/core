@@ -27,6 +27,10 @@ Description: 记录
 
 ## 2024年5月16日
   - docs(RECORD): 抽离 README 的日志记录
+  - docs(前端基础): 主更新 JS BOM 笔记
+    1. [CSS] 迁移 [HTML与CSS]中的CSS部分笔记
+    2. [Git] 重写历史记录信息
+    3. [JavaScript] BOM部分笔记补充
 
 ## 2024年5月14日
   - docs(前端基础): [JavaScript] 将给定 CSS 代码注入到当前文档

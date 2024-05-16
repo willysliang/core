@@ -514,40 +514,42 @@ ssh-keygen（基于密匙的安全验证）：需要依靠密钥进行安全验�
 
 ### 远程仓库操纵
 
-> ```bash
-> ## 克隆GitHub项目到本地
-> - `$ git clone 仓库地址`
-> - git支持多种协议，包括https（速度慢、每次推送必须输入口令），但ssh协议速度最快。
-> - 在自己的账号下clone仓库才能有权限推送修改；别人的仓库会因无权限而没法修改。
->
->
-> ## 提交代码到GitHub
-> - 将房间master分支里的代码上传到Github仓库中：`$ git push 服务器地址 master`
-> - 从Github仓库里的master分支拿到本地：`$ git pull 服务器地址 master`
-> 		（本地要初始化一个克隆仓库，此方法为合并数据）
-> - 把所有的内容拿到本地：`$ git clone 服务器地址`
-> 		（此方法会覆盖本地的内容数据）
->
->
-> ## 拉取远程仓库的代码
-> `$ git pull`：从远程仓库获取最新版本并 merge 到本地
-> `$ git fetch`：从远程仓库获取最新版本到本地，不会自动 merge
->
->
-> ## 删除远程仓库的绑定（GitHub库）
-> - 查看远程库信息：`$ git remote -v`
-> - 删除命名为origin的远程库：`$ git remote rm origin`
-> - 关联远程库：`$ git remote add origin git@server-name:path/repo-name.git`
-> - 推送master分支的所有内容：`$ git push -u origin master`
-> 		注意：加上 `-u`，git会把当前分支与远程分支进行关联（此方法只在当前目录下有效）
->
->
-> ## 删除远程仓库的文件
-> 1. 先把github上的文件拉取下来：`$ git pull origin master`
-> 2. 删除磁盘上的文件：`$ git rm -r --cached test.md`
-> 3. 重新提交：`$ git add . && git commit -m '删除了test.md文件'`
-> 4. 上传到远程仓库更新：`git push -u origin master`
-> ```
+```bash
+## 克隆GitHub项目到本地
+- `$ git clone 仓库地址`
+- git支持多种协议，包括https（速度慢、每次推送必须输入口令），但ssh协议速度最快。
+- 在自己的账号下clone仓库才能有权限推送修改；别人的仓库会因无权限而没法修改。
+
+
+## 提交代码到GitHub
+- 将房间master分支里的代码上传到Github仓库中：`$ git push 服务器地址 master`
+- 从Github仓库里的master分支拿到本地：`$ git pull 服务器地址 master`
+		（本地要初始化一个克隆仓库，此方法为合并数据）
+- 把所有的内容拿到本地：`$ git clone 服务器地址`
+		（此方法会覆盖本地的内容数据）
+
+
+## 拉取远程仓库的代码
+`$ git pull`：从远程仓库获取最新版本并 merge 到本地
+`$ git fetch`：从远程仓库获取最新版本到本地，不会自动 merge
+
+
+## 删除远程仓库的绑定（GitHub库）
+- 查看远程库信息：`$ git remote -v`
+- 删除命名为origin的远程库：`$ git remote rm origin`
+- 关联远程库：`$ git remote add origin git@server-name:path/repo-name.git`
+- 推送master分支的所有内容：`$ git push -u origin master`
+		注意：加上 `-u`，git会把当前分支与远程分支进行关联（此方法只在当前目录下有效）
+
+
+## 删除远程仓库的文件
+1. 先把github上的文件拉取下来：`$ git pull origin master`
+2. 删除磁盘上的文件：`$ git rm -r --cached test.md`
+3. 重新提交：`$ git add . && git commit -m '删除了test.md文件'`
+4. 上传到远程仓库更新：`git push -u origin master`
+```
+
+
 
 #### 从一个git仓库拷贝到另一个git仓库
 
@@ -562,6 +564,8 @@ $ git clone --bare http://....(原始仓库地址)
 $ git push --mirror http：//...(目标仓库地址)
 
 ```
+
+
 
 #### 将本地代码提交远程仓库时新建一个分支
 
@@ -579,6 +583,8 @@ $ git push --mirror http：//...(目标仓库地址)
   10. 去Gitlab查看，已经创建了一个新的分支并且代码正确提交。
 
 ```
+
+
 
 #### Git 迁移项目到新仓库，并保留历史记录
 
@@ -601,6 +607,48 @@ git push --mirror git@github.com:willysliang/core.git
 
 ```
 
+
+
+#### 重写历史记录信息
+
+```bash
+ 更改所有提交者信息到自己的名称和邮箱在 Git 中被称为重写历史，这在一些情况下是有用的，例如，如果一个贡献者错误地使用了一个不正确的邮箱进行了提交，或者出于隐私保护的目的需要修改提交信息
+ 
+ 注意：重写已公开的提交历史是有风险的，因为它会影响所有已有的克隆和分支。如果其他人基于这些提交进行了工作，他们将不得不手动解决冲突。在团队项目中，这通常需要团队内部的协调。
+```
+
+```shell
+git filter-branch --env-filter '
+GIT_COMMITTER_NAME="新名字";
+GIT_AUTHOR_NAME="新名字";
+GIT_COMMITTER_EMAIL="新邮箱";
+GIT_AUTHOR_EMAIL="新邮箱";
+' --tag-name-filter cat -- --branches --tags
+```
+
+**更换某个特定用户的名字跟邮箱地址**
+
+```bash
+git filter-branch --env-filter '
+OLD_EMAIL="旧的邮箱地址"
+NEW_NAME="新名字"
+NEW_EMAIL="新邮箱"
+
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_COMMITTER_NAME="$NEW_NAME"
+    export GIT_COMMITTER_EMAIL="$NEW_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_AUTHOR_NAME="$NEW_NAME"
+    export GIT_AUTHOR_EMAIL="$NEW_EMAIL"
+fi
+' --tag-name-filter cat -- --branches --tags
+```
+
+
+
 #### 多人协作
 
 > ```cmd
@@ -616,6 +664,8 @@ git push --mirror git@github.com:willysliang/core.git
 > - feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
 >
 > > 注意：在本地提交之前，先 pull 再 push，不然会有冲突
+
+
 
 ### 拉取子模块 submodule
 
