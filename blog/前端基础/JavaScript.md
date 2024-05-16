@@ -16,8 +16,8 @@ Description: JavaScript
 > - 是一种运行在客户端的脚本语言，不需编译，运行过程中由js解释器(js引擎)逐行进行解释并执行；
 > - js来源：借鉴了c语言、java语言等 --> (简化式)函数式编程 +（简化式）面向对象编程；
 > - ES6既是一个历史名词，也是泛指5.1版本后的js的下一个标准。
-> 
-> 
+>
+>
 > ### JS 的组成
 > JS严格意义上来说分为：语言标准部分（ESCMAScript）+ 宿主环境部分。
 > 	- 在浏览器中，宿主环境包括 DOM + BOM 等。
@@ -25,22 +25,22 @@ Description: JavaScript
 > 1. ECMAScript(js语法规范)：包括变量、表达式、运算符、函数、if语句、for语句等。
 > 2. BOM:文档对象模型(Document object Model)：onload页面加载事件、window顶级对象；定时器；location、history
 > 3. DOM:浏览器对象模型(Browser Object Model)：获取页面元素、注册事件；属性、样式操作；节点属性、节点层级；动态创建元素
-> 
-> 
+>
+>
 > ### JS 引入方式
 > 1. 行内式
 > 2. 内嵌式
 > 3. 外部引入式
-> 
-> 
+>
+>
 > ### JS 的特点
 > - 解释性：C语言为编译性
 > - 基于对象：什么是对象
 > - 事件驱动：onclick、onmouseover、onmouseout
 > - 跨平台性：只跟浏览器有关
 > - 安全性：不允许访问硬盘，不能对网络文件进行修改和删除
-> 
-> 
+>
+>
 > ### JS 全局函数
 > - 6个编码相关：`escape()、unescape()、encodeURL()、decodeURL()、encodeURLComponent()、decodeURLComponent()`
 > - 2个数据处理：`Number()、String()`
@@ -83,39 +83,39 @@ Description: JavaScript
 > ```bash
 > ## 进程与线程
 > CPU -> 进程 -> 线程
-> 
+>
 > ### 进程
 > - CPU 是计算机的核心，承担所有的计算任务。
 > - 进程是 CPU 资源分配的最小单位。
 > - 进程包括运行中的程序和程序中所使用的内存和系统资源。
 > - CPU 可以有很多进程，但 CPU 所拥有的资源空间是固定的，CPU 给每个进行分配资源空间，分出去的资源空间越多就会导致平均分配的内存不足而导致卡顿。每个进程之间是相互独立的，CPU 在运行一个进程时，其他的进程处于非运行状态，CPU 使用 `时间片轮转调度法` 来实现同时运行多个进程。
-> 
-> 
+>
+>
 > ### 线程
 > - 线程是 CPU 调度的最小单位。
 > - 线程是建立在进程的基础上的一次程序运行单位，线程是程序中的一个执行流，一个进程可以有多个线程。
 > - 一个进程中只有一个执行流称作单线程，即程序执行时，所走的程序路径按照连续顺序排下来，前面的必须处理好，后面的才会执行。
 > - 一个进程中有多个执行流称作多线程，即一个程序中可以同时运行多个不同的线程来行执行不同的任务。
-> 	
-> 
+>
+>
 > ### 进程和线程的区别
 > - 进程是操作系统分配资源的最小单位，线程是程序执行的最小单位。
 > 		（CPU 分配足够多资源给一个应用，应用可调用多个线程执行任务，但分配给应用的运行内存是有限的，当线程运行过多就会因为运行内存不足导致卡顿）
 > - 一个进程由一个或多个线程组成，线程可以理解为是一个进程中代码的不同执行路线。
 > - 进程之间相互独立，但同一进程下的各个线程间共享程序的内存空间（包括代码段、数据集、堆等）及一些进程级的程序（如打开文件和信号）
 > - 调度和切换：线程上下文切换比进程上下文切换要快得多。
-> 
-> 
+>
+>
 > ### 多进程和多线程
 > 1. 多进程：
 > - 多进程指的是在同一时间里，同一个计算机系统中如果允许两个或两个以上的进程处于运行状态。
 > - 多线程的好处：如在网易云听歌的同时打开编辑器敲代码，编辑器和网易云的进程之间不会相互干扰。
-> 
+>
 > 2. 多线程：
 > - 多线程是指程序中包含多个执行流，即一个程序中可以同时运行多个不同的线程来行执行不同的任务。
-> 
-> 
-> 
+>
+>
+>
 > ### JS 为什么是单线程
 > JS 的单线程与它的用途有关。作为浏览器脚本语言，JavaScript 的主要用途是与用户互动，以及操作DOM。这决定了它只能是单线程，否则会带来很复杂的同步问题。比如，假定 JS 同时有两个线程，一个线程在某个 DOM 节点上添加内容，另一个线程删除了这个节点，这时浏览器就不确定以哪个线程为准。
 > 为了利用多核CPU的计算能力，HTML5 提出 WebWorker 标准，允许 JS 脚本创建多个线程，但是子线程是完全受主线程控制，而且不得操作 DOM。所以这个标准并没有改变 JavaScript 是单线程的本质。
@@ -128,8 +128,8 @@ Description: JavaScript
 > ### 浏览器是多进程的
 > - 浏览器是多线程的，如Chrome浏览器，我们每打开一个 Tab 页就会产生一个进程，每个进程又有很多线程，都会占用内部才能，这也以为这内存等资源消耗会很大，因此当Chrome运行时间长了就会导致电脑会越来越卡。
 > - 浏览器需要多进程的原因：如果浏览器是单线程，当某个Tab页、插件崩溃，就影响了整个浏览器，影响用户体验感
-> 
-> 
+>
+>
 > ### 浏览器包含的进程
 > 1. Browser 进程
 >     - 浏览器的主进程（负责协调、主控），该进程只有一个。
@@ -137,19 +137,19 @@ Description: JavaScript
 >     - 负责各个页面的管理，创建和销毁其他进程。
 >     - 将渲染(Renderer)进程得到的内存中的 Bitmap(位图)，绘制到用户界面上。
 >     - 网络资源的管理、下载等。
-> 
+>
 > 2. 第三方插件进程
 > 		- 每种类型的插件对应一个进程，当使用该插件时才创建。
-> 
+>
 > 3. GPU 进程
 > 		- 该进程也只有一个，用于 3D 绘制等等。
-> 
+>
 > 4. 渲染进程（重点）
 >     - 浏览器内核（Renderer进程，其内部是多线程）。
 >     - 每个 Tab 页面都有一个渲染进程，互不影响。
 >     - 主要作为页面渲染、脚本执行、事件处理等。
-> 
-> 
+>
+>
 > ### 渲染进程 Renderer 的主要进程
 > #### GUI 渲染线程
 > - 负责渲染浏览器界面，解析HTML、CSS、构建DOM树和RenderObject树，布局和绘制等。
@@ -163,8 +163,8 @@ Description: JavaScript
 > - GUI 渲染线程与 JS 引擎线程是互斥的
 > 		- 当 JS 引擎执行时 GUI 线程会被挂起（相当于被冻结）。
 > 		- GUI 更新会被保存在一个队列中等到 JS 引擎空闲时立即被执行。
-> 
-> 
+>
+>
 > #### JS 引擎线程
 > - JS 引擎就是 JS 内核，负责处理 JavaScript 脚本程序（例如 V8 引擎）
 > - JS 引擎线程负责解析 JavaScript 脚本，运行代码。
@@ -174,22 +174,22 @@ Description: JavaScript
 > - GUI 渲染线程与 JS 引擎线程是互斥的，JS 引擎线程会阻塞 GUI 渲染线程。
 > 		- 就是我们常遇到的 JS 执行时间过长，造成页面渲染不连贯，导致页面渲染加载阻塞（页面加载缓慢）
 > 		- 例如浏览器渲染时遇到 script 标签，就会停止 GUI 的渲染，然后 JS 引擎线程开始工作，执行里面的js代码，等js执行完毕，JS 引擎线程停止工作，GUI 继续渲染下面的内容。如果js执行时间太长就会造成页面卡顿的情况。
-> 
-> 
+>
+>
 > #### 事件触发线程
 > - 属于浏览器而不是 JS 引擎，用来控制事件循环，并且管理着一个事件队列（task queue）
 > - 当js执行碰到事件绑定和一些异步操作（如setTimeOut，也可来自浏览器内核的其他线程，如鼠标点击、AJAX异步请求等），会走事件触发线程将对应的事件添加到对应的线程中（比如定时器操作，便把定时器事件添加到定时器线程），等异步事件有结果，便把它们的回调操作添加到事件队列，等待 JS 引擎线程空闲时来处理。
 > - 当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待 JS 引擎的处理。
 > - 因为 JS 是单线程的，所以这些待处理队列中的事件都得排队等待 JS 引擎处理。
-> 
-> 
+>
+>
 > #### 定时触发器线程
 > - setInterval 与 setTimeout 所在的线程。
 > - 浏览器定时计数器并不是由 JavaScript 引擎计数的（因为 JS 引擎是单线程的，如果处于阻塞线程状态，就会影响计时的准确）
 > - 通过单独线程来计时并触发定时（计时完毕后，添加到事件触发线程的事件队列中，等待 JS 引擎空闲后执行），这个线程就是定时触发器线程，也叫定时器线程。
 > - W3C 在 HTML 标准中规定，规定要求 setTimeout 中低于 4ms 的时间间隔计算为 4ms。
-> 
-> 
+>
+>
 > #### 异步 http 请求线程
 > - 在XMLHttpRequest 在连接后是通过浏览器新开一个线程请求。
 > - 将检测到状态变更时。如果设置有回调函数，异步线程就产生状态变更事件，将整个回调再放入事件队列中，再由 JavaScript 引擎执行。
@@ -205,18 +205,18 @@ Description: JavaScript
 > 同步任务都在主线程（JS引擎线程）上执行，会形成一个执行栈；
 > 主线程之外，事件触发线程管理着一个任务队列，只要异步任务有了运行结果，就在任务队列之中放一个事件回调；
 > 一旦执行栈中的所有同步任务执行完毕（也就是JS引擎线程空闲），系统就会读取任务队列，将可运行的异步任务（任务队列中的事件回调，只要任务队列中有事件回调，就说明可以执行）添加到执行栈中，开始执行。
-> 
-> 
-> 
+>
+>
+>
 > ### 执行说明
 > 浏览器上的所有线程的工作都很单一且独立，非常符合单一原则。
 > - '定时触发线程' 只管理定时器，且只关注定时不关心结果，定时结束就把回调扔给事件触发线程。
 > - '异步http请求线程' 只管理异步请求，同样不关心结果，请求结束就把回调扔给事件触发线程。
 > - '事件触发线程' 只关心异步回调入事件队列。
 > - 'JS引擎线程' 只会执行栈中的事件，执行栈中的代码执行完毕，就会读取事件队列中的事件并添加到执行栈中继续执行，这样反反复复的执行事件就是事件循环(Event Loop)
-> 
-> 
-> 
+>
+>
+>
 > ### 执行顺序
 > JS是按照顺序从上往下执行的，可以先理解为这段代码的执行环境就是主线程，也就是当前执行栈。
 > 1. 首先，执行 `console.log('同步任务1')`
@@ -252,24 +252,24 @@ Description: JavaScript
 > 4. '执行所有微任务'(`process.nextTick、promise、MutationObserver`)
 > 5. 当执行完所有微任务后，如有必要，会'渲染页面'
 > 6. 然后开始下一轮`Event Loop`，'执行宏任务的异步代码'，即`setTimeout、setInterval`中的回调事件。
-> 
-> 
+>
+>
 > #### 宏任务（macrotask）
 > - 在 ECMAScript 中，macrotask 也被称为 task。
 > - 我们可以将每次执行栈执行的代码当做是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行），每一个宏任务会从头到尾执行完毕，不会执行其他。
 > - 由于 'JS引擎线程' 和 'GUI渲染线程' 是互斥关系，浏览器为了能够使 '宏任务' 和 'DOM任务' 有序进行，会在一个 '宏任务' 执行结果后，在下一个 '宏任务' 执行前，'GUI渲染线程' 开始工作，对页面进行渲染。
 > - 执行顺序：'宏任务 -> GUI渲染 -> 宏任务 -> ...'
 > - 常见的宏任务：'主代码块、setTimeout、setInterval、Node的setImmediate()、浏览器的requestAnimationFrame'。
-> 
-> 
+>
+>
 > #### 微任务（maicrotask）
 > - ES6新引入Promise标准，同时浏览器实现上多了一个`maicrotask`微任务概念，在ECMAScript中，`maicrotask` 也称为 `jobs`。
 > - 当'宏任务'结束后，会执行渲染，然后执行下一个'宏任务'，而'微任务'可以理解成在当前'宏任务'执行后立即执行的任务。
 > - 当一个'宏任务'执行完，会在渲染前，将执行期间所产生的所有'微任务'都执行完。
 > - 执行顺序：'宏任务 -> 微任务 -> GUI渲染 -> 宏任务 -> ...'
 > - 常见微任务：'Promise.then()、catch、Promise.finally、Object.observe、MutationObserver、Node的process.nextTick()'
-> 
-> 
+>
+>
 > #### 宏任务微任务注意点
 > - 浏览器会先执行一个宏任务，紧接着执行当前执行栈产生的微任务，再进行渲染，然后再执行下一个宏任务。
 > - 微任务和宏任务不在一个任务队列。
@@ -302,8 +302,8 @@ Description: JavaScript
 >   console.log('promise2')
 > })
 > console.log('script end')
-> 
-> /* 
+>
+> /*
 > script start
 > async2 end
 > Promise
@@ -325,14 +325,14 @@ Description: JavaScript
 > 	3.2 微任务会进入到另一个 EventTable 中，并在里面注册回调函数，每当指定事件完成时，EventTable 会将整个函数移交到 Event Queue 中。
 > 4. 当主线程内的任务执行完毕，主线程为空时，会检查微任务的 Event Queue，如果有任务，就全部执行，如果没有就执行下一个宏任务。
 > 5. 上述事件过程会不断重复（例如进入下一个 script 标签执行），这就是 Event Loop。
-> 
-> 
-> 
+>
+>
+>
 > ### 关于 Promise
 > - 如 `new Promise(() => ()).then()`
 > 		- 前面的 `new Promise()` 这一部分是一个构造函数，这是一个同步任务。
 > 		- 后面的 `.then()` 才是一个异步任务。
-> 		
+>
 >       new Promise((resolve) => {
 >         console.log(1)
 >         resolve()
@@ -341,14 +341,14 @@ Description: JavaScript
 >       })
 >       console.log(3)
 >       // 会输出：1 3 2
-> 
-> 
-> 
+>
+>
+>
 > ### 关于 async/await 函数
 > - async/await 本质上是基于 Promise 的一些封装，而 Promise 是属于微任务的一种。
 > 		所以在使用 await 关键字与 Promise.then() 效果类似。
 > 		await 关键字之前的代码，相当于 new Promise() 的同步代码，await 以后的代码相当于 Promise.then() 的异步。
-> 
+>
 >     setTimeout(() => console.log(1))
 >     async function test() {
 >       console.log(2)
@@ -372,22 +372,22 @@ Description: JavaScript
 > - 浏览器和 Node 环境下，microtask 任务队列的执行时机不同
 >     - Node 端，microtask 在事件循环的各个阶段之间执行
 >     - 浏览器端，microtask 在事件循环的 macrotask 执行完之后执行
-> 
-> 
+>
+>
 > ### NodeJS 的 EventLoop
 > 1. node 会执行所有类型为 timers 的 MacroTask，然后执行所有的 MicroTask（NextTick例外）
 > 2. 进入 poll 阶段，执行几乎所有 MacroTask，然后执行所有的 MicroTask。
 > 3. 再执行所有类型为 check 的 MacroTask，然后执行所有的 MicroTask。
 > 4. 再执行所有类型为 close callbacks 的 MacroTask，然后执行所有的 MicroTask。
 > 5. 至此，完成一个 Tick，回到 timers 阶段，不断的进行循环执行。
-> 
-> 
+>
+>
 > ### 浏览器中的 EventLoop
 > 1. 先执行一个 MacroTask，然后执行所有的 MicroTask。
 > 2. 再执行一个 MacroTask，然后执行所有的 MrcroTask。
 > 3. 不断地循环执行上述的过程。
-> 
-> 
+>
+>
 > ### NodeJS 的执行过程
 > 外部输入数据 –> 轮询阶段(poll) –> 检查阶段(check) –> 关闭事件回调阶段(close callback) –> 定时器检测阶段(timers) –> I/O事件回调阶段(I/O callbacks) –> 闲置阶段(idle, prepare) –> 轮询阶段（按照该顺序反复运行）…
 > - timers 阶段：这个阶段执行 timer（setTimeout、setInterval）的回调
@@ -414,11 +414,11 @@ Description: JavaScript
 >     console.log('promise2')
 >   })
 > }, 0)
-> 
-> 
+>
+>
 > ### 浏览器端运行结果：timer1 => promise1 => timer2 => promise2
-> 
-> 
+>
+>
 > ### Node 端运行结果：timer1 => timer2 => promise1 => promise2
 > 全局脚本（main()）执行，将 2 个 timer 依次放入 timer 队列，main()执行完毕，调用栈空闲，任务队列开始执行；
 > 首先进入 timers 阶段，执行 timer1 的回调函数，打印 timer1，并将 promise1.then 回调放入 microtask 队列，同样的步骤执行 timer2，打印 timer2；
@@ -439,8 +439,8 @@ Description: JavaScript
 > ## 浏览器渲染原理
 > ### 浏览器渲染流程
 > - 解析html -> 构建DOM树/CSS Rule Tree -> 构建render树 -> 布局render树 -> 绘制render树
-> 
-> 
+>
+>
 > ### 浏览器解析过程
 > 1. DOM Tree：浏览器会将HTML解析成一个DOM树，
 > 		DOM 树的构建过程是一个深度遍历过程：当前节点的所有子节点都构建好后才会去构建当前节点的下一个兄弟节点。
@@ -470,8 +470,8 @@ Description: JavaScript
 >    - 如改变某个元素的背景色、文字颜色、边框颜色等不影响它周围或内部布局的属性时，即元素的几何尺寸没有变。
 >    - DOM改动
 >    - CSS改动
-> 
-> 
+>
+>
 > ### 2. 回流/重排(reflow)
 > 回流(reflow)：布局的改变(某个部位改变)导致需要倒回去重新渲染，这个回退的过程叫回流
 >    - 增加、删除、修改DOM节点时，会导致 Reflow 或 Repaint。
@@ -480,15 +480,15 @@ Description: JavaScript
 >    - 当用户Resize窗口时（移动端没有这个问题），或是滚动时，有可能会触发（具体要看浏览器的规则）
 >    - 修改网页的默认字体时。
 > 注意：回流必将引起重绘，重绘不一定会引起回流
-> 
-> 
+>
+>
 > ### 引起重排的原因
 > 1. 添加或者删除可见的DOM元素；
 > 2. 元素位置、尺寸、内容改变；
 > 3. 浏览器页面初始化；
 > 4. 浏览器窗尺寸改变，重排一定引起重绘，重绘不一定引起重排。
-> 
-> 
+>
+>
 > ### 减少重绘和重排的方法
 > 1. 不在布局信息改变时做 DOM 查询。
 > 2. 使用 `cssText` 或者 `className` 一次性改变属性。
@@ -503,18 +503,18 @@ Description: JavaScript
 > 		`<script type="text/javascript" src="" async></script>`
 >    // async:异步		defer：
 >    // 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
-> 
+>
 > 当浏览器看到普通脚本标签声明时，它执行以下步骤：
 >     - 暂停 HTML 文档解析器
 >     - 创建新请求以下载脚本
 >     - 在脚本完全下载后立即执行脚本
 >     - 执行结束后，继续解析 HTML 文档
-> 
-> 
+>
+>
 > ### async 和 defer
 > async 与 defer 的作用是让浏览器知道脚本可以与文档解析器过程并行下载，从而不阻塞页面的渲染。
 > async 与 defer 的区别是脚本会在不同的时刻执行。
-> 
+>
 > 1. async 异步执行
 >     下载 async 脚本后，浏览器将暂停文档解析器，执行脚本并继续解析文档。
 >         1. 解析文档
@@ -524,15 +524,15 @@ Description: JavaScript
 >         5. 恢复解析
 >      async 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），
 >      但它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说非常适合。
-> 
+>
 > 2. defer 延时执行
 >     只有当解析器完成其工作时，才会执行 defer 脚本。
 >         1. 解析脚本
 >         2. 下载脚本
 >         3. 执行脚本
 >     注意：这个过程中，文档是不会停止解析的。
-> 
-> 
+>
+>
 > ### aync 与 defer 的区别
 > async 脚本在完全下载后立即执行，加载和渲染后续文档元素的过程将和 JS 脚本的加载与执行并行进行（异步），因此它们的执行顺序可能与页面中显示的顺序不同（即不管声明顺序如何，只要它加载完成该脚本就会立刻执行）。
 > defer 脚本保证执行顺序。它是等到页面渲染完毕，所有脚本下载完成，在 `DOMContentLoaded` 事件前按照脚本在文档中的顺序执行。
@@ -543,21 +543,21 @@ Description: JavaScript
 > ```bash
 > ## DOMContentLoaded 事件
 > 当初始HTML文档已完全加载和解析时，将触发DOMContentLoaded事件，而不需要等待样式表，图像和子框架页面加载（事件可以用来检测HTML页面是否完全加载完毕(fully-loaded)）。
-> 
-> 
+>
+>
 > ### DOMContentLoaded 执行时机
 > #### 1. 普通脚本/sync（等待脚本执行完后再执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到普通脚本 -> 加载&执行脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
-> 
-> 
+>
+>
 > #### 2. 异步加载脚本/async（衡量HTML加载解析的速度来执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到async脚本 -> (HTML&async脚本)并行加载解析 ->
 > 		- 若HTML解析完后async脚本也已加载完毕 -> 停止HTML解析 -> 执行async脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
 > 		- 若HTML解析完后async脚本还未加载完成 -> DOMContentLoaded事件
-> 
-> 
+>
+>
 > #### 3. 延时加载脚本/defer（等待脚本执行完后再执行DOMContentLoaded）
-> 	HTML加载解析&defer脚本加载 
+> 	HTML加载解析&defer脚本加载
 > 			- 若HTML解析完后defer脚本也已加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
 > 			- 若HTML解析完后async脚本还未加载完成 -> defer脚本加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
 > ```
@@ -603,11 +603,11 @@ Description: JavaScript
 > ## DOMContentLoaded 和 load 的区别
 > DOMContentLoaded：在 interactive 触发
 > 	当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完成加载。
-> 
+>
 > load：在 complete 触发
 > 	当一个资源及其依赖资源已完成加载时，将触发load事件。
-> 
-> 
+>
+>
 > ### document.readyState
 > document.readyState 属性描述了文档的加载状态。一个文档的 readyState 可以是以下值之一：
 > 	- loading：加载，此时 document 仍在加载
@@ -627,8 +627,8 @@ Description: JavaScript
 - DOM对象与标签的区别
     - 元素标签(位于文档)对应的元素节点(位于Dom节点书上)。
     - 区别是 DOM 里面的元素节点是个对象，拥有属性和方法；而元素标签仅仅是标签而已。
-  
-  
+
+
 ### DOM作用
   - 找对象（元素节点）
   - 设置元素的属性值
@@ -649,7 +649,7 @@ Description: JavaScript
     - 元素节点（标签）：HTML标签；nodeName 与标签名相同
     - 属性节点（属性）：元素的属性；nodeName 与属性名相同
     - 文本节点（文本）：HTML标签中的文本内容(包括标签之间的空格、换行)；nodeName始终是 `#text`
-  
+
 2. nodeValue 	-->  nodeValue 属性规定节点的值
     - 元素节点的 nodeValue 是 undefined 或 null
     - 文本节点的 nodeValue 是文本本身
@@ -789,12 +789,12 @@ delete ele.dataset.message
 ### 元素的节点访问
 节点.parentNode						：获取父元素
 
-节点.previousSibling			 ：上一个兄弟节点		
+节点.previousSibling			 ：上一个兄弟节点
 节点.nextSibling					：下一个兄弟节点
 节点.previousElementSibling：上一个兄弟元素（处理兼容： 节点.previousElementSibling || 节点）
 节点.nextElementSibling		：下一个兄弟元素（处理兼容问题： 节点.nextElementSibling || 节点）
 
-节点.firstChild						：获取第一个子节点		
+节点.firstChild						：获取第一个子节点
 节点.lastChild						：最后的子节点
 节点.firstElementChild		：获取第一个子元素（处理兼容问题：节点.firstElementChild || 节点）
 节点.lastElementChild			：最后的子元素		（处理兼容问题：节点.lastElementChild || 节点）
@@ -825,9 +825,9 @@ document.addEventListener('click', (e) => {
 为了解决这个问题，我们可以使用 `Element.closest()` 方法。
 
 ```js
-document.addEventListener('click', e => { 
+document.addEventListener('click', e => {
   if (!e.target.closest('.click-me')) {
-    return alert('想屁吃') 
+    return alert('想屁吃')
   }
 })
 ```
@@ -941,7 +941,7 @@ const bgColor = styles.getPropertyValue('background-color')
 >      let style = getAttr(div, 'width')
 >      console.log(style)
 > }
-> 
+>
 > // 获取class或id 标签的指定样式
 >function getAttr(obj, attr) {
 >      let style;
@@ -984,16 +984,16 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 <html lang="zh-cn">
   <head>
     <style>
-      .btn { background-color: #ccc; color: #000; } 
+      .btn { background-color: #ccc; color: #000; }
       .btn.active { background-color: #000; color: #fff; }
     </style>
   </head>
   <body>
     <button id="myBtn" class="btn">Toggle</button>
     <script>
-      let btn = document.getElementById("myBtn"); 
-      btn.addEventListener("click", () => { 
-        this.classList.toggle("active"); 
+      let btn = document.getElementById("myBtn");
+      btn.addEventListener("click", () => {
+        this.classList.toggle("active");
       });
     </script>
   </body>
@@ -1031,20 +1031,20 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 >     - `onmousemove`：当鼠标移动时被拖拽元素跟随鼠标移动；
 >     - `onmouseup`：当鼠标松开时，被拖拽元素固定在当前位置。
 >     - `oncontextmenu`：鼠标右键点击事件。
-> 
+>
 > 2. 鼠标移动事件
 >     - `onmousewheel`：鼠标滚轮滚动的事件，会在滚轮滚动时触发。但火狐不支持该属性
 >     - `DOMMouseScroll`：在火狐中使用该方法来绑定滚动事件。该事件需要通过addEventListener()函数来绑定。
-> 
+>
 > 3. 键盘事件
 >     - `onkeydown`：按键被按下时触发
 >     - `onkeyup`：按键被松开时触发
 >     - 注意：若持续按着某键不放，该`onkeydown`事件会持续触发。此时松开键盘，`onkeyup`事件会执行一次。
-> 
-> 
+>
+>
 > - 其他事件
 >     - onclick：点击事件
->     - onfocus：获取聚焦事件 
+>     - onfocus：获取聚焦事件
 >     - onblur：失去焦点事件
 >     - onload用户进入页面
 >     - onunload用户离开页面
@@ -1059,7 +1059,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > const ul = document.createElement('ul')
 > // 把 ul 对象添加到 box 中
 > box.appendChild(ul)
-> 
+>
 > // 遍历数组，生成 li
 > for (let i = 0; i < data.length; i++) {
 >   // 创建 li，在内存中创建一个孤立的 DOM 元素
@@ -1068,7 +1068,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 >   ul.appendChild(li)
 >   // 设置 li 中的内容
 >   setInnerText(li, data[i].key)
->   
+>
 >   li.onmouseover = function () {
 >     this.style.backgroundColor = 'lightgray'
 >   }
@@ -1083,23 +1083,23 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > ```bash
 > ## 事件
 > 事件三要素：'事件源(触发的事件的元素标签) -> 事件名称(click) -> 事件处理程序(function：对样式和html的操作)'。
-> 
+>
 > onload && onunload
 > - 页面加载完毕时执行(DOM元素加载完毕，当外部文件加载完毕)：`onload = function () {}`
 > - 当页面关闭时执行：`onunload = function () {}`
-> 
+>
 > mouseover && mouseenter
 > - onmouseover/onmouseout：鼠标经过时自身触发事件，经过其子元素时也触发该事件。
 > - onmouseenter/onmouseleave：鼠标经过时自身触发事件，经过其子元素时不触发该事件。
-> 
-> 
+>
+>
 > ### 事件优先级
 > - ` event.stopImmediatePropagation();`
 > - `addEventListener`给某按钮同时注册了事件A、事件B。此时，如果单击按钮，就会依次执行事件A和事件B。
 > 		现在要求：单击按钮时，只执行事件A，不执行事件B。该怎么做呢？
 > 		此时可以在事件A的响应函数中加入 `stopImmediatePropagation` 方法
-> 
-> 
+>
+>
 > ### addEventListener
 > - `element.addEventListener('事件名', callback, target)`
 > 		- 参数1：事件名的字符串（注意：没有 on 前缀）
@@ -1109,9 +1109,9 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > 		执行顺序是：事件被触发时，响应函数会按照函数的绑定顺序执行。
 > - addEventListener() 中的 this 是绑定事件的对象。
 > - addEventListener() 不支持 IE8 及以下的浏览器，在 IE8 中可以使用 attachEvent 来绑定事件。
-> 
-> 
-> 
+>
+>
+>
 > ### attachEvent
 > - `element.attachEvent('事件名', callback)`
 > 		- 参数1：事件名的字符串（注意：有 on 前缀）
@@ -1130,18 +1130,18 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > 	1. 事件捕获
 > 	2. 事件触发
 > 	3. 事件冒泡
-> 
+>
 > DOM 标准事件流触发的先后顺序为：先捕获再冒泡，即当触发 DOM 事件时，会进行事件捕获，捕获事件源之后通过事件传播进行事件冒泡。
 > 而在 '浏览器中默认执行的是事件冒泡'，即我们一般 '观察不到事件捕获阶段'，比如 onclick 等事件。
 > 如果想要观察到事件的捕获阶段，那需要借助 addEventListener 接口来实现。
-> 
-> 
+>
+>
 > ### addEventListener
 > - `element.addEventListener(type, listener, useCapture)`
 > 		- type：事件类型（事件名称，注意：没有 on 前缀）
 > 		- listener：事件触发实际执行的匿名函数（当事件触发时，该函数会被执行）
 > 		- useCapture：是否在事件捕获阶段执行（不写默认为false）
-> 
+>
 > #### 关于 listener 中的 this 和 target
 > - 当一个 EventListener 在 EventTarget 正在处理事件时被注册到 EventTarget 上，它不会被立即触发，但可能在事件流后面的事件触发阶段被触发，例如可能在捕获阶段添加，然后在冒泡阶段被触发。
 > - 通常来说 this 的值是触发事件的元素的引用，当使用 addEventListener() 为一个元素注册事件时，句柄里的 this 值是该元素的引用。其与传递给句柄的 event 参数的 currentTarget 属性的值一致。
@@ -1151,7 +1151,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > <div id="parent">
 >   <div id="child" class="child"> 点我 </div>
 > </div>
-> 
+>
 > <script>
 >   document.getElementById('parent').addEventListener('click', function (e) {
 >     alert(`冒泡: parent 事件触发, this指向:` + this.id + ', 触发的id为:' + e.target.id)
@@ -1159,7 +1159,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 >   document.getElementById('child').addEventListener('click', function (e) {
 >     alert(`冒泡: child 事件触发，this指向:` + this.id + ', 触发的id为:' + e.target.id)
 >   })
-> 
+>
 >   document.getElementById('parent').addEventListener('click', function (e) {
 >     alert(`捕获: parent 事件触发,this指向:` + this.id + ', 触发的id为:' + e.target.id)
 >   }, true)
@@ -1167,7 +1167,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 >     alert(`捕获: child 事件触发,this指向:` + this.id + ', 触发的id为:' + e.target.id)
 >   }, true)
 > </script>
-> 
+>
 > <!--
 >   输入的结果：
 >     1. 捕获: parent 事件触发,this指向:parent, 触发的id为:child
@@ -1194,7 +1194,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 >     }
 >   }
 > };
-> 
+>
 > // 当浏览器窗口被调整到一个新的高度或宽度时，就会触发resize事件
 > EventUtil.addHandler(window, "resize", function () {
 >   console.log("Resized");
@@ -1221,7 +1221,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > element.addEventListener('clickTest', function () {
 >   console.log('smyhvae');
 > });
-> 
+>
 > setTimeout(function () {
 >   element.dispatchEvent(myEvent); //注意，参数是写事件对象 myEvent，不是写 事件名 clickTest
 > }, 1000);
@@ -1239,23 +1239,23 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 >     - 获取事件当前的传播阶段
 >     - 获取事件生成的日期时间
 >     - 事件句柄(Event Handlers)
->     
->     
+>
+>
 > - 经典应用：商品的放大镜，鼠标光点追踪
 > ````
 >
 > ```js
 > let event = event || window.event;   //获取事件信息的兼容性写法
-> 
+>
 > // 事件信息event 常见的属性
 > altKey			：返回当事件被触发时,"alt"键是否被按下
 > shiftKey		：返回当事件被触发时,"shift"键是否被按下
 > ctrlKey			：返回当事件被触发时,"ctrl"键是否被按下
 > metaKey			：返回当事件被触发时,"meta"键是否被按下
-> 
+>
 > button			：返回当事件被触发时,哪个鼠标按钮被点击
 > relatedTarget：返回与事件的目标节点相关的结点
-> 
+>
 > clientX			：返回当事件被触发时,鼠标指针的水平坐标
 > clinetY			：返回当事件被触发时,鼠标指针的垂直坐标
 > screenX			：返回当某事件被触发时,鼠标指针的水平坐标
@@ -1293,21 +1293,21 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > ````bash
 > ## DOM 事件流
 > 事件传播的三个阶段：事件捕获 -> 目标 -> 事件冒泡
-> 
+>
 > 1. 捕获阶段
 > 事件从祖先元素往子元素查找（DOM树结构），直到捕获到事件目标 target。在这个过程中，默认情况下，事件相应的监听函数时不会被触发的。
 > 捕获阶段事件依次传递的顺序是：'window -> document -> html -> body -> 父元素 -> 子元素 -> 目标元素'。
-> 
-> 
+>
+>
 > 2. 事件目标
 > 当到达目标元素后，执行目标元素该事件相应的处理函数。如果没有绑定监听函数，那就不执行。
-> 
-> 
+>
+>
 > 3. 事件冒泡
 > 事件从事件目标 target 开始，从子元素往祖先元素向上冒泡，直到页面的最顶级标签。
 > 冒泡指的是：'子元素的事件被触发时，父元素的同样的事件也会被触发'。取消冒泡就是取消这种机制。
 > 冒泡的顺序是：'div -> body -> html -> document -> window'。
-> 
+>
 > 注意：
 > 以下事件不冒泡（即事件不会往父元素那里传递）：'blur、focus、load、unload、onmouseenter、onmouseleave'。
 > ````
@@ -1319,22 +1319,22 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > 停止事件冒泡的方法：
 > 	1. `event.stopPropagation()`
 > 	2. `event.cancelBubble = true`
-> 
-> 
+>
+>
 > 在事件结尾添加该方法，此方法阻止事件向 document 上蔓延（否则触发事件后，会冒泡到最后一层document上）
 > 注意：当调用这个方法时，默认事件仍然会执行（如点击一个超链接，这个链接仍然会被打开）
-> 
-> 
+>
+>
 > ### 阻止默认事件
 > 阻止默认事件的默认方法：`event.preventDefault()`
 > 调用此方法链接不会被打开，但是会发生事件冒泡，冒泡会传递到上一层的父元素。
-> 
+>
 > ### 阻止浏览器默认事件
 > 阻止浏览器的默认事件：在函数末尾添加 `return false`
 > 在函数结尾处增加语句 `return false;`。这个方法比较暴力，它会同时阻止事件冒泡和阻止默认事件；
 > 写上次行代码，链接不会被打开，事件也不会传递到上一层的父元素，可以理解为 `return false` 等于同时调用 `event.stopPropagation()` 和 `event.preventDefault()`。
 > ```
-> 
+>
 >```js
 > /** 阻止事件冒泡 */
 >document.getElementById('box3').onclick = function (event) {
@@ -1353,17 +1353,17 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 > ## 事件委托
 > ### 事件委托的原理：
 > 不给每个子节点单独设置事件监听器，而是设置在其父节点上，然后利用冒泡原理设置每个子节点。
-> 
-> 
-> ### 事件委托的应用： 
+>
+>
+> ### 事件委托的应用：
 > 给 ul 注册点击事件，然后利用事件对象的 target（`event.target`） 来找到当前点击的 li ，然后事件冒泡到 ul 上， ul 有注册事件，就会触发事件监听器。
-> 
-> 
+>
+>
 > ### 事件委托的好处：
 > 只操作了一次 DOM，提高了程序的性能。
 > 当该触发改事件的同一种标签过多，会过于消耗性能和内存。所以把触发事件绑定到该标签的父层，减少了事件绑定的次数，然后利用冒泡机制，在执行事件函数时利用冒泡机制再去匹配判断目标元素。
-> 
-> 
+>
+>
 > ### 为什么要事件委托？
 > 在 JavaScript 中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能，因为 '需要不断地操作 DOM'，那么引起 '浏览器重绘和回流' 的可能也就更多，页面交互的时间也就变得越长，这就是为什么要 '减少 DOM 操作的原因'。
 > 每一个事件处理函数都是一个对象，若存在许多的事件处理函数，内存就会被多占用一部分。如果使用事件委托，就会将所有的操作放到 JS 程序中，'只对它的父级（如果它只有一个父级）这一个对象进行操作，此时与 DOM 的操作就只需要交互一次，这样就能大大减少与 DOM 的交互次数，以此来提高性能'。
@@ -1376,7 +1376,7 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
 >   <li><a href="javascript:;" class="link">超链接二</a></li>
 >   <li><a href="javascript:;" class="link">超链接三</a></li>
 > </ul>
-> 
+>
 > <script>
 >   window.onload = function () {
 >     document.getElementById('parent-list').addEventListener('click', function (event) {
@@ -1514,7 +1514,7 @@ document.documentElement.oncopy = (e) => {
 >
 > - **滚动条情况：**当本元素的子元素比本元素高且overflow=scroll时，本元素会scroll。
 >
-> - **scrollHeight/scrollWidth = 内容宽高** 
+> - **scrollHeight/scrollWidth = 内容宽高**
 >
 >   - scrollHeight代表包括当前不可见部分的元素的高度，而可见部分的高度是clientHeight，所以**scrollHeight>=clientHeight**，
 >   - 当没有滚动条时scrollHeight==clientHeight恒成立。单位px，只读元素。
@@ -1523,7 +1523,7 @@ document.documentElement.oncopy = (e) => {
 
 ##### 水平计算
 
-> - **scrollTop/scrollLeft:** 
+> - **scrollTop/scrollLeft:**
 >
 >   - 获取垂直/水平滚动条滚动的距离
 >
@@ -1535,7 +1535,7 @@ document.documentElement.oncopy = (e) => {
 >     >
 >     > 当 scrollWidth - scrollLeft == clientWidth 时，水平滚动条抵达底部
 >
-> - **offsetTop/offsetLeft:** 
+> - **offsetTop/offsetLeft:**
 >
 >   - 当前元素相对于其**定位父元素**的垂直/水平偏移量(获取的相对于offsetParent的距离)
 >
@@ -1588,7 +1588,7 @@ document.documentElement.oncopy = (e) => {
 >       margin: 100px auto 0;
 >       border: 3px solid black;
 >     }
-> 
+>
 >     #content {
 >       width: 300px;
 >       /*不需要设置高度，可被图片撑开*/
@@ -1646,44 +1646,44 @@ document.documentElement.oncopy = (e) => {
 >   var contentDiv = document.getElementById("content");
 >   var sliderWrap = document.getElementById("sliderWrap");
 >   var slider = document.getElementById("slider");
->   //设置比例 
->   //clientHeight - 不包括border 
+>   //设置比例
+>   //clientHeight - 不包括border
 >   var scale = wrapDiv.clientHeight / contentDiv.clientHeight;
->   //设置滑块的高度 
+>   //设置滑块的高度
 >   var h1 = sliderWrap.clientHeight * scale;
->   //为了合理设置高度，设置滑块的最小高度 
+>   //为了合理设置高度，设置滑块的最小高度
 >   if (h1 < 50) {
 >     h1 = 50;
 >   } else if (scale >= 1) {
->     //说明当前内容能过完全显示在可视区域内，不需要滚动条 
+>     //说明当前内容能过完全显示在可视区域内，不需要滚动条
 >     sliderWrap.style.display = "none";
 >   }
->   //设置滑块的高度 
+>   //设置滑块的高度
 >   slider.style.height = h1 + "px";
->   //设置y轴的增量 
+>   //设置y轴的增量
 >   var y = 0;
->   //为wrap添加滚轮事件 
+>   //为wrap添加滚轮事件
 >   wrapDiv.onmousewheel = function (e) {
 >     console.log(h1)
 >     var event1 = event || e
 >     if (event.wheelDelta < 0) {
->       //滑动条向下滚动 
+>       //滑动条向下滚动
 >       y += 10;
 >     } else if (event.wheelDelta > 0) {
->       //滑动条向上滚动 
+>       //滑动条向上滚动
 >       y -= 10;
 >     }
->     //y变化时说明在滚动，此时使滚动条发生滚动，以及设置content内容部分滚动 
->     //判断极端情况，滑块不能划出屏幕 
+>     //y变化时说明在滚动，此时使滚动条发生滚动，以及设置content内容部分滚动
+>     //判断极端情况，滑块不能划出屏幕
 >     if (y <= 0) {
->       //滑块最多滑到顶部 
+>       //滑块最多滑到顶部
 >       y = 0;
 >     }
 >     if (y >= sliderWrap.clientHeight - slider.clientHeight) {
->       //滑块最多滑到最底部 
+>       //滑块最多滑到最底部
 >       y = sliderWrap.clientHeight - slider.clientHeight;
 >     }
->     //更新滑块的位置 
+>     //更新滑块的位置
 >     slider.style.top = y + "px";
 >     scale = wrapDiv.clientHeight / contentDiv.clientHeight;
 >     contentDiv.style.top = - y / scale + "px";
@@ -1696,9 +1696,91 @@ document.documentElement.oncopy = (e) => {
 
 ## BOM
 
+DOM (Browser Object Model) 浏览器对象模型，允许 JavaScript 操作浏览器窗口。
+
 ![image-20210916201824135](./image/image-20210916201824135.png)
 
 ### window
+
+```bash
+所有浏览器都支持 window 对象，它表示浏览器窗口。所有 JavaScript 全局对象、函数以及变量均自动成为 window 对象的成员。
+
+全局变量是 window 对象的属性。全局函数是 window 对象的方法。它提供与浏览器交互的 5 大属性，都是 window 对象的属性：
+    - `document` 文档对象；
+    - `location` 浏览器当前 URL 信息；
+    - `navigator` 浏览器本身信息；
+    - `screen` 客户端屏幕信息；
+    - `history` 浏览器访问历史信息；
+```
+
+
+
+#### window 对象常见的属性
+
+```js
+closed	      // 返回窗口是否已被关闭。
+defaultStatus // 设置或返回窗口状态栏中的默认文本。
+document	  // 对 Document 对象的只读引用。请参阅 Document 对象。
+history		  // 对 History 对象的只读引用。请参数 History 对象。
+innerheight	  // 返回窗口的文档显示区的高度。
+innerwidth	  // 返回窗口的文档显示区的宽度。
+length		  // 设置或返回窗口中的框架数量。
+location	  // 用于窗口或框架的 Location 对象。请参阅 Location 对象。
+name		  // 设置或返回窗口的名称。
+Navigator	  // 对 Navigator 对象的只读引用。请参数 Navigator 对象。
+opener		  // 返回对创建此窗口的窗口的引用。
+outerheight	  // 返回窗口的外部高度。
+outerwidth	  // 返回窗口的外部宽度。
+pageXOffset	  // 设置或返回当前页面相对于窗口显示区左上角的 X 位置。
+pageYOffset	  // 设置或返回当前页面相对于窗口显示区左上角的 Y 位置。
+parent		  // 返回父窗口。
+Screen		  // 对 Screen 对象的只读引用。请参数 Screen 对象。
+self		  // 返回对当前窗口的引用。等价于 Window 属性。
+status		  // 设置窗口状态栏的文本。
+top			  // 返回最顶层的先辈窗口。
+window		  // window 属性等价于 self 属性，它包含了对窗口自身的引用。
+screenLeft、screenTop、screenX、screenY // 只读整数。声明了窗口的左上角在屏幕上的的 x 坐标和 y 坐标。IE、Safari 和 Opera 支持 screenLeft 和 screenTop，而 Firefox 和 Safari 支持 screenX 和 screenY。
+
+console       // 只读。返回 console 对象的引用，该对象提供了对浏览器调试控制台的访问。
+frames        // 只读。返回当前窗口中所有子窗体的数组。
+history		  // 只读。返回一个对 history 对象的引用。
+indexedDB	  // 只读。提供应用程序异步访问索引数据库功能的机制；返回 IDBFactory 对象。
+localStorage  // 只读。返回用来存储只能在创建它的源下访问的数据的本地存储对象的引用
+sessionStorage // 返回对用于存储数据的 session 存储对象的引用，这些数据只能由创建它的源访问。
+```
+
+
+
+#### window 对象常见的方法
+```js
+alert() // 显示带有一段消息和一个确认按钮的警告框。
+blur() // 把键盘焦点从顶层窗口移开。
+clearInterval() // 取消由 setInterval() 设置的 timeout。
+clearTimeout() // 取消由 setTimeout() 方法设置的 timeout。
+close() // 关闭浏览器窗口。
+confirm() // 显示带有一段消息以及确认按钮和取消按钮的对话框。
+createPopup() // 创建一个 pop-up 窗口。
+focus() // 把键盘焦点给予一个窗口。
+moveBy() // 可相对窗口的当前坐标把它移动指定的像素。
+moveTo() // 把窗口的左上角移动到一个指定的坐标。
+open() // 打开一个新的浏览器窗口或查找一个已命名的窗口。
+print() // 打印当前窗口的内容。
+prompt() // 显示可提示用户输入的对话框。
+resizeBy() // 按照指定的像素调整窗口的大小。
+resizeTo() // 把窗口的大小调整到指定的宽度和高度。
+scrollBy() // 按照指定的像素值来滚动内容。
+scrollTo() // 把内容滚动到指定的坐标。
+setInterval() // 按照指定的周期（以毫秒计）来调用函数或计算表达式。
+setTimeout() // 在指定的毫秒数后调用函数或计算表达式。
+
+scroll() // 滚动窗口到文档中的特定位置。
+requestAnimationFrame() // 告诉浏览器一个动画正在进行中，请求浏览器为下一个动画帧重新绘制窗口。
+postMessage() // 为一个窗口向另一个窗口发送数据字符串提供了一种安全方法，该窗口不必与第一个窗口处于相同的域中。
+getSelection() // 返回一个 Selection 对象，表示用户选择的文本范围或光标的当前位置。
+getComputedStyle() // 获取指定元素的计算样式。Computed 样式指示元素的所有 CSS 属性的计算值。
+```
+
+
 
 #### 输出日志/对话框
 
@@ -1722,23 +1804,23 @@ console.log(x);
 console.dir(x);
 
 // 3、typeof不能获取对象的具体类型,获取对象类型始终返回object
-console.log(typeof x); 
+console.log(typeof x);
 
 // 4、认为构造函数就是对象的类型
-console.log(arr.constructor);	
+console.log(arr.constructor);
 
 //5、会计算里边运行代码所需事件
-console.time(x);-->在里边运行的代码-->console.timeEnd(x);	
+console.time(x);-->在里边运行的代码-->console.timeEnd(x);
 ```
 
 ```js
 //函数返回值是布尔型的，点击确定，返回值为true，点击取消返回值为false
 // 1、主要用于删除单挑信息确认
-function del() { 
- var msg = "您真的确定要删除吗？\n\n请确认！"; 
- if (confirm(msg)==true){ 
- 	return true; 
- }else{return false;} 
+function del() {
+ var msg = "您真的确定要删除吗？\n\n请确认！";
+ if (confirm(msg)==true){
+ 	return true;
+ }else{return false;}
 }
 
 // 2、JS删除确认框
@@ -1759,19 +1841,21 @@ function del() {
     }"
 />
 <input
-  name="按钮" 
-  type="button" 
-  ID="ok" 
+  name="按钮"
+  type="button"
+  ID="ok"
   onclick="{
     if(confirm('确定删除吗?')){
       window.location='Action.asp?Action=Del&TableName=Item&ID=<%=ID%>';
       return true;
     }
     return false;
-  }" 
+  }"
   value="删除栏目"
 />
 ```
+
+
 
 #### 窗口
 
@@ -1797,11 +1881,11 @@ function del() {
 >         - height=number 窗口高度（像素单位）
 >         - top=number 窗口离屏幕顶部距离（像素单位）
 >         - left=number 窗口离屏幕左边距离（像素单位）
->     
-> 
+>
+>
 > ### 关闭窗口：window.close()
-> 
-> 
+>
+>
 > ### 新窗口
 >     - 新窗口.moveTo(5,5)
 >     - 新窗口.moveBy()
@@ -1830,7 +1914,7 @@ function del() {
 		- 在引入第三方的跨域文件里，加入如下响应头：`Access-Control-Allow-Origin:*;` 以表示允许跨域。
 		- 引入第三方跨域文件时，在 `<script>` 标签中增加 `crossOrigin` 属性。
 		- 因为无法获取出错的文件名和错误信息，所以需要把 '堆栈' 信息作为 msg 打印出来。
-		
+
 
 
 ### Object.onerror
@@ -1863,7 +1947,7 @@ function del() {
 > var timer = setTimeout(function () {
 >    location.href = 'http://www.baidu.com'//location：跳转网页
 >   }, 5000); 	// 5秒以后跳转
-> 
+>
 > //清除定时器：
 > clearTimeout(timer);
 > ```
@@ -1890,22 +1974,22 @@ function del() {
 
 > 1. setTimeout允许设置一个超时对象，超时后执行这个对象，但是只执行一次，无周期
 >2. setInternval允许设置一个超时对象，超时后执行这个对象，周期等于超时对象指定的时间，周期为无限循环
-> 
+>
 > ```js
 > setTimeout("alert('定时器!')", 0);
 >    alert("测试");		//运行先出现测试，然后再出现定时器
 > ```
-> 
+>
 > 原因:：JS是单线程的，会先阻塞等待定时器执行完后再执行下面的语句，
-> 
+>
 > 异步机制：浏览器的多线程—>对于浏览器来说，JS的执行只不过是在浏览器众多现成中的一条，称之为JS引擎线程，而浏览器其他线程则是通过JS引擎在执行过程到某个特定的功能后指定给浏览器的对应线程。
 >
 > JS引擎线程先执行回调函数块，然后执行点击事件回调，接着是执行定时器的线程，最后再执行其他的线程。
 >
 > JS先读取到 setTimeout 定时器，此时会执行浏览器的线程，然后跳过定时器继续执行，就看到弹出框的内容为测试，然后因为定时器的时间为0，所以一执行定时器线程就会即可将弹出框为定时器字样的任务添加到主线程（JS引擎线程）的队列之后，等待JS引擎的调用，此时看到的结果是先弹出测试，然后再弹出定时器
-> 
+>
 > 注意：在 HTML5 规范中，规定定时器的定时时间不能小于4ms，如果是小于4ms，则默认为4ms
-> 
+>
 >   ![JS_DOM_线程执行](./image/js_line.png)
 
 #### setTimeout倒计时为什么会出现误差？
@@ -1926,27 +2010,27 @@ function del() {
 > ## requestAnimationFrame
 > - `window.requestAnimationFrame()` 告诉浏览器你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行。
 > - `window.requestAnimationFrame(callback)` 的执行时机是在 '浏览器下一次重绘前' 调用 RAF 的回调函数获取最新的动画计算结果。
-> 
+>
 > 1. 说明
 > - requestAnimationFrame 简称 RAF,它是浏览器全局对象window的一个方法。
 > - RAF 主要是按照显示器的刷新频率（60Hz 或者 75Hz）对页面进行重绘，大概按照这个刷新频率同步重绘页面，就是大概 1s 最多重绘 60 次或者 75 次的频次，'按照 60 Hz 计算每次重绘大概 16.67ms 重绘一次'，如果 setInterval 设置的频率低于 16.67ms，会造成 '过渡绘制' 的问题，如果高于 16.67ms，有可能会出现 '掉帧' 的情况。
 > - request 会把每一帧中的所有 DOM 操作几种起来，在一次重绘或回流中就完成（这点与虚拟DOM类似），并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，这样就不会出现过度渲染的问题，保证了流畅的需求以及浏览器的完美渲染。
-> 
-> 
+>
+>
 > 2. 与 setTimeout 的对比
 > 相比于 setTimeout 的在固定时间后执行对应的动画函数，RAF 用于指示浏览器在下一次重新绘制屏幕图像时, 执行其提供的回调函数。
 > 这也是rAF的最大优势：它能够保证我们的动画函数的每一次调用都对应着一次屏幕重绘，从而避免setTimeout通过时间定义动画频率，与屏幕刷新频率不一致导致的丢帧。
-> 
-> 
+>
+>
 > 3. 用法
 > - `window.requestAnimationFrame(callback)`
 >   - 「参数：callback」下一次重绘之前更新动画帧所调用的函数(即上面所说的回调函数)。该回调函数会被传入DOMHighResTimeStamp参数，该参数与performance.now()的返回值相同，它表示requestAnimationFrame()开始去执行回调函数的时刻。
 >   - 「返回值」一个 long 整数，请求 ID ，是回调列表中唯一的标识。是个非零值，没别的意义。你可以传这个值给 window.cancelAnimationFrame() 以取消回调函数。
-> 
+>
 > 	- DOMHighResTimeStamp 指的是一个double类型，用于存储毫秒级的时间值。这种类型可以用来描述离散的时间点或者一段时间（两个离散时间点之间的时间差）。
 > 	- performance.now()方法返回一个精确到毫秒的DOMHighResTimeStamp 。
-> 	
-> 	
+>
+>
 > 4. requestAnimationFrame的好处
 > 相比于setTimeout的在固定时间后执行对应的动画函数，requestAnimationFrame用于指示浏览器在下一次重新绘制屏幕图像时, 执行其提供的回调函数。
 > - 「使浏览器画面的重绘和回流与显示器的刷新频率同步」它能够保证我们的动画函数的每一次调用都对应着一次屏幕重绘，从而避免setTimeout通过时间定义动画频率，与屏幕刷新频率不一致导致的丢帧。
@@ -1955,12 +2039,12 @@ function del() {
 >
 > ```html
 > <div id="div" style="width:100px; height:100px; background-color:#000; position: absolute;left:0; top:0;"></div>
-> 
+>
 > <script type="text/javascript">
 >   let divEle = document.getElementById("div");
 >   const distance = 1500; // 需要移动的距离
 >   const timeCount = 3000; // 需要使用的时间
-> 
+>
 >   function handler( time ) {
 >     // time为rAF返回的毫秒级时间单位，当time的大于timeCount的值则停止
 >     // time理论上是从 1 开始到timeCount定义的3000，
@@ -1972,7 +2056,7 @@ function del() {
 >     divEle.style.left = time * distance / timeCount;
 >     window.requestAnimationFrame( handler ); // 循环调用，渲染完成会停止
 >   }
-> 
+>
 >   window.requestAnimationFrame( handler );
 > </script>
 > ```
@@ -1989,7 +2073,7 @@ function del() {
 >     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
 >       window[vendors[x] + 'CancelRequestAnimationFrame'];
 >   }
-> 
+>
 >   //当添加前缀后依旧不存在，则使用setTimeout替代
 >   if (!window.requestAnimationFrame) {
 >     window.requestAnimationFrame = function(callback, element) {
@@ -2016,17 +2100,17 @@ function del() {
 > ## 为什么不使用 setTimeout ?
 > setTimeout 通过设定一个时间间隔来不断的更新屏幕图像，从而完成动图。
 > 它的优点是可控性高，可以进行编码式的动图效果实现。
-> 
-> 
+>
+>
 > ### setTimeout 的缺点
 > 1. 造成无用的函数运行开销
 > 即是过度绘制，同时因为更新图像的频率和屏幕的刷新重绘制不掉不一致，会产生丢帧，在低性能的显示器动画看起来就会卡顿。
-> 
+>
 > 2. 当页面标签或浏览器置于后台不可见时，仍然会执行，造成资源浪费
-> 
+>
 > 3. API 本身达不到毫秒级的精确
 > 如果使用 setTimeout 或 setInterval 那么需要我们制定时间。假设给予 （1000/60）理论上就可以完成 60 帧速率的动画。所以事实是浏览器可以 '强制规定时间间隔的下限(clamping th timeout interval)'，一般浏览器所允许的时间在 5~10ms，也就是说即使给了某个小于10的数，可能也要等待 10ms。
-> 
+>
 > 4. 浏览器不能完美执行
 > 当动画使用 10ms 的 setTimeout 绘制动画时，将会看到一个时序不匹配。
 > 我们的显示屏一般是「16.7ms（即60FPS）的显示频率」，下图的第一行代表大多数监视器上显示的「16.7ms显示频率」，下图的第二行代表「10ms的典型setTimeout」。由于在显示刷新间隔之前发生了另一个绘制请求，因此无法绘制每次的第三个绘制（红色箭头指示）。这种透支会导致动画断断续续，「因为每三帧都会丢失」。计时器分辨率的降低也会对电池寿命产生负面影响，并降低其他应用程序的性能。
@@ -2052,8 +2136,8 @@ function del() {
 > const x = 1
 > const y = 2
 > const result = eval('x + y') // result = 3
-> 
-> 
+>
+>
 > /** Function 构造函数 */
 > const add = new Function('x', 'y', 'return x + y')
 > const result = add(1, 2) // result = 3
@@ -2062,89 +2146,152 @@ function del() {
 ### location 对象
 
 ```bash
-## location 对象
-- `location.href = 'https://xxx'`：获取当前页面的 url 路径（或者设置 url 路径）
-- `location.reload()`：用于重新加载当前页面，主要作用是刷新当前页面数据
+`window.location` 对象用于获得当前页面的地址（URL），并把浏览器重定向到新的页面。
+
+- `location.reload()`：用于重新加载当前文档(页面)，主要作用是刷新当前页面内容/数据
 - `location.assign(str)`：用来跳转到其他的页面
-- `location.replace()`：使用一个新的页面替换当前页面，调用完毕也会跳转页面。但不会生成历史记录，不能使用``history.back()`返回本来的页面
+- `location.replace(url)`：使用一个新的页面替换当前页面，调用完毕也会跳转页面。但不会生成历史记录，不能使用 `history.back()` 返回本来的页面
 
-- hash: 返回url中`#`后面的内容，包含`#`
-- host: 主机名，包括端口
-- hostname: 主机名
-- pathname url中的路径部分
-- protocol 协议 一般是`http、https`
-- search 查询字符串
-
+- href:  设置或返回完整的 URL 路径
+- hash: 设置或返回从 `#` 开始的URL锚 (`#`后面的内容，包含`#`)
+- host:  设置或返回主机名，包括端口号
+- hostname: 主机名/域名
+- port: 返回 web 主机的端口 （80 或 443）
+- pathname: 返回当前页面的路径和文件名
+- protocol: 返回所使用的 web 协议，一般是`http、https`
+- search: 设置或返回从问号 (?) 开始的 URL（查询部分）
 ```
 
+```js
+// 1. 跳转到指定的 URL 页面
+location.assign(url)
 
+// HTTP 跳转 HTTPS
+const httpsRedirect = () => {
+  if (location.protocol !== 'https:') {
+    location.replace('https://' + location.href.split('//')[1])
+  }
+}
 
-### **history对象**  
-
-```bash
-## history 对象
-- 作用：抑制页面后退back()/抑制页面前进forward()   //使后退   /前进按钮失效
-- `history.length`：默认为1，获取浏览器历史列表中的 url 数量
-- `history.back()`：用来回退到上一个页面，`window.history.back()`
-- `history.forward()`：用来跳转下一个页面
-- `history.go( int n)`：加载 history 列表中的某个具体页面(负数为后退，正数为前进，数字为前进/后退数)
-
-
-
-- back()      加载 history 列表中的前一个 URL    
-- forward()     加载 history 列表中的下一个 URL window.history.forward()
-- go()        加载 history 列表中的某个具体页面 window.history.go(-1) 
-
-
-### 添加/修改记录
-1. History.pushState()方法用于在历史中添加一条记录。
-`window.history.pushState({page:1}, 'title', '?page=1')`
-
-2. History.replaceState()方法用来修改 History 对象的当前记录
-`history.replaceState({page:1}, 'title', '?page=2')`
-
-    state：一个与指定历史记录相关联的状态对象，当popstate事件触发时，会把该对象传入回调函数。如果不需要用到，可以传null。
-    title：页面的标题。但当前大多数浏览器都不支持或忽略这个值。可以传null。
-    url：添加或修改的history的网址。为了安全性，必须保持与当前URL同一个域。 
-
-pushState添加一个最新的历史记录，而replaceState则是把当前的页面的历史记录替换掉。
-他们最大的特点是添加或替换历史记录后，浏览器地址栏会变成你传的地址，而页面并不会重新载入或跳转。
-
+httpsRedirect() // 若在 http://www.baidu.com, 则跳转到 https://www.baidu.com
 ```
+
+#### 重定向到另一个页面
+
+1. 使用 HTML
+```html
+<meta http-equiv="refresh" content="0;URL=https://github.com/willysliang" />
+```
+
+2. 使用 JavaScript
+```js
+window.location.replace('https://github.com/willysliang')
+window.location.assign('https://github.com/willysliang')
+window.location.href = 'https://github.com/willysliang'
+
+document.location.href = 'https://github.com/willysliang'
+
+window.self.location = 'https://github.com/willysliang'
+window.top.location = 'https://github.com/willysliang'
+```
+
+3. 重定向回主页
+`window.location = window.location.host`
+
+
+
+### History 对象
+- `window.history` 对象包含浏览器的历史
+    - `history.length`：默认为1，获取浏览器历史列表中的 url 数量
+    - `history.back()`：加载 history 列表中的前一个 URL，用来回退到上一个页面
+    - `history.forward()`：加载 history 列表中的下一个 URL，用来跳转下一个页面
+    - `history.go( int n)`：加载 history 列表中的某个具体页面(负数为后退，正数为前进，数字为前进/后退数)
+
+
 
 #### popState 事件
 
-```bash
-### popState 事件
 当活动历史记录条目更改时会触发 popState 事件。如果被激活的历史记录条目是通过 `history.pushState()` 的调用创建时，或受到对 `history.replaceState()` 调用的影响，popState 事件的 state 属性包含历史条目的状态对象的副本。
 
 注意：调用 history.pushState() 或 history.replaceState() 方法都不会触发 popState 事件。只有在做出浏览器动作时才会触发改事件（如用户点击浏览器的回退按钮、或在 JS 中调用 history.back() 或 history.forward() 方法）
 
 不同的浏览器在加载页面时处理 popState 事件的形式存在差异。页面加载时 Chrome 和 Safari 通常会触发（emit）popState 事件，但 FireFox 则不会触发。
-```
 
 ![image-20200921181305551](./image/image-20200921181305551.png)
 
-### **Navigator对象**
+```js
+window.addEventListener('popstate', (e) => {
+  console.log(e.state) // pushState 或 replaceState 的第一个参数
+})
+```
 
--->包含有关浏览器的信息
+
+
+#### 添加/修改浏览器记录
+1. `History.pushState(state, title[, url])` 方法
+    - 向当前浏览器会话的历史堆栈中添加一个状态
+    - 用于在历史中添加一条记录。
+    - `window.history.pushState({page:1}, 'title', '?page=1')`
+
+2. `History.replaceState(state, title[, url])` 方法
+    - 用来修改 History 对象的当前记录
+    - `history.replaceState({page:1}, 'title', '?page=2')`
+
+    - state：一个与指定历史记录相关联的状态对象，当 popState 事件触发时，会把该对象传入回调函数。如果不需要用到，可以传null。
+    - title：页面的标题。但当前大多数浏览器都不支持或忽略这个值。可以传null。
+    - url：添加或修改的history的网址。为了安全性，必须保持与当前URL同源；否则 `popState` 抛出一个异常。。
+    - 注意：调用方法后，当前页面的搜索栏会发生变化，但是不会刷新当前页面。
+
+pushState添加一个最新的历史记录，而replaceState则是把当前的页面的历史记录替换掉。
+他们最大的特点是添加或替换历史记录后，浏览器地址栏会变成你传的地址，而页面并不会重新载入或跳转。
+
+
+
+### Navigator 对象
+
+- `window.navigator` 对象包含有关访问者浏览器的信息
+- 注意：来自 `navigator` 对象的信息具有误导性，不应该被用于检测浏览器版本
+    - `navigator` 数据可被浏览器使用者更改
+    - 一些浏览器对测试站点会识别错误
+    - 浏览器无法报告晚于浏览器发布的新操作系统
 
 ```js
-navigator.userAgent			//浏览器F12中network的（request-Headers）最底下。
 navigator.appCodeName 		//返回浏览器的代码名
-navigator.appName 			//返回浏览器的名称
-navigator.appVersion 		//返回浏览器的平台和版本信息  
-navigator.cookieEnabled 	//返回指明浏览器中是否启用 cookie 的布尔值  
-navigator.platform 			//返回运行浏览器的操作系统平台  
-navigator.userAgent 		//返回由客户机发送服务器的user-agent 头部的值 
-navigator.javaEnabled() 	//指定是否在浏览器中启用Java  
-navigator.taintEnabled() 	//规定浏览器是否启用数据污点(data tainting) 
+navigator.appName 			//返回浏览器的名称，由于兼容性问题，允许返回 "Netscape"
+navigator.appVersion 		//返回浏览器的平台和版本信息
+navigator.cookieEnabled 	//返回指明浏览器中是否启用 cookie 的布尔值
+navigator.platform 			//返回运行浏览器的操作系统平台类型
+navigator.userAgent 		//返回当前浏览器的 user agent（用户代理）字符串
+navigator.product       // 返回当前浏览器的产品名称。在任意浏览器下都只返回 'Gecko'，此属性仅用于兼容的目的
+navigator.onLine        // 返回浏览器的联网状态(在线/离线)
+navigator.language      // 返回一个表示用户偏好语言的字符串，通常指浏览器 UI 的语言。
+navigator.languages     // 返回一个数组，数组内容表示网站访客所使用的语言。使用 BCP 47 语言标签来描述不同的语言。在返回的数组中，最适合当前用户的语言将会被排到数组的首位。它占时只在一些浏览器内被使用。
+navigator.javaEnabled() 	// 表明浏览器是否支持 Java
+navigator.taintEnabled() 	//规定浏览器是否启用数据污点(data tainting)
 ```
+
+
+
+### Screen
+
+`window.screen` 对象包含有关用户屏幕的信息。
+
+```js
+screen.height // 返回当前屏幕的高度。(以像素为单位)
+screen.width // 返回当前屏幕的宽度。(以像素为单位)
+screen.availWidth // 可用的屏幕宽度
+screen.availHeight // 可用的屏幕高度
+screen.colorDepth // 色彩深度
+screen.pixelDepth // 色彩分辨率
+screen.colorDepth // 返回目标设备或缓冲器上的调色板的比特深度。
+```
+
+
 
 ## 方法/类型
 
-- toSource()返回该对象的源代码。 
-- toString()把逻辑值转换为字符串，并返回结果。 
+- toSource()返回该对象的源代码。
+- toString()把逻辑值转换为字符串，并返回结果。
 - valueOf() 返回 Boolean 对象的原始值。
 - tagName返回元素的标签名    // document.children[0].tagName;//会返回HTML
 
@@ -2351,16 +2498,16 @@ function startMove(obj, json, fnEnd) {
   }
 }
 
-/* 运动调用 */ 
+/* 运动调用 */
 // 注意：需要让触发事件的标签设置为块元素
 startMove(
-  document.getElementById('div1'), 
-  { 'height': 400, "width": 101, "opacity": 30, "left": 100, "top": 200 }, 
-  () => { console.log('链式函数执行完成！') 
+  document.getElementById('div1'),
+  { 'height': 400, "width": 101, "opacity": 30, "left": 100, "top": 200 },
+  () => { console.log('链式函数执行完成！')
 });
 startMove(
-  document.getElementById('div4'), 
-  { "top": 0, "height": 0 }, 
+  document.getElementById('div4'),
+  { "top": 0, "height": 0 },
   () => { startMove( document.getElementById('div3'), { "width": 0 }) }
 );
 startMove(document.getElementsByTagName('left_icon'), {'opacity': 30});
