@@ -31,6 +31,7 @@ Description: 记录
     1. [CSS] 迁移 [HTML与CSS]中的CSS部分笔记
     2. [Git] 重写历史记录信息
     3. [JavaScript] BOM部分笔记补充
+    4. [CSS] 迁移 CSS3 笔记
 
 ## 2024年5月14日
   - docs(前端基础): [JavaScript] 将给定 CSS 代码注入到当前文档

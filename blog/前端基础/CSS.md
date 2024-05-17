@@ -13,38 +13,38 @@ Description: CSS
 > ```bash
 > ## css
 > css指的是层叠样式表，也称级联样式表
-> 
-> 
+>
+>
 > ### css 引入方式
 > 1. 行内式
 > 2. 嵌入式
 > 2. 链接式
-> 
+>
 > ### 层叠样式表优先级
 > - 行内 > 内部 > 外部
 > - ID选择器 > 类选择器 > 标签选择器
-> 
-> 
+>
+>
 > ### 初始化css样式原因
 > 因为浏览器的兼容问题，不同浏览器对有些标签的默认值不同，如果不初始化css，会导致不同浏览器页面间的显示差异。
-> 
-> 
+>
+>
 > ### 重置（resetting）CSS 和 标准化（normalizing）CSS 的区别是什么？
 > - 重置（Resetting）：重置意味着除去所有的浏览器默认样式。对于页面所有的元素，像 margin、padding、font-size 这些样式全部设置成一样，你将必须重新定义各种元素的样式。
 > - 标准化（Normalizing）：标准化没有去掉所有的默认样式，而是保留了有用的一部分，同时还纠正了一些常见错误。
 > 当需要实现非常个性化的网页设计时，我会选择重置的方式，因为我要写很多自定义的样式以满足设计需求，这时候就不再需要标准化的默认样式了。
-> 
-> 
-> 
+>
+>
+>
 > ### 如何为功能受限的浏览器提供页面？ 使用什么样的技术和流程？
 > - 优雅的降级：为现代浏览器构建应用，同时确保它在旧版浏览器中正常运行。
 > - 渐进式增强：构建基于用户体验的应用，但在浏览器支持时添加新增功能。
 > - 利用 [caniuse.com](https://caniuse.com/) 检查特性支持。
 > - 使用 `autoprefixer` 自动生成 CSS 属性前缀。
 > - 使用 [Modernizr](https://modernizr.com/)进行特性检测。
-> 
-> 
-> 
+>
+>
+>
 > ### 有什么不同的方式可以隐藏内容（使其仅适用于屏幕阅读器）？
 >     - `width: 0; height: 0`：使元素不占用屏幕上的任何空间，导致不显示它。
 >     - `position: absolute; left: -99999px`： 将它置于屏幕之外。
@@ -52,13 +52,13 @@ Description: CSS
 >     - Metadata： 例如通过使用 Schema.org，RDF 和 JSON-LD。
 >     - WAI-ARIA：如何增加网页可访问性的 W3C 技术规范。
 > 即使 WAI-ARIA 是理想的解决方案，我也会采用绝对定位方法，因为它具有最少的注意事项，适用于大多数元素，而且使用起来非常简单。
-> 
-> 
+>
+>
 > ### 编写高效的 CSS 应该注意什么？
 > 首先，浏览器从最右边的选择器，即关键选择器（key selector），向左依次匹配。根据关键选择器，浏览器从 DOM 中筛选出元素，然后向上遍历被选元素的父元素，判断是否匹配。选择器匹配语句链越短，浏览器的匹配速度越快。避免使用标签和通用选择器作为关键选择器，因为它们会匹配大量的元素，浏览器必须要进行大量的工作，去判断这些元素的父元素们是否匹配。
-> 
+>
 > BEM (Block Element Modifier)原则上建议为独立的 CSS 类命名，并且在需要层级关系时，将关系也体现在命名中，这自然会使选择器高效且易于覆盖。
-> 
+>
 > 搞清楚哪些 CSS 属性会触发重新布局（reflow）、重绘（repaint）和合成（compositing）。在写样式时，避免触发重新布局的可能。
 > ```
 >
@@ -110,41 +110,41 @@ Description: CSS
 >     1. 行内样式（`inline-style`）
 >     在标签内使用 style 属性来定义样式。
 >         <div style="width: 200px;"></div>
-> 
-> 
+>
+>
 >     2. 内联样式
 >     在 `<style>` 标签内声明样式
 >         <style type="text/css">
 >           p { padding: 10px; }
 >         </style>
-> 
-> 
+>
+>
 >     3. 链接样式
 >     通过 `<link>` 标签加载外部样式
 >         <link type="text/css" rel="stylesheet" href="style.css">
-> 
-> 
+>
+>
 >     4. 导入样式
 >     在 `<style>` 标签内利用 `@import` 来引入外部样式
 >         <style type="text/css">
 >           @import url(style.css);
 >         </style>
-> 
-> 
-> 
+>
+>
+>
 > ### css引入的两种方式：link 和 @import 的区别
 > 1. 遵循规范不同
 >    link 是 XHTML 标签，除了加载 CSS 外，还可以定义 RSS 等其它事务；
 >    @import 属于 CSS 范畴，只能加载 CSS。
-> 
+>
 > 2. 加载方式不同
 >    link 引入 CSS 时，在页面载入时同时加载；
 >    @import 需要页面完全载入后才加载。
-> 
+>
 > 3. 兼容性不同
 >    link 是 XHTML 标签，无兼容问题；
 >    @import 是在 CSS2.1 中提出的，低版本的浏览器不支持。
-> 
+>
 > 4. 动态加载性不同
 >    link 支持使用 JS 控制 DOM 去改变样式；
 >    @import 不支持这样的操作。
@@ -165,15 +165,15 @@ Description: CSS
 >   8. 子选择器(关系选择器)	 		 div > a
 >   9. 相邻同胞选择器(关系选择器)	 div + p
 >   10.后代选择器(关系选择器)	     li a
-> 
-> 
+>
+>
 > ## CSS 样式优先级
 > - `!important > 行内样式 > ID选择器 > 类/属性/伪类选择器 > 标签/伪元素选择器 > 通配符/关系 > 继承样式 > 默认`
 > - 当样式中包含多种选择器时，需要将多种选择器的优先级相加然后再进行比较。
 > - 但注意，选择器的优先级计算不会超过它的最大数量级，如果选择器的优先级一样，前面定义的样式会被后面的样式覆盖
 > - 伪类的顺序：`:link  、 :visited 、 :hover 、 :active`
-> 
-> 
+>
+>
 > ## CSS 样式权重计算规则
 >   - 内联样式的权重：1000
 >   - ID选择器的权重：0100
@@ -208,19 +208,19 @@ Description: CSS
 > /* 注意：标签和[]中间不能加空格 */
 > 1、td[title="a"]
 > 	-->title属性值为a的td元素会被选择
-> 
+>
 > 2、td[title~="c"]
 > 	-->title属性值包含“c，且c前后只能有空格”的td元素会被选择
-> 
+>
 > 3、td[title|="h"]
 > 	-->title属性值为“h开头，且h只能为独立单词，后面可跟连字符”的td元素会被选择
-> 
+>
 > 4、td[title^="icon"]
 > 	-->title属性值为“icon开头”的td元素会被选择
-> 
+>
 > 5、td[title$="con"]
 > 	-->title属性值为“con结尾”的td元素会被选择
-> 
+>
 > 6、td[title*="xxx"]
 > 	-->title属性值“包含xxx”的td元素会被选择
 > ````
@@ -230,24 +230,24 @@ Description: CSS
 > ```bash
 > ## 选择器分类
 > 1、CSS并集选择器
-> 
+>
 > 2、CSS交集选择器
-> 
+>
 > 3、CSS派生选择器
 > 		子代：p>em {}
 > 		兄弟：p+em {}
 > 		后代：p em {}
 > 		元素1~元素2：
-> 
+>
 > 4、CSS伪类选择器
 > 	-->必须按顺序写：a:link，	a:visited，	a:hover，	a:active
 > 		link:链接被访问前选中;		visited:链接被访问之后选中
 > 		hover:鼠标悬停在链接上;		active:链接被按下后
 > 	还有其他伪类：li:first-child       input:focus
-> 
+>
 > 5、伪元素选择器
 > 	-->h1::before，h2::after， p::first-line
-> 
+>
 > 6、兄弟选择器：
 > -->元素1~元素2：第1 个元素之后所有的元素2 都会被选择，且这些元素和第一个元素拥有同一个父元素（两个元素之间不一定要相邻）
 > ```
@@ -257,7 +257,7 @@ Description: CSS
 > ````bash
 > ## 结构伪类选择器
 > 结构伪类选择器主要根据 文档结构 来选择元素，常用于根据父级选择器里面的子元素
-> 
+>
 > ## 选择符
 > 	E:first-child			匹配父元素中的第一个子元素 E
 > E:liast-child			匹配父元素中最后一个子元素 E
@@ -265,8 +265,8 @@ Description: CSS
 > E:first-of-type		指定类型 E 的第一个
 > E:last-of-type		指定类型 E 的最后一个
 > E:nth-of-type(n)	指定类型 E 的第 n 个
-> 
-> 
+>
+>
 > ## nth-child(n) 选择某个父元素的一个或多个特定子元素
 > - n 如果是数字，就是选择第 n 个子元素，里面数字从 1 开始
 > - n 如果是关键字：even 偶数、odd 奇数
@@ -298,11 +298,11 @@ Description: CSS
 >
 > ```css
 > .color1 { background-color: orange; }
-> 
+>
 > .color2 { background-color: #FFFF00; }
-> 
+>
 > .color3 { background: rgb(0,255,0); }
-> 
+>
 > .color4 { background-color: hsl(360,50%,50%); }
 > ```
 
@@ -311,13 +311,13 @@ Description: CSS
 > ```bash
 > 1. 背景平铺
 > background-repeat:repeat|no-repeat|repeat-x|repeat-y;
-> 
+>
 > 2. 背景图片位置	方位名词有：top|center|bottom|left|right
 > background-position:x y;
-> 
+>
 > 3. 背景图像固定
 > background-attachment:scroll|fixed;
-> 
+>
 > /4. 背景复合写法background:背景颜色 背景图片地址 背景平铺 背景图像滚动 背景图片位置
 > background:transprent url('img.jpg') repeat-y fixed top;	//背景透明，图像固定，图片在位置上方，向y轴平铺
 > ```
@@ -467,14 +467,14 @@ Description: CSS
 > ## font顺序 :
 > font: font-style | font-variant | font-weight | font-size | line-height | font-family
 > 	翻译为样式、异体、粗细、大小/行高（一般设置为size+10px）、字体系列
-> 
+>
 > 注意1：
 > 简写时，font-size和line-height只能通过斜杠/组成一个值，不能分开写。
 > 其中不需要设置的属性可省略（取默认值为normal），但必须保留font-size和font-family属性，否则font属性将不起作用。
-> 
+>
 > 注意2：
 > 当 `600 <= font-weight <= 900` 时，字体会自动加粗
-> 
+>
 > 示例：
 > `p {font: italic bold 20px/24px "微软雅黑";}`
 > ```
@@ -484,24 +484,24 @@ Description: CSS
 > ```css
 > 1、字间距：letter-spacing和word-spacing
 > 	-->letter-spacing为每个字符之间的空白距离，word-spacing为单词之间的空白距离
-> 
+>
 > 2、行高：line-height（一般设置为size+10px）
-> 
+>
 > 3、文本书写方向：direction：规定文本的方向 / 书写方向。
 > 	-->ltr 默认。文本方向从左到右。      rtl 文本方向从右到左
-> 
+>
 > 4、文本轮廓：text-shadow:2px 2px 2px #fff
 > 		-->X轴，Y轴，模糊程度(不可是负值)，阴影颜色 ；4个参数中，X和Y是必须的
-> 
+>
 > 5、添加到文本的修饰：text-decoration（下划线、上划线、删除线等）
 > text-decoration: underline/overline/line-through
-> 
+>
 > 5、文本排列：text-align:left/center/right
-> 
+>
 > 7、段落首行缩进：text-indent
-> 
+>
 > 8、控制文本大小写：text-transform
-> 
+>
 > 9、指定元素内的空白怎样处理：white-space: pre/nowrap
 > ```
 >
@@ -524,8 +524,8 @@ Description: CSS
 > white-space:nowrap;	// 文本不换行，只显示一行文字
 > overflow:hidden;	// 超出内容框的隐藏
 > text-overflow:ellipsis;	// 用省略号显示超出的部分
-> 
-> 
+>
+>
 > //两行超出隐藏
 > overflow: hidden;	// 超出的隐藏显示
 > text-overflow:ellipsis;	// 省略号显示溢出部分
@@ -569,7 +569,7 @@ Description: CSS
 > <view style="white-space:pre-wrap">
 > 	文本保留空格和回车
 > </view>
-> 
+>
 > 2.连续空格  注意：必须在<text>标签中使用
 > <text space="ensp">你好 啊      哈哈哈（空格是中文字符一半大小）</text>
 > <text space="emsp">你好 啊      哈哈哈（空格是中文字符大小）</text>
@@ -600,13 +600,13 @@ Description: CSS
 > ```css
 > //添加阴影最常见写法：
 > div{ box-shadow: 10px 5px #888888; }
-> 
+>
 > // 例1、三边阴影
 > div{ box-shadow: 0 0 0 gray,
 >      		5px 5px 5px gray,
 >      		0 5px 5px gray,
 >      		-5px 5px 5px gray; }
-> 
+>
 > // 例2、内阴影：塌陷
 > div{ box-shadow: 0 0 15px black inset; }
 > ```
@@ -616,17 +616,17 @@ Description: CSS
 > ```bash
 > ## 浮动 float
 > 浮动（float）是 CSS 定位属性。浮动元素从网页的正常流动中移出，但是保持了部分的流动性，会影响其他元素的定位（比如文字会围绕着浮动元素）。这一点与绝对定位不同，绝对定位的元素完全从文档流中脱离。
-> 
+>
 > CSS 的clear属性通过使用left、right、both，让该元素向下移动（清除浮动）到浮动元素下面。
-> 
-> 
+>
+>
 > ### 浮动产生的影响：高度塌陷
 > 由于浮动元素会脱离文档流，所以导致不占据页面空间，所以会对父元素高度带来一定影响。
 > 如果一个父元素只包含浮动元素，那么该父元素的高度将塌缩为 0。（高度塌陷）
 > 我们可以通过清除（clear）从浮动元素后到父元素关闭前之间的浮动来修复这个问题。
-> 
-> 
-> 
+>
+>
+>
 > ### 清除浮动的方法
 > 有一种 hack 的方法，是自定义一个.clearfix类，利用伪元素选择器::after清除浮动。另外还有一些方法，比如添加空的<div></div>和设置浮动元素父元素的overflow属性。与这些方法不同的是，clearfix方法，只需要给父元素添加一个类。
 > 值得一提的是，把父元素属性设置为overflow: auto或overflow: hidden，会使其内部的子元素形成块格式化上下文（Block Formatting Context），并且父元素会扩张自己，使其能够包围它的子元素。
@@ -639,24 +639,24 @@ Description: CSS
 > - 浮动的作用：当父元素不给高度时，内部元素如果不浮动则不会撑开；而浮动时，父元素会变成一条线。
 > - 使用clear清除浮动的原理：元素盒子的变不能和前面的浮动元素相邻，对元素设置 clear 属性时为了避免浮动元素对该元素的影响，而不是直接清除掉浮动。
 > - `clear:both`：本质是闭合浮动，即是让父盒子闭合出口和入口，不让子盒子出来。
-> 
-> 
+>
+>
 > ### 清除浮动的方式
 > 1. 额外标签法：在最后一个浮动标签后新加一个标签并设置属性`clear：both;`
 > 2. 父元素添加`overflow:hidden/auto`，通过触发BFC方式，实现清除浮动
 > 3. 在父元素中使用after伪元素清除浮动，在:after中添加设置模式为块元素，并通过`clear:both`清除浮动
 > 4. 在父元素中使用before和after双伪元素清除浮动，设置模式为table元素，并在after中清除浮动
-> 
+>
 > 注意：即使清除浮动，当超出父元素的内容还是会溢出，所以建议在父元素中定义`overflow:hidden/auto`；且在定义浮动后，若子盒子宽度超出父盒子宽度，超出部分的子盒子会换行显示（是超出部分的整个子盒子，而不是子盒子的内容）
 > ```
 >
 > ```css
 > //1.额外标签法
 > <div style="clear:both"></div>
-> 
+>
 > //2.父级添加overflow属性；(会无法显示溢出部分)
 > overflow:hidden/scroll/auto;
-> 
+>
 > //3.父级添加before和after双伪元素
 > .clearfix:before,.clearfix:after{
 >   content:'';
@@ -668,7 +668,7 @@ Description: CSS
 > .clearfix{
 >   *zoom:1; /*ie6清除浮动的方式 *号只有IE6-IE7执行，其他浏览器不执行*/
 > }
-> 
+>
 > //4.父级添加伪元素after
 > .clearfix:after{
 >   content:'';
@@ -721,32 +721,32 @@ Description: CSS
 > - 定位问题：要设置坐标，必须先脱离文档流(即设置定位)
 > - 定位叠放次序：z-index：（数值越大，盒子越靠上），只有定位的盒子才能发挥作用
 > - 清除定位的方法：给设置定位的标签的样式中设置`position: static`
-> 
-> 
+>
+>
 > ### 静态(默认)定位 static
 > - 在该定位下会忽略以下属性：left、right、top、bottom、z-index
 > - 静态定位的元素就是标准流的显示方式，且不能移动元素的位置
 > - 清除定位的方法就是给设置定位的标签设置静态定位`position: static`
-> 
-> 
+>
+>
 > ### 固定定位 fixed
 > - 固定定位的元素始终以浏览器窗口（body标签）的可视区域为参照设置定位（在可见区域内滑动滚动条，还是固定在当前位置）
 > - 固定定位的元素脱标不占位，可以实现模式转换
-> 
-> 
+>
+>
 > ### 相对定位 relative
 > - 生成相对定位的元素，相对于其正常位置进行定位，定位的元素仍然占据文档的空间，元素的宽高不变，设置偏移量也不会影响其他元素的位置。
 > - 最外层容器设置为relative定位，在没有设置宽度的情况下，宽度是整个浏览器的宽度。
 > - 不能实现模式转换，一般设置为父相子绝。
 > - 注意：当给元素添加`transform`属性，则该元素具备`relative`的特性。
-> 
-> 
+>
+>
 > ### 绝对定位 absolute
 > - 相对于离自己最近且定义了非静态定位的父元素的位置进行定位，若全部父元素没有定位属性，则相对于浏览器窗口(body标签)左上角进行定位。
 > - 绝对定位的元素会脱标，不再占据文档的空间。
 > - 绝对定位可以实现模式转换。
-> 
-> 
+>
+>
 > ### 粘性定位 sticky
 > - 元素先按照普通文档流定位，然后相对于该元素在流中的 flow root(BFC) 和 containing block(最近的块级组件元素)定位。而后，元素定位表现为在跨域特定阈值之前为相对定位，之后为固定定位。
 > - 以浏览器的可视窗口为参照点移动元素，且元素会占据原先位置，必须添加 `left、right、top、bottom、z-index` 其中一个属性才有效。
@@ -768,14 +768,14 @@ Description: CSS
 >     - 当 z-index 的值相同，则最后设置定位的元素层级要高于前面定位的元素【后来居上原则】。
 >     - 当 z-index 值不同，则 z-index 值越大，该元素的层级越高。
 >     - 如果元素的父元素设置 z-index 值，则父元素的 z-index 值越大，那么该元素的层级越高。
-> 
-> 
-> 
+>
+>
+>
 > ### z-index属性如何形成层叠上下文（stacking context）
 > 没有定义z-index的值时，元素按照它们出现在 DOM 中的顺序堆叠（层级越低，出现位置越靠上）。非静态定位的元素（及其子元素）将始终覆盖静态定位（static）的元素，而不管 HTML 层次结构如何。
-> 
+>
 > 层叠上下文是包含一组图层的元素。 在一组层叠上下文中，其子元素的z-index值是相对于该父元素而不是 document root 设置的。每个层叠上下文完全独立于它的兄弟元素。如果元素 B 位于元素 A 之上，则即使元素 A 的子元素 C 具有比元素 B 更高的z-index值，元素 C 也永远不会在元素 B 之上.
-> 
+>
 > 每个层叠上下文是自包含的：当元素的内容发生层叠后，整个该元素将会在父层叠上下文中按顺序进行层叠。少数 CSS 属性会触发一个新的层叠上下文，例如opacity小于 1，filter不是none，transform不是none。
 > ```
 
@@ -800,11 +800,11 @@ Description: CSS
 > ```bash
 > ## 什么情况下，用translate()而不用相对定位？什么时候，情况相反。
 > translate() 是 transform 的一个值。
-> 
+>
 > 改变 transform 或 opacity 不会触发浏览器重新布局（reflow）或重绘（repaint），只会触发复合（compositions）。而改变绝对定位会触发重新布局，进而触发重绘和复合。
-> 
+>
 > transform 使浏览器为元素创建一个 GPU 图层，但改变绝对定位会使用到 CPU。 因此 translate() 更高效，可以缩短平滑动画的绘制时间。
-> 
+>
 > 当使用 translate() 时，元素仍然占据其原始空间（有点像position：relative），这与改变绝对定位不同。
 > ```
 
@@ -841,8 +841,8 @@ vertical-align 的关键字
 > 2. 然后考虑使用浮动
 > 3. 最后使用定位
 > 4. 元素模式转换必须使用display
-> 
-> 
+>
+>
 > ## 元素的可见性`overflow`
 > - `visible`：默认值。多余的内容不剪切也不添加滚动条，会全部显示出来。
 > - `hidden`：不显示超过对象尺寸的内容。
@@ -854,7 +854,7 @@ vertical-align 的关键字
 > // 把元素隐藏起来
 > overflow:hidden;	//将溢出的部分隐藏
 > visibility:hidden;	//元素隐藏（隐藏的内容占位置一般用于)
-> 
+>
 > display:none;		//元素隐藏（隐藏的内容不占位置一般用于导航栏部分内容的隐藏)
 > display:block;		//显示元素
 > ````
@@ -1030,7 +1030,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     margin: -50px 0 0 0; /* margin: -15% 0 0 0; */
 >   }
 > </style>
-> 
+>
 > <div id="box">
 >   <div id="child"></div>
 > </div>
@@ -1057,7 +1057,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     transform: translate(0, -50%);
 >   }
 > </style>
-> 
+>
 > <div id="box">
 >   <div id="child">test vertical align</div>
 > </div>
@@ -1087,7 +1087,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     line-height: 100px;
 >   }
 > </style>
-> 
+>
 > <div id="box">
 >   <div id="child">test vertical align</div>
 > </div>
@@ -1110,7 +1110,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     background: orange;
 >   }
 > </style>
-> 
+>
 > <div id="box">
 >   <div id="child">test vertical align</div>
 > </div>
@@ -1129,7 +1129,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     line-height: 300px;
 >   }
 > </style>
-> 
+>
 > <div id="box">test vertical align</div>
 > ```
 
@@ -1149,7 +1149,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >  vertical-align: middle;
 > }
 > </style>
-> 
+>
 > <div id="box">
 > <img src="smallpotato.jpg">
 > </div>
@@ -1181,7 +1181,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     vertical-align: middle;
 >   }
 > </style>
-> 
+>
 > <div id="box">
 >   <div id="child">test vertical align</div>
 > </div>
@@ -1193,18 +1193,18 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > ## 水平垂直居中方式
 > ### 水平居中
 > - 对于行内元素：text-align: center 。
-> 
+>
 > - 对于确定宽度的块级元素：
 >     1. width 和 margin 实现：margin: 0 auto。
 >     2. 绝对定位和 margin-left:-width/2，前提是父元素 position:relative。
-> 
+>
 > - 对于宽度位置的块级元素：
 > 		1. table 标签配合 margin:auto 实现水平居中。使用table标签(或display:table)，再通过给该标签添加 margin:auto。
 > 		2. inline-block 实现水平居中方法：display:inline-block 和 text-align:center 实现水平居中。
 > 		3. 绝对定位 + transform：translateX 可以移动本身元素的 50%。
 > 		4. flex 布局使用 justify-content:center。
-> 
-> 
+>
+>
 > ### 垂直居中
 >     1. 利用 line-height 实现居中，这种方法适合纯文字类。
 >     2. 通过设置定位父相子绝，标签通过 margin 实现自适应居中。
@@ -1215,8 +1215,8 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     7. 设置绝对定位和margin:auto；	当宽度和高度未知时使用
 >     8. table布局，父级通过转换模式为 table-cell 与 vertical-align，然后子级设置 inline-block  实现。
 >         （注意：vertical-align:middle 使用的前提条件是内联元素以及 display 值为 table-cell 的元素）
-> 
-> 
+>
+>
 > ### 水平垂直居中
 > 1. 父元素设置弹性布局或网格布局：`display:flex/grid;justify-content:center;align-items:center;`
 > 2. 父元素设置flex或grid布局+margin:auto：`display:flex/gird;margin:auto;`
@@ -1227,9 +1227,9 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 7. 设置定位和负margin：`width:100px;height:100px; position:absolute; left:50%; top: 50%; margin-left:-50px; margin-right: -50px;`
 > 8. 文本水平居中和行高占满容器(只适用纯文字类)：`'width:100px;height:100px; text-align:center; line-height:100px;`
 > 9. 使用伪元素，在父级最后增加一个空的文本元素，将文本元素的行高设置成父元素content的高度，当这个父元素的空的文本元素与其直接子元素的font-size一样高时，由于基线对齐，实现了垂直居中 `.father{width: 50px;height: 50px;text-align: center;} .father::after{content:"";line-height:50px;} .son{display:inline-block;}`
-> 
-> 
-> 
+>
+>
+>
 > #### 居中为什么要使用transform (为什么不适用 margin:Left/Top)
 > - transform： 属于合成属性，不会引起整个页面的回流重绘，节省性能，但是占用内存会大些；
 > - top/left：属于布局属性，会引起页面layout回流和repaint重绘。
@@ -1239,7 +1239,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > <div class="wrap">
 > 	<div class="box"></div>
 > </div>
-> 
+>
 > // 1. 给父元素设置文本居中和设置行高为自身高度；给子元素设置行内块模式，使得vertical-align可以生效
 > .wrap {
 >   height: 300px;
@@ -1247,7 +1247,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   background-color: #7fffd4;
 >   text-align: center; /* 设置居中 */
 >   line-height: 300px; /* 设置行高为自身高度 */
-> 
+>
 > }
 > .box {
 >   width: 100px;
@@ -1256,7 +1256,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   display: inline-block;  /* 当定义为行内块时，vertical-align属性才能生效 */
 >   vertical-align: middle;
 > }
-> 
+>
 > // flex布局：设置父元素为flex布局，并设置内容水平居中跟垂直居中
 > .wrap {
 >   height: 300px;
@@ -1271,7 +1271,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   height: 100px;
 >   background-color: burlywood;
 > }
-> 
+>
 > // table-cell模式，设置父元素为table-cell，并设置垂直居中和内容居中，设置子元素为行内块元素
 > .wrap {
 >   height: 300px;
@@ -1299,40 +1299,40 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 	- 性能：动态改变此属性，显示出原来页面不存在的结构，会影响页面布局，会引起重排，性能开销较大。
 > 	- 继承：不会被子元素继承，子类也不会渲染。
 > 	- transition:  transition 不支持 display。
-> 
+>
 > 2. visibility: hidden
 > 	- DOM结构：会被渲染，且仍占据空间，但内容不可见；不会导致页面结构发生变化，不会撑开。
 > 	- 事件监听：无法进行 DOM 事件监听。
 > 	- 性能：动态改变此属性会触发重绘，比重排的性能高。
 > 	- 继承：会被子元素继承，子元素通过 `visibility:visible` 来取消隐藏。
 > 	- transition: visibility 会立即显示，隐藏时会延时。
-> 
+>
 > 3. opacity: 0
 > 	- DOM结构：将元素透明度设置为0，元素肉眼不可见，但仍占据空间。
 > 	- 事件监听：可以进行 DOM 事件监听。
 > 	- 性能：提升为合成层（重建图层），不会触发重绘，性能较高。
 > 	- 继承：会被子元素继承，且子元素并不能通过 `opacity:1` 来取消隐藏。
 > 	- transition: opacity 可以延时显示和隐藏。
-> 
+>
 > 4. overflow: hidden
 > 	- DOM结构：只隐藏元素溢出的部分，占据空间且不可交互。
-> 
+>
 > 4. z-index: -9999
 > 	- DOM结构：将层级放到底部，这样就会被其他元素覆盖，占据空间不一定能交互（没有被覆盖的部分能交互）
-> 
+>
 > 5. transform: scale(0, 0)
 > 	- DOM结构：平面变化，将元素缩放为0，占据空间且不可交互。
-> 
-> 
-> 
+>
+>
+>
 > ## 区别
 > - display:none 会让元素从渲染树中消失，渲染时不占据任何空间；
 > - visibility:hidden 不会让元素从渲染树中消失，渲染时仍然占据空间，只是内容不可见。
-> 
+>
 > - display:none 是非继承属性，子孙节点消失是由于元素从渲染树中消失造成，通过修改子孙节点的属性无法显示；
 > - visibility:hidden 是继承属性，子孙节点消失是由于继承了 hidden，通过设置 visibility:visible 可以让子孙节点显示。
 > - css3的`transition`支持`visibility`属性，但并不支持display，由于transition可以延迟执行，因此可以配合visibility使用纯css实现hover延时显示效果。
-> 
+>
 > - 读屏器不会读取 display:none 的元素内容，而会读取 visibility:hidden 的元素内容。
 > - `visibility:hidden`不会影响计数器的计数：虽然让一个元素不见了，但是其计数器仍在运行，而`display:none`则不是。
 > ```
@@ -1341,28 +1341,64 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 
 ### 计量单位
 
-> ```bash
-> ## css 计量单位
-> 1. px：绝对单位。像素的大小是固定的，页面按照精准样式展示。
-> 2. em：相对单位。基准点为父节点字体的大小，值不固定，会继承父级元素的字体大小，代表倍数；
->     em = 希望得到的像素大小 / 父元素字体像素大小
->     浏览器的默认字体高都是 16px，未经调整的浏览器显示1em=16px。
-> 3. ex：相对长度单位。相对于字符**“x”的高度。通常为字体高度的一半**。
-> 4. rem：相对单位，值并不是固定的，始终是基于根元素 <html> 的，也代表倍数。
-> 5. vw：viewpoint width，视窗宽度，1vw等于视窗宽度的1%。
-> 6. vh：viewpoint height，视窗高度，1vh等于视窗高度的1%。
-> 7. %:百分比
-> 
-> 
-> ## 字体尺寸
-> 1. xx-small最小
-> 2. x-small较小
-> 3. small小
-> 4. medium中等
-> 5. large大
-> 6. x-large较大
-> 7. xx-large最大
-> ```
+```bash
+### css 计量单位
+1. px：绝对单位。像素的大小是固定的，页面按照精准样式展示。
+2. em：相对单位。基准点为父节点字体的大小，值不固定，会继承父级元素的字体大小，代表倍数；
+    em = 希望得到的像素大小 / 父元素字体像素大小
+    浏览器的默认字体高都是 16px，未经调整的浏览器显示1em=16px。
+3. ex：相对长度单位。相对于字符**“x”的高度。通常为字体高度的一半**。
+4. rem：相对单位，值并不是固定的，始终是基于根元素 <html> 的，也代表倍数。
+5. vw：viewpoint width，视窗宽度，1vw等于视窗宽度的1%。
+6. vh：viewpoint height，视窗高度，1vh等于视窗高度的1%。
+7. %:百分比
+
+
+### 字体尺寸
+1. xx-small最小
+2. x-small较小
+3. small小
+4. medium中等
+5. large大
+6. x-large较大
+7. xx-large最大
+
+
+### CSS 计量单位
+- `px`（Pixel）：绝对长度单位，绝对像素值，它取决于显示器的分辨率。一旦分辨率确定，设置为 `px` 的尺寸就成为固定尺寸，不会自动缩放。（1px = 1/96 英寸）
+
+- `em`：相对长度单位，相对于父元素的 `font-size`。如父元素未设置 `font-size`，则相对于浏览器的默认字体尺寸（`1em = 16px`，**注意**：浏览器的默认字体大小可以更改）。通常的做法是将默认的正文字体大小设置为 62.5％（等于 10px）。
+- `rem`（root em）：CSS3 新增的一个相对单位。相对于根元素的 `font-size`，其元素的大小都与根元素换算（默认浏览器的大小 `16px`）。
+
+- `%`：相对于父元素。例如：`font-size: 100%` 和 `font-size: 1em` 一样，它们都表示字体大小是默认（继承自父元素）字体大小的 2 倍；`line-height: 200%` 表示行高是自己字体大小的 2 倍。
+
+- `vw`：相对于视口的宽度，`1vw = 1% * viewport width`（视口宽度）
+- `vh`：相对于视口的高度，`1vh = 1% * viewport height`（视口高度）
+
+- `vmin`：相对于视口的较小尺寸（`vw` 和 `vh` 中的最小值），`1vmin = min`（`1vh`，`1vw`）
+- `vmax`：相对于视口的较大尺寸（`vw` 和 `vh` 中的最大值），`1vmax = max`（`1vh`，`1vw`）
+
+- `ch`：相对于元素字体的字形 `0` 的宽度，也就是 `1ch = 0`（一个 0 的宽度），`3ch = 000`（三个 0 的宽度）。允许完美的元素 + 文本缩放。
+
+- `in`（英寸）：`1in` = `2.54cm`=`96px`
+- `pc`（`Picas`，皮卡）：`1pc = 1in / 6 = 16px`，也就是大约 `6pt`，`1/6` 英寸，也就是 `1pc = 12pt = 1/6in`。
+- `pt`（`Point`，点）：`1pt = 1in / 72 = 1.333px`（大约），它是物理长度单位，相当于 `1/72` 英寸。通常在印刷中使用。（`1pt = 1/72in`）
+
+- `cm`（厘米）： `1cm = 96px / 2.54 = 37.8px`（大约）
+- `mm`（毫米）：`1mm = 1cm / 10 = 3.78px`（大约）
+
+
+
+#### 注意
+- `px` 和 `em` 都是长度单位，区别是 `px` 的值是固定的，计算比较容易。`em` 的值不是固定的，并且 `em` 会继承父级元素的字体大小。
+- 浏览器的默认字体大小都是 `16px`。所以未经调整的浏览器都符合: `1em = 16px`。那么 `12px = 0.75em`，`10px = 0.625em`。通常，我们会将浏览器的默认字体设置为 `62.5%`，此时 `1rem = 16px * 62.5% = 10px`（所以 `12px = 1.2rem`）；（1:10 的比例更好换算）
+- `%` 与 `em` 一样，都是级联的，意思是父元素的的字体大小会影响到子元素。
+- `em` 和 `rem` 单位可用于创建完美的可扩展布局，兼容多设备的不二之选！
+- 相对长度：`em`、`rem`、`vw`、`vh`、`vmin`、`vmax`、`%`、`ch`。其相对于另一个长度属性，在不同设备之间缩放表现得更好。
+- 绝对长度：`px`、`cm`、`mm`、`pt`、`p
+```
+
+
 
 #### Rem 布局
 
@@ -1371,7 +1407,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > - rem 是相对于根（html）的 font-size 大小来计算的。
 > - 简单来说，它就是一个相对单例，如在根定义 `font-size: 10px`，那么 `1rem = 10px`。
 > - rem 布局的本质是等比缩放，一般是基于宽度。
-> 
+>
 > - 优点：可以快速使用移动端布局、字体、图片高度。
 > - 缺点：
 >     1. 目前 IE 不支持，对 PC页面来说使用次数不多。
@@ -1388,7 +1424,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   - rem 适配原理：改变一个元素在不同设备上占据的 css 像素的个数。
 >   - rem 适配的优点：没有破坏完美视口。
 >   - rem 适配的缺点：px  值转换 rem 过于复杂。
-> 
+>
 > 2. viewport 适配
 >   - viewport 适配原理：viewport适配方案中，每一个元素在不同设备上占据的 css 像素的个数是一样的。但是 css 像素和物理像素的比例是不一样的，是等比的。
 >   - viewport 适配的优点：在我们设计图上所量取的大小即为我们可以设置的像素大小，即所量为所设置。
@@ -1412,13 +1448,13 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > ## 弹性布局 Flex
 > - 布局的传统方案基于盒状模型，依赖 display属性 +position属性+float属性。它对于那些特殊布局十分不便（如垂直居中）。
 > - Flex 是 Flexible Box 的缩写，意为'弹性布局'，用来为盒状模型提供最大的灵活性。指定容器 display:flex 即可。
-> 
+>
 > - flex 布局的子元素不会脱离文档流。
 > - 作用：重新排列元素的显示顺序；可在不同方向排列元素；更改元素的对齐方式；动态地将元素装入容器。
 > - 弹性布局默认不改变项目的宽度，但它默认改变项目的高度。如果项目没有指定高度，就将占据容器的所有高度。
 > - 当给子元素定义 `flex: 1` 时，自适应容器其弹性容器的可用空间。
-> 
-> 
+>
+>
 > ### 容器属性
 > 1. `flex-direction`：决定主轴的方向(即子item的排列方法)
 > 			flex-direction: row | row-reverse | column | column-reverse
@@ -1432,8 +1468,8 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 			align-items: stretch|center|flex-start|flex-end|baseline|initial|inherit;
 > 6. `align-content`：垂直轴所有可用的空间时对齐容器内的各项
 > 			align-content: stretch|center|flex-start|flex-end|space-between|space-around|initial|inherit;
-> 
-> 
+>
+>
 > ### 项目的属性（元素的属性）
 > - order：定义项目的排列顺序，顺序越小，排列越靠前，默认为0。
 > - flex-grow：定义项目的放大比例，即使存在空间，也不会放大。
@@ -1452,7 +1488,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 
 > ```bash
 > ## 网格布局 grid
-> 
+>
 > ```
 
 ### 盒子模型 box-sizing
@@ -1460,12 +1496,12 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > ```bash
 > ## 盒子模型 box-sizing
 > CSS 盒模型描述了以文档树中的元素而生成的矩形框，并根据排版模式进行布局。每个盒子都有一个内容区域（例如文本，图像等）以及周围可选的padding、border和margin区域。
-> 
+>
 > CSS 盒模型负责计算：
 >     1. 块级元素占用多少空间。
 >     2. 边框是否重叠，边距是否合并。
 >     3. 盒子的尺寸。
-> 
+>
 > 盒模型有以下规则：
 >     - 块级元素的大小由`width`、`height`、`padding`、`border`和`margin`决定。
 >     - 如果没有指定`height`，则块级元素的高度等于其包含子元素的内容高度加上`padding`（除非有浮动元素）。
@@ -1473,22 +1509,22 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >     - 元素的`height`是由内容的`height`来计算的。
 >     - 元素的`width`是由内容的`width`来计算的。
 >     - 默认情况下，`padding`和`border`不是元素`width`和`height`的组成部分。
-> 
-> 
-> 
+>
+>
+>
 > ### 盒子模型类型
 > - CSS 的盒子模型有两种：标准W3C盒子模型、IE盒子模型（怪异盒模型）：本质是盒子，封装周围的HTML元素。
 > - '盒模型的大小 = 内容(content) + 填充(padding) + 边框(border) + 边界(margin)'
 >  			注意：IE盒子模型的 content 部分包含了 border 和 padding
 > - 两种盒子模型的样式兼容性问题：建议不要给元素添加具有指定宽度的内边距，而是内边距或外边距添加到元素的父元素和子元素。
-> 
+>
 > 标准盒模型：content 为 width 和 height
 > 怪异盒模型：content 为 width 和 height、border 及 padding
-> 
+>
 > 标准盒模型：一个块的总宽度 = width + margin(左右) + padding(左右) + border(左右)
 > 怪异盒模型：一个块的总宽度 = width + margin(左右)	（即是 width 已经包含了 paddin 和 border 的值）
-> 
-> 
+>
+>
 > - box-sizing 规定两个并排的带边框的框，语法为 `box-sizing: content-box / border-box / inherit`。
 > 		- 【`content-box`】标准盒子模型：
 > 					宽度和高度分别应用到元素的内容框，在宽度和高度之外绘制元素的内边距和边框。
@@ -1510,20 +1546,20 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > ## BFC（Block Formatting Contexts）块级格式上下文
 > BFC 是一个独立隔离的渲染区域，只有'块元素'参与，它规定内部的块元素如何布局，并且与这个区域外部互不影响。
 > - 块级元素才会产生 BFC，且 BFC 仍属于文档中的普通流。
-> 
+>
 > 注意：
 > 	- 每一个 BFC 区域只包括其子元素，不包括其子元素的子元素。
 > 	- 每一个 BFC 区域都是独立个体，互不影响。可利用这一特性让不同 BFC 区域之间的布局不产生影响。
-> 
-> 
-> 
+>
+>
+>
 > ### BFC 特性
 > - BFC 在 Web 页面上是一个独立的容器，容器内外的元素互不影响
 > - 和标准文档流一样，BFC 内的两个相邻块级元素垂直方向的边距会发生重叠
 > - BFC 不会与浮动元素的盒子重叠
 > - BFC 在计算高度时会把浮动元素计算进去
-> 
-> 
+>
+>
 > ### 形成 BFC 的条件（一般是让盒子脱离标准文档流）
 > 只要元素满足下面任一条件即可触发 BFC 特性：
 >   - 根元素 (html/body 标签)
@@ -1534,8 +1570,8 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   		- 表格单元格 table-cell、table-caption、
 >   		- 行内块显示模式 inline-block/inline-flex
 >   - overflow 值不为 visible （hidden、auto、scroll）
-> 
-> 
+>
+>
 > ### BFC 的原理
 >   1. 内部的 Box 会在垂直方向，一个接一个地放置。
 >   2. Box 垂直方向的距离由 margin 决定。属于同一个 BFC 的两个相邻 Box 的 margin 会发生重叠。
@@ -1544,15 +1580,15 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   4. BFC 的区域不会与 float box 重叠。
 >   5. BFC 就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。
 >   6. 计算 BFC 的高度时，浮动元素也参与计算。
-> 
-> 
+>
+>
 > ### BFC 的作用
 > 1. 解决外边距重叠（垂直坍塌）
 >     - 当父元素和子元素发生 margin 重叠时，解决办法：给子元素或父元素创建 BFC。
 >     - BFC 导致属于同一个 BFC 的子元素的 margin 重叠。
 >       （Box 垂直方向的距离由 margin 决定，属于同一个 BFC 的两个相邻 Box 的 margin 会发生重叠）
 >       解决：可在 div 外包裹一层容器，并触发该容器生成一个 BFC。则两个 div 便不属于同一个 BFC，也就不会产生 margin 重叠。
-> 
+>
 > 2. 清除浮动的影响
 > 		- 当父元素没有设置高度，且子元素为浮动元素的情况下，父元素会发生高度坍塌，上下边界重合，即浮动元素无法撑开父元素。
 > 		- 原因：子元素触发触动后，均开启 BFC，父元素不会被子元素撑开。
@@ -1561,19 +1597,19 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 			所以只要将父容器设置为 BFC 就可以把子元素包含进去：
 > 				这个容器将包含浮动的子元素，它的高度将扩展到可以包含它的子元素。
 > 				在这个 BFC 中，这些元素将会回到页面的常规文档流。
-> 
+>
 > 3. 解决高度坍塌问题
 > 	- 当父子管理的盒子，给子元素添加 `margin-top`，有可能会把父元素一起带跑。
-> 
+>
 > 4. 防止文字环绕
-> 
-> 
-> 
+>
+>
+>
 > ### 关于div外边距重叠的发生条件
 > 情况一：两个div垂直边界相邻，margin 会等于二者中 margin 较大的值
 >     解决方案  1. position：absolute
 >     				2. float：left
-> 
+>
 > 情况二：子元素在父元素内，子元素的 margin-top 会与父元素的 margin-top 重叠，值等于二者中较大的；如果只有子元素设置 margin-top，则显示为父元素的 margin-top。
 >     解决方案 1. 给父元素设置border（给子元素设置边框没有用）
 >             2. 给父元素设置padding值
@@ -1581,7 +1617,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >             4. 给父元素或子元素添加position：absolute
 >             5. 给父元素添加overflow：hidden
 >             6. 给子元素添加display：inline-block
-> 
+>
 > 情况三：一个空白元素自身的margin-top和margin-bottom会重叠，值为而这种较大的
 >      解决方案 1. 设置透明border
 > ```
@@ -1651,7 +1687,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >                 }
 >               });
 >               break;
->         
+>
 >             case '#node2':
 >               $.ajax({
 >                 url: './json/node2.json',
@@ -1673,6 +1709,129 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >         其三，iframe与父文档相对独立，可以不受父文档的影响，想必这也是目前一些网站（网易云音乐，QQ空间，各大邮箱）继续使用iframe的主要原因。
 >
 > ![img](./image/1006796-20161028103931109-77013595.png)
+
+
+
+## CSS3
+
+> ```bash
+> ## CSS3
+> - CSS3 边框如border-radius，box-shadow等；
+> - CSS3 背景如background-size，background-origin等；
+> - CSS3 2D，3D 转换如transform 等；
+> - CSS3 动画如animation 等。
+> ```
+
+### 过渡transition
+
+> ```bash
+>
+> ```
+
+### 转换transform
+
+> ```bash
+> ## 旋转、缩放、移动、倾斜、矩阵、3D<=>2D互换
+> 1. 旋转：
+> 		rotate(<angle>)
+> 		angle为旋转角度，用deg作单位，如为负数，则表示逆时针旋转
+>
+> 2. 缩放：
+> 		scale(x,y)、 scaleX(x)、 scaleY(y)
+> 		x,y为缩放倍数，值>1为放大，值<1为缩小
+>
+> 3. 移动：
+> 		translate(x,y)、 translateX(x)、 translate(y)
+> 		x,y为x轴y轴移动的距离
+>
+> 4. 扭曲（倾斜）：
+> 		skew(x,y)、 skewX(x)、 skewY(y)
+> 		x,y为数值，以deg作单位，水平/垂直
+>
+> 5. 矩阵：
+> 		matrix(n,n,n,n,n,n)、 matrix3d(n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n)
+> 		2d为6值，3d为16值
+>
+> 6. 3D ：
+> 		让某个元素呈3D显示：给其父元素添加属性->  transform-style: preserve-3d;//增加一个3d效果
+> 		translate3d(x,y,z)、 scale3d(x,y,z)、 rotate3d(x,y,z,angle)
+>
+> 7. 定义3D元素距离视图的距离（使用3D效果必须使用，否则会还是2D效果）
+> 		perspective(n)：为3D 转换元素定义透视视图
+> 		例：perspective: 500px;
+> ```
+>
+> ```css
+> .box {
+>   /* 解决transform的兼容性问题    transform多个属性可以并写且不区分前后 */
+> 	transform:rotate(7deg) scale(2,2) translate(100px,100px);
+> 	-ms-transform:rotate(7deg) scale(2,2) translate(100px,100px); /* IE 9 */
+> 	-moz-transform:rotate(7deg) scale(2,2) translate(100px,100px); /* Firefox */
+> 	-webkit-transform:rotate(7deg) scale(2,2) translate(100px,100px); /* Safari and Chrome */
+> 	-o-transform:rotate(7deg) scale(2,2) translate(100px,100px); /* Opera */
+> }
+> ```
+
+### 动画animtion
+
+> ```bash
+> ## @keyframes关键帧动画
+>
+> ```
+
+#### ease、ease-in、ease-in-out、ease-out效果区别
+
+> | 值                             | 描述                                                         |
+> | ------------------------------ | ------------------------------------------------------------ |
+> | **linear**                     | 匀速。规定以相同熟读开始至结束的过渡效果。等同`cubic-bezier(0,0,1,1)` |
+> | **ease**                       | 相对匀速，中间快两头慢。规定慢速开始，然后加快，然后慢速结束的过渡效果。等同 `cubic-bezier(0.25,0.1,0.25,1)` |
+> | **ease-in**                    | 相对匀速，开始慢，之后快。规定以慢速开始的过渡效果。等同`cubic-bezier(0.42, 0, 1, 1)` |
+> | **ease-out**                   | 相对匀速，开始时快，结束时慢。规定以慢速结束的过渡效果。等同`cubic-bezier(0, 0, 0.58, 1)` |
+> | **ease-in-out**                | 相对匀速，开始和结束都慢。规定以慢速开始和结束的过渡效果。等同`cubic-bezier(0.42, 0, 0.58, 1)` |
+> | **`cubic-bezier(n, n, n, n)`** | 在 `cubic-bezier`函数中定义自己的值。可能的值是 0 至 1 之间的数值。 |
+
+### 滤镜 filter
+
+```bash
+## 滤镜 filter
+
+```
+
+| Filter                                             | 描述                                                         |
+| :------------------------------------------------- | :----------------------------------------------------------- |
+| none                                               | 默认值，没有效果。                                           |
+| blur(*px*)                                         | 给图像设置高斯模糊。值越大越模糊；  如果没有设定值，则默认是0；这个参数可设置css长度值，但不接受百分比值。 |
+| brightness(*%*)                                    | 给图片应用一种线性乘法，使其看起来更亮或更暗。如果值是0%，图像会全黑。值是100%，则图像无变化。其他的值对应线性乘数效果。值超过100%图像会比原来更亮。如果没有设定值，默认是1。 |
+| contrast(*%*)                                      | 调整图像的对比度。值是0%则图像会全黑。值是100%，图像不变。值超过100%则会运用更低的对比。若没有设置值，默认是1。 |
+| drop-shadow(*h-shadow v-shadow blur spread color*) | 给图像设置一个阴影效果。阴影是合成在图像下面，可以有模糊度的，可以以特定颜色画出的遮罩图的偏移版本。 |
+| grayscale(*%*)                                     | 将图像转换为灰度图像。值定义转换的比例。值为100%则完全转为灰度图像，值为0%图像无变化。值在0%到100%之间，则是效果的线性乘子。若未设置，值默认是0； |
+| hue-rotate(*deg*)                                  | 给图像应用色相旋转。"angle"一值设定图像会被调整的色环角度值。值为0deg，则图像无变化。若值未设置，默认值是0deg。该值虽然没有最大值，超过360deg的值相当于又绕一圈。 |
+| invert(*%*)                                        | 反转输入图像。值定义转换的比例。100%的价值是完全反转。值为0%则图像无变化。值在0%和100%之间，则是效果的线性乘子。 若值未设置，值默认是0。 |
+| opacity(*%*)                                       | 转化图像的透明程度。值定义转换的比例。值为0%则是完全透明，值为100%则图像无变化。值在0%和100%之间，则是效果的线性乘子，也相当于图像样本乘以数量。 若值未设置，值默认是1。该函数与已有的opacity属性很相似，不同之处在于通过filter，一些浏览器为了提升性能会提供硬件加速。 |
+| saturate(*%*)                                      | 转换图像饱和度。值定义转换的比例。值为0%则是完全不饱和，值为100%则图像无变化。其他值，则是效果的线性乘子。超过100%的值是允许的，则有更高的饱和度。 若值未设置，值默认是1。 |
+| sepia(*%*)                                         | 将图像转换为深褐色。值定义转换的比例。值为100%则完全是深褐色的，值为0%图像无变化。值在0%到100%之间，则是效果的线性乘子。若未设置，值默认是0； |
+| url()                                              | URL函数接受一个XML文件，该文件设置了 一个SVG滤镜，且可以包含一个锚点来指定一个具体的滤镜元素。例如：`filter: url(svg-url#element-id)` |
+
+#### 暗黑模式
+
+````bash
+### 暗黑模式的实现
+- `invert` — 反转元素和图片的颜色。在 100% 的情况下会完全反转，即黑色变为白色，白色变为黑色，#222 -> #ddd。
+- `hue-rotate` — 帮助我们处理所有其他非黑色和白色的颜色。 将色相旋转 180 度，我们确保应用程序的颜色主题不会改变，而只是减弱其颜色。
+
+注意，它还会反转应用程序中的所有图像和视频。如果不想给图片、视频应用暗黑模式，
+````
+
+```css
+html[theme='dark-mode'] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+img,
+video {
+  filter: invert(1) hue-rotate(180deg);
+}
+```
 
 
 
