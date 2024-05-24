@@ -33,7 +33,7 @@ intersectionRect：目标元素与视口（或根元素）的交叉区域的信�
 intersectionRatio：目标元素的可见比例，即intersectionRect占boundingClientRect的比例，完全可见时为1，完全不可见时小于等于0
 
 
-## options 
+## options
 root: null, // 指定与目标元素相交的根元素，默认null为视口
 threshold: [] // [0, 0.5, 1] 当目标元素和根元素相交的面积占目标元素面积的百分比到达或跨过某些指定的临界值时就会触发回调函数
 rootMagin：'' // "100px 0" 与margin类型写法，指定与跟元素相交时的延时加载
@@ -243,6 +243,415 @@ console.log(notice)
 
 
 
+## 无框架 Web 组件(Web Components)
+
+```bash
+## 无框架 Web 组件
+Web 组件是一套不同的技术，允许创建可重复使用的定制元素（它们的功能封装在您的代码之外）并且在您的 Web 应用中使用它们，不需要任何外部库来工作。
+
+
+### 特性
+- Custom elements（自定义元素）
+- Shadow DOM（影子DOM）
+- HTML template（HTML模板）
+- HTML import（允许导入外部html文档）
+
+
+### Web 组件工程流程
+Web组件允许添加自己的 HTML 自定义元素，元素名称必须要包含连字符（`-`），以确保它不会与正式 HTML 元素冲突。
+然后为您的自定义元素注册一个 ES6 类（`class`）。它可以附加 DOM 元素，如按钮、标题、段落等。为了确保这些元素不会与页面的其余部分冲突，您可以将它们附加到具有自己范围样式的内部 Shadow DOM。您可以将其视为迷你版 `<iframe>`，尽管 CSS 属性（如字体和颜色）是通过级联继承的。
+最后，您可以使用可重用的 HTML 模板将内容附加到 Shadow DOM 中，HTML 模板通过标签提供一些配置。
+
+
+### Wen 组件的优势
+与框架相比，标准 web 组件是最基本的。它们不包括数据绑定和状态管理等功能，但 web 组件具有一些自身优势：
+	- 它们轻巧快速
+	- 它们可以实现单独用 JavaScript 无法实现的功能（例如 Shadow DOM）
+	- 它们可以在任何 JavaScript 框架内工作
+	- 它们将得到浏览器的支持。
+```
+
+
+
+### 自定义元素的内容
+
+```html
+<body>
+  <user-card></user-card>
+  <user-card></user-card>
+
+  <script type="text/javascript">
+    /**
+     * @description 用户卡片组件
+     * UserCard就是自定义元素的类。注意，这个类的父类是HTMLElement，因此继承了 HTML 元素的特性
+     */
+    class UserCard extends HTMLElement {
+      constructor() {
+        super()
+
+        this._render()
+      }
+
+      _render() {
+        var image = document.createElement('img')
+        image.src = 'https://semantic-ui.com/images/avatar2/large/kristy.png'
+        image.style.height = '100px'
+        image.classList.add('image')
+
+        var container = document.createElement('div')
+        container.classList.add('container')
+
+        var name = document.createElement('p')
+        name.classList.add('name')
+        name.innerText = 'User Name'
+
+        var email = document.createElement('p')
+        email.classList.add('email')
+        email.innerText = 'yourmail@some-email.com'
+
+        var button = document.createElement('button')
+        button.classList.add('button')
+        button.innerText = 'Follow'
+
+        container.append(name, email, button)
+
+        // this.append()的this表示自定义元素实例
+        this.append(image, container)
+      }
+    }
+
+    // 告诉浏览器<user-card>元素与这个类关联
+    window.customElements.define('user-card', UserCard)
+  </script>
+</body>
+```
+
+
+
+### 使用 `<template>` 标签定义 DOM
+
+```html
+<body>
+  <user-card></user-card>
+  <user-card></user-card>
+
+  <template id="userCardTemplate">
+    <img src="https://semantic-ui.com/images/avatar2/large/kristy.png" style="height: 100px;" class="image">
+    <div class="container">
+      <p class="name">User Name</p>
+      <p class="email">yourmail@some-email.com</p>
+      <button class="button">Follow</button>
+    </div>
+  </template>
+
+  <script type="text/javascript">
+    /**
+     * @description 用户卡片组件
+     * UserCard就是自定义元素的类。注意，这个类的父类是HTMLElement，因此继承了 HTML 元素的特性
+     */
+    class UserCard extends HTMLElement {
+      constructor() {
+        super()
+
+        this._render()
+      }
+
+      _render() {
+        var templateEle = document.getElementById('userCardTemplate')
+        var content = templateEle.content.cloneNode(true)
+        this.append(content)
+      }
+    }
+
+    // 告诉浏览器<user-card>元素与这个类关联
+    window.customElements.define('user-card', UserCard)
+  </script>
+</body>
+```
+
+
+
+### 添加样式
+
+```html
+<body>
+  <user-card></user-card>
+  <user-card></user-card>
+
+  <template id="userCardTemplate">
+    <style>
+      /* :host伪类，指代自定义元素本身 */
+      :host {
+        display: flex;
+        align-items: center;
+        width: 450px;
+        height: 180px;
+        background-color: #d4d4d4;
+        border: 1px solid #d5d5d5;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+      .image {
+        flex: 0 0 auto;
+        width: 160px;
+        height: 160px;
+        vertical-align: middle;
+        border-radius: 5px;
+      }
+      .container {
+        box-sizing: border-box;
+        padding: 20px;
+        height: 160px;
+      }
+      .container > .name {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1;
+        margin: 0;
+        margin-bottom: 5px;
+      }
+      .container > .email {
+        font-size: 12px;
+        opacity: 0.75;
+        line-height: 1;
+        margin: 0;
+        margin-bottom: 15px;
+      }
+      .container > .button {
+        padding: 10px 25px;
+        font-size: 12px;
+        border-radius: 5px;
+        text-transform: uppercase;
+      }
+    </style>
+
+    <img src="https://semantic-ui.com/images/avatar2/large/kristy.png" class="image">
+    <div class="container">
+      <p class="name">User Name</p>
+      <p class="email">yourmail@some-email.com</p>
+      <button class="button">Follow</button>
+    </div>
+  </template>
+
+  <script type="text/javascript">
+    class UserCard extends HTMLElement {
+      constructor() {
+        super()
+
+        this._render()
+      }
+
+      _render() {
+        var templateEle = document.getElementById('userCardTemplate')
+        var content = templateEle.content.cloneNode(true)
+        this.append(content)
+      }
+    }
+
+    // 告诉浏览器<user-card>元素与这个类关联
+    window.customElements.define('user-card', UserCard)
+  </script>
+</body>
+```
+
+
+
+### 自定义元素的参数
+
+```html
+<body>
+  <user-card
+ 		image="https://semantic-ui.com/images/avatar2/large/kristy.png"
+		name="User Name"
+	></user-card>
+
+  <template id="userCardTemplate">
+    <img class="image" style="height: 160px; border-radius: 5px;">
+    <div class="container">
+      <p class="name"></p>
+      <p class="email"></p>
+      <button class="button">Follow John</button>
+    </div>
+  </template>
+
+  <script type="text/javascript">
+    class UserCard extends HTMLElement {
+      constructor() {
+        super()
+        this._render()
+      }
+
+      _render() {
+        var templateElem = document.getElementById('userCardTemplate');
+        var content = templateElem.content.cloneNode(true);
+        content.querySelector('img').setAttribute('src', this.getAttribute('image'));
+        content.querySelector('.container>.name').innerText = this.getAttribute('name');
+        content.querySelector('.container>.email').innerText = this.getAttribute('email');
+        this.appendChild(content);
+      }
+    }
+
+    // 告诉浏览器<user-card>元素与这个类关联
+    window.customElements.define('user-card', UserCard)
+  </script>
+</body>
+```
+
+
+
+### Shadow DOM
+
+Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部分 DOM 默认与外部 DOM 隔离，内部任何代码都无法影响外部。
+自定义元素的 `this.attachShadow()` 方法可以开启 Shadow DOM。
+
+```html
+<body>
+  <user-card
+    image="https://semantic-ui.com/images/avatar2/large/kristy.png"
+    name="User Name"
+    email="yourmail@some-email.com"
+  ></user-card>
+
+  <template id="userCardTemplate">
+    <img class="image" style="height: 160px; border-radius: 5px;">
+    <div class="container">
+      <p class="name"></p>
+      <p class="email"></p>
+      <button class="button">Follow John</button>
+    </div>
+  </template>
+
+  <script type="text/javascript">
+    class UserCard extends HTMLElement {
+      constructor() {
+        super()
+
+        this._render()
+      }
+
+      _render() {
+        var shadow = this.attachShadow( { mode: 'closed' } );
+
+        var templateElem = document.getElementById('userCardTemplate');
+        var content = templateElem.content.cloneNode(true);
+        content.querySelector('img').setAttribute('src', this.getAttribute('image'));
+        content.querySelector('.container>.name').innerText = this.getAttribute('name');
+        content.querySelector('.container>.email').innerText = this.getAttribute('email');
+
+        shadow.appendChild(content);
+      }
+    }
+
+    // 告诉浏览器<user-card>元素与这个类关联
+    window.customElements.define('user-card', UserCard)
+  </script>
+</body>
+```
+
+
+
+### 插槽
+
+```html
+<body>
+  <element-details>
+    <span slot="element-name">插槽</span>
+    <span slot="description"
+      >用户可以用自己编写的标记填充至 web 组件中的占位符，从而达到组合不同 DOM
+      树的效果。</span
+    >
+    <dl slot="attributes">
+      <dt>名称</dt>
+      <dd>插槽的名称</dd>
+    </dl>
+  </element-details>
+
+  <element-details>
+    <span slot="element-name">模板</span>
+    <span slot="description"
+      >一种用于保存客户端内容的机制，此类内容不会在页面加载时呈现，但随后可能在运行时使用
+      JavaScript 实例化。</span
+    >
+  </element-details>
+
+  <template id="element-details-template">
+    <style>
+      details {
+        font-family: "Open Sans Light", Helvetica, Arial;
+      }
+      .name {
+        font-weight: bold;
+        color: #217ac0;
+        font-size: 120%;
+      }
+      h4 {
+        margin: 10px 0 -8px 0;
+      }
+      h4 span {
+        background: #217ac0;
+        padding: 2px 6px 2px 6px;
+      }
+      h4 span {
+        border: 1px solid #cee9f9;
+        border-radius: 4px;
+      }
+      h4 span {
+        color: white;
+      }
+      .attributes {
+        margin-left: 22px;
+        font-size: 90%;
+      }
+      .attributes p {
+        margin-left: 16px;
+        font-style: italic;
+      }
+    </style>
+    <details>
+      <summary>
+        <span>
+          <code class="name"
+            >&lt;<slot name="element-name">NEED NAME</slot>&gt;</code
+          >
+          <i class="desc"><slot name="description">NEED DESCRIPTION</slot></i>
+        </span>
+      </summary>
+      <div class="attributes">
+        <h4><span>Attributes</span></h4>
+        <slot name="attributes"><p>None</p></slot>
+      </div>
+    </details>
+    <hr />
+  </template>
+
+  <script type="text/javascript">
+    class ElementDetails extends HTMLElement {
+      constructor() {
+        super();
+
+        var template = document.getElementById(
+          "element-details-template",
+        ).content;
+        const shadowRoot = this.attachShadow({ mode: "open" }).appendChild(
+          template.cloneNode(true),
+        );
+      }
+    }
+
+    // 告诉浏览器<user-card>元素与这个类关联
+    window.customElements.define('element-details', ElementDetails)
+  </script>
+</body>
+```
+
+
+
+
+
 ## 类文件对象 Blob
 
 ```bash
@@ -254,7 +663,7 @@ console.log(notice)
 		- Blob 通常存储的是映像、声音或多媒体文件。
 		- 注意：Blob 存储的不一定是 JavaScript 原生格式的格式的数据。
 		- 如 `File` 接口基于 Blob，继承 Blob 的功能并将其扩展使其支持用户系统上的文件。
- 
+
 
 ### Blob 对象拥有两个属性：
 - size: 表示 Blob 对象所包含数据的大小（以字节为单位）
@@ -280,7 +689,7 @@ console.log(notice)
 
 
 ### 关联/参考地址
-- [Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API) 
+- [Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API)
 - [ArrayBuffer](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
 - [ArrayBufferView](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)
 
@@ -399,7 +808,7 @@ text // 'Test'
 		- 浏览器内部为每个通过 URL.createObjectURL 生成并存储了一个 URL → Blob 映射。因为 Blob URL 是通过内部引用的方式来使用，因此 Blob URL 较短。
 		- 当浏览器看到 Blob URL，它将提供存储在内存或磁盘中的相应 Blob，以此访问 Blob。
 		- 如果访问一个不再存在的 Blob URL，将收到来自浏览器的 404 错误。
-		
+
 - 注意：生成的 Blob URL 仅在当前文档打开的状态下才有效。
     - 虽然存储了 URL → Blob 的映射，但 Blob 本身仍驻留在内存中，浏览器无法释放它。
     - 映射在文档卸载时自动清除，因此 Blob 对象随后被释放。但是，如果应用程序寿命很长，那不会很快发生。因此，如果我们创建一个 Blob URL，即使不再需要该 Blob，它也会存在内存中。
@@ -486,7 +895,7 @@ const router: Router = express.Router()
 
 /**
  * post - 上传 base64 资源
- * 
+ *
  * @example
       const imgData = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBhcmlhLWhpZGRlbj0idHJ1ZSIgcm9sZT0iaW1nIiBjbGFzcz0iaWNvbmlmeSBpY29uaWZ5LS1sb2dvcyIgd2lkdGg9IjMxLjg4IiBoZWlnaHQ9IjMyIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBtZWV0IiB2aWV3Qm94PSIwIDAgMjU2IDI1NyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJJY29uaWZ5SWQxODEzMDg4ZmUxZmJjMDFmYjQ2NiIgeDE9Ii0uODI4JSIgeDI9IjU3LjYzNiUiIHkxPSI3LjY1MiUiIHkyPSI3OC40MTElIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNDFEMUZGIj48L3N0b3A+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjQkQzNEZFIj48L3N0b3A+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9Ikljb25pZnlJZDE4MTMwODhmZTFmYmMwMWZiNDY3IiB4MT0iNDMuMzc2JSIgeDI9IjUwLjMxNiUiIHkxPSIyLjI0MiUiIHkyPSI4OS4wMyUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNGRkVBODMiPjwvc3RvcD48c3RvcCBvZmZzZXQ9IjguMzMzJSIgc3RvcC1jb2xvcj0iI0ZGREQzNSI+PC9zdG9wPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0ZGQTgwMCI+PC9zdG9wPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxwYXRoIGZpbGw9InVybCgjSWNvbmlmeUlkMTgxMzA4OGZlMWZiYzAxZmI0NjYpIiBkPSJNMjU1LjE1MyAzNy45MzhMMTM0Ljg5NyAyNTIuOTc2Yy0yLjQ4MyA0LjQ0LTguODYyIDQuNDY2LTExLjM4Mi4wNDhMLjg3NSAzNy45NThjLTIuNzQ2LTQuODE0IDEuMzcxLTEwLjY0NiA2LjgyNy05LjY3bDEyMC4zODUgMjEuNTE3YTYuNTM3IDYuNTM3IDAgMCAwIDIuMzIyLS4wMDRsMTE3Ljg2Ny0yMS40ODNjNS40MzgtLjk5MSA5LjU3NCA0Ljc5NiA2Ljg3NyA5LjYyWiI+PC9wYXRoPjxwYXRoIGZpbGw9InVybCgjSWNvbmlmeUlkMTgxMzA4OGZlMWZiYzAxZmI0NjcpIiBkPSJNMTg1LjQzMi4wNjNMOTYuNDQgMTcuNTAxYTMuMjY4IDMuMjY4IDAgMCAwLTIuNjM0IDMuMDE0bC01LjQ3NCA5Mi40NTZhMy4yNjggMy4yNjggMCAwIDAgMy45OTcgMy4zNzhsMjQuNzc3LTUuNzE4YzIuMzE4LS41MzUgNC40MTMgMS41MDcgMy45MzYgMy44MzhsLTcuMzYxIDM2LjA0N2MtLjQ5NSAyLjQyNiAxLjc4MiA0LjUgNC4xNTEgMy43OGwxNS4zMDQtNC42NDljMi4zNzItLjcyIDQuNjUyIDEuMzYgNC4xNSAzLjc4OGwtMTEuNjk4IDU2LjYyMWMtLjczMiAzLjU0MiAzLjk3OSA1LjQ3MyA1Ljk0MyAyLjQzN2wxLjMxMy0yLjAyOGw3Mi41MTYtMTQ0LjcyYzEuMjE1LTIuNDIzLS44OC01LjE4Ni0zLjU0LTQuNjcybC0yNS41MDUgNC45MjJjLTIuMzk2LjQ2Mi00LjQzNS0xLjc3LTMuNzU5LTQuMTE0bDE2LjY0Ni01Ny43MDVjLjY3Ny0yLjM1LTEuMzctNC41ODMtMy43NjktNC4xMTNaIj48L3BhdGg+PC9zdmc+'
       fetch(`${SERVER_BASE_URL}/file/upload_base64`, {
@@ -1177,9 +1586,9 @@ navigator.serviceWorker.ready.then(swReg => {
 self.addEventListener("push", function(event) {
   // 此处可以做任何事
   console.log("push", event);
-  
+
   var data = event.data.json();
-  	
+
   if (!(self.Notification && self.Notification.permission === "granted")) {
     return;
   }

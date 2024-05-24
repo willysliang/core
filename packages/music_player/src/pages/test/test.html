@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <element-details>
+    <span slot="element-name">插槽</span>
+    <span slot="description"
+      >用户可以用自己编写的标记填充至 web 组件中的占位符，从而达到组合不同 DOM
+      树的效果。</span
+    >
+    <dl slot="attributes">
+      <dt>名称</dt>
+      <dd>插槽的名称</dd>
+    </dl>
+  </element-details>
+
+  <element-details>
+    <span slot="element-name">模板</span>
+    <span slot="description"
+      >一种用于保存客户端内容的机制，此类内容不会在页面加载时呈现，但随后可能在运行时使用
+      JavaScript 实例化。</span
+    >
+  </element-details>
+
+  <template id="element-details-template">
+    <style>
+      details {
+        font-family: "Open Sans Light", Helvetica, Arial;
+      }
+      .name {
+        font-weight: bold;
+        color: #217ac0;
+        font-size: 120%;
+      }
+      h4 {
+        margin: 10px 0 -8px 0;
+      }
+      h4 span {
+        background: #217ac0;
+        padding: 2px 6px 2px 6px;
+      }
+      h4 span {
+        border: 1px solid #cee9f9;
+        border-radius: 4px;
+      }
+      h4 span {
+        color: white;
+      }
+      .attributes {
+        margin-left: 22px;
+        font-size: 90%;
+      }
+      .attributes p {
+        margin-left: 16px;
+        font-style: italic;
+      }
+    </style>
+    <details>
+      <summary>
+        <span>
+          <code class="name"
+            >&lt;<slot name="element-name">NEED NAME</slot>&gt;</code
+          >
+          <i class="desc"><slot name="description">NEED DESCRIPTION</slot></i>
+        </span>
+      </summary>
+      <div class="attributes">
+        <h4><span>Attributes</span></h4>
+        <slot name="attributes"><p>None</p></slot>
+      </div>
+    </details>
+    <hr />
+  </template>
+
+  <script type="text/javascript">
+    class ElementDetails extends HTMLElement {
+      constructor() {
+        super();
+
+        var template = document.getElementById(
+          "element-details-template",
+        ).content;
+        const shadowRoot = this.attachShadow({ mode: "open" }).appendChild(
+          template.cloneNode(true),
+        );
+      }
+    }
+
+    // 告诉浏览器<user-card>元素与这个类关联
+    window.customElements.define('element-details', ElementDetails)
+  </script>
+</body>
+</html>
