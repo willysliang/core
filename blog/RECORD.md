@@ -30,6 +30,7 @@ Description: 记录
     1. [WEB_API] Web Components
     2. [CSS] @supports、will-change属性
     3. [ES6+] Class 中的 instanceof
+  - docs(后端基础): [Linux] Bash 常用快捷键
 
 ## 2024年5月21日
   - docs(前端算法): [数据结构] 滑动窗口的最大值、两个队列实现栈、两个栈实现队列、栈的压入&弹出序列
