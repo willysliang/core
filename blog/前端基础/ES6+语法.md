@@ -15,15 +15,15 @@ Description: ES6+ 语法
 > ```bash
 > ## 安装Babel
 > npm install --save-dev @babel/core
-> 
+>
 > ## 初始化Babel-cli
 > npm init -y
-> 
+>
 > ## 在项目中安装Babel-cli
 > npm i -g babel-cli
-> 
-> 
-> 
+>
+>
+>
 > # presets字段设定转码规则集（按需安装）
 > ## 最新转码规则
 > npm install --save-dev @babel/preset-env
@@ -33,18 +33,18 @@ Description: ES6+ 语法
 > npm install --save-dev babel-preset-es2015 babel-cli
 > ## 安装babel-none，提供一个支持ES6的RERL环境，支持node， 运用：npx babel-node es6.js
 > npm install --save-dev @babel/node
-> 
-> 
+>
+>
 > # Babel-cli
 > ## 转码结果输出到标准输出
 > npx babel example.js
-> 
+>
 > ## 转码结果ES6转换为ES5文件（--out-file 或 -o 参数指定输出文件） 或 npx babel src/example.js -o dist/compiled.js
 > npx babel src/example.js --out-file dist/compiled.js
-> 
+>
 > ## 整个目录转码（--out-dir 或 -d 参数指定输出目录）  或 npx babel src -d lib
 > npx babel src --out-dir lib
-> 
+>
 > # -s 参数生成source map文件
 > npx babel src -d lib -s
 > ```
@@ -80,16 +80,16 @@ Description: ES6+ 语法
 > 'use strict';
 > // 1、变量必须先声明再使用
 > let num = 19;
-> 
+>
 > // 2、不可随意删除已经声明的变量
 > // delete num;  //报错
-> 
+>
 > // 3、全局作用域函数下的this是undefined
 > function fn() {
 >     console.log(this); //undefined
 > }
 > fn();
-> 
+>
 > // 4、构造函数不加new调用，this会报错
 > function fun() {
 >     console.log(this); //fun{}
@@ -97,12 +97,12 @@ Description: ES6+ 语法
 > }
 > let willy = new fun();
 > console.log(willy.sex);
-> 
+>
 > // 5、定时器的this还是指向window
 > setTimeout(function(){
 >     console.log(this);  //window
 > },1000);
-> 
+>
 > //函数里面的参数不允许有重名
 > /* function fna(a,a){console.log(a+a);}  //函数重名，ERROR
 > fna(1,2); */
@@ -113,8 +113,8 @@ Description: ES6+ 语法
 > 从 ES5 开始，函数内部可以设定为严格模式。
 >
 > ```js
-> function doSomething(a, b) {  
->     'use strict';  
+> function doSomething(a, b) {
+>     'use strict';
 >     // code
 > }
 > ```
@@ -127,19 +127,19 @@ Description: ES6+ 语法
 >   'use strict';
 >   // code
 > }
-> 
+>
 > // 报错
 > const doSomething = function ({a, b}) {
 >   'use strict';
 >   // code
 > };
-> 
+>
 > // 报错
 > const doSomething = (...a) => {
 >   'use strict';
 >   // code
 > };
-> 
+>
 > const obj = {
 >   // 报错
 >   doSomething({a, b}) {
@@ -191,16 +191,16 @@ Description: ES6+ 语法
 > - JS数据类型有8种：`Number、String、Boolean、Null、undefined、object、symbol、bigInt`
 > - 基本类型(值类型)：`Undefined、Null、Boolean、Number、String、Symbol、BigInt`（除了object）
 > - 引用类型(复杂数据类型)：`Object`（Object 包含 Function、Array、Date、RegExp、特殊的基本包装类型(String、Number、Boolean) 以及单体内置对象(Global、Math)等）。
-> 
-> 
+>
+>
 > 2. 存储空间
 > - 栈：存储基本数据类型的值和执行代码的环境。
 > - 堆：堆内存存储的是引用类型值的空间（对象的变量标识符以及对象在内存中的存储地址）。
-> 
+>
 > - 基本数据类型：
 > 		- 在内存中占据固定大小，保存在栈内存中。其存储的是值。
 > 		- 可以直接操作保存在变量中的实际值（基本数据类型的实际值）。
-> 
+>
 > - 引用数据类型：
 > 		- 复杂数据类型的值存储在堆内存中(每个空间大小都不一样，会根据情况进行特定的配置)，地址(指向堆中的值)存储在栈内存。
 > 		- 当我们把对象赋值给另外一个变量时，复制的是地址，指向同一块内存空间，当其中一个对象改变时，另一个对象也会变化。
@@ -216,22 +216,22 @@ Description: ES6+ 语法
 >       但 `function` 还是会判断出为 `function` 类型
 >       - 优点：能够快速区分基本数据类型
 >       - 缺点：不能将Object、Array和Null区分，都返回object
-> 
+>
 > ### 2. instanceof：
 >   - 只能正确判定引用数据类型，而不能判断基本数据类型，其内部运行机制是判断一个对象在其原型链中依次向下查询栏能否找到该类型的原型(构造函数的prototype属性)。
 >       如obj2的原型属性存在obj1的原型链上，即当obj1是obj2的实例，则`obj1 instanceof obj2`的值为true。
 >       - 优点：能够区分Array、Object 和 Function，适合用于判断自定义的类实例对象
 > 			- 缺点：Number、Boolean、String 基本数据类型不能判断
-> 
+>
 > ### 3. constructor：
 >   - 一是判断数据类型，二是对象实例通过`constructor`对象访问它的构造函数。
 >         注意：如果创建一个对象来改变它的原型，constructor 就不能用来判断数据类型。
-> 
+>
 > ### 4. Object.prototype.toString.call()
 >   - 使用 Object 对象的原型方法 `toString` 来判断数据类型。
-> 
-> 
-> 
+>
+>
+>
 > ### 判断数组的类型
 > - 通过Object.prototype.toString.call()：`Object.prototype.toString.call(obj).slice(8,-1) === 'Array'`
 > - 通过constructor判断：`obj.constructor === Array`
@@ -239,7 +239,7 @@ Description: ES6+ 语法
 > - 通过ES6的Array.isArray()判断：`Array.isArrray(obj)`
 > - 通过原型链判断：`obj.__proto__ === Array.prototype`
 > - 通过Array.prototype.isPrototypeOf：`Array.prototype.isPrototypeOf(obj)`
-> 
+>
 > ```
 >
 > ```js
@@ -254,33 +254,33 @@ Description: ES6+ 语法
 > typeof {} === 'object'
 > typeof new Date() === 'object'
 > typeof function(){} === 'function'
-> 
-> 
+>
+>
 > /** instanceof */
 > 2 instanceof Number     	// false
-> true instanceof Boolean 	// false 
-> 'str' instanceof String	  // false 
+> true instanceof Boolean 	// false
+> 'str' instanceof String	  // false
 > [] instanceof Array				// true
 > [] instanceof Object			// true
 > {} instanceof Object			// true
 > function(){} instanceof Function	// true
 > Function instanceof Object	// true
 > Object instanceof Function	// true
-> 
+>
 > // 原型链
 > function obj1(){}
 > const obj2 = new obj1()
 > obj2 instanceof obj1	// true
-> 
-> 
+>
+>
 > /**  constructor 给对象修改原型 */
 > function Fn() {}
 > Fn.prototype = new Array()
 > const f = new Fn()
 > console.log(f.constructor === Fn) // false
 > console.log(f.constructor === Array) // true
-> 
-> 
+>
+>
 > /** Object.prototype.toString.call() */
 > const a = Object.prototype.toString;
 > console.log(a.call(2)); 					// [object Number]
@@ -292,8 +292,8 @@ Description: ES6+ 语法
 > console.log(a.call(undefined)); 	 // [object Undefined]
 > console.log(a.call(null));  			 // [object Null]
 > console.log(a.call(new Map()));  	 // [object Map]
-> 
-> 
+>
+>
 > /** 获取数据类型的方法封装 */
 > const getType = (value) => Object.prototype.toString.call(value).slice(8, -1)
 > console.log(getType(new Map()))
@@ -304,7 +304,7 @@ Description: ES6+ 语法
 > ```bash
 > ## 【instanceof 运算符】实现
 > instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上。
-> 
+>
 > 只能正确判定引用数据类型，而不能判断基本数据类型，其内部运行机制是判断一个对象在其原型链中依次向下查询栏能否找到该类型的原型(构造函数的prototype属性)。
 >       如obj2的原型属性存在obj1的原型链上，即当obj1是obj2的实例，则`obj1 instanceof obj2`的值为true。
 >       - 优点：能够区分Array、Object 和 Function，适合用于判断自定义的类实例对象
@@ -322,15 +322,15 @@ Description: ES6+ 语法
 >   const rightPrototype = right.prototype
 >   // 获取实例对象的隐式原型
 >   let leftProto = left.__proto__
-> 
+>
 >   // 循环执行，直到找到对应的原型 or 到达原型链顶层
 >   while (true) {
 >     // 当到达原型链顶层，还未找到，则返回 false
 >     if (leftProto === null) return false
-> 
+>
 >     // 隐式原型与显式原型相等
 >     if (leftProto === rightPrototype) return true
-> 
+>
 >     // 获取隐式原型的隐式原型，重新赋值给 leftProto，继续向上一层原型链中查找
 >     leftProto = leftProto.__proto__
 >   }
@@ -345,7 +345,7 @@ Description: ES6+ 语法
 > ```bash
 > ## `==` 与 `===` 的区别
 > - `===` 表示恒等（类型和值都要相等）。不需要进行类型转换，只有类型相同并且值相等时，才返回 true。
-> 
+>
 > - `==` 表示相等 （值相等）。如果两者类型不同，会先做类型转换，再判断值是否相等。
 >     1. 首先判断两者类型是否相等，如果相等，判断值是否相等。
 >     2. 如果类型不同，进行类型转换。
@@ -353,9 +353,9 @@ Description: ES6+ 语法
 >     4. 判断两者类型是否为 string 和 number，如果是，将字符串转换成 number。
 > 		5. 判断其中一方是否为 boolean，如果是，将 boolean 转为 number 再进行判断。
 > 		6. 判断其中一方是否为 object 且另一方为 string、number 或 symbol，如果是，将 object 转为原始类型再进行比较。
-> 
-> 
-> 
+>
+>
+>
 > ### [] == ![] 为什么为 true ？
 > 1. 首先 `!` 的优先级是高于 `==` 的。
 > 2. `![]` 引用类型转换成布尔值都是 true，因此 `![]` 的是 false。
@@ -380,7 +380,7 @@ Description: ES6+ 语法
 > ```bash
 > ## undefined 与 null
 > - null 和 undefined 的共同点：都是基本数据类型，数据保存在栈中，且在 if 判断语句中值都为 false。
-> 
+>
 > - `null` 表示'无'的对象，即空对象。
 >       1. 作为函数的参数，表示该函数的参数是正常或意料之中的值空缺。
 >       2. 作为对象原型链的终点。
@@ -388,15 +388,15 @@ Description: ES6+ 语法
 >       4. 解除对象引用，便于对象垃圾回收。
 >       		- 垃圾回收机制：当一个对象不再被任何变量引用时，会被释放
 >       		- 即 null 是主动释放一个变量引用的对象，表示一个变量不再指向任何对象地址，null会被内存收集器回收。
-> 
-> 
+>
+>
 > - `undefined`表示'无'的原始值，即变量声明但未赋值。
 >       1. 作判断变量是否声明（变量被声明但没有赋值时，就等于undefined）。
 >       2. 调用函数时，应该提供的参数没有提供，该参数值为undefined。
 >       3. 对象中没有赋值的属性的值为undefined。
 >       4. 函数没有返回值时，默认返回undefined。
 >       5. undefined 转为数值时为`NaN`。
-> 
+>
 > ```
 
 #### 0.1 + 0.2 != 0.3
@@ -404,15 +404,15 @@ Description: ES6+ 语法
 > ```bash
 > ## 为什么 0.1 + 0.2 != 0.3
 > 0.1 + 0.2 != 0.3 是因为在进制转换和进阶运算的过程中出现精度损失。
-> 
+>
 > 计算机无法直接对十进制的数字进行运算, 需要先对照 IEEE 754 规范转换成二进制，然后对阶运算。
-> 
+>
 > 1.进制转换
 >  0.1和0.2转换成二进制后会无限循环
 >      0.1 -> 0.0001100110011001...(无限循环)
 >      0.2 -> 0.0011001100110011...(无限循环)
 >  但是由于IEEE 754尾数位数限制，需要将后面多余的位截掉，这样在进制之间的转换中精度已经损失。
-> 
+>
 > 2.对阶运算
 >  由于指数位数不相同，运算时需要对阶运算 这部分也可能产生精度损失。
 >  按照上面两步运算（包括两步的精度损失），最后的结果是
@@ -441,7 +441,7 @@ Description: ES6+ 语法
     void 0 === undefined // true
     void 1 === undefined // true
     void 'Foo' === undefined // true
-    
+
 
 2. 在运行 ES3 引擎的旧浏览器中，undefined 是一个全部变量，是可以更改的。
     // 在 ES3 中
@@ -465,14 +465,14 @@ Description: ES6+ 语法
 现实场景：
   如在 React、Svelte 等库中可以看到使用 void 和箭头函数的优势。
   这些库允许我们在将组件装入 DOM 之后立即执行函数。例如，React 提供 `useEffect`，Svelte 具有 `onMount`。
-  React： 
-    `useEffect(() => doSomething())` 
+  React：
+    `useEffect(() => doSomething())`
     它可以在运行时产生 Bug，为了避免这种情况，我们可以使用 void：
     `useEffect(() => void doSomething())`
     或者使用大括号的方式：
     `useEffect(() => { doSomething() })`
-	
-	
+
+
 #### javascript URI 中的 void
 在以 `javascript:` 为前缀的 URL 中使用了 `void` 运算符。
 默认情况下，浏览器将在遵循 `javascript:` URI 时计算代码，然后用返回值替换页面内容。
@@ -521,7 +521,7 @@ Object.is(NaN, Number.NaN) // true
 检测变量是否为 undefined 有两种方法
 	1. `variable === undefined`
 	2. `typeof variable === 'undefined'`
-	
+
 两者区别：
 在 es3 旧版浏览器中，undefined 是一个全局变量名，其原始值未定义，但是可以更改该值。
 	typeof undeclaredVar === 'undefined' // true
@@ -583,8 +583,8 @@ Boolean('') // false
 >         aFn()
 >         console.log(b)	// 2
 >         console.log(delete a) // false
->         
->         
+>
+>
 > ### 函数与变量提升
 > - 变量声明、函数声明都会被提升到作用域顶处。
 > - 当出现相同名称时，优先级为：'变量/函数赋值 > 函数声明 > 变量声明'
@@ -597,7 +597,7 @@ Boolean('') // false
 > function foo(x, y) { return x + y; }	// foo#2
 > var foo = function(x, y) { return x - y }	// foo#3
 > num = foo(1, 2)	// foo#4
-> 
+>
 > /* ---------------------- */
 > var foo = function(x, y) { return x - y }	// 函数赋值不会提升
 > function foo(x, y) { return x + y; }	// 函数声明会提升
@@ -616,20 +616,20 @@ Boolean('') // false
 > 			 const声明常量，即一旦声明必须赋值,不能使用null占位；声明后值不能再修改。
 > 			 常量的含义是指向的对象不能修改，但是可以改变对象内部的属性-->即保存的只是内存的地址，而不是保存内容。
 > 			 栈有地址的指向，堆存放数据。
-> 
+>
 > 2. var 可以先使用，后声明，因为存在变量提升；let 必须先声明后使用。
-> 
+>
 > 3. var 允许在相同作用域内重复声明同一个变量，而let与const不允许这一现象。
-> 
+>
 > 4. 在全局上下文中，基于 let 声明的全局变量和全局对象 GO(window) 没有任何关系，var 声明的变量会和 GO 有映射关系。
-> 
+>
 > 5. 会产生暂时性死区：
 > 		暂时性死区：检测一个未被声明的变量类型时，不会返回undefined，会报错。
 >           console.log(typeof a) // undefined
 >           console.log(typeof b)	// 未被声明之前不能使用
 >           var a
 >           let b
-> 
+>
 > 6. let/const/function 会把当前所在的大括号(除函数之外)作为一个全新的块级上下文。
 > 	应用这个机制，在遇到循环事件绑定等类似的需求，无需再自己构建闭包来存储，只要基于let的块作用域特征即可解决。
 > ```
@@ -637,10 +637,10 @@ Boolean('') // false
 > ```js
 > var a = 100;
 > let b = 10;
-> 
+>
 > // 1. var声明的变量会挂载在window上，而let和const声明的变量不会
 > console.log(a, window.a, b, window.b);    // 100 100 10 undefined
-> 
+>
 > // 2. var声明变量存在变量提升，let和const不存在变量提升
 > (function() {
 >   console.log(a); // undefined  ===>  a已声明还没赋值，默认得到undefined值
@@ -648,12 +648,12 @@ Boolean('') // false
 >   console.log(b); // 报错：b is not defined  ===> 找不到b这个变量
 >   let b = 10;
 > })()
-> 
+>
 > // 3. let和const声明形成块作用域
 > if(1){ var a = 100; let b = 10; const c = 1; }
 > console.log(a); // 100
 > console.log(b)  // b is not defined
-> 
+>
 > // 4. 同一作用域下let和const不能声明同名变量，而var可以
 > (function() {
 >   var a = 100;
@@ -661,7 +661,7 @@ Boolean('') // false
 >   let a = 100;
 >   let a = 10; // 报错：识符a已经被声明
 > })
-> 
+>
 > // 5. let/const有暂存性死区
 > var a = 100;
 > if(1){
@@ -685,13 +685,13 @@ Boolean('') // false
 >   var tmp = ...;
 >   ...
 > }());
-> 
+>
 > // 块级作用域写法
 > {
 >   let tmp = ...;
 >   ...
 > }
-> 
+>
 > {{{{
 >   {let insane = 'Hello World'}
 >   console.log(insane); // 报错
@@ -745,7 +745,7 @@ F1()
 > console.log(num);	//-->undefined
 > var num = 12;
 > console.log(num);	//-->12
-> 
+>
 > var obj = {name: "myName", age: 7};
 > fn(100,200);
 > function fn(num1,num2){
@@ -779,7 +779,7 @@ F1()
 >     typeof global === 'object')
 >  ? global
 >  : this);
-> 
+>
 > // 方法二
 > var getGlobal = function () {
 >   if (typeof self !== 'undefined') { return self; }
@@ -794,7 +794,7 @@ F1()
 > ```js
 > // node 环境
 > console.log(globalThis)
-> 
+>
 > /**
 > <ref *1> Object [global] {
 >  global: [Circular *1],
@@ -811,7 +811,7 @@ F1()
 >   }
 > }
 > */
-> 
+>
 > // 浏览器
 > console.log(globalThis) // Window {0: global, 1: global, window: Window, self: Window, ...}
 > ```
@@ -869,9 +869,9 @@ F1()
 >       - 创建执行上下文(生成 this 指向)
 >       - 执行函数代码
 >       - 垃圾回收(清除该函数和变量)
-> 		
-> 
-> 
+>
+>
+>
 > ### JS 执行上下文栈
 > 执行上下文就是当前 JavaScript 代码被解析和执行时所在环境，JS 执行上下文栈可以认为是一个存储函数调用的栈结构，遵循先进后出的原则。
 > 		- JavaScript 执行在单线程上，所有的代码都是排队执行。
@@ -879,24 +879,24 @@ F1()
 > 		- 每当进入一个函数的执行就会创建函数的执行上下文，并且把它压入执行栈的顶部。当前函数执行完成后，当前函数的执行上下文出栈，并等待垃圾回收。
 > 		- 浏览器的 JS 执行引擎总是访问栈顶的执行上下文。
 > 		- 全局上下文只有唯一的一个，它在浏览器关闭时出栈。
-> 
-> 
-> 
+>
+>
+>
 > ### 作用域链
 > 无论是 LHS 还是 RHS 查询，都会在当前的作用域开始查找，如果没有找到，就会向上级作用域继续查找目标标识符，每次上升一个作用域，一直到全局作用域为止。
-> 
-> 
-> 
+>
+>
+>
 > ### 作用域和执行上下文的最大区别：
 > 1. 执行上下文在调用函数是已确认，函数调用结束就会自动释放，可随时改变；
 > 	作用域在定义时确认就一直存在，并且不会被改变。
-> 
+>
 > 2. 一个作用域可能包含若干个上下文环境。有可能没有上下文(函数从未被调用)；有可能有过(函数已调用完毕，上下文环境已被销毁)；有可能同时存在一个或多个(闭包)。
-> 
+>
 > 3. 同一个作用域下，不同的调用会产生不同的执行上下文环境，继而产生不同的变量的值。
-> 
-> 
-> 
+>
+>
+>
 > ### 词法作用域和 this 的区别
 > - 此法作用域是由你在写代码时将变量和块作用域写在哪里来决定的。
 > - this 是在调用时被绑定的，this 指向什么，完全取决于函数的调用位置。
@@ -941,7 +941,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   console.log("普通函数this：" + this);
 > }
 > window.fn();
-> 
+>
 > //2、对象的方法 this指向是对象本身
 > let obj = {
 >   say: function () {
@@ -951,31 +951,31 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > obj.say();
 > let fun = obj.say;
 > fun();	// 此时指向window
-> 
+>
 > //3、构造函数  this指向的是willy实例对象，原型对象里面的this指向的也是willY实例对象
 > function Star() { console.log('this指向Start',this) }
 >Star.prototype.sing = function () { console.log('this指向Star',this) }
 > let willy = new Star();
-> 
+>
 > //4、绑定事件函数  this指向是函数的调用者 btn按钮对象
 > let btn = document.querySelector("button");
 > btn.onclick = function () {
 >   console.log("绑定事件函数的this：" + this);
 > }
-> 
+>
 > //5、定时器函数 this指向window
 > setTimeout(function () {
 >   console.log('定时器函数的this：' + this);
 > }, 1000);
-> 
+>
 > //6、立即执行函数 this指向window
 > (function () {
 >   console.log("立即执行函数的this：" + this);
 > }())
 > ````
-> 
+>
 > #### 【典例】this的指向
-> 
+>
 > ```js
 > var uname = "window";
 > var object = {
@@ -998,7 +998,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >     1. 借用构造函数继承父类型属性、方法-->`call()`
 >         - ES6之前并没有`extends`继承，我们可以通过构造函数+原型对象模拟实现继承，被称为组合继承。
 >         - 核心原理：通过`call()`把父类型的`this`指向子类型的`this`，这样就可实现子类型继承父类型的属性。
-> 
+>
 >     2. ES6后通过`extends、super()`来实现继承。
 > ````
 >
@@ -1016,17 +1016,17 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   Father.call(this, name, age);
 > }
 > // 继承父构造函数的方法->直接赋值：（通过让父子共用相同地址来实现），如果修改子原型对象，父原型对象会跟着改变
-> //Son.prototype = Father.prototype;	
-> 
+> //Son.prototype = Father.prototype;
+>
 > //继承父构造函数的方法->new：不会共用相同地址，修改子原型对象，父原型对象不会改变
 > Son.prototype = new Father();
 > Son.prototype.constructor = Son;    //利用对象形式修改原型对象，需利用constructor指回原来的构造函数
-> 
+>
 > Son.prototype.exam = function() {
 >   //子构造函数专门的方法
 >   console.log('儿子要考试~');
 > }
-> 
+>
 > let son = new Son('willy',11);
 > console.log(son);
 > console.log(Father.prototype);
@@ -1043,19 +1043,19 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > 		- 传入一个对象，返回一个 this 绑定了传入对象的新函数，这个函数的 this 指向除了使用 new 时会被改变，其它情况下都不会改变。
 > 		- 若传值为空，则 this 默认是指向全局对象 window。
 > 		- 如果有的函数我们不需要立即调用，但又想改变这个函数内部的this指向，则用bind。
-> 
-> 
+>
+>
 > # call、bind、apply 的区别
 >     1. 相同点：
 >         - 所有的函数都是`Function`的实例==>`call、apply和bind`都是`Function`原型`Function.prototype`中的方法
 >         - 都可改变函数执行上下文（改变函数内部的`this`指向）
 >         - `call、apply、bind`必须通过函数来调用，第一个参数为对象，若第一个参数为null或者undefined，则指向window
-> 
+>
 >     2. 区别点：
 >         - call和bind方法接收参数列表；apply方法只能接收2个参数，且第二个参数为数组或伪数组`[arg]`
 >         - call和apply方法返回undefined，bind方法返回一个原函数的拷贝，并具有指定的 this 值和初始参数
 >         - call和apply方法是立即调用；bind方法是稍后调用，传参形式与call()相同
-> 
+>
 >     3. 主要应用场景：
 >         - `call`主要用做继承
 >         - `apply`主要用跟数组有关的操作，如借助数学对象实现最大值最小值。
@@ -1074,8 +1074,8 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   Father.call(this, name, age, sex);
 > }
 > let son = new Son('willy', 22, '男');
-> 
-> 
+>
+>
 > /* 2、apply() 可调用函数，可改变函数的this指向，
 > 但是apply()的参数必须是数组（伪数组）
 > apply()主要应用 借助于数学内置对象求最大最小值 */
@@ -1087,17 +1087,17 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   console.log(arr);
 > }
 > fn.apply(obj, ['red']);
-> 
+>
 > let arr = [1, 55, 33, 22, 66];
 > let max = Math.max.apply(null, arr);
 > let min = Math.min.apply(null, arr);
 > console.log(max, min);
-> 
-> 
+>
+>
 > /* 3、bind() 不会调用函数，但能改变函数内部this指向
 > 返回的是原函数改变this之后产生的新函数
-> 如果有的函数我们不需要立即调用，但又想改变这个函数内部的this指向，则用bind，如定时器函数  
-> fun.bind(thisArg, arg1, arg2, ...)  
+> 如果有的函数我们不需要立即调用，但又想改变这个函数内部的this指向，则用bind，如定时器函数
+> fun.bind(thisArg, arg1, arg2, ...)
 > thisArg:在fun函数运行时指定的this值，argn传递的其他函数，返回值由指定的this值和初始参数改造的原函数拷贝*/
 > let o = {
 >   name: 'andy'
@@ -1118,7 +1118,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > ```bash
 > ## 模拟实现 call()
 > - call() 主要是会改变this指向，第一个参数为所改变的this指向，第二个之后的参数列表为传递的值
-> 
+>
 > ## 实现原理
 > 1. 将函数设为传入参数的属性，如果不传入参数则默认指向为 window/global
 > 2. 判断当前 this 是否为函数，防止 `Function.prototype.myCall()` 直接调用
@@ -1137,23 +1137,23 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > Function.prototype.myCall = function (context = window, ...args) {
 >   // 用于防止 Function.prototype.myCall() 直接调用
 >   if (this === Function.prototype) return undefined
->   
+>
 > 	// context为null或者是undefined，指向到 window/global
 >   if (!context) {
 >     context = typeof window === 'undefined' ? global : window
 >   }
-> 
+>
 >   // this指向的是当前的函数(Function的实例)
 >   const fn = Symbol()
 >   context[fn] = this
-> 
+>
 >   // 隐式绑定, 当前函数的this指向了context.
 >   const result = context[fn](...args)
 >   delete context[fn]
 >   return result
 > }
-> 
-> 
+>
+>
 > // 测试代码
 > const foo = {
 >   name: 'Selina'
@@ -1181,12 +1181,12 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > Function.prototype.myApply = function (context = window, args = []) {
 >   // 用于防止 Function.prototype.myApply() 直接调用
 >   if (this === Function.prototype) return undefined
->   
+>
 > 	// context为null或者是undefined，指向到 window/global
 >   if (!context) {
 >     context = typeof window === 'undefined' ? global : window
 >   }
-> 
+>
 >   // this指向的是当前的函数(Function的实例)
 >   const fn = Symbol()
 >   context[fn] = this
@@ -1199,8 +1199,8 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   delete context[fn]
 >   return result
 > }
-> 
-> 
+>
+>
 > // 测试代码
 > const foo = {
 >   name: 'Selina'
@@ -1231,23 +1231,23 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   if (this === Function.prototype) {
 >     throw new TypeError('Error')
 >   }
-> 
+>
 >   // context为null或者是undefined，指向到 window/global
 >   if (!context) {
 >     context = typeof window === 'undefined' ? global : window
 >   }
-> 
+>
 >   const self = this
 >   return function F (...args2) {
 >     // 判断是否用于构造函数
 >     if (this instanceof F) {
 >       return new self(...args1, ...args2)
 >     }
-> 
+>
 >     return self.apply(context, args1.concat(args2))
 >   }
 > }
-> 
+>
 > // 测试
 > let name = 'Jack'
 > function person(age, job, gender) {
@@ -1272,16 +1272,16 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > let [a, b, c, d] = arr; // a=1, b=2, c=3, d=undefined
 > let [ , , third] = arr; // third为3
 > let [head, ...tail] = arr; // tail为 2,3
-> 
+>
 > /* 对象 */
 > let person = {name: 'willy', age: 20};
 > let { name, age } = person;
 > let {name: myName, age: myAge} = person;    //赋别名
 > console.log(name, myName, age, myAge);  // willy willy 20 20
-> 
+>
 > /* Set结构 */
 > let [x, y, z] = new Set([1, 2, 3]); // x为1
-> 
+>
 > /* Iterator接口数据 */
 > function* fibs() {
 >   let a = 0, b = 1;
@@ -1291,16 +1291,16 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   }
 > }
 > let [first, second, third, fourth, fifth, sixth] = fibs(); // sixth为5
-> 
+>
 > /* 字符串 */
 > const [a, b, c, d, e] = 'hello';  // c="l"
-> 
+>
 > /* 数值和布尔值：数值和布尔值的包装对象都有toString对象，因此都能取值 */
 > let {toString: s} = 123;
 > s === Number.prototype.toString // true
 > let {toString: s} = true;
 > s === Boolean.prototype.toString // true
-> 
+>
 > let { prop: x } = undefined; // TypeError
 > let { prop: y } = null; // TypeError
 > ```
@@ -1310,7 +1310,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > - 通过定义新的变量来接收那些不必要的属性，可使得不必要属性不存在剩余参数中（即所想取的值都在剩余参数中）
 >
 > ```js
-> // 通过定义 _internal, tooBig 接收此两个属性的值，这样使得剩余参数中不存在此两个属性 
+> // 通过定义 _internal, tooBig 接收此两个属性的值，这样使得剩余参数中不存在此两个属性
 > let { _internal, tooBig, ...cleanObject } = {
 >   el1: '1',
 >   _internal: "secret",
@@ -1370,7 +1370,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 >   name: name, age: age,
 >   run: function(){}, eat: function(){}
 > }
-> 
+>
 > //ES6
 > const obj2 = { name, age, run(){}, eat(){} }
 > ```
@@ -1445,7 +1445,7 @@ console.log(s2);  //[ 'b', 'c' ]
 >     1. 复制数组 `const a2 = [...a1]`
 >     2. 合并数组 `[...arr1, ...arr2, ...arr3]`
 >     3. 与解构赋值结合`const [first, ...rest] = [1, 2, 3, 4, 5]; //...rest:2,3,4,5`
-> 
+>
 > 注意0：如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错
 > 注意1：任何定义了遍历器(Iterator)接口的对象，都可以用扩展运算符转为真正的数组。
 > 注意2: 扩展运算符取出的数据只是浅拷贝，当其属性值为复杂数据类型时，被扩展对象与扩展对象两者共用内存空间。
@@ -1457,22 +1457,22 @@ console.log(s2);  //[ 'b', 'c' ]
 > let ary3 = [...ary1, ...ary2];	//等价于 let ary3 = ary1.push(...ary2);
 > let ary4 = [...ary1];
 > console.log(ary3, ary4);
-> 
+>
 > //2. 遍历、拷贝数组
 > let bar = { a: 1, b: 2 };
 > let baz = { ...bar }; // 等价于 az = Object.assign({}, bar);
-> 
+>
 > //将数组转换为参数数列
 > function Add(x, y){
 >   return x + y;
 > }
 > console.log(Add(...[4, 38])) // 42
-> 
+>
 > //将伪数组(字符串)转为真正的数组
 > let a = 'hello';
 > console.log(a, '=>', ...a);
-> 
-> 
+>
+>
 > /* 将元素组织成对象 */
 > const obj = {a: 1, b: 2, c: 3};
 > const {a, ...rest} = obj;
@@ -1480,7 +1480,7 @@ console.log(s2);  //[ 'b', 'c' ]
 > (function({a, ...obj}) {
 >   console.log(obj);    // 输出 {b: 2, c: 3}
 > }({a: 1, b: 2, c: 3}));
-> 
+>
 > /* 将对象扩展为元素 */
 > const obj1 = {a: 1, b: 2, c: 3};
 > const newObj ={...obj1, d: 4};
@@ -1500,7 +1500,7 @@ console.log(s2);  //[ 'b', 'c' ]
 > const sayHello = () => `hello, my name is ${name}`; //在模板字符串调用函数
 > let str = `${name}-->name:${obj.name},age:${obj.age},sex:${obj.sex},${sayHello()}`
 > console.log(str);
-> 
+>
 > let start = str.startsWith('willy');	//头部是否为willy
 > let end = str.endsWith('willy');	//尾部是否为willy
 > let strCpoy = str.repeat(1);	//重复一次
@@ -1512,9 +1512,9 @@ console.log(s2);  //[ 'b', 'c' ]
 > ```bash
 > ## 空值合并运算符 ??
 > - 在读取对象属性时，若某个属性值为`null 或 undefined`，有时需要为它们指定默认值。常见做法是通过`||`运算符指定默认值。
-> 
+>
 > - `||`运算符不仅在属性值为`undefined`和`null`时生效，在属性值为空字符串或`false`或`0`时也会生效。
-> 
+>
 > - Null判断运算符`??`只有运算符左侧值为`null`或`undefined`时才会返回右侧的值（即只关心左侧的值是否为 `null` 或 `undefined`，而不在乎是否为虚值）
 > ```
 >
@@ -1522,8 +1522,8 @@ console.log(s2);  //[ 'b', 'c' ]
 > const response = { settings: { headerText: 0 } }
 > const headerText = response.settings.headerText || 'default Text'
 > const headerText1 = response.settings.headerText ?? "default Text1"
-> 
-> 
+>
+>
 > const data = {
 >   nullValue: null,
 >   height: 400,
@@ -1545,24 +1545,24 @@ console.log(s2);  //[ 'b', 'c' ]
 > - 当需要读取对象的深层次属性时，往往需要判断属性的上一层对象是否存在
 > - 可选链操作符` ?.` 允许读取位于连接对象链深处的属性的值，而不必明确验证链中的每个引用是否有效。
 > - `?.`与`.`的区别在于，在引用为null 或 undefined 的情况下不会引起错误，而是使得该表达式短路并返回`undefined`
-> 
-> 
+>
+>
 > ### 可选链 ?. 用法
 > a?.x		// 等同于 	a == null ? undefined : a.x
 > a?.[x]	// 等同于	a == null ? undefined : a[x]
 > a?.b()	// 等同于	a == null ? undefined : a.b()
 > a?.()		// 等同于	a == null ? undefined : a()
-> 
-> 
+>
+>
 > ### 可选链的替代方案：&&
 > - 缺点：
 > 		- 语法冗长
 > 		- 如果失败，`&&` 返回其左侧，而 `?.` 始终返回 undefined
 > 		- `&&` 对所有的虚值的左侧都失败，而 `?.` 只对 undefined 和 null 失败。
 > - 案例：`user && user.address && user.address.street // undefined`
-> 
-> 
-> 
+>
+>
+>
 > ### 可选链的替代方案：解构赋值
 > - 缺点：使用解构来处理链式属性的访问，这会不美观。
 >     const { address: { street = undefined } = {} } = user
@@ -1572,7 +1572,7 @@ console.log(s2);  //[ 'b', 'c' ]
 > ```javascript
 > // 错误的写法（如果body属性 或 user属性不存在，则会报错）
 > const  firstName = message.body.user.firstName || 'default';
-> 
+>
 > // 正确的写法（可选链的替代方案 &&）
 > const firstName = (
 >   message
@@ -1580,8 +1580,8 @@ console.log(s2);  //[ 'b', 'c' ]
 >   && message.body.user
 >   && message.body.user.firstName
 > ) || 'default';
-> 
-> 
+>
+>
 > /* 引入可选链 ?. 的优化写法 */
 > const  firstName = message.body.user.firstName || 'default';
 > ```
@@ -1601,12 +1601,12 @@ console.log(s2);  //[ 'b', 'c' ]
 > /** 或赋值运算符 */
 > x ||= y		// 等同于	x || (x = y)
 > user.id ||= 1	// 等同于 user.id = user.id || 1
-> 
-> 
+>
+>
 > /** 与赋值运算符 */
 > x &&= y		// 等同于	x && (x = y)
-> 
-> 
+>
+>
 > /** Null 赋值运算符 */
 > x ??= y		// 等同于	x ?? (x = y)
 > opts.foo ??= 'bar'	// 等同于 opts.foo = opts.foo ?? 'bar'; 或 opts.foo ?? (opts.foo = 'bar')
@@ -1650,10 +1650,10 @@ console.log(s2);  //[ 'b', 'c' ]
 > ```js
 > 2 ** 3	// 8
 > Math.pow(2, 3)	// 8
-> 
+>
 > 4 ** 3 ** 2 // 相当于 4 ** (3 ** 2) = 262144
-> 
-> let b = 4;	
+>
+> let b = 4;
 > b **= 3	// 等同 b = b * b * b;
 > ```
 
@@ -1687,7 +1687,7 @@ console.log(s2);  //[ 'b', 'c' ]
 ### 安全数
 
 > - `2^53`是js内置的最大整数值(不安全)，`2^53+1`是会被摄入成`2^53`
-> - **Number.MAX_SAFE_INTEGER**是js里整数的安全的最大值，由于js用的IEEE 754双精度浮点，可以安全地表示`[-2^53+1, 2^53-1]`这个范围，比这更大的表示 **Infinity**，与之相对的是 **Number.MIN_VALUE** 
+> - **Number.MAX_SAFE_INTEGER**是js里整数的安全的最大值，由于js用的IEEE 754双精度浮点，可以安全地表示`[-2^53+1, 2^53-1]`这个范围，比这更大的表示 **Infinity**，与之相对的是 **Number.MIN_VALUE**
 >
 > ```js
 > Math.pow(2, 53) === Math.pow(2, 53) + 1 // true
@@ -1708,20 +1708,20 @@ console.log(s2);  //[ 'b', 'c' ]
 > let max1 = Number.MAX_SAFE_INTEGER;    // 最大安全整数
 > let max11 = max1 + 1, max12 = max1 + 2
 > max11 === max12   // true
-> 
+>
 > let max2 = BigInt(Number.MAX_SAFE_INTEGER);
 > let max21 = max2 + 1n, max22 = max2 + 2n
 > max21 === max22   // false
-> 
-> 
+>
+>
 > // 判断是否为 BigInt 类型
-> typeof 1n === 'bigint'; // true 
-> typeof BigInt('1') === 'bigint'; // true 
+> typeof 1n === 'bigint'; // true
+> typeof BigInt('1') === 'bigint'; // true
 > Object.prototype.toString.call(1n) === '[object BigInt]'; // true
-> 
+>
 > // BigInt 与 Number 类型的对比
-> 10n === 10 // false 
-> 10n == 10  // true 
+> 10n === 10 // false
+> 10n == 10  // true
 > ```
 >
 > ![image-20210331160240361](./image/image-20210331160240361.png)
@@ -1737,7 +1737,7 @@ console.log(s2);  //[ 'b', 'c' ]
 	- `base=16` 常用于十六进制颜色，字符编码等，数字可以是 0..9 或 A..F。
 	- `base=2` 主要用于调试按位操作，数字可以是 0 或 1。
 	- `base=36` 是最大进制，数字可以是 0..9 或 A..Z。所有拉丁字母都被用于了表示数字。对于 36 进制来说，一个有趣且有用的例子是，当我们需要将一个较长的数字标识符转换成较短的时候，例如做一个短的 URL。可以简单地使用基数为 36 的数字系统表示：`123456..toString(36) // 2n9c`
-	
+
 
 #### 使用两个点调用一个方法（如 `123456..toString(36)`）
 - 如果我们想直接在一个数字上调用一个方法，比如上面例子中的 toString，那么我们需要在它后面放置两个点 ..。
@@ -1855,7 +1855,7 @@ Number.isNaN(1) // false
 > ```js
 > console.log(1_234_456_789.01) // 1234456789.01
 > console.log(1_000_000_000) // 1000000000
-> 
+>
 > const fileSystemPermission = 0b111_111_000 // 504
 > const bytes = 0b1111_10101011_11110000_00001101 // 262926349
 > const words = 0xa0_b0_c0 // 10531008
@@ -1866,7 +1866,7 @@ Number.isNaN(1) // false
 > ```js
 > 0.000_001 // 0.000001
 > 1e10_000 // Infinity
-> 
+>
 > const massOfElectronInKg = 9.109_383_56e-31 // 9.10938356e-31
 > const trillionInShortScale = 1e1_2 // 1000000000000
 > ```
@@ -1878,13 +1878,13 @@ Number.isNaN(1) // false
 > ```js
 > 3_.141
 > 3._141
-> 
+>
 > 1_e12
 > 1e_12
-> 
+>
 > _1464301
 > 1464301_
-> 
+>
 > 0_b111111000
 > 0b_111111000
 > ```
@@ -1936,7 +1936,7 @@ Number.isNaN(1) // false
 
 2. 按位或 `|`
 `|` 运算符跟 `&` 的区别在于如果对应的位中任一操作数位1，则结果就是 1。
-    
+
 
 3. 按位异或 `^`
 `^` 如果对应两个操作位有且仅有一个 1 时结果为 1，其他都是 0。
@@ -1989,11 +1989,11 @@ console.log(9 >>> 2)	// 2
 > if (value % 2) {
 >   // 奇数
 > } else {
->   // 偶数 
+>   // 偶数
 > }
-> 
-> 
-> 
+>
+>
+>
 > // 位操作
 > if (value & 1) {
 >   // 奇数
@@ -2012,8 +2012,8 @@ console.log(9 >>> 2)	// 2
 > ~~'1.5' // 1
 > ~~undefined // 0
 > ~~null // 0
-> 
-> 
+>
+>
 > 6.83 >> 0		// 6
 > 6.83 << 0		// 6
 > 6.83 | 0		// 6
@@ -2035,8 +2035,8 @@ console.log(9 >>> 2)	// 2
 > let arr = [12, -2]
 > [arr[0], arr[1]] = [arr[1], arr[0]];
 > console.log(arr); // [-2,12]
-> 
-> 
+>
+>
 > /** 使用 ^ 来完成值替换 */
 > var a = 5
 > var b = 8
@@ -2075,7 +2075,7 @@ console.log(9 >>> 2)	// 2
 > ```js
 > const result = 0.1 + 0.2；	//结果为0.30000000000000004
 > const mul = 0.07*100;		//结果为7.000000000000001
-> 
+>
 > // 解决方案
 > console.log((0.1 + 0.2).toFixed(12) == 0.3)
 > ```
@@ -2096,7 +2096,7 @@ console.log(9 >>> 2)	// 2
 > const round = (n, decimals = 0) => Number(`${Math.round(`${n}e${decimals}`)}e-${decimals}`)
 > round(1.345, 2)  // 1.35
 > round(1.345, 1)  // 1.3
-> 
+>
 > 1.345.toFixed(2) // 1.35
 > 1.345.toFixed(1) // 1.3
 > ```
@@ -2116,7 +2116,7 @@ console.log(9 >>> 2)	// 2
 >   const b = tranHex & 0xff
 >   return `rgb(${r}, ${g}, ${b})`
 > }
-> 
+>
 > /**
 >  * @RGBToHex 16进制颜色值转 RGB
 >  * @param {String} rgb RGB颜色字符串
@@ -2127,7 +2127,7 @@ console.log(9 >>> 2)	// 2
 >   const color = rgbArr[1] << 16 | rgbArr[2] << 8 | rgbArr[3]
 >   return `#${color.toString(16)}`
 > }
-> 
+>
 > ```
 
 
@@ -2142,7 +2142,7 @@ console.log(9 >>> 2)	// 2
 - Math.floor(值)：向下取整
 - Math.ceil(值)：向上取整
 - Math.round(值)：四舍五入，注意负数的取值，如：-3.5 结果为-3
-- Math.max(值)：最大值	
+- Math.max(值)：最大值
 - Math.min(值)：最小值
 - Math.random()：返回的是取值范围为`0 ~ 1` 的一个随机数
 - `Math.trunc(Num)`：用于去除一个数的小数部分后返回整数部分，对于控制和无法截取整数的值返回 `NaN`（IE 浏览器不支持这个方法）
@@ -2176,7 +2176,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
 
 
-## 字符串 String 
+## 字符串 String
 
 ### 特殊字符
 
@@ -2228,7 +2228,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > // 限定长度数字，当数字位数不足时在前面用0补齐
 > '12'.padStart(10, '0') // "0000000012"
 > '123456'.padStart(10, '0') // "0000123456"
-> 
+>
 > // 提示字符串格式
 > '12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
 > '09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
@@ -2248,7 +2248,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > ```js
 > const str = '  an dy   ';
 > str.trim()			// "an dy"
-> str.trimStart()	// "an dy  " 
+> str.trimStart()	// "an dy  "
 > str.trimEnd()		// "  an dy"
 > ```
 
@@ -2269,31 +2269,31 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > const str = 'aabbcc'
 > str.replace(/b/, 'd');	// 不报错，aaddcc
 > str.replaceAll(/b/, 'd');	// 报错
-> 
-> 
+>
+>
 > /* replacement特殊字符串含义 */
 > // $& 表示匹配的字符串，即`b`本身
 > // 所以返回结果与原字符串一致
 > 'abbc'.replaceAll('b', '$&')
 > // 'abbc'
-> 
+>
 > // $` 表示匹配结果之前的字符串
 > // 对于第一个`b`，$` 指代`a`
 > // 对于第二个`b`，$` 指代`ab`
 > 'abbc'.replaceAll('b', '$`')
 > // 'aaabc'
-> 
+>
 > // $' 表示匹配结果之后的字符串
 > // 对于第一个`b`，$' 指代`bc`
 > // 对于第二个`b`，$' 指代`c`
 > 'abbc'.replaceAll('b', `$'`)
 > // 'abccc'
-> 
+>
 > // $1 表示正则表达式的第一个组匹配，指代`ab`
 > // $2 表示正则表达式的第二个组匹配，指代`bc`
 > 'abbc'.replaceAll(/(ab)(bc)/g, '$2$1')
 > // 'bcab'
-> 
+>
 > // $$ 指代 $
 > 'abc'.replaceAll('b', '$$')
 > // 'a$c'
@@ -2312,20 +2312,20 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > /**
 > 	* `substr` 第二个参数是子字符串的长度
 > 	* `substring` 第二个参数是子字符串的结束位置
-> 	*/ 
+> 	*/
 > 'hello world'.substr(1, 3) // 'ell'
 > 'hello world'.substring(1, 3) // 'el'
-> 
-> 
+>
+>
 > /**
 > 	* `substr` 允许使用负数作为起始位置参数
 > 	* `substring`会将子字符串将使负开始位置变为 0（零）
-> 	*/ 
+> 	*/
 > 'hello world'.substr(-2, 4) // 'ld'
 > 'hello world'.substring(-2, 5) // 'hello'
 > 'hello world'.substring(0, 5) // 'hello'
-> 
-> 
+>
+>
 > // `slice` 是获取子字符串的另一个方法。它没有被弃用为 `substr`，并且支持负索引
 > 'hello world'.slice(2, 4) // 'll'
 > 'hello world'.slice(-10, 5) // 'ello'
@@ -2356,16 +2356,16 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > ```js
 > 'hello'[NaN] // undefined
 > 'hello'.charAt(NaN) // 'h'
-> 
+>
 > 'hello'[undefined] // undefined
 > 'hello'.charAt(undefined) // 'h'
-> 
+>
 > 'hello'[true] // undefined
 > 'hello'.charAt(true) // 'e'
-> 
+>
 > 'hello'['00'] // undefined
 > 'hello'.charAt('00') // 返回 h，因为它将首先尝试将 00 转换为数字
-> 
+>
 > 'hello'[1.5] // undefined
 > 'hello'.charAt(1.23) // 返回 e，因为它将 1.23 四舍五入到数字 1
 > ```
@@ -2381,7 +2381,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >
 > `charAt(index)` 方法首先尝试将索引转换为数字。由于 `Number(true) == 1`，`charAt(true)` 将返回一个索引位置的字符，即第二个字符。
 
-### 转编码：encodeURIComponent() 
+### 转编码：encodeURIComponent()
 
 > - encodeURIComponent() 函数可把字符串作为 URI 组件进行编码。
 > - 该方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( ) 。
@@ -2402,12 +2402,12 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > `Hi\n${1+2}`	// 换行输出3
 > String.raw`Hi\n${1+2}`	// 输出Hi\n3
 > String.raw`Hi\\n` === "Hi\\\\n"	// true
-> 
-> 
+>
+>
 > /* 正常函数写法 */
 > String.raw({raw: ['foo', "bar"]}, 1 + 2) === `foo${1 + 2}bar`	// true
-> 
-> 
+>
+>
 > /* String.raw()实现原理 */
 > String.raw = function (str, ...values) {
 >   let output = "";
@@ -2426,43 +2426,43 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
 > ```bash
 > ## 垃圾回收（GC）机制
-> 
+>
 > ### 内存存储
 > - 当对象被需要的时候就会为其分配内存空间，如声明变量时。
 > - 在对象已经分配了内存的对象时再做对内存的读取操作。
 > - 对象销毁是指在这个对象不再被需要时，就会释放这个对象的内存，对象就会被销毁。
 > - 全局变量：浏览器关闭的时候就会被销毁。
-> 
-> 
+>
+>
 > ### 数据的存储原理
 > - 基础数据类型：number，String，boolean，Symbol，Bigint，unll，undefined
 >   	基本类型在传递过程中传递的是内容
 > - 引用数据类型：Object(),function(){}
 > 		引用类型在传递的时候传递过程中的是地址
 > - 可通过`console.dir(function(){})`去查看函数（函数也是属于基本数据类型）
-> 
-> 
+>
+>
 > ### 栈内存和堆内存
 > - 栈内存：用来提供一个供JS代码执行的环境 -> 作用域（全局作用域/私有作用域）
 > 			栈：小而快
 > - 堆内存：用来存储引用数据类型的值 -> 对象存储的是属性名和属性值，函数存储的是代码字符串
 > 			（JS所有的数据都是存放在堆内存中）
-> 
-> 
+>
+>
 > ### 浏览器垃圾回收机制
 > 1. 项目中如果存在大量不被释放的内存（堆、栈、上下文），页面性能会变得很慢。
 > 		当某些代码操作不被合理释放，就会造成内存泄露。
 > 		我们尽可能减少使用闭包，因为它会消耗内存。
-> 
+>
 > 2. 浏览器垃圾回收机制/内存回收机制：
 > 浏览器的Javascript具有自动垃圾回收机制(GC:Garbage Collecation)，垃圾收集器会定期（周期性）找出那些不在继续使用的变量，然后释放其内存。
-> 
+>
 > 3. 垃圾回收的方法
 > 标记清除法：当变量进入执行环境时，被标记为 "进入环境"，当变量离开执行环境时，会被标记为 "离开环境"，垃圾回收器会销毁那些带标记的值并回收它们所占用的内存空间。
 > 引用计数法：当前内存内占用一次，计数累加一次，移除占用就减1，减到0时，浏览器就会回收它。
-> 
-> 
-> 
+>
+>
+>
 > ### 优化手段
 > 虽然浏览器可以进行垃圾自动回收，但是当代码比较复杂时，垃圾回收所带来的代价比较大，所以应该尽量减少垃圾回收。
 > - 优化手段：内存优化；手动释放：取消内存的占用即可。
@@ -2478,8 +2478,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > ````bash
 > ## 内存泄露（垃圾回收机制BUG）
 > 在 JS 中，常见的内存泄露主要有 4 中，全局变量、闭包、DOM元素的引用、定时器。
-> 
-> 1. 意外创建的全局变量：由于使用未声明的变量，而意外的创建了一个全局变量，而使得这个变量一直留在内存中而无法被回收。	
+>
+> 1. 意外创建的全局变量：由于使用未声明的变量，而意外的创建了一个全局变量，而使得这个变量一直留在内存中而无法被回收。
 > 2. 被遗忘的计时器或回调函数：设置了 `setInterval` 定时器，而忘记销毁它；如果循环函数有对外部变量引用，那么这个变量会被一直保留在内存中而无法被回收。
 > 3. 脱离 DOM 的引用：获取一个 DOM 元素的引用，而后这个元素被删除，由于一直保留了这个元素的引用，所以它也无法被回收。
 > 4. 闭包：不合理的使用闭包，从而导致某些变量一直被保留在内存中。
@@ -2500,8 +2500,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >     fn2()
 >     return a
 >   }
-> 
->   let res = []  
+>
+>   let res = []
 >   function myClick() {
 >     res.push(fn1())
 >   }
@@ -2517,8 +2517,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >   name = new Array(99999999)
 > }
 > fn1()
-> 
-> 
+>
+>
 > /** 纠正式写法 */
 > function fn1() {
 >   'use strict';
@@ -2542,12 +2542,12 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >     root.removeChild(child)
 >   })
 > </script>
-> 
-> 
+>
+>
 > <!-- 改进式写法 -->
 > <script>
 >   let btn = document.querySelector('button')
->   btn.addEventListener('click', function() {  
+>   btn.addEventListener('click', function() {
 >     let child = document.querySelector('.child')
 >     let root = document.querySelector('#root')
 >     root.removeChild(child)
@@ -2565,8 +2565,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >     console.log(obj);
 >   })
 > </script>
-> 
-> 
+>
+>
 > <!-- 改进式写法 -->
 > <script>
 >   document.querySelector('button').addEventListener('click', function() {
@@ -2589,13 +2589,13 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > document.querySelector('button').addEventListener('click', function() {
 >   fn1()
 > })
-> 
-> 
+>
+>
 > /** 写法改进 */
 > function fn1() {
 >   let largeObj = new Array(100000)
 >   let index = 0
-> 
+>
 >   let timer = setInterval(() => {
 >     if(index === 3) clearInterval(timer);
 >     let myObj = largeObj
@@ -2639,8 +2639,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > var p = person;
 > person = 1;         //原来的person对象被赋值为1，但因为有新引用p指向原person对象，因此它不会被回收
 > p = null;           //原person对象已经没有引用，很快会被回收
-> 
-> 
+>
+>
 > console.log("---------------分割线------------------")
 > // objA、objB两个对象是互相引用的，也就是说他们的引用次数永远为2，如果不进行其他操作的话，这样的互相引用如果大量使用的话，就会造成内存泄漏问题。
 > function bigBug(){
@@ -2674,36 +2674,36 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > ## 闭包
 > 在 JS 中变量的作用域属于函数作用域。在函数执行完后，作用域就会被清理，内存也会随之被回收。
 > 但是由于闭包函数时建立在函数内部的子函数，由于其可访问上级作用域，即使上级函数执行完，作用域也不会随之销毁，这时的子函数（也就是闭包）便拥有了访问上级作用域中变量的权限，即使上级函数执行完后作用域内的值也不会被销毁。
-> 
+>
 > 函数执行时形成的私有上下文EC（FN）的作用是：
 >     - 保护：划分一个独立的代码执行区域，在这个区域中有自己私有变量存储的空间，保护自己的私有变量不受外界干扰（操作自己的私有变量和外界没有关系）。
 >     - 保存：如果当前上下文不被释放（只要上下文中的某个东西被外部占用即可），则存储的这些私有变量也不会被释放，可以供其下级上下文中调取使用，相当于把一些值保存起来。
 >     我们把函数执行形成私有上下文来保护和保存私有变量的机制称为 '闭包'。
-> 
+>
 > - 闭包产生的条件：内部函数使用外部变量 + 外部函数被调用。
 > - 闭包的优化：及时释放引用（将所引用闭包设定为 null）
-> 
-> 
-> 
+>
+>
+>
 > ### 闭包的特征：
 > 1. 内部函数可以访问定义它们外部函数的参数和变量（作用域链的向上查找，把外围的作用域中的变量值存储在内存中而不是在函数调用完毕后销毁）。注意要设计私有的方法和变量，避免全局变量的污染。
 > 2. 闭包是密闭的容器，类似 Set/Map容器，存储数据的。
 > 3. 本质是函数嵌套函数，内部函数引用外部函数的局部变量，延长外部函数的变量生命周期。
-> 
-> 
+>
+>
 > ### 闭包作用：
 > - 延长了局部变量的作用范围与生命周期：执行完所有调用的函数才销毁函数里面的变量，保存函数中变量的值始终保持在内存中。
 > - 模仿块级作用域
 > - 封装私有化变量
 > - 创建模块
-> 
-> 		
+>
+>
 > ### 闭包缺点：
 > - 函数执行完后，函数内的局部变量始终保持在内存中没有释放，占用内存时间会变长，容易导致 '内存泄露'。
 > - 在父函数外部改变复函数内部的值。
 > - this 的指向问题。
-> 
-> 
+>
+>
 > ### 闭包的应用
 > 		- 函数柯里化
 > 		- 立即执行函数 IIFE：`(function() {})()`
@@ -2716,9 +2716,9 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >               },1000)
 >             })(i)
 >           }
-> 	
->   
-> 
+>
+>
+>
 > ### 闭包的生命周期：
 > 		- 产生：在嵌套内部函数定义执行完时就产生（此时不是指调用）
 > 		- 死亡：在嵌套的内部函数称为垃圾时（即没有函数/变量指向它，该情况一般是设置为 null）
@@ -2751,7 +2751,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >             console.log(this.index);
 >         }
 >     } */
-> 
+>
 >     //2. 利用闭包获得当前li的索引号
 >     for(let i = 0; i < lis.length; i++) {
 >         // 利用for循环创建4个立即执行函数，立即执行函数也成为小闭包
@@ -2870,6 +2870,92 @@ Object.getPrototypeOf(nullExtends.prototype) // null
 - 类（class）通过 **static** 关键字定义静态方法。不能在类的实例上调用静态方法，而应该通过类本身调用。
 - 这些通常是实用程序方法，例如创建或克隆对象的功能。
 
+
+
+### 类检查 instanceof
+
+instanceof 操作符用于检查一个对象是否属于某个特定的 class。同时它还考虑了继承。
+在许多情况下，可能都需要进行此类检查。例如，它可以被用来构建一个 多态性（polymorphic） 的函数，该函数根据参数的类型对参数进行不同的处理。
+
+
+#### instanceof 操作符
+
+语法: `obj instanceof Class`
+
+```js
+class Rabbit {}
+let rabbit = new Rabbit();
+rabbit instanceof Rabbit // true
+
+
+// 这里是构造函数，而不是 class
+function Rabbit() {}
+new Rabbit() instanceof Rabbit // true
+
+
+let arr = [1, 2, 3];
+arr instanceof Array // true
+arr instanceof Object // true
+```
+
+
+#### instanceof 实现
+
+通常，instanceof 在检查中会将原型链考虑在内。此外还可以在静态方法 Symbol.hasInstance 中设置自定义逻辑。
+
+1. 如果有静态方法 Symbol.hasInstance，那就直接调用这个方法
+```js
+// 设置 instanceOf 检查
+// 并假设具有 canEat 属性的都是 animal
+class Animal {
+  static [Symbol.hasInstance](obj) {
+    if (obj.canEat) return true;
+  }
+}
+
+let obj = { canEat: true };
+
+obj instanceof Animal // true：Animal[Symbol.hasInstance](obj) 被调用
+```
+
+2. 大多数 class 没有 Symbol.hasInstance。在这种情况下，标准的逻辑是：使用 obj instanceOf Class 检查 Class.prototype 是否等于 obj 的原型链中的原型之一。
+```js
+obj.__proto__ === Class.prototype?
+obj.__proto__.__proto__ === Class.prototype?
+obj.__proto__.__proto__.__proto__ === Class.prototype?
+...
+// 如果任意一个的答案为 true，则返回 true
+// 否则，如果我们已经检查到了原型链的尾端，则返回 false
+```
+
+3. 在上面那个例子中，rabbit.__proto__ === Rabbit.prototype，所以立即就给出了结果。
+```js
+class Animal {}
+class Rabbit extends Animal {}
+
+let rabbit = new Rabbit();
+alert(rabbit instanceof Animal); // true
+
+// rabbit.__proto__ === Animal.prototype（无匹配）
+// rabbit.__proto__.__proto__ === Animal.prototype（匹配！）
+```
+
+注意: 修改原型没有正确获取类型
+如果 objA 处在 objB 的原型链中，则返回 true。所以，可以将 obj instanceof Class 检查改为 Class.prototype.isPrototypeOf(obj)
+但是 Class 的 constructor 自身是不参与检查，检查过程只和原型链以及 Class.prototype 有关。
+```js
+function Rabbit() {}
+let rabbit = new Rabbit();
+
+// 修改了 prototype
+Rabbit.prototype = {};
+
+// ...再也不是 rabbit 了！
+alert( rabbit instanceof Rabbit ); // false
+```
+
+
+
 ### 封装
 
 #### 函数的原始封装
@@ -2947,11 +3033,11 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 > ```bash
 > ## 函数的定义
 > - 所有函数都是Function构造函数的实例对象。
-> 
+>
 > - 函数的长度获取的函数形参的个数 Function.length
 > ```
 >
-> 
+>
 >
 > ![image-20210425195525649](./image/image-20210425195525649.png)
 
@@ -2962,7 +3048,7 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 > - 函数的name属性，返回该函数的函数名。
 > - Function构造函数返回的函数实例，name属性的值为anonymous。
 > - bind返回的函数，name属性值会加上bound前缀。
-> 
+>
 > - 注意：如果将一个匿名函数赋值给一个变量，ES5 的name属性，会返回空字符串；而 ES6 的name属性会返回实际的函数名。
 > - 如果将一个具名函数赋值给一个变量，则 ES5 和 ES6 的name属性都返回这个具名函数原本的名字
 > ```
@@ -2970,28 +3056,28 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 > ```js
 > function foo() {}
 > foo.name // "foo"
-> 
-> 
+>
+>
 > // 构造函数
 > (new Function).name // "anonymous"
-> 
-> 
+>
+>
 > // 匿名函数
 > var f = function () {}; // 变量f等于一个匿名函数
 > // ES5
 > f.name // ""
 > // ES6
 > f.name // "f"
-> 
-> 
+>
+>
 > // 具名函数
 > const bar = function baz() {};
 > // ES5
 > bar.name // "baz"
 > // ES6
 > bar.name // "baz"
-> 
-> 
+>
+>
 > // bind 返回的函数
 > function foo() {};
 > foo.bind({}).name // "bound foo"
@@ -3000,7 +3086,7 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 
 
 
-### 构造器和 `new`操作符 
+### 构造器和 `new`操作符
 
 - 构造函数在技术上是常规函数，但有两个约定：
     1. 它们的命名以大写字母开头。
@@ -3042,7 +3128,7 @@ const user2 = {
 const user = new function() {
   this.name = 'Willy'
   this.isAdmin = false
-  
+
   // ...用于用户创建的其他代码
   // 也许是复杂的逻辑和语句
   // 局部变量等
@@ -3181,7 +3267,7 @@ const isValid = validate({ password: '123456' })
 
 ### 回调函数
 
-> - 当回调函数是一个this对象的方法时，我们必须改变执行回调函数的方法(call/apply方法)来保证this对象的上下文。否则如果回调函数被传递给一个全局函数，this对象要么指向全局window对象（在浏览器中）。要么指向包含方法的对象。 
+> - 当回调函数是一个this对象的方法时，我们必须改变执行回调函数的方法(call/apply方法)来保证this对象的上下文。否则如果回调函数被传递给一个全局函数，this对象要么指向全局window对象（在浏览器中）。要么指向包含方法的对象。
 >
 > ```js
 > var clientData = {
@@ -3191,19 +3277,19 @@ const isValid = validate({ password: '123456' })
 >     this.fullName = firstName + " " + lastName
 >   }
 > }
-> 
+>
 > function getUserInput(firstName, lastName, callback) {
 >   callback(firstName, lastName);
 > }
 > function getUserName(firstName, lastName, callback, callbackObj) {
 >   callback.apply(callbackObj, [firstName, lastName]);
 > }
-> 
+>
 > getUserInput("Barack", "Obama", clientData.setUserName);
 > console.log(clientData, fullName);  //Not Set
-> //fullName属性将在window对象中被初始化    
+> //fullName属性将在window对象中被初始化
 > console.log(window.fullName);  //Barack Obama
-> 
+>
 > // 改正做法
 > //将clientData.setUserName方法和clientData对象作为参数，clientData对象会被Apply方法使用来设置this对象
 > getUserName("Barack", "Obama", clientData.setUserName, clientData);
@@ -3340,7 +3426,7 @@ end fn1
 >     dom.attachEvent('on' + type, handler);
 >   }
 > }
-> 
+>
 > // 使用惰性函数优化
 > function addEvent(dom, type, handle) {
 >   if (dom.addEventListener) {
@@ -3367,7 +3453,7 @@ end fn1
 > (function() {
 >   console.log(document, window, a)
 > }(document, window, a))
-> 
+>
 > // 调用匿名对象
 > ({
 >   name: 'willy',
@@ -3375,9 +3461,9 @@ end fn1
 >     console.log(this.name)
 >   }
 > }).show();
-> 
+>
 > console.log({ a: 1 }.a);
-> 
+>
 > console.log({ a: function() { console.log("匿名函数") }}.a());
 > ```
 
@@ -3386,12 +3472,12 @@ end fn1
 > ```bash
 > ## 函数防抖与节流
 > - 在进行窗口的resize、scroll，输入框内容校验等操作时，如果事件处理函数调用的频率无限制，会加重浏览器的负担，导致用户体验非常糟糕。此时我们可以采用debounce（防抖）和throttle（节流）的方式来限制函数调用的频度，弱化事件函数运行带来的影响，同时又不影响实际效果。（ 高频触发优化方式）
-> 
-> 
+>
+>
 > ### 函数节流(事件降频)
 > 当持续触发事件时，每隔一段时间后调用一次事件处理函数，即降低频率，将高频操作优化成低频操作。
-> 
-> 
+>
+>
 > ### 函数防抖
 > 当某事件频繁触发时，一定时间段内没有再触发事件，事件处理函数才会执行一次；如果设定的时间到来之前又一次触发了事件，就重新开始延时。
 >   - 将多次高频操作优化为只在最后一次执行
@@ -3420,14 +3506,14 @@ end fn1
 >     }, wait)
 >   }
 > };
-> 
-> 
+>
+>
 > // 创建监听器
 > var i = 0;
 > var updateLayout = debounce(function (e) {
 >   console.log(i++);
 > }, 500, true);
-> 
+>
 > if (window.addEventListener) {
 >   window.addEventListener("resize", updateLayout, false);
 > } else {
@@ -3452,7 +3538,7 @@ end fn1
 >     }
 >   }
 > }
-> 
+>
 > function handle() {
 >   console.log(Math.random());
 > }
@@ -3473,20 +3559,20 @@ end fn1
 > //1、函数代码块中只有返回值：(param1) =>{ return expression; }
 > const mul = (num1, num2) => num1 * num2
 > mul(20, 30)
-> 
+>
 > // 2、当只有一个参数时，圆括号可省略：(singleParam) => { statements }
 > singleParam => { statements }
-> 
+>
 > // 3、没有参数的函数应该写成一对圆括号。
 > () => { statements }
-> 
+>
 > //高级语法
 > // 1、加括号的函数体返回对象字面量表达式：
 > params => ({foo: bar})
-> 
+>
 > // 2、支持剩余参数和默认参数
 > (param1 = defaultVal1, param2 = defaultVal2, ...rest) => { statements }
-> 
+>
 > //3、同样支持参数列表解构
 > let f = ([a, b] = [1, 2], {x: c} = {x: a + b}) => a + b + c;
 > f();  // 6
@@ -3535,17 +3621,17 @@ end fn1
 >   let y = g(x);
 >   return y;
 > }
-> 
+>
 > // 情况二：函数调用后还有操作，所以不属于未调用
 > function f(x){
 >   return g(x) + 1;
 > }
-> 
+>
 > // 情况三：等同return undefined，所以不属于未调用
 > function f(x){
 >   g(x);
 > }
-> 
+>
 > // 正确的尾调用
 > function f(x) {
 >   if (x > 0) {
@@ -3580,7 +3666,7 @@ end fn1
 >   id: 2,
 >   name: '服饰'
 > }]
-> 
+>
 > //输入id号，返回数据对象
 > function getID(json, id) {
 >   let o = {};
@@ -3609,14 +3695,14 @@ end fn1
 >   if (n === 1) return n
 >   return n * factorial(n - 1)
 > }
-> 
+>
 > /* 改成尾递归，只保留一个调用记录，复杂度O(1)   结果保存在参数中*/
 > function factorial(n, total = 1) {
 >   if (n === 1) return total
 >   return factorial(n - 1, n * total)
 > }
 > factorial(5);
-> 
+>
 > /* ---------------斐波那契数列实现-------------- */
 > function Fibonacci (n) {
 >   if ( n <= 1 ) {return 1};
@@ -3625,7 +3711,7 @@ end fn1
 > Fibonacci(10) // 89
 > Fibonacci(100) // 超时
 > Fibonacci(500) // 超时
-> 
+>
 > /* 尾递归优化斐波那契数列 */
 > function Fibonacci2 (n , ac1 = 1 , ac2 = 1) {
 >   if( n <= 1 ) {return ac2};
@@ -3648,7 +3734,7 @@ end fn1
 	- 它可以避免多次传递同一个变量(参数服用)
 	- 它将函数划分为多个较小的功能，可以处理一项职责。这使你的函数更纯粹，降低出错及产生副作用的概率。(函数颗粒化)
 	- 在函数编程中，可用于创建高阶函数。
-	
+
 
 柯里化的缺点
 	- 柯里化基于闭包实现，可能会导致内存泄漏
@@ -3747,7 +3833,7 @@ hasLetter('21212')      // false
 > function curry(fn) {
 >   // 保存预置参数
 >   const presetArgs = [].slice.call(arguments, 1)
-> 
+>
 >   // 返回一个新函数
 >   function curried() {
 >     // 新函数调用时会继续传参
@@ -3755,14 +3841,14 @@ hasLetter('21212')      // false
 >     // 下面这个相当于 return curry(fn, ...[...presetArgs, ...restArgs])
 >     return curry.call(null, fn, ...[...presetArgs, ...restArgs])
 >   }
-> 
+>
 >   // 重写toString
 >   curried.toString = function () {
 >     return fn.apply(null, presetArgs) // return fn.call(null, ...presetArgs)
 >   }
 >   return curried;
 > }
-> 
+>
 > function fn() {
 >   return [...arguments].reduce((prev, curr) => {
 >     return prev + curr
@@ -3888,8 +3974,8 @@ person
 > 		2. 解决构造函数多命名，防止冲突问题。
 > - 原型对象的 constructor 属性：为了让对象/实例找到创建该对象的构造函数(指回构造函数本身)
 > - 注意：当重新设置构造函数的prototype，一定要重新设置constructor属性指向自身：`fn.constructor = fn`。
-> 
-> 
+>
+>
 > ### 对象原型 `__proto__`
 > - `__proto__`读作`dunder proto`，由`__proto__`属性来连接对象，直到null。
 > - 当对象查找一个属性时，如果没有在自身找到，则会通过`__proto__`属性逐级向上查找自身的原型，直到找到 Object.prototype 原型为 null 时查找停止，再往上找就相当于在null上取值，会报错。这种通过`__proto__`属性逐级向上查找原型链称为原型链。
@@ -3897,13 +3983,13 @@ person
 > - 对象都有一个属性 `_-proto__` 指向构造函数的 prototype 原型对象，之所有可使用构造函数 prototype 原型对象的属性和方法，就是因为对象有 `__proto__` 原型存在。
 > - 通过new出来的实例对象的`__proto__ `等于对象的prototype，`实例对象.__proto__ = 实例对象.constructor.prototype`
 > - 对象原型`__proto_-` 的存在意义是为对象的查找提供一个路线，但它是非标准属性，因此实际开发不推荐使用该属性，它只是内部指向原型对象 `prototype`。
-> 
-> 
+>
+>
 > ### constructor
 > - 只有 prototype 对象才会拥有constructor属性，constructor属性指向对象的构造函数，`fn.prototype.constructor === fn`
 > - 如果一个对象没有prototype的话，那么就会寻找它的`__proto__`。
-> 
-> 
+>
+>
 > ### 总结
 > - 对象包含：`__proto__、constructor`
 > - 函数包含：`__proto__、constructor、prototype`
@@ -3920,34 +4006,34 @@ person
 > - prototype属性的作用：让该函数所实例化的对象们都可以找到公用的属性和方法，即`f1.__proto__ === Foo.prototype`
 > - constructor属性的含义：指向该对象的构造函数，所有函数（此时看成对象）最终的构造函数都指向Function
 > - 原型继承：一个对象可以使用另一个对象的属性或者方法称为继承。具体是通过将这个对象的原型设置为另外一个对象，这样根据原型链的规则，如果查找一个对象属性且在自身不存在时，就会查找另外一个对象，相当于一个对象可以使用另外一个对象的属性和方法了。
-> 
-> 
-> 
+>
+>
+>
 > ### 对原型的理解
 > 在 JavaScript 中，每当定义一个对象（函数也是对象）时候，对象中都会包含一些预定义的属性。其中每个函数对象都有一个prototype 属性，这个属性指向函数的原型对象。
 > 使用原型对象的好处是所有对象实例共享它所包含的属性和方法。
-> 
-> 
-> 
+>
+>
+>
 > ### 原型链解决什么问题？
 > 原型链解决的主要是继承问题。
 > 每个对象拥有一个原型对象，通过 `__proto__` (读音: dunder proto) 指针指向其原型对象，并从中继承方法和属性，同时原型对象也可能拥有原型，这样一层一层，最终指向 null (Object.prototype.__proto__ 指向的是 null)，这种关系被称为原型链(prototype chain)。
 > 通过原型链，一个对象可以拥有定义在其他对象中的属性和方法。
-> 
-> 
-> 
+>
+>
+>
 > ### 原型链和作用域链的区别
 > 1. 原型链
 > 当访问一个对象的某个属性时，会先在这个对象本身的属性上找；
 > 如果没有找到，会去这个属性的__proto__属性上找，即这个构造函数的prototype；
 > 如果还没找到，就会继续在__proto__上查找，直到最顶层，找不到即为undefined。
 > 这样一层一层往上找，彷佛是一条链子串起来，所以叫做原型链。
-> 
+>
 > 2. 作用域链
 > 变量取值会到创建这个变量的函数的作用域中取值；
 > 如果找不到，就会向上级作用域去查，直到查到全局作用域。
 > 这么一个查找过程形成的链条就叫做作用域链。
-> 
+>
 > 3. 区别
 > 作用域是对变量而言，原型链是对于对象的属性而言
 > 作用域链的顶层是window，原型链的顶层是Object
@@ -3971,10 +4057,10 @@ person
 > console.log(ldh.sing);	// undefined (被覆盖了)
 > console.log(ldh.__proto__ === Star.prototype);  //true
 > console.log(Star.prototype, ldh.__proto__);    //{constructor: [Function: Star], song: [Function: song]}
-> 
+>
 > console.log(Star.prototype.constructor);    //[Function: Star]
 > console.log(ldh.__proto__.constructor);
-> 
+>
 > console.log(Star.prototype.__proto__ === Object.prototype)  //ture
 > console.log(Object.prototype.__proto__) //null
 > ```
@@ -3999,7 +4085,7 @@ person
 > }
 > let arr = [1, 2, 3];
 > console.log(arr.sum());
-> 
+>
 > let arr1 = new Array[11, 22, 33];
 > console.log(arr1.sum());	//66
 > ```
@@ -4019,20 +4105,20 @@ person
 > ### 构造函数的new做了什么
 > var obj = new Base()
 > 所做的过程是 ==>  var obj = {}; obj.__proto__ = Base.prototype; Base.call(obj);
-> 
+>
 > 创建过程：
 >     1. JS内部首先会创建一个空对象 `{}`；
 >     2. 为步骤1新创建的对象添加属性 `__proto__`，将该属性连接至构造函数的原型对象（将构造函数的原型链赋给实例对象）；
 >     3. 将步骤1新创建的对象作为 this 的上下文（使用 call 改变构造函数 this 指向，指向到实例对象 obj）；
 >     4. 如果该函数没有返回对象，则返回 this。
-> 
+>
 > 注意：
 > 		- 在构造函数中是不用写 return 语句，因为它会默认返回新创建的对象。
 > 		- 但如果在构造函数中写了 return 语句，且 return 的是一个对象，那么函数就会覆盖新创建的对象并返回。
 > 	 	- 如果 return 的是基本类型，如字符串、数字、布尔值等，那么函数会忽略掉 return 语句，还是返回新创建的对象。
-> 
-> 
-> 
+>
+>
+>
 > ### 字面量创建对象
 > 字面量创建对象，不会调用 Object构造函数, 简洁且性能更好;
 > new Object() 方式创建对象本质上是方法调用，涉及到在proto链中遍历该方法，当找到该方法后，又会生产方法调用必须的 堆栈信息，方法调用结束后，还要释放该堆栈，性能不如字面量的方式。
@@ -4062,11 +4148,11 @@ person
 > 1. 原型链继承：
 >   - 在子函数中通过`this.constructor=子函数本身`来改变子函数的构造函数（为了防止构造函数指向父函数），然后把子函数原型指向父函数`子函数.prototype=new 父函数()`
 >   - 缺点：无法向父构造函数传参，因为prototype的原型共享会使得所有的子函数实例都会共享父函数实例的属性
-> 
+>
 > 2. 构造函数继承：
 >   -  在子函数中使用call()或apply()调用父函数的构造函数`父函数.call(this)`，使得父构造函数的this指向子函数并在子函数中自执行
 >   -  缺点：只能继承父构造函数的属性，无法实现构造函数复用，每个实例都有父构造函数的副本
-> 
+>
 > 3. 原型链+构造函数组合继承：
 >   - 在子函数中通过`子函数.prototype=new 父函数()`把子函数原型指向父函数，然后在子函数中使用`父函数.call(this)`
 > ```
@@ -4078,7 +4164,7 @@ person
 > - 实现：
 >     1. 子类原型必须设置指向自身：`Sub.constructor = Sub`。
 >     2. 通过原型继承：`Sub.prototype = new Supper()`。
->     
+>
 > - 关键：子类的原型必须为父类的一个实例对象
 > - 特点：可实现继承的属性：实例的构造函数的属性、父类构造函数的属性、父类原型的属性
 > 		（注意：子类实例不会继承父类实例的属性）
@@ -4097,14 +4183,14 @@ person
 > 	}
 > }
 > Supper.prototype.age = 10;  // 给构造函数添加原型属性
-> 
+>
 > function Sub(name) {
 >   // 如果子类原型的constructor不设置指向子类自身,其构造函数找的 new Supper() 时从顶层Object继承来的构造函数,会导致指向 Supper()
 >   this.constructor = Sub;
 >   this.name = name || '子类';
 > }
-> 
-> 
+>
+>
 > Sub.prototype = new Supper('父')  // 关键
 > let sub = new Sub('子')
 > sub.showName();
@@ -4133,12 +4219,12 @@ person
 >   this.name = name || '父类';
 >   this.age = age
 > }
-> 
+>
 > function Student(name, age, price) {
 >   Person.call(this, name, age)  // 相当于: this.Person(name, age)
 >   this.price = price
 > }
-> 
+>
 > let s = new Student('Tom', 20, 14000)
 > console.log(s instanceof Person)	// false
 > ```
@@ -4150,11 +4236,11 @@ person
 > - 关键
 >   1. 子类型的原型必须为父类型的一个实例对象
 >   2. 在子类构造函数中通过`call()或apply()`调用父类构造函数
->   
+>
 > - 特点
 >   - 结合了两种模式的优点：可以继承父类原型上的属性，可以传参和复用
 >   - 每个新实例引入的构造函数属性是私有的
->   
+>
 > - 缺点：调用了两次父类构造函数(耗内存)，子类的构造函数会代替原型上的父类构造函数。
 > ```
 >
@@ -4166,15 +4252,15 @@ person
 >   }
 > }
 > Supper.prototype.age = 10;  // 给构造函数添加原型属性
-> 
+>
 > function Sub(name) {
 >   Supper.call(this, name);
 > }
 > Sub.prototype = new Supper('父')  // 关键
-> 
+>
 > let sub = new Sub('子')
 > console.log(sub, sub instanceof Supper)
-> sub.getName() 
+> sub.getName()
 > ```
 
 #### 原型式继承（函数包装 + prototype）
@@ -4196,13 +4282,13 @@ person
 >   }
 > }
 > Supper.prototype.age = 10;  // 给构造函数添加原型属性
-> 
+>
 > function content(obj) {
 >   function F() {}
 >   F.prototype = obj; // 继承传入的参数
 >   return new F(); // 返回函数对象
 > }
-> 
+>
 > let sup = new Supper('willy');
 > let sup1 = content(sup);
 > console.log(sup1)
@@ -4225,20 +4311,20 @@ person
 >   }
 > }
 > Supper.prototype.age = 10;  // 给构造函数添加原型属性
-> 
+>
 > function content(obj) {
 >   function F() {}
 >   F.prototype = obj; // 继承传入的参数
 >   return new F(); // 返回函数对象
 > }
-> 
+>
 > // 在'原型式继承'的基础上套一个函数
 > function subObject(obj) {
 >   let sub = content(obj);
 >   sub.name = '子类';
 >   return sub;
 > }
-> 
+>
 > let sup = new Supper('willy');
 > let sup2 = subObject(sup);
 > console.log(typeof subObject, typeof sup2)  // function object
@@ -4264,20 +4350,20 @@ person
 >   }
 > }
 > Supper.prototype.age = 10;  // 给构造函数添加原型属性
-> 
+>
 > function content(obj) {
 >   function F() {}
 >   F.prototype = obj; // 继承传入的参数
 >   return new F(); // 返回函数对象
 > }
 > let con = content(Supper.prototype)
-> 
+>
 > function Sub(name) {
 >   Supper.call(this, name);
 > }
 > Sub.prototype = con;  // 继承 con 实例
 > con.constructor = Sub; // 一定要修复实例
-> 
+>
 > let sub1 = new Sub('子');
 > console.log(sub1)
 > ```
@@ -4299,7 +4385,7 @@ person
 >     Target.prototype.ancestor = Origin; // target 的父
 >   }
 > })();
-> 
+>
 > const Person = function () {}
 > Person.prototype.sayHello = function () {
 >   console.log('hello');
@@ -4309,7 +4395,7 @@ person
 > };
 > const personA = new Person();
 > const personB = new Person();
-> 
+>
 > // 定制构造函数
 > const ChinaPerson = function () {}
 > grailMode(Person, ChinaPerson);	// 解决方法/函数复用覆盖父类方法问题
@@ -4323,7 +4409,7 @@ person
 > personA.spell();
 > ```
 
-## 数组 Array 
+## 数组 Array
 
 ### 数组调用方法
 
@@ -4342,8 +4428,8 @@ person
     - 在指定位置添加元素：结果变量 = 数组变量.splice(制定位置,0,新增元素..)`var b = a.splice(1,0,"ABC");`
     - 在指定位置删除元素：结果变量 = 数组变量.splice(指定位置,删除个数)`var b = a.splice(1, 2)`
     - 在指定位置替换元素：结果变量 = 数组变量.splice(指定位置,删除个数,新增元素)`var b = a.splice(1,2,'A','D)`
-    
-    
+
+
 ### 数组内置方法的区别
 - 不改变原数组的方法：`concat、join、slice、map、forEach、filter、every、reduce、entries、find、JSON.parse(JSON.stringify(arr))`
 - 改变原数组的方法：`pop()、push()、reverse()、unshift()、shift()、sort()、splice()、fill()`
@@ -4367,7 +4453,7 @@ person
 > console.log(fruits === arr) // true
 > arr.push('Pear')
 > console.log(fruits, fruits === arr) // ['Apple', 'Orange', 'Pear'] true
-> 
+>
 > ```
 >
 > 但数组真正的特殊是它们的内部实现，JS引擎把这些元素一个接一个存储在连续的内存区域，并且做了一些其他优化，使得数组的运行非常快。
@@ -4381,7 +4467,7 @@ person
 > fruits[9999] = 5 // 分配索引远大于数组长度的属性
 > fruits.age = 25 // 创建一个具有任意名称的属性
 > console.log(fruits) // (10000) ['Apple', empty × 9998, 5, age: 25]
-> 
+>
 > ```
 >
 > 当 JS引擎发现我们在使用常规对象一样使用数组，则针对数组的优化不再适用，导致对应的优化被关闭，这些优化给数组带来的优势也就荡然无存。
@@ -4481,7 +4567,7 @@ console.log(Array.from('foo'));	// ["f", "o", "o"]
 
 ```js
 // 数组转换为字符串
-let arr = [1, 2, 3];	
+let arr = [1, 2, 3];
 let res = arr.join(",");	// 1,2,3
 
 // 字符串转换为数组
@@ -4687,45 +4773,45 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 > 			- currentValue：遍历的数据
 > 			- index: 遍历数据的序号/索引(可选)
 > 			- arr: 当前遍历的数组本身(可选)
-> 
+>
 > 	- forEach 允许callback 更改原数组的元素，但不会返回数据。
 > 	- forEach 可使用 return 语句跳出本次循环，执行下一次循环。
 > 	- 通过 break 语句不能终止循环，但可通过抛出异常的方式来替代实现终止循环。
 > 	- 使用 return 语句不能返回到外层函数。
-> 	
-> 
-> 
+>
+>
+>
 > ### 2. map()
 > 	- 说明：数组映射，分配内存空间存储新数组并返回。
 >   - 语法：`array.map((currentValue,index,arr) => { 语句;有return返回 })`
->   
+>
 >   - map() 方法按照原始数组元素顺序依次处理元素；返回一个新数组，数组中的元素为原始数组元素调用函数处理后的值。
 > 	- 注意：map() 是原数组的映射；所以不会对空数组进行检测，不会改变原始数组
 > 	- 不能中断遍历。
 > 	- 注意：当数组项是复杂数据类型时，修改数组项的某个值，会让原数组改变
-> 
-> 
+>
+>
 > ### 3. filter()
 > 	- 说明：数组过滤，筛选符合条件的所有元素并返回。
 >   - `array.filter(function(currentValue, index, arr))`
 >   - `filter()`会创建一个新的数组，新数组中的元素时通过检查指定符合条件的所有元素(返回一个新数组)
 >   - `filter()`方法`return`值只有`true、false`；如果返回`true`，则保留这个数据；如果返回`false`则删除这个数据。
-> 
-> 
-> 
+>
+>
+>
 > ### 4. some()、every()
 > 	- 说明：检测数组，查找数组中是否有满足条件的元素，返回的都是一个布尔值
 >   - `array.some(function(currentValue, index, arr))`
 >   - some()方法，遍历数组的每一项，若其中一项为 true，则返回true；
 >   - every()方法，遍历数组每一项，若全部为true，则返回true.
-> 
-> 
+>
+>
 > ### 5. entries(), keys(), values()：遍历数组
 >   - `keys()`是键名的遍历
 >   - `values()`是键值的遍历
 >   - `entries()`是键值对的遍历
-> 
-> 
+>
+>
 > ### 6. find
 > 	- `find()` 查找数组中符合条件的第一个元素，如果没有符合条件的元素，则返回undefined
 > 	- `findIndex()` 方法返回传入一个测试条件（函数）符合条件的数组第一个元素位置
@@ -4738,33 +4824,33 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 > for(let i=0; i<arr.length; i++){
 >     console.log("for:"+arr[i]);
 > }
-> 
+>
 > /* arr.forEach() */
 > let sum = 0;
 > arr.forEach(function(value, index, array){
 >     array[index] == value;	//true
 >     sum += value;
 > })
-> 
+>
 > /* arr.map() */
 > let newNum = arr.map((ele, index) => {
 >   return ele + 3
 > })
 > console.log(newNum);  // 15, 4, 33, 25
-> 
+>
 > /* arr.filter() */
 > let newArr = arr.filter(function(value, index){
 >     return value >= 20;
 > })
 > console.log(newArr);
-> 
+>
 > /* some */
 > let arr2 = ['a', 'b', 'c'];
 > let flag = arr2.some(function(value){
 >     return value == 'a';
 > })
 > console.log(flag);
-> 
+>
 > /* entries(), keys(), values() */
 > var fruits = ["Banana", "Orange", "Apple", "Mango"];
 > for(let key of fruits.keys()) { console.log(key); }
@@ -4773,8 +4859,8 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 > // 等价于 array.next()
 > let result = fruits.entries();
 > console.log(result.next().value[0], result.next().value[1], result.next(), result.next().value)  // 0, Orange  { value: [ 2, 'Apple' ], done: false } [3, 'Mango']
-> 
-> 
+>
+>
 > /** find()、findIndex() */
 > [1, 2, 3, 1].find(item => item > 1) // 2
 > [1, 2, 3, 1].findIndex(item => item > 1) // 1
@@ -4788,20 +4874,20 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 > 	- `for...in` 遍历数组时获取的是索引值且有可能不按照实际数组内部顺序遍历，还会遍历数组所有的可枚举属性（包括原型链上可枚举的属性，如原型方法method和name属性）
 >   		即是 for...in 会遍历对象的整个原型链，性能非常差不推荐使用
 >   - `for...of` 只遍历数组内的元素，而不包括数组的原型属性method和索引name
-> 
+>
 > ### for...in
 > - 遍历对象键名通常使用 `for...in`，可在循环内部使用 `hasOwnProperty` 判断某属性是否是该对象的实例属性来控制是否遍历原型。
 > - 还可通过ES5的 `Object.keys(obj)` 获取对象的实例属性组成的数组(不包括原型方法和属性)
-> 
-> 
+>
+>
 > ### fro...of
 > - `for...of` 可遍历 '数组、类数组对象，字符串、Set 和 Map 结构 以及 Generator 对象' 等拥有迭代器接口的集合。
 > - 因对象不存在迭代器对象所以无法遍历，若想迭代一个对象的属性，可用 `for..in` 或内建 `Object.keys()` 方法转化为数组再进行遍历，或添加一个迭代器(Symbol.iterator)接口到对象中。
-> 
-> 
+>
+>
 > ### 其他遍历对象的方法
 > - `Reflect.ownKeys(obj)`遍历对象：返回一个数组,包含对象自身的所有属性,不管属性名是Symbol或字符串,也不管是否可枚举。
-> 
+>
 > - `Object.getOwnPropertyNames(obj)`遍历对象：返回一个数组,包含对象自身的所有属性(不含Symbol属性,但是包括不可枚举属性)。
 > ```
 >
@@ -4814,13 +4900,13 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 >   arrInMethdod.push(arr[index])
 > }
 > console.log(arrInMethdod) // [1, 2, 3, 4, 5, 6, 7, 8, 9, "数组", [Function] ]
-> 
+>
 > for (let val of arr) {
 >   arrOfMethod.push(val)
 > }
 > console.log(arrOfMethod) // [1, 2, 3, 4, 5, 6, 7, 8, 9]
-> 
-> 
+>
+>
 > /* --------------for...of遍历对象----------------- */
 > Object.prototype.method = function () { console.log(this) }
 > let obj = { a: 1, b: 2 }, objHasPro = ["遍历原型"], objUnPro = ["不遍历原型"]
@@ -4828,21 +4914,21 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 >   objHasPro.push(key)
 >   obj.hasOwnProperty(key) ? objUnPro.push(key) : ""
 > }
-> console.log(objHasPro, objUnPro)  
+> console.log(objHasPro, objUnPro)
 > // [ '遍历原型', 'a', 'b', 'method' ] [ '不遍历原型', 'a', 'b' ]
-> 
-> 
+>
+>
 > /* ------- Object.keys()+for-in 遍历对象---------- */
 > for (let key of Object.keys(obj)) {
 >   console.log(key + ":" + obj[key]) // a:1, b:2
 > }
-> 
-> 
+>
+>
 > /* ---- Object.getOwnPropertyNames(obj) 遍历对象--- */
 > Object.getOwnPropertyNames(obj).forEach(key => {
 >   console.log(key, obj[key])   // a:1, b:2
 > })
-> 
+>
 > /* ---- Reflect.ownKeys(obj) 遍历对象------- */
 > Reflect.ownKeys(obj).forEach(key => {
 >   console.log(key, obj[key])   // a:1, b:2
@@ -4854,11 +4940,11 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 > ```bash
 > ### for...of、for...in、forEach、map 区别
 > for...of循环：具有 iterator 接口，就可以用for...of循环遍历它的成员(属性值)。for...of循环可以使用的范围包括数组、Set 和 Map 结构、某些类似数组的对象、Generator 对象，以及字符串。for...of循环调用遍历器接口，数组的遍历器接口只返回具有数字索引的属性。对于普通的对象，for...of结构不能直接使用，会报错，必须部署了 Iterator 接口后才能使用。可以中断循环。
-> 
+>
 > for...in循环：遍历对象自身的和继承的可枚举的属性, 不能直接获取属性值。可以中断循环。
-> 
+>
 > forEach: 只能遍历数组，不能中断，没有返回值(或认为返回值是undefined)。
-> 
+>
 > map: 只能遍历数组，不能中断，返回值是修改后的数组。
 > ```
 
@@ -4888,14 +4974,14 @@ console.log(result);  // [ 220, 260, 120, 80, 140, 180 ]
 
 > ```bash
 > ## 创建数组并赋值 fill() 或 map()
-> 
+>
 > ### 1. new Array.fill()
 > - fill() 默认填充的是 undefined
 >     let a = new Array(3).fill()	// [undefined, undefined, undefined]
 >     let b = new Array(3).fill(0)	// [0, 0, 0]
->     
-> 
-> 
+>
+>
+>
 > ### 2. Array.from({ length: num }).map()
 > 		let c = Array.from({ length: 3 })	// [undefined, undefined, undefined]
 > 		let d = Array.from({ length: 3 }).map(_ => 0)	// [0, 0, 0]
@@ -4908,9 +4994,9 @@ console.log(result);  // [ 220, 260, 120, 80, 140, 180 ]
 > ```bash
 > ## copyWithin()
 > - `copyWithin()`方法在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组（会修改当前数组）
-> 
+>
 > 注意：使用这个方法，会修改当前的数组
-> 
+>
 > - `array.copyWithIn(复制到的位置下标, 开始复制的下标, 结束复制的下标)`
 > - `Array.prototype.copyWithin(target, start = 0, end = this.length)`
 >       target	必需。复制到指定目标索引位置。
@@ -4946,10 +5032,10 @@ arr1.sort(function (a, b) {
 
 // 2. 数组对象的排序
 var arr2 = [
-    { a : 2, b : 3.2}, 
-    { a : 3, b : 1.2}, 
-    { a : 4, b : 2.2}, 
-    { a : 6, b : 1.2}, 
+    { a : 2, b : 3.2},
+    { a : 3, b : 1.2},
+    { a : 4, b : 2.2},
+    { a : 6, b : 1.2},
 ]
 arr2.sort(function(x, y){ // 从小到大按属性b排序
     return x.b > y.b ? 1:-1;
@@ -4987,18 +5073,18 @@ arr2.sort(function (x, y) {
 >
 > ```js
 > const a = [1, 2, ['a', 'b', 'c'], [2, ['e', 'r']], [undefined, null, '']];
-> 
+>
 > /** flat */
-> const b = a.flat(); //[1, 2, "a", "b", "c", 2,['e','r'], undefined, null, ""] 
-> 
+> const b = a.flat(); //[1, 2, "a", "b", "c", 2,['e','r'], undefined, null, ""]
+>
 > const c = a.flat(3); // [1, 2, "a", "b", "c", 2, "e", "r", undefined, null, ""]
-> 
+>
 > const d = a.flat(Infinity); // [1, 2, "a", "b", "c", 2, "e", "r", undefined, null, ""]
-> 
+>
 > /** flatMap */
-> const e = a.flatMap((x) => [x, x * 2, x + 2]) 
+> const e = a.flatMap((x) => [x, x * 2, x + 2])
 > // [1, 2, 3, 2, 4, 4, Array(3), NaN, "a,b,c2", Array(2), NaN, "2,e,r2", Array(3), NaN, ",,2"]
-> 
+>
 > const f = a.flatMap((x) => [x, x * 2, x + 2])
 > // [[1, 2, 3],[2, 4, 4],[Array(3), NaN, 'a,b,c2'],[Array(2), NaN, '2,e,r2'],[Array(3), NaN, ',,2']]
 > ```
@@ -5100,7 +5186,7 @@ console.log(unique44)
 
 
 
-## 对象 Object 
+## 对象 Object
 
 > #### 对象操作
 >
@@ -5161,13 +5247,13 @@ console.log(unique44)
 > console.log(obj.age); // 1
 > console.log(obj['age']);  // 1
 > console.log(obj[age]);  // 2  js能够把变量进行隐式转换成字符串
-> 
+>
 > console.log('····-------分割线--------····');
 > let name = 5 > 3;
 > console.log(obj.name); // willy
 > console.log(obj['name']);  // willy
 > console.log(obj[name]);  // 3 js能够把变量进行隐式转换成字符串
-> 
+>
 > console.log('····-------分割线--------····');
 > obj.sayHello(); // 函数的上下文(this) 指向 obj 对象
 > ```
@@ -5283,11 +5369,11 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > 4. `Reflect.ownKeys(obj)`：返回一个数组，包含对象自身的（不含继承的）所有键名，不管键名是Symbol或字符串，也不管是否可枚举
 > 5. `Object.keys(obj)`：返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含Symbol属性）的键名
 > 6. `Object.values(obj)`：返回一个数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值
-> 
+>
 > 注意：通过`Object.create()`添加的对象，如果不显示声明，默认是不可遍历的，因为其属性描述对象的enumerable默认是false
->    
-> 
-> 
+>
+>
+>
 > ### 对象的遍历顺序
 > 以下方法遍历对象键名都遵守属性遍历次序规则：
 > `key()、ownKeys()、getOwnPropertyNames()、getOwnPropertySymbols()`
@@ -5299,8 +5385,8 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > ```js
 > Reflect.ownKeys({ [Symbol()]:0, b:0, 10:0, 2:0, a:0 })
 > // ['2', '10', 'b', 'a', Symbol()]
-> 
-> 
+>
+>
 > /* Object.values() */
 > const obj2 = Object.create({}, {
 >   a: { value: 'a', enumerable: true },
@@ -5314,8 +5400,8 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 >   [Symbol()]: 123
 > }
 > Object.values(obj3) // [1, 2]
-> 
-> 
+>
+>
 > /* keys、values、entries 与 for...of 配套使用 */
 > let obj = { a: 1, b: 2, c: 3 };
 > Object.keys(obj)	// ['a', 'b', 'c']
@@ -5340,7 +5426,7 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > ```js
 > /* Object.entires() */
 > Object.entries({ [Symbol()]: 123, foo: 'abc' });	// [ [ 'foo', 'abc' ] ]
-> 
+>
 > // 1. 遍历对象属性
 > let obj = { one: 1, two: 2 };
 > for (let [k, v] of Object.entries(obj)) {
@@ -5348,15 +5434,15 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > }
 > // "one": 1
 > // "two": 2
-> 
-> 
+>
+>
 > // 2. 将对象转为真正的Map结构
 > const obj = { foo: 'bar', baz: 42 }
 > const map = new Map(Object.entries(obj))
 > console.log(map) // Map { foo: "bar", baz: 42 }
 > console.log(JSON.stringify([...map])) // [["foo","bar"],["baz",42]]
-> 
-> 
+>
+>
 > //  Object.entries 的实现
 > // Generator函数的版本
 > function* entries(obj) {
@@ -5364,7 +5450,7 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 >     yield [key, obj[key]];
 >   }
 > }
-> 
+>
 > // 非Generator函数的版本
 > function entries(obj) {
 >   let arr = [];
@@ -5391,15 +5477,15 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 >   tea: 2,
 >   pastaSalad: 4
 > }
-> 
+>
 > /** 对午餐订单商品排序 */
 > const sorted = Object.entires(lunch).sort((a, b) => {
 >   if (a[1] > b[1]) return -1
 >   return 1
 > })
-> 
+>
 > console.log(sorted)
-> /* 
+> /*
 >     // 输出
 >     [
 >       ['lemonade', 7],
@@ -5408,7 +5494,7 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 >       ['soup', 2],
 >       ['tea', 2],
 >       ['bread', 1]
->     ]	
+>     ]
 > */
 > ```
 
@@ -5428,26 +5514,26 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > entries.set('bab', false)
 > const obj1 = Object.fromEntries(entries)
 > console.log(obj1) // Object { foo: "bar", baz: 42, bab: false }
-> 
-> 
+>
+>
 > /* 将数组转换为对象 */
 > const arr = [
->   ['0', 'a'], 
->   ['1', 'b'], 
+>   ['0', 'a'],
+>   ['1', 'b'],
 >   ['2', 'c']
 > ]
 > const obj2 = Object.fromEntries(arr)
 > console.log(obj2) // { 0: "a", 1: "b", 2: "c" }
-> 
-> 
+>
+>
 > /* 对象转换 */
 > const object1 = { a: 1, b: 2, c: 3 }
 > const object2 = Object.fromEntries(
 >   Object.entries(object1).map(([ key, val ]) => [ key, val * 2 ])
 > )
 > console.log(object2) // { a: 2, b: 4, c: 6 }
-> 
-> 
+>
+>
 > /* 配合 URLSearchParams 对象，将查询字符串转为对象 */
 > const params = 'type=Get_the Value&geekno=34&paid=10'
 > const searchParams = new URLSearchParams(params)
@@ -5554,7 +5640,7 @@ styles['class'] // 返回 'foo'
 >     super.bar();
 >   }
 > }
-> 
+>
 > Object.setPrototypeOf(obj, proto)
 > obj.find()	// "hello"
 > obj.bar()		// "world"
@@ -5567,7 +5653,7 @@ styles['class'] // 返回 'foo'
 >   - 如果该参数不是对象，则会先转成对象再返回
 >   - `undefined 和 null`无法转成对象，所以会报错
 >   - Object.assign()会把数组当成对象
->   - Object.assign() 只能对值进行复制，如果复制的是一个取值函数，则将求值后再复制 
+>   - Object.assign() 只能对值进行复制，如果复制的是一个取值函数，则将求值后再复制
 >
 > ```js
 > const target = { a: 1 }
@@ -5575,12 +5661,12 @@ styles['class'] // 返回 'foo'
 > const source2 = { c: 3 }
 > Object.assign(target, source1, source2)
 > // target： {a: 1, b: 2, c: 3}
-> 
-> 
+>
+>
 > /* Object.assign()会把数组当成对象 */
 > Object.assign([1, 2, 3], [4, 5])	// [4, 5, 3]
-> 
-> 
+>
+>
 > /* Object.assign() 只能对值进行复制，如果复制的是一个取值函数，则将求值后再复制 */
 > const source = {
 >   get foo() { return 1 }
@@ -5595,8 +5681,8 @@ styles['class'] // 返回 'foo'
 >     Object.assign(this, {x, y});
 >   }
 > }
-> 
-> 
+>
+>
 > /* 2. 为对象添加方法 */
 > Object.assign(SomeClass.prototype, {
 >   someMethod(arg1, arg2){ /* ... */ },
@@ -5604,16 +5690,16 @@ styles['class'] // 返回 'foo'
 > })
 > SomeClass.prototype.someMethod = function(arg1, arg2) { /* ... */ }
 > SomeClass.prototype.anotherMethod = function() { /* ... */ }
-> 
-> 
+>
+>
 > /* 3. 克隆对象 */
 > const clone = Object.assign({}, {a:1}, {b:2})
-> 
-> 
+>
+>
 > /* 4. 合并多个对象 */
 > const merge = (target, ...sources) => Object.assign(target, ...sources);
-> 
-> 
+>
+>
 > /* 为属性指定默认值 */
 > const DEFAULT = {
 >   level: 5,
@@ -5631,8 +5717,8 @@ styles['class'] // 返回 'foo'
 > - Object.create(proto, [propertiesObject])：以指定对象为原型，创建新对象。
 > 		- proto: 新创建对象的原型对象
 > 		- propertiesObject：可选参数。要添加新对象的可枚举属性（新添加的属性是自身的属性，而不是其原型链上的属性）
-> 		
-> 
+>
+>
 > ### Object.create(null)
 > 新创建的对象除了自身属性外，原型链上没有任何属性，即不继承 Object 上的任何对象，如果此时 调用如 Object.toString() 则会报错。
 > 当需要一个非常干净且高度可定制的对象当做数据字典时，可使用 Object.create(null) 来创建空对象。
@@ -5688,7 +5774,7 @@ styles['class'] // 返回 'foo'
 > } catch (err) {
 >   console.log("Object DefineProperty error", err)
 > }
-> 
+>
 > // Reflect.defineProperty
 > const x1 = Reflect.defineProperty(obj, 'c', {
 >   get() { return 3 }
@@ -5709,9 +5795,9 @@ styles['class'] // 返回 'foo'
 > ```bash
 > ## 属性判断
 > 1. 'isPrototypeOf()'：判断某个 prototype 对象和某个实例对象之间的关系。
-> 
+>
 > 2. 'Object.hasOwnProperty()'：每个实例对象都有一个`hasOwnProperty()`方法，用来判断某一个属性是本地属性还是集成自`prototype`对象的属性。
-> 
+>
 > 3. 'in' 运算符：判断某个实例是否包含某个属性（还可用来遍历某个对象的所有属性）
 > ```
 >
@@ -5720,7 +5806,7 @@ styles['class'] // 返回 'foo'
 >   this.name = name
 > }
 > Cat.prototype.type = "猫科动物"
-> 
+>
 > let cat1 = new Cat('小黄')
 > console.log(Cat.prototype.isPrototypeOf(cat1))  // true
 > console.log(cat1.hasOwnProperty('name'), cat1.hasOwnProperty('type'))  // true false
@@ -5735,8 +5821,8 @@ styles['class'] // 返回 'foo'
 >     1. `Object.freeze('被冻结的对象')`：可进行读取，不可增删改。
 >     2. `Object.seal('被密封的对象')`：可进行读取和更改，不可添加和删除。
 > 注意：这两种方法都对对象执行'浅'冻结/密封。这意味着'嵌套对象和数组不会被冻结或密封'，可以进行修改。为了防止这种情况发生，您可以像本文所述的那样对对象进行深度冻结。
-> 
-> 
+>
+>
 > ### 1. Object.freeze('被冻结的对象')
 > Object.freeze() 方法可以冻结一个对象，即该对象不可修改或添加属性，且对象的原型也不能被修改。该方法返回被冻结的对象。
 > 			const obj1 = { name: 'willy' }
@@ -5746,8 +5832,8 @@ styles['class'] // 返回 'foo'
 >       delete freeze.name  // 不可操作属性
 >       freeze.age = 22
 >       console.log(obj1, freeze) // { name: 'willy' }
->       
->       
+>
+>
 > ### 2. Object.seal()
 > Object.seal() 只将现有的 configurable 属性标记为不可配置，这意味着只要它们是可写的，就可更改它们的值。
 >       const obj2 = { name: 'willy' }
@@ -5756,7 +5842,7 @@ styles['class'] // 返回 'foo'
 >       delete seal.name  // 不可删除
 >       seal.age = 44
 >       console.log(obj2, seal) // { name: 'cilly' }
-> 
+>
 > ```
 
 ### AggregateError错误对象
@@ -5766,7 +5852,7 @@ styles['class'] // 返回 'foo'
 >- AggregateError(errors[, message])
 >     - errors：数组，它的每个成员都是一个错误对象，必输项
 >     - message：字符串，表示AggregateError抛出时的提示信息，可选
-> 
+>
 > ````js
 > try {
 >   throw new AggregateError([
@@ -5794,9 +5880,9 @@ styles['class'] // 返回 'foo'
 >   get age() { return 18 }
 >   [Symbol('foo')]: 123
 > }
-> 
+>
 > console.log(JSON.stringify(Object.getOwnPropertyDescriptors(obj), null, 2))
-> 
+>
 > /* {
 >     "name": {
 >      "value": "UI",
@@ -5809,8 +5895,8 @@ styles['class'] // 返回 'foo'
 >      "configurable": true
 >     }
 >   } */
-> 
-> 
+>
+>
 > /* defineProperties + getOwnPropertyDescriptors 实现正确拷贝 */
 > const source = {
 >   set foo(value) { console.log(value) }
@@ -5821,8 +5907,8 @@ styles['class'] // 返回 'foo'
 >   Object.getOwnPropertyDescriptors(source)
 > );
 > shallowMerge({}, source)  // { foo: [Setter] }
-> 
-> 
+>
+>
 > /* create + getOwnPropertyDescriptors 实现浅拷贝 */
 > const cloneObj = Object.create(
 >   prot,
@@ -5830,8 +5916,8 @@ styles['class'] // 返回 'foo'
 >     foo: 123,
 >   })
 > );
-> 
-> 
+>
+>
 > /* Object.getOwnPropertyDescriptors()也可以用来实现 Mixin（混入）模式 */
 > let mix = (object) => ({
 >   with: (...mixins) => mixins.reduce(
@@ -5839,7 +5925,7 @@ styles['class'] // 返回 'foo'
 >       c, Object.getOwnPropertyDescriptors(mixin)
 >     ), object)
 > });
-> 
+>
 > // multiple mixins example
 > let a = { a: 'a' };
 > let b = { b: 'b' };
@@ -5856,9 +5942,9 @@ styles['class'] // 返回 'foo'
 > - 可使用如下来替代`__proto__`属性：`Object.setPrototypeOf()`写操作，`Object.getPrototypeOF()`读操作，`Object.create()`生成操作
 >
 > ```js
-> /** 
+> /**
 > 	* __proto__ 调用Object.prototype.__proto__ 具体实现
-> 	* 若一个对象本身部署__proto__属性，该属性的值就是对象的原型	
+> 	* 若一个对象本身部署__proto__属性，该属性的值就是对象的原型
 > 	*/
 > Object.defineProperty(Object.prototype, '__proto__', {
 >   get() {
@@ -5881,7 +5967,7 @@ styles['class'] // 返回 'foo'
 >     }
 >   },
 > });
-> 
+>
 > function isObject(value) {
 >   return Object(value) === value;
 > }
@@ -5899,7 +5985,7 @@ styles['class'] // 返回 'foo'
 >   obj.__proto__ = proto;
 >   return obj;
 > }
-> 
+>
 > const obj = Object.setPrototypeOf({}, null);
 > ```
 >
@@ -5913,7 +5999,7 @@ styles['class'] // 返回 'foo'
 > Object.getPrototypeOf(rec) === Rectangle.prototype	// true
 > Object.setPrototypeOf(rec, Object.prototype);
 > Object.getPrototypeOf(rec) === Rectangle.prototype	// false
-> 
+>
 > /* 如果参数不是对象，会自动转为对象 */
 > // 等同于 Object.getPrototypeOf(Number(1))
 > Object.getPrototypeOf(1)	// Number {[[PrimitiveValue]]: 0}
@@ -5922,7 +6008,7 @@ styles['class'] // 返回 'foo'
 > Object.getPrototypeOf(1) === Number.prototype // true
 > Object.getPrototypeOf('foo') === String.prototype // true
 > Object.getPrototypeOf(true) === Boolean.prototype // true
-> 
+>
 > /* undefined 或 null 无法转为对象，则会报错 */
 > Object.getPrototypeOf(null)	// TypeError: Cannot convert undefined or null to object
 > Object.getPrototypeOf(undefined)	// TypeError: Cannot convert undefined or null to object
@@ -5939,33 +6025,33 @@ styles['class'] // 返回 'foo'
 > new Date().getTime()
 > +new Date
 > Date.now()
-> 
+>
 > ```
 
 #### Date.prototype.toLocaleString() 获取月份名称
 
 > ```js
 > console.log(new Date()) // Wed May 05 2021 15:31:36 GMT+0800 (中国标准时间)
-> 
+>
 > // 使用 `Date` 对象的内置 getMonth 方法获取当前月份作为值
 > let moonLanding = new Date().getMonth()
 > console.log(moonLanding) // 4
-> 
-> 
+>
+>
 > // Date.prototype.toLocaleString()  返回该日期对象的字符串，该字符串格式因不同语言而不同
 > const today = new Date()
 > console.log(today.toLocaleString('default', { month: 'long' })) // "五月"
 > console.log(today.toLocaleString('en-GB', { month: 'long' })) // "May"
 > console.log(today.toLocaleString('ko-KR', { month: 'long' })) // "5월"
-> 
-> 
+>
+>
 > /* 自定义 Options */
 > let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
 > // 请求参数 (options) 中包含参数星期 (weekday)，并且该参数的值为长类型 (long)
 > let options = {
->   weekday: "long", 
->   year: "numeric", 
->   month: "long", 
+>   weekday: "long",
+>   year: "numeric",
+>   month: "long",
 >   day: "numeric",
 >   hour12: false,
 > };
@@ -5992,7 +6078,7 @@ styles['class'] // 返回 'foo'
 >   ]
 >   return month[val]
 > }
-> 
+>
 > let moonLanding = new Date().getMonth()
 > console.log(getMonthName(moonLanding)) // "September"
 > ```
@@ -6097,7 +6183,7 @@ console.log(cloneObj)
   date: "2023-03-22T12:10:31.020Z",
   fly: null,
   hobbit: (3) ['dance', 'sing', {…}],
-  schoolData: {grades: 'A'}, 
+  schoolData: {grades: 'A'},
 } */
 
 ```
@@ -6126,11 +6212,11 @@ const copyKenNaNa = JSON.parse(JSON.stringify(kenNaNa))
 
 /**
 	Ken {age: "18", run: ƒ, contructor: ƒ}
- * */ 
+ * */
 console.log(copyKenNaNa.constructor); // ƒ Object() { [native code]}
 console.log(copyKenNaNa.age) // undefined
 console.log(copyKenNaNa.run()) // is not function
-console.log(copyKenNaNa.walk()) // is not function 
+console.log(copyKenNaNa.walk()) // is not function
 console.log(copyKenNaNa.toString()) // "[object Object]"
 ```
 
@@ -6142,16 +6228,16 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 
 > ```bash
 > # 变量赋值与原始对象可变性
-> 
+>
 > ## JavaScript 数据类型
 >     JavaScript 数据类型分为基本数据类型（值/原始类型），引用（对象）数据类型
 >         - JavaScript 存在七种基本数据类型：String、Number、Boolean、Null、Undefined、BigInt、Symbol
 >         - JavaScript 存在一种对象数据类型：Object。（Object 包括了 Array、Math、Function 等）
-> 	
-> 
+>
+>
 > 以下面定义变量为例说明：
-> 	
-> 
+>
+>
 > ## 变量赋值
 > 		- 赋值可看作是创建变量名并使该变量引用数据（无论是原始还是引用数据类型）的过程
 > 		- 例子：let name = "willy"
@@ -6160,9 +6246,9 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 						1. 先创建字符串 "willy"
 > 						2. 再创建变量 name
 > 						3. 为变量 name 指定一个对先前创建的字符串的引用
-> 						
-> 						
-> 						
+>
+>
+>
 > ## 重新赋值
 > 		- 例子：let name = "willy"; name = "william";
 > 				- 说明：
@@ -6172,19 +6258,19 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 						3. 为变量 name 指定一个对先前创建的字符串的引用
 >              4. 创建字符串 "william"
 >              5. 重新赋值 变量 name 对字符串 "willy" 的引用
->              
->              
+>
+>
 > ## 突变（Mutation）
 > 		- 突变是改变数据的行为
 > 		1. 原始值突变（无法改变基本数据类型）
 > 				- 原始值不能突变（它们是不可改变的），无法改变任何数据
 > 				- 例子：let name = "willy";  name[0] = "wl"; // Error，name仍为"willy"
-> 		
+>
 > 		2. 对象突变
 > 				- 对于对象来说，可以简单的改变值
 > 				- 例子：let user = {name: "willy"}; user.name = "wl";	// { name: "wl" }
 > 						- 在此，我们从未重新赋值过 "user" 变量，但是确实改变了它所指向的对象
-> 						
+>
 > 				- 示例一：原始值
 >         		let name = "willy"
 >         		let name2 = name
@@ -6196,7 +6282,7 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 								3. 创建了变量 name2 并给字符串 "willy" 赋了一个引用
 > 								4. 创建了字符串 "wl"，并重新赋值 name2 来引用该字符串
 > 								5. 当进行 console.logg 打印 name 和 name2时，name 仍为 "willy"，name2 为 "wl"
-> 								
+>
 > 				- 示例二：对象 / 数组
 >         		let user = { name: "willy" }
 >         		let user2 = user
@@ -6209,22 +6295,22 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 										(**注意**：user2 现在引用的是 user 所引用的同一个对象！)
 > 								4. 创建了字符串 "wl"，并通过重新分配 `name` 属性来引用 "wl" 来改变对象。
 > 								5. 当进行 console.logg 打印 user 和 user2 时，内存中两个变量所引用的对象已经发生了变化
-> 								
-> 								
+>
+>
 > ##  `原始值突变`和`对象突变`的区别：可变性
 >   1. 基本数据类型是不可变的。
 >       这意味着我们不必担心两个变量是否指向内存中的同一个原始值：哪个原始值不会改变。
 >       充其量，我们可以**重新分配**一个变量来指向其他数据，但这不会影响其他变量。
-> 
+>
 >   2. 对象是可变的。
 >       因此，我们必须记住，多个变量可能指向内存中的同一个对象。
 >       **突变**这些变量中的一个是错误的行为，你正在突变它所引用的对象，这将反映在引用同一对象的任何其他变量中。
-> 
+>
 >   - 防止对象的可变性
 >     	- 在许多情况下，您不希望两个变量引用同一个对象。防止这种情况的最好方法是在赋值时**创建对象的一个副本**。
 >     	- 创建对象副本的方法：Object.assign() 方法和扩展运算符`...`。（注意：只会对对象第一层的数据进行拷贝，深层仍然是引用）
-> 
-> 
+>
+>
 > ## 深拷贝与浅拷贝
 > ```
 
@@ -6232,13 +6318,13 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 
 > ````bash
 > - 深拷贝和浅拷贝是 只针对 `Object` 和 `Array` 这样的引用数据类型
-> 
+>
 > # 浅拷贝
 > - 拷贝出来的目标对象有着与原对象相同的属性值。如果我们的对象/数组中嵌套了对象，那么像 `object.assign` 和扩展运算符（`...`）这样的浅层复制机制将只创建根级对象的副本，但深层次对象级别的只拷贝引用，仍将被共享
 > - （只复制指向某个对象的指针，而不是复制本身，新旧对象共享同一块内存）
 > 	- es6新增方法浅拷贝：`Object.assign(目标对象, 源对象1, 源对象2...)`
 > 	- **注意**：当拷贝对象只有一层时为深拷贝，当拷贝对象为多层时是浅拷贝。
-> 
+>
 > # 深拷贝
 > - 深拷贝拷贝多层，每一级别的数据都会拷贝
 > 	（会另外创造一个相同的对象，新对象跟原对象不共享内存，修改新对象不会改变原来对象的值）
@@ -6257,12 +6343,12 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > }
 > o.msg.age = 20;
 > console.log(o, '\n', obj); */
-> 
+>
 > /* console.log('-----es6 浅拷贝 语法糖---------');
 > Object.assign(o, obj);
 > o.msg.age = 12;
 > console.log(o, '\n', obj); */
-> 
+>
 > let obj1 = {'a': 1}, obj2 = {'a': 1}, obj3 = {'b': 2};
 > let copy1 = Object.assign(obj1, obj3);  // { a: 1, b: 2 } { a: 1, b: 2 }  obj1会改变
 > let copy2 = Object.assign({}, obj2, obj3); // { a: 1 } { a: 1, b: 2 } obj2不会改变

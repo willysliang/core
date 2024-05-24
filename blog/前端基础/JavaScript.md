@@ -1354,11 +1354,17 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 > 阻止浏览器的默认事件：在函数末尾添加 `return false`
 > 在函数结尾处增加语句 `return false;`。这个方法比较暴力，它会同时阻止事件冒泡和阻止默认事件；
 > 写上次行代码，链接不会被打开，事件也不会传递到上一层的父元素，可以理解为 `return false` 等于同时调用 `event.stopPropagation()` 和 `event.preventDefault()`。
+>
+>
+> ### stopImmediatePropagation 与 stopPropagation
+> `stopImmediatePropagation()` 方法可以防止事件像 `stopPropagation()` 方法一样冒泡到父元素。但是，它会阻止调用相同事件的其他监听器。
+> 假设我们将处理同一事件的不同侦听器附加到相同元素。当事件发生时，监听器的执行顺序与添加的顺序相同。
+> 如果在给定的监听器中调用 `stopImmediatePropagation()` 方法，则不会调用其余的监听器。
 > ```
 >
->```js
+> ```js
 > /** 阻止事件冒泡 */
->document.getElementById('box3').onclick = function (event) {
+> document.getElementById('box3').onclick = function (event) {
 >   event = event || window.event
 > 	if (event && event.stopPropagation) {
 >     event.stopPropagation()
@@ -1366,6 +1372,21 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 >     event.cancelBubble = true
 >   }
 > }
+>
+>
+> /** stopImmediatePropagation */
+> const button = document.getElementById('btn')
+> button.addEventListener('click', () => {
+>   console.log('foo')
+> })
+> button.addEventListener('click', (e) => {
+>   console.log('bar')
+>   e.stopImmediatePropagation()
+> })
+> button.addEventListener('click', () => {
+>   console.log('baz')
+> })
+> // 单击按钮在控制台中打印 `foo` 和 `bar`，不会看到 `baz`，因为最后一个监听器没有被调用。
 > ```
 
 #### 事件委托
