@@ -25,6 +25,9 @@ Description: 记录
 
 # 2024
 
+## 2024年5月26日
+  - docs(前端基础): [ES6+语法II] 正则表达式 RegExp
+
 ## 2024年5月24日
   - docs(前端基础): 基础内容整理
     1. [WEB_API] Web Components

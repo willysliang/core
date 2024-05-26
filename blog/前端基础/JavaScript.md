@@ -617,6 +617,71 @@ Description: JavaScript
 >
 > ![20190128102028682](./image/20190128102028682.gif)
 
+
+
+### 动态加载脚本文件
+
+要使用 JavaScript 动态加载脚本文件，基本步骤如下：
+
+- 创建 `script` 元素
+- 将 `script` 元素的 `src` 属性设置为指向要加载的文件
+- 将 `script` 元素添加到 DOM
+
+```js
+let myScript = document.createElement('script')
+myScript.setAttribute('src', '/path/to/js/file.js')
+// 通过 `appendChild` 将 `script` 元素添加到 `body` 元素的底部
+document.body.appendChild(myScript)
+```
+
+#### 先运行动态加载的脚本
+
+在 `body` 元素的底部添加 `script` 元素意味着页面将首先渲染，而不会被 JavaScript 阻止加载和执行。如希望 JavaScript 先于页面可能执行的任何操作运行，则需要添加在 `head` 元素中。
+
+```js
+let myScript = document.createElement('script')
+myScript.setAttribute('src', './index.js')
+// 动态加载的脚本文件是异步加载的。我们想要显式地重写默认行为
+myScript.setAttribute('async', 'false')
+
+let head = document.head
+head.insertBefore(myScript, head.firstElementChild)
+```
+
+代码中有两个新特性，可以确保在渲染页面上的任何其他内容之前加载并运行外部脚本文件：
+
+- 首先将 `script` 元素的 `async` 属性设置为 `false`。为什么呢？这是因为默认情况下，。
+- 接下来确保在加载页面其余部分之前加载脚本。在 `head` 元素的顶部添加 `script` 元素是确保它在页面可能达到的任何其他内容之前运行的最佳位置。
+
+#### 脚本文件加载后运行相关代码
+
+加载一个外部脚本文件，然后立即调用一个函数（或者依赖于加载的脚本中的某些内容）是很常见的。例如：
+
+```html
+<script src="./api.js"></script>
+<script>
+  getArticleDetail({ id: '1' })
+</script>
+```
+
+第一个 `script` 元素加载 **api.js** 。第二个 `script` 元素调用依赖于前面的 `script` 元素加载的 **api.js** 的内容。所有这些都能正常工作，因为浏览器能很自然地处理了这个场景。
+
+对于动态加载的脚本文件，如果想要类似行为，需要额外添加 `load` 事件来监听我们的 `script`，一旦监听到，就调用相关的代码：
+
+```js
+let myScript = document.createElement('script')
+myScript.setAttribute('src', './index.js')
+document.body.appendChild(myScript)
+
+// 当加载完 `index.js` 并执行后，`load` 事件将被触发，调用 `scriptLoaded` 事件处理程序。
+myScript.addEventListener('load', scriptLoaded)
+function scriptLoaded() {
+  console.log('Hi')
+}
+```
+
+
+
 ## DOM
 
 ```bash
@@ -2165,25 +2230,119 @@ function del() {
 
 #### eval() 和 Function() 构造函数
 
-> ```bash
-> ## eval() 和 Function() 构造函数
-> eval() 和 Function() 构造函数都可以动态地执行 JS 代码。
-> eval() 函数可以将字符串作为 JS 代码执行，可以用于计算动态生成的算数表达式、解析 JSON 数据、动态生成函数等。
-> Function() 构造函数可以动态地创建函数，可以用于动态生成函数，或者在运行时根据不同的条件生成不同的函数。
-> 注意：eval() 和 Function 构造函数可能存在安全风险，因此开发中应该避免使用它们，以确保代码的安全性和可维护性。
-> ```
->
-> ```js
-> /** eval() 函数 */
-> const x = 1
-> const y = 2
-> const result = eval('x + y') // result = 3
->
->
-> /** Function 构造函数 */
-> const add = new Function('x', 'y', 'return x + y')
-> const result = add(1, 2) // result = 3
-> ```
+```bash
+### eval() 和 Function() 构造函数
+eval() 和 Function() 构造函数都可以动态地执行 JS 代码。
+eval() 函数可以将字符串作为 JS 代码执行，可以用于计算动态生成的算数表达式、解析 JSON 数据、动态生成函数等。
+Function() 构造函数可以动态地创建函数，可以用于动态生成函数，或者在运行时根据不同的条件生成不同的函数。
+注意：eval() 和 Function 构造函数可能存在安全风险，因此开发中应该避免使用它们，以确保代码的安全性和可维护性。
+```
+
+```js
+/** eval() 函数 */
+const x = 1
+const y = 2
+const result = eval('x + y') // result = 3
+
+
+/** Function 构造函数 */
+const add = new Function('x', 'y', 'return x + y')
+const result = add(1, 2) // result = 3
+```
+
+
+
+#### encodeURI 与 encodeURIComponent
+
+```bash
+### encodeURI 与 encodeURIComponent 的区别
+由于 URL 只能由标准 ASCII 字符组成，因此必须对其他特殊字符进行编码。它们将被代表其 UTF-8 编码的不同字符序列替换。
+
+- `encodeURI` 用于对完整 URL 进行编码。
+-  `encodeURIComponent` 用于编码 URI 部分，例如查询字符串。
+```
+
+```js
+encodeURI('https://example.com/path to a document.pdf')
+// 空格 -> %20
+// 'https://example.com/path%20to%20a%20document.pdf'
+
+
+`http://example.com/?search=${encodeURIComponent('encode & decode param')}`
+// & -> %26
+// 'http://example.com/?search=encode%20%26%20decode%20param'
+```
+
+有 11 个字符不是由 `encodeURI` 编码的，而是由 `encodeURIComponent` 编码的。
+
+以下方法打印这些字符：
+
+```js
+const arr = Array(256)
+  .fill(0)
+  .map((_, i) => String.fromCharCode(i))
+  .filter((c) => encodeURI(c) != encodeURIComponent(c))
+
+arr.forEach((c) => console.log(c, encodeURI(c), encodeURIComponent(c)))
+```
+
+以下是这些字符的列表：
+
+| 字符 | `encodeURI` | `encodeURIComponent` |
+| :--- | :---------- | :------------------- |
+| `#`  | `#`         | `%23`                |
+| `$`  | `$`         | `%24`                |
+| `&`  | `&`         | `%26`                |
+| `+`  | `+`         | `%2B`                |
+| `,`  | `,`         | `%2C`                |
+| `/`  | `/`         | `%2F`                |
+| `:`  | `:`         | `%3A`                |
+| `;`  | `;`         | `%3B`                |
+| `=`  | `=`         | `%3D`                |
+| `?`  | `?`         | `%3F`                |
+| `@`  | `@`         | `%40`                |
+
+另外，`decodeURI` 和 `decodeURIComponent` 是分别对 `encodeURI` 和 `encodeURIComponent` 编码的字符串进行解码的方法。
+
+`encodeURIComponent` 不编码 `-_.!~*'()`。如果要对这些字符进行编码，必须将其替换为相应的 UTF-8 字符序列：
+
+```js
+const encode = (str) =>
+  encodeURIComponent(str)
+    .replace(/\-/g, '%2D')
+    .replace(/\_/g, '%5F')
+    .replace(/\./g, '%2E')
+    .replace(/\!/g, '%21')
+    .replace(/\~/g, '%7E')
+    .replace(/\*/g, '%2A')
+    .replace(/\'/g, '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+
+encode("What's result of (4 + 2)?") // "What%27s%20result%20of%20%284%20%2B%202%29%3F"
+```
+
+解码方法可能如下所示：
+
+```js
+const decode = (str) =>
+  decodeURIComponent(
+    str
+      .replace(/\%2D/g, '-')
+      .replace(/\%5F/g, '_')
+      .replace(/\%2E/g, '.')
+      .replace(/\%21/g, '!')
+      .replace(/\%7E/g, '~')
+      .replace(/\%2A/g, '*')
+      .replace(/\%27/g, "'")
+      .replace(/\%28/g, '(')
+      .replace(/\%29/g, ')')
+  )
+
+decode('What%27s%20result%20of%20%284%20%2B%202%29%3F') // "What's result of (4 + 2)?"
+```
+
+
 
 ### location 对象
 
