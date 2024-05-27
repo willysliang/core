@@ -4892,88 +4892,88 @@ export default defineComponent({
 > <!-- PopupPage.vue -->
 > <template>
 >   <div class="popup-page" :class="[!dialogVisible && 'hidden']">
->     <slot v-if="dialogVisible"></slot>
+>      <slot v-if="dialogVisible"></slot>
 >   </div>
 > </template>
 > 
 > <script setup lang="ts">
-> import { useLockscreen } from 'element-plus'
-> import { computed, defineProps, defineEmits } from 'vue'
-> import useHistoryPopup from './useHistoryPopup'
+>   import { useLockscreen } from 'element-plus'
+>   import { computed, defineProps, defineEmits } from 'vue'
+>   import useHistoryPopup from './useHistoryPopup'
 > 
-> const props = defineProps({
->   modelValue: {
->     type: Boolean,
->     default: false
->   },
->   // 路由记录
->   history: {
->     type: Object
->   },
->   // 配置了history后，初次渲染时，如果有url上有history参数，则自动打开弹窗
->   auto: {
->     type: Boolean,
->     default: true
->  },
->   size: {
->    type: String,
->     default: '50%'
->   },
->   full: {
->     type: Boolean,
->     default: false
->   }
-> })
-> const emit = defineEmits(
->   ['update:modelValue', 'autoOpen', 'autoClose']
-> )
+>   const props = defineProps({
+>       modelValue: {
+>          type: Boolean,
+>          default: false
+>       },
+>       // 路由记录
+>       history: {
+>          type: Object
+>       },
+>       // 配置了history后，初次渲染时，如果有url上有history参数，则自动打开弹窗
+>       auto: {
+>          type: Boolean,
+>          default: true
+>      },
+>       size: {
+>          type: String,
+>          default: '50%'
+>       },
+>       full: {
+>          type: Boolean,
+>          default: false
+>       }
+>   })
+>   const emit = defineEmits(
+>       ['update:modelValue', 'autoOpen', 'autoClose']
+>   )
 > 
-> const dialogVisible = computed<boolean>({ // 控制弹窗显示
->   get () {
->     return props.modelValue
->   },
->   set (val) {
->     emit('update:modelValue', val)
->   }
-> })
+>   const dialogVisible = computed<boolean>({ // 控制弹窗显示
+>       get () {
+>          return props.modelValue
+>       },
+>       set (val) {
+>          emit('update:modelValue', val)
+>       }
+>   })
 > 
-> useLockscreen(dialogVisible)
+>   useLockscreen(dialogVisible)
 > 
-> useHistoryPopup({
->   history: computed(() => props.history),
->   auto: props.auto,
->   dialogVisible: dialogVisible,
->   onAutoOpen: () => emit('autoOpen'),
->   onAutoClose: () => emit('autoClose')
-> })
+>   useHistoryPopup({
+>       history: computed(() => props.history),
+>       auto: props.auto,
+>       dialogVisible: dialogVisible,
+>       onAutoOpen: () => emit('autoOpen'),
+>       onAutoClose: () => emit('autoClose')
+>   })
 > </script>
 > 
 > <style lang='less'>
-> .popup-page {
->   position: fixed;
->   left: 0;
->   right: 0;
->   top: 0;
->   bottom: 0;
->   z-index: 100;
->   overflow: auto;
->   padding: 10px;
->   background: #fff;
+>   .popup-page {
+>       position: fixed;
+>       left: 0;
+>       right: 0;
+>       top: 0;
+>       bottom: 0;
+>       z-index: 100;
+>       overflow: auto;
+>       padding: 10px;
+>       background: #fff;
 >   
->   &.hidden {
->     display: none;
+>       &.hidden {
+>          display: none;
+>       }
 >   }
-> }
 > </style>
 > ```
 > 
 > ```vue
 > <!-- 弹窗组件调用 -->
 > <popup-page 
->   v-model="visible" 
->   full
->   :history="{ id: id }">
->   <Detail />
+>     v-model="visible" 
+>     full
+>     :history="{ id }">
+>   	<Detail />
 > </popup-page>
 > ```
 
@@ -4982,16 +4982,16 @@ export default defineComponent({
 > ```js
 > // 声明父子路由
 > {
->   path: '/list',
->   name: 'list',
->   component: () => import('./views/List.vue'),
->   children: [
->     {
->       path: '/detail',
->       name: 'detail',
->       component: () => import('./views/Detail.vue'),
->     }
->   ]
+>     path: '/list',
+>     name: 'list',
+>     component: () => import('./views/List.vue'),
+>     children: [
+>       {
+>         path: '/detail',
+>         name: 'detail',
+>         component: () => import('./views/Detail.vue'),
+>       }
+>     ]
 > }
 > ```
 > 
@@ -5008,10 +5008,10 @@ export default defineComponent({
 >    </el-table-column>
 >   </el-table>
 >  <el-pagination
->     v-model:currentPage="currentPage"
->     :page-size="pageSize"
->     layout="total, prev, pager, next"
->     :total="list.length"
+>       v-model:currentPage="currentPage"
+>       :page-size="pageSize"
+>       layout="total, prev, pager, next"
+>       :total="list.length"
 >   />
 >   
 >   <!-- 详情页 -->
@@ -5020,14 +5020,14 @@ export default defineComponent({
 > 
 > <style lang='less' scoped>
 > .popyp-page {
->   position: fixed;
->   top: 0;
->   bottom: 0;
->   left: 0;
->   right: 0;
->   z-index: 100;
->   background: #fff;
->   overflow: auto;
+>     position: fixed;
+>     top: 0;
+>     bottom: 0;
+>     left: 0;
+>     right: 0;
+>     z-index: 100;
+>     background: #fff;
+>     overflow: auto;
 > }
 > </style>
 > ```

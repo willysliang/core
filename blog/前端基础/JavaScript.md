@@ -1559,7 +1559,7 @@ ele.dispatchEvent(e) // 触发事件
 
 
 
-#### 文本内容不可选中/不可复制
+##### 文本内容不可选中/不可复制
 
 ```bash
 1. css 方式实现
@@ -1593,7 +1593,59 @@ document.documentElement.oncopy = (e) => {
 
 
 
-### 滚动
+##### 检测用户是否处于空闲状态或非活动状态
+
+```bash
+某些应用程序需要你持续关注。这类应用程序通常包括游戏、媒体播放器、任何 CPU/电池密集型的应用程序等等。对于这些类型的应用程序，当用户不再主动与您的应用程序交互时，做一些事情（以及用户友好的）可能很重要。
+
+
+实现：
+创建 `init` 函数。其中监听各种鼠标、键盘和触摸事件，来确保应用程序的活动状态。如果监听到这些事件中的任何一个，使用`resetTimer` 函数充当事件处理程序并被调用。
+	- 使用 `setTimeout` 监听用户，一旦停止与应用程序交互，它就会开始计时。
+	- 活跃时清除 `timeoutID` 定时器，并调用 `goActive` 函数。
+	- 非活跃时重新计时，调用 `goInactive` 函数。
+```
+
+```js
+let timeoutID
+
+function startTimer() {
+  // 请等待2秒钟，然后再调用 goInactive
+  timeoutID = setTimeout(goInactive, 2000)
+}
+
+function resetTimer(e) {
+  clearTimeout(timeoutID)
+  goActive()
+}
+
+function goInactive() {
+  // do something
+}
+
+function goActive() {
+  // do something
+  startTimer()
+}
+
+function init() {
+  this.addEventListener('mousemove', resetTimer)
+  this.addEventListener('mousedown', resetTimer)
+  this.addEventListener('keypress', resetTimer)
+  this.addEventListener('DOMMouseScroll', resetTimer)
+  this.addEventListener('mousewheel', resetTimer)
+  this.addEventListener('touchmove', resetTimer)
+  this.addEventListener('MSPointerMove', resetTimer)
+  startTimer()
+}
+init()
+```
+
+
+
+## 滚动
+
+### 滚动位置
 
 #### offset、scroll、client
 
@@ -1667,7 +1719,9 @@ document.documentElement.oncopy = (e) => {
 >   - 调用者：event
 >   - 作用：鼠标距离浏览器可视区域的距离（左、上）。
 
-##### 自制滚动条
+
+
+### 自制滚动条
 
 > 1. 先把系统滚动条隐藏
 >
@@ -1798,6 +1852,279 @@ document.documentElement.oncopy = (e) => {
 > </script>
 > </html>
 > ```
+
+
+
+### 滚动到页面顶部
+
+#### 锚点和平滑滚动
+
+在 `<html>` 元素上提供以 ID 为目标的链接
+
+```html
+<div id="top"></div>
+<a href="#top">跳转到页面顶部</a>
+```
+
+可以使用 `scroll-behavior` 属性来实现 CSS 平滑滚动
+
+```css
+html {
+  scroll-behavior: smooth;
+}
+```
+
+#### scrollTo、scrollBy、scrollIntoViwe
+
+先给根节点添加 `scroll-behavior` 属性来实现 CSS 平滑滚动
+
+```css
+html {
+  scroll-behavior: smooth;
+}
+```
+
+接下来给按钮添加点击事件，在任意使用 `scrollTo`、`scrollBy` 或 `scrollIntoViwe` 方法，实现滚动到顶部。
+
+[`Window.scrollTo()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo) 滚动到文档中的某个坐标。
+
+[`Elem.scrollTo()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo) 方法可以使界面滚动到给定元素的指定坐标位置。
+
+```js
+window.scrollTo(0, 0)
+document.documentElement.scrollTo(0, 0)
+```
+
+[`Window.scrollBy()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollBy) 在窗口中按指定的偏移量滚动文档。
+
+[`Elem.scrollBy()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollBy) 方法是使得元素滚动一段特定距离。
+
+```js
+window.scrollBy(0, -10000)
+document.documentElement.scrollBy(0, -10000)
+```
+
+[`Window.scroll()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/scroll) 滚动窗口至文档中的特定位置。
+
+[`Elem.scroll()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll) 方法是用于在给定的元素中滚动到某个特定坐标。
+
+```
+window.scroll(0, 0)
+document.documentElement.scroll(0, 0)
+```
+
+[`Elem.scrollIntoViwe(top)`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) 将滚动页面以使 `Elem` 可见。
+
+- `top=true`（默认值），页面滚动，使 `Elem` 出现在窗口顶部。元素的上边缘将与窗口顶部对齐。
+- `top=false` ，页面滚动，使 `Elem` 出现在窗口底部。元素的底部边缘将与窗口底部对齐。
+
+```js
+document.documentElement.scrollIntoView()
+```
+
+
+
+#### 检测滚动位置：`scroll` 事件
+
+- 使用 `document.documentElement` 返回文档的根元素，我们需要它来获取偏移值
+- 在按钮上添加 `click` 事件监听器。在 `scrollToTop` 函数内部，使用 `scrollTo` 方法将其滚动到屏幕顶部 。
+
+```js
+const scrollToTopBtn = document.querySelector('.scrollToTopBtn')
+const rootElement = document.documentElement
+
+const scrollToTop = () => {
+  rootElement.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
+
+scrollToTopBtn.addEventListener('click', scrollToTop)
+```
+
+可以使用滚动事件侦听器检测滚动，在每次用户滚动时获取滚动的像素总数。
+
+- `Element.scrollHeight` 只读属性。给出元素的内容高度，包括由于溢出而不可见的部分。
+- `Element.clientHeight` 只读属性。给出元素的内部高度（以像素为单位），即可见部分的高度，包含内边距，但不包括水平滚动条、边框和外边距。
+
+```js
+function handleScroll() {
+  const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight
+  if (rootElement.scrollTop / scrollTotal > 0.8) {
+    scrollToTopBtn.classList.add('showBtn')
+  } else {
+    scrollToTopBtn.classList.remove('showBtn')
+  }
+}
+
+document.addEventListener('scroll', handleScroll)
+```
+
+
+
+#### Intersection Observer API
+
+[Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) 提供了一种异步观察目标元素与祖先元素或顶级文档的视口相交的更改的方法。
+
+比起 `scroll` 事件监听滚动，`Intersection Observer API` 在解决这类问题上是绝佳解决方案。这是一个相当新的浏览器 API，使开发人员可以以更优化的方式将大多数任务交给浏览器。
+
+```js
+const target = document.querySelector('footer')
+const scrollToTopBtn = document.querySelector('.scrollToTopBtn')
+const rootElement = document.documentElement
+
+// 一旦页脚进入或离开视口，将添加或删除类。回调接收 entries 数组作为参数。
+function callback(entries, observer) {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      scrollToTopBtn.classList.add('showBtn')
+    } else {
+      scrollToTopBtn.classList.remove('showBtn')
+    }
+  })
+}
+
+const observer = new IntersectionObserver(callback)
+observer.observe(target)
+
+function scrollToTop() {
+  rootElement.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
+
+scrollToTopBtn.addEventListener('click', scrollToTop)
+```
+
+
+
+#### requestAnimationFrame 设置动画
+
+[`window.requestAnimationFrame()`](https://developer.mozilla.org/zh-CN/docs/Web/API/window/requestAnimationFrame) 告诉浏览器，你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行
+
+- `Element.scrollTop` 属性可以获取或设置一个元素的内容垂直滚动的像素数。
+- 使用 `window.requestAnimationFrame()` 来设置滚动动画。
+
+```jsx
+const scrollToTop = () => {
+  const c = document.documentElement.scrollTop || document.body.scrollTop
+  if (c > 0) {
+    window.requestAnimationFrame(scrollToTop)
+    window.scrollTo(0, c - c / 8)
+  }
+}
+```
+
+
+
+### 平滑地滚动到一个元素
+
+可以通过传递 `behavior: smooth` 平滑滚动到给定元素：
+
+```js
+ele.scrollIntoView({ behavior: 'smooth' })
+```
+
+或将 CSS 属性滚动行为应用于目标元素：
+
+```css
+scroll-behavior: smooth;
+```
+
+注意：IE 和 Safari 中不支持这两种方法，并且不允许自定义动画。
+
+**案例：请实现一个平滑滚动，它还允许我们自定义动画效果和持续时间，用户可以通过单击相关的导航按钮在各个部分之间切换。**
+
+```html
+<body>
+  <a href="#section-1" class="trigger">aaa</a>
+  <a href="#section-2" class="trigger">bbb</a>
+
+  <div id="section-1" style="height: 40vh;background-color: goldenrod;">...</div>
+  <div id="section-2" style="height: 60vh;background-color: yellowgreen;">...</div>
+
+  <script type="text/javascript">
+    /**
+     * @function scrollToTarget 将滚动页面到给定的目标
+     */
+    const scrollToTarget = (target) => {
+      /**
+       * 在给定的持续时间内从起点移动到终点
+       * 1. 起点是当前 `y` 轴偏移 `window.pageYOffset`
+       * 2. 终点是目标的顶部距离。它可以作为 `target.getBoundingClientRect().top` 进行检索
+       * 3. 持续时间为毫秒数,可以将其更改为可配置选项
+       */
+      const duration = 800
+      const diff = target.getBoundingClientRect().top
+      const startPos = window.pageYOffset
+
+      /**
+       * 浏览器在下一次绘制之前执行循环函数。第一次，`startTime` 将被初始化为当前时间戳（`currentTime`）
+       */
+      let startTime = null
+      let requestId
+      const loop = (currentTime) => {
+        if (!startTime) {
+          startTime = currentTime
+        }
+
+        // 已用时间（毫秒）
+        const time = currentTime - startTime
+
+        // 缓和功能替换当前的线性运动
+        const easeInQuad = (t) => {
+          return t * t
+        }
+
+        // 根据经过的时间和持续时间，计算我们移动的百分比数，并滚动到该位置
+        const percent = Math.min(time / duration, 1)
+        window.scrollTo(0, startPos + diff * easeInQuad(percent))
+
+        // 如果还有剩余的时间，我们继续循环。否则将取消最后一个请求
+        if (time < duration) {
+          // 继续前进
+          requestId = window.requestAnimationFrame(loop)
+        } else {
+          window.cancelAnimationFrame(requestId)
+        }
+      }
+      requestId = window.requestAnimationFrame(loop)
+    }
+
+    /**
+     * @function clickHandler 处理导航元素的单击事件
+     * @description 它根据 `href` 属性确定目标节点。请注意，我们将自己滚动到目标部分，因此默认操作将被忽略
+     */
+    const clickHandler = (e) => {
+      // 阻止默认操作
+      e.preventDefault()
+
+      // 获取 href 属性
+      const href = e.target.getAttribute('href')
+      const id = href.substr(1)
+      const target = document.getElementById(id)
+      scrollToTarget(target)
+    }
+
+    /** 单击该链接将滚动页面至可由 `href` 属性确定的特定元素 */
+    const initTrigger = () => {
+      const triggers = [].slice.call(
+        document.querySelectorAll('.trigger'),
+      )
+      triggers.forEach((ele) => {
+        ele.addEventListener('click', clickHandler)
+      })
+    }
+    initTrigger()
+  </script>
+</body>
+```
+
+
+
+
 
 
 
@@ -2228,6 +2555,40 @@ function del() {
 
 ### 全局方法
 
+#### Eval
+
+```bash
+过去它主要用于对 `JSON` 字符串进行反序列化，但现在可以使用 `JSON.parse` 方法来替代。
+
+注意：
+-  `eval` 已过时，尽量不要再使用它。
+- 尽管有警告，但 `eval` 仍然可以工作（即使在严格模式下），但您通常可以避免它。
+
+`eval` 存在几个问题：
+  - 安全性：您的字符串可以通过第三方脚本或用户输入注入其他命令。
+  - 调试：很难调试错误，您没有行号或明显的故障点。
+  - 优化：JavaScript 解释器不一定能预编译代码，因为它可能会发生变化。虽然解释器的效率越来越高，但几乎可以肯定它的运行速度会比本地代码慢。
+  - 性能：非常耗性能，它会执行 2 次，一次解析成 JS 语句，一次执行。
+```
+
+```js
+eval('var x = "Hello eval!"')
+x // 'Hello eval!'
+
+
+/** eval() 函数 */
+const x = 1
+const y = 2
+const result = eval('x + y') // result = 3
+
+
+// 对 JSON 字符串反序列化
+const json = '{"name":"O.O","age":20}'
+eval('(' + json + ')') // {name: 'O.O', age: 20}
+```
+
+
+
 #### eval() 和 Function() 构造函数
 
 ```bash
@@ -2239,12 +2600,6 @@ Function() 构造函数可以动态地创建函数，可以用于动态生成函
 ```
 
 ```js
-/** eval() 函数 */
-const x = 1
-const y = 2
-const result = eval('x + y') // result = 3
-
-
 /** Function 构造函数 */
 const add = new Function('x', 'y', 'return x + y')
 const result = add(1, 2) // result = 3
