@@ -545,6 +545,77 @@ npx 还可以执行 GitHub 上面的模块源码。
 
 注意，远程代码必须是一个模块，即必须包含`package.json`和入口脚本。
 
+
+
+### FNM
+
+```bash
+## FNM
+
+```
+
+### FNM的安装
+
+```powershell
+### 安装 chocolatey
+$ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+
+
+### 使用 cho 安装 FNM
+$ choco install fnm
+
+
+### 验证 FNM 安装
+$ fnm --version
+
+
+### 永久将 fm 添加到环境变量中
+$ [System.Environment]::SetEnvironmentVariable("Path", $Env:Path + ";<fnm安装路径>", [System.EnvironmentVariableTarget]::User)
+
+```
+
+#### 在项目根目录中添加 .nvmrc 文件
+
+````powershell
+node --version
+v14.18.3
+
+node --version > .nvmrc
+
+````
+
+#### 更改 .bashrc
+
+```bash
+# https://github.com/Schniz/fnm#shell-setup
+# auto changes the version of node
+eval "$(fnm env --use-on-cd)"
+
+corepack enable
+```
+
+![img](./image/image.jpeg)
+
+#### windows下修改vscode默认终端为git bash
+
+```bash
+## 在vscode的settiongs.json中配置
+"terminal.integrated.profiles.windows": {
+  "PowerShell -NoProfile": {
+  "source": "PowerShell",
+  "args": ["-NoProfile"]
+  },
+  "Git-Bash": {
+  "path": "D:\\Git\\Git\\bin\\bash.exe",
+  "args": []
+  }
+},
+"terminal.integrated.defaultProfile.windows": "Git-Bash"
+```
+
+
+
 ## cross-env
 
 ```bash

@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-27 21:04:11
+ * @ ModifierTime: 2024-05-16 14:51:14
  * @ Description: 导航栏
  */
 
@@ -34,7 +34,11 @@ const getDirectoryPathFileNames = (
     '后端基础',
     '构建工具',
     '计算机网络',
+    '学海无涯',
   ]
+
+  // 忽略的md名单 （只要 md 文件名存在这个名，则忽略这个文件的构建）
+  const ignoreMdList = ['前端面试']
 
   // files 参数是包含文件名的数组
   files.forEach((file) => {
@@ -51,10 +55,13 @@ const getDirectoryPathFileNames = (
         const curFileName = curFileNames
           .slice(0, curFileNames.length - 1)
           .join('')
-        result.push({
-          filePath: `/${prefix}/${curFileName}`,
-          fileName: curFileName,
-        })
+
+        if (!ignoreMdList.some((item) => curFileName.includes(item))) {
+          result.push({
+            filePath: `/${prefix}/${curFileName}`,
+            fileName: curFileName,
+          })
+        }
       }
     }
   })
@@ -84,10 +91,10 @@ const getAllFile = (rootDirectoryPath) => {
 }
 
 /**
- * 
+ *
  * @param allFile 所有的文件
  * @returns {any[]} 返回所有导航项
- * 
+ *
  * @description 逻辑分项
     1. 字符串类型
     2. 对象类型
@@ -128,13 +135,13 @@ const allNavs = getAllNav(allFile)
 // 分享的导航栏
 const shareNavs = [
   {
-    text: '生态系统',
+    text: 'HOME',
     children: [
-      { text: 'HOME', link: 'https://willysliang.github.io/core' },
-      { text: 'Vue3.x', link: 'https://v3.cn.vuejs.org/' },
+      { text: '记录', link: '/RECORD' },
+      { text: '活动页', link: 'https://willysliang.github.io/core' },
       {
-        text: 'Element Plus',
-        link: 'https://element-plus.gitee.io/zh-CN/guide/design.html',
+        text: '提交日志',
+        link: 'https://api.github.com/repos/willysliang/core/commits',
       },
     ],
   },

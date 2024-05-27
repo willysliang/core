@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-20 10:13:16
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-23 18:49:03
+ * @ ModifierTime: 2024-04-22 21:44:36
  * @ Description: 入口
  */
 
@@ -12,7 +12,7 @@ import cors from 'cors'
 import compression from 'compression'
 import indexRouter from './src/router/index'
 import { handleOnError, handleOnListening } from './src/utils/appUtils'
-import { SERVER_PORT } from '@willy/utils'
+import { SERVER_PORT } from './src/config/constants'
 import { errorHandler, error404Handler } from './src/middleware/errorMiddleware'
 
 const path = require('node:path')
@@ -77,6 +77,6 @@ app.use(errorHandler)
  */
 app.set('port', SERVER_PORT)
 const server = http.createServer(app)
-server.listen(SERVER_PORT)
+server.listen(SERVER_PORT, '0.0.0.0')
 server.on('error', (err) => handleOnError(SERVER_PORT, err))
 server.on('listening', () => handleOnListening(server))

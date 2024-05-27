@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <a href="#section-1" class="trigger">aaa</a>
+  <a href="#section-2" class="trigger">bbb</a>
+
+  <div id="section-1" style="height: 40vh;background-color: goldenrod;">...</div>
+  <div id="section-2" style="height: 60vh;background-color: yellowgreen;">...</div>
+
+  <script type="text/javascript">
+    /**
+     * @function scrollToTarget 将滚动页面到给定的目标
+     */
+    const scrollToTarget = (target) => {
+      /**
+       * 在给定的持续时间内从起点移动到终点
+       * 1. 起点是当前 `y` 轴偏移 `window.pageYOffset`
+       * 2. 终点是目标的顶部距离。它可以作为 `target.getBoundingClientRect().top` 进行检索
+       * 3. 持续时间为毫秒数,可以将其更改为可配置选项
+       */
+      const duration = 800
+      const diff = target.getBoundingClientRect().top
+      const startPos = window.pageYOffset
+
+      /**
+       * 浏览器在下一次绘制之前执行循环函数。第一次，`startTime` 将被初始化为当前时间戳（`currentTime`）
+       */
+      let startTime = null
+      let requestId
+      const loop = (currentTime) => {
+        if (!startTime) {
+          startTime = currentTime
+        }
+
+        // 已用时间（毫秒）
+        const time = currentTime - startTime
+
+        // 缓和功能替换当前的线性运动
+        const easeInQuad = (t) => {
+          return t * t
+        }
+
+        // 根据经过的时间和持续时间，计算我们移动的百分比数，并滚动到该位置
+        const percent = Math.min(time / duration, 1)
+        window.scrollTo(0, startPos + diff * easeInQuad(percent))
+
+        // 如果还有剩余的时间，我们继续循环。否则将取消最后一个请求
+        if (time < duration) {
+          // 继续前进
+          requestId = window.requestAnimationFrame(loop)
+        } else {
+          window.cancelAnimationFrame(requestId)
+        }
+      }
+      requestId = window.requestAnimationFrame(loop)
+    }
+
+    /**
+     * @function clickHandler 处理导航元素的单击事件
+     * @description 它根据 `href` 属性确定目标节点。请注意，我们将自己滚动到目标部分，因此默认操作将被忽略
+     */
+    const clickHandler = (e) => {
+      // 阻止默认操作
+      e.preventDefault()
+
+      // 获取 href 属性
+      const href = e.target.getAttribute('href')
+      const id = href.substr(1)
+      const target = document.getElementById(id)
+      scrollToTarget(target)
+    }
+
+    /** 单击该链接将滚动页面至可由 `href` 属性确定的特定元素 */
+    const initTrigger = () => {
+      const triggers = [].slice.call(
+        document.querySelectorAll('.trigger'),
+      )
+      triggers.forEach((ele) => {
+        ele.addEventListener('click', clickHandler)
+      })
+    }
+    initTrigger()
+  </script>
+</body>
+</html>

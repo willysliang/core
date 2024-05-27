@@ -11,29 +11,29 @@ Description: ES6+语法Ⅱ
 ## 模块化
 
 > ```bash
-> ## 模块规范化	
+> ## 模块规范化
 > 编程语言中的模块通常是为了避免全局污染，同时更好地组织程序逻辑，方便代码复用。
 > 		- 模块定义：如果定义私有和公开变量、属性、函数、方法
 > 		- 模块加载：如何在运行环境中使用模块，模块之间如何相互引用
 > 模块的加载在 nodejs 和浏览器的区别：
 > 		- Nodejs 模块文件的后缀名为 .mjs
 > 		- 浏览器为 script 标签
-> 
-> 
+>
+>
 > ## 模块化
 > 1. 第一阶段：仅仅基于文件的划分模块的方式
 > 具体做法就是将每个功能及其相关状态数据各自单独放到不同的文件中，约定每个文件就是一个独立的模块，使用某个模块就是将这个模块引入到页面中，然后直接调用模块中的成员（变量 / 函数）
 > 缺点：所有模块都直接在全局工作，没有私有空间，所有成员都可以在模块外部被访问或者修改，而且模块过多，容易产生命名冲突，另外无法管理模块与模块之间的依赖关系
-> 
-> 
+>
+>
 > 2. 第二阶段：【命名空间】每个模块暴露一个全局对象，所有模块成员都挂载到这个对象中
 > 具体做法就是在第一阶段的基础上，通过将每个模块「包裹」为一个全局对象的形式实现，有点类似于为模块内的成员添加了「命名空间」。
 > 通过「命名空间」减小了命名冲突的可能，但是同样没有私有空间，所有模块成员也可以在模块外部被访问或者修改，而且也无法管理模块之间的依赖关系。
 > 在 JS 中，为了不污染全局变量，我们把想要访问的变量用一个「命名空间」包裹。实际上就是新建了一个包含属性的对象，避免属性直接挂载在全局变量（window/Global）上。但这个对象可任意修改，没有封闭的作用域，所以并非真正的模块。
 >       var moduleA = { id: 1, name: 'test' }
 >       console.log(moduleA.id)
-> 
-> 
+>
+>
 > 3. 第三阶段：使用立即执行函数表达式（IIFE：Immediately-Invoked Function Expression）为模块提供私有空间
 > 具体做法就是将每个模块成员都放在一个函数提供的私有作用域中，对于需要暴露给外部的成员，通过挂在到全局对象上的方式实现
 > 有了私有成员的概念，私有成员只能在模块成员内通过闭包的形式访问。
@@ -47,13 +47,13 @@ Description: ES6+语法Ⅱ
 >       moduleA._id // undefined
 >       moduleA._getId // undefined
 >       module.getId // 1
-> 
-> 
+>
+>
 > 4. 第四阶段： 利用 IIFE 参数作为依赖声明使用
 > 具体做法就是在第三阶段的基础上，利用立即执行函数的参数传递模块依赖项。
 > 这使得每一个模块之间的关系变得更加明显。
-> 
-> 
+>
+>
 > 5. 第五阶段： 模块化规范
 > Require.js 提供了 AMD 模块化规范，以及一个自动化模块加载器---模块化规范的出现。
 > 再之后便有了其他更多标准紧接而来，CommonJS、CMD。
@@ -66,7 +66,7 @@ Description: ES6+语法Ⅱ
 > CommonJS 中一个 JS 文件就是一个模块，每个模块都有单独的作用域(文件中的所有变量均为私有变量)；
 > 	通过 `module.exports` 导出一个对象，里面包含的则是公开变量；
 > 	引用时通过 `require` 函数载入模块，其获取模块导出的对象。
-> 
+>
 > 缺点：CommonJS 是以同步模式加载模块，即等待所有模块加载完毕后再执行代码。
 > 	- nodejs 执行机制是启动时加载模块，执行过程中不需要加载，只需要使用，所以不会出现问题。
 > 	- 在五福段无需要考虑网络的场景下也是没问题的。
@@ -80,8 +80,8 @@ Description: ES6+语法Ⅱ
 >   console.log(id)
 > }
 > module.exports = { getId }
-> 
-> 
+>
+>
 > // ModuleB.js
 > const moduleA = require('ModuleA.js')
 > moduleA.id	// undefined
@@ -95,8 +95,8 @@ Description: ES6+语法Ⅱ
 > AMD 是 require.js 推出的模块规范。通过 define API函数定义和引用模块。
 > 优势：目前绝大多数第三方库都支持 AMD 规范。
 > 缺点：使用复杂模块划分细致，模块 JS 文件会出现请求频繁的情况。
-> 
-> 
+>
+>
 > ## Require.js
 > 提供 AMD 模块化规范，以及一个自动化模块加载器，提供 require 函数加载模块。
 > ```
@@ -110,9 +110,9 @@ Description: ES6+语法Ⅱ
 >  alias: { jquery: "jquery/jquery/1.10.1/jquery.js" },
 > });
 > seajs.use("js/main.js");
-> </script> 
-> 
-> 
+> </script>
+>
+>
 > // moduleA.js
 > define(function () {
 > // 私有变量
@@ -121,8 +121,8 @@ Description: ES6+语法Ⅱ
 > // 暴露模块
 > return { getId }
 > })
-> 
-> 
+>
+>
 > // moduleB.js
 > define(/** 第一个参数是模块引用列表 */['moduleA'], function () {
 > console.log(moduleA.getId())
@@ -146,9 +146,9 @@ Description: ES6+语法Ⅱ
 >  alias: { jquery: "jquery/jquery/1.10.1/jquery.js" },
 > })
 > seajs.use("js/main.js")
-> </script> 
-> 
-> 
+> </script>
+>
+>
 > // moduleA.js
 > define(function (require, exports, module) {
 > // 私有变量
@@ -157,8 +157,8 @@ Description: ES6+语法Ⅱ
 > // 暴露模块
 > module.exports = { getId }
 > })
-> 
-> 
+>
+>
 > // moduleB.js
 > define(function (require, exports, module) {
 > const moduleA = require("moduleA")
@@ -173,10 +173,10 @@ Description: ES6+语法Ⅱ
 > AMD 和 CMD 的区别在于依赖引入的时机。
 > 	1. AMD 会将全部依赖前置，只要加载完成就会执行代码；
 > 	2. CMD 则推荐将依赖就进处理，需要时再引入。
-> 
+>
 > 这两种方式没有优劣之分，可能从节省网络开销的角度上 CMD 会更好些；在 AMD 的方案中，若 b.doSomething() 是在某个条件下执行，但没有被执行到，那么模块 b 的加载是浪费的（但不影响程序执行速度）。
-> 
-> 
+>
+>
 > ## UMD（模块兼容方案）
 > UMD 不是一个模块规范，而是一个对 AMD 和 CommonJS 的兼容方案，目的是为了让模块同时能够支持浏览器和 Nodejs 两个运行。
 > ```
@@ -189,15 +189,15 @@ Description: ES6+语法Ⅱ
 >   a.doSomething(); // 依赖前置，提前执行
 >   b.doSomething();
 > });
-> 
-> 
+>
+>
 > // CMD 推荐
 > define(function (require, exports, module) {
 > var a = require("a");
 >   a.doSomething();
 > var b = require("b");
 >   b.doSomething(); // 依赖就近，延迟执行
-> }); 
+> });
 > ```
 >
 > #### UMD方案
@@ -216,7 +216,7 @@ Description: ES6+语法Ⅱ
 >   }
 > })(this, function () {
 >   //module ...
-> }); 
+> });
 > ```
 
 ### ES Modules（浏览器）
@@ -225,16 +225,16 @@ Description: ES6+语法Ⅱ
 > ## ES Modules
 > ES6 Module 是 JavaScript 中官方支持的模块化方案，它采用 import 和 export 关键字导入和导出模块。
 > ES6 模块化支持静态分析，在编译时就能够确定模块的依赖关系，因此可以进行更加高效的打包和压缩。
-> 
-> 
+>
+>
 > ### ES6 Module 的使用
 > 通过 script 添加 `type=module` 的属性使用 ES Modules。
 >     1. ESM 自动采用严格模式，忽略 'use strict'。
 >     2. 每个 ES Module 都是运行在单独的私有作用域中。
 >     3. ESM 是通过 CORS 的方式请求外部 JS 模块的。
 >     4. ESM 的 script 标签会延迟执行脚本。
-> 
-> 
+>
+>
 > ### CommonJS 与 ES Modules 的区别
 > 1. 使用语法层面，CommonJs是通过module.exports，exports导出，require导入；ESModule则是export导出，import导入
 > 2. CommonJs是运行时加载模块，ESModule是在静态编译期间就确定模块的依赖
@@ -242,30 +242,30 @@ Description: ES6+语法Ⅱ
 > 4. CommonJs导出的是一个值拷贝，会对加载结果进行缓存，一旦内部再修改这个值，则不会同步到外部。ESModule是导出的一个引用，内部修改可以同步到外部
 > 5. CommonJs中顶层的this指向这个模块本身，而ESModule中顶层this指向undefined
 > 6. CommonJS加载的是整个模块，将所有的接口全部加载进来，ESModule可以单独加载其中的某个接口
-> 
-> 
+>
+>
 > ### 导出字面量和导出模块的区别
 >     导出字面量(如:对象):export default { name, age }
 >     注意: import {name, age} from 'modulename'导入模块无法使用到name和age的值
-> 
+>
 >     导出模块:
 >       export { name, age }
 >       import {name, age} from 'modulename' 导入模块可以使用到name和age的值
 > 		原因：import导入的是对模块内部的使用
-> 
+>
 > 		注意：export暴露的是模块的引用关系(地址)，并且只读不可修改(尝试修改会报错误)
-> 
-> 
+>
+>
 > ### 导出
-> 1. CommonJS 中是先将模块整体导入为一个对象，然后从对象中结构出需要的成员 
+> 1. CommonJS 中是先将模块整体导入为一个对象，然后从对象中结构出需要的成员
 > 			const { name, age } = require('./module.js')
-> 2. ES Module 中 { } 是固定语法，就是直接提取模块导出成员 
+> 2. ES Module 中 { } 是固定语法，就是直接提取模块导出成员
 > 			import { name, age } from './module.js'
 > 3. ES Modules 导入成员并不是复制一个副本，而是直接导入模块成员的引用地址。
 > 		即 import 得到的变量与 export 导入的变量在内存中是同一块空间。一旦模块中成员修改了，这里也会同时修改。
-> 4. 导入模块成员变量是只读的 
+> 4. 导入模块成员变量是只读的
 > 			name = 'tom' // 报错
-> 5. 导入的是一个对象，对象的属性读写不受影响 
+> 5. 导入的是一个对象，对象的属性读写不受影响
 > 			name.xxx = 'xxx' // 正常
 > ```
 >
@@ -278,12 +278,12 @@ Description: ES6+语法Ⅱ
 > };
 > // 也可以整体导出模块
 > export default { getId };
-> 
-> 
+>
+>
 > // ModuleB.js
 > import moduleA from 'moduleA.js'
 > moduleA.id; // undefined
-> moduleA.getId(); // 1 
+> moduleA.getId(); // 1
 > ```
 
 #### ES Modules in Node.js - 与 CommonJS 的差异
@@ -302,8 +302,8 @@ Description: ES6+语法Ⅱ
 > console.log(exports) // 导出对象别名
 > console.log(__filename) // 当前文件的绝对路径
 > console.log(__dirname) // 当前文件所在目录
-> 
-> 
+>
+>
 > /** ES Modules */
 > // 通过 url 模块的 fileURLToPath 方法转换为路径
 > import { fileURLToPath } from 'url'
@@ -328,23 +328,23 @@ Description: ES6+语法Ⅱ
 >     - 请求模块的入口
 >         - import CustomModule from 'moduleA.js': CustomModule 就是模块入口
 >     - 其它属性和方法
-> 
-> 
+>
+>
 > Module Record 再转换成为包含 code 和 state 的 Module Instance。转换的过程分三步：
 >     1. 构造（Construction）
 >     2. 实例化（Instantiation）
 >     3. 求值（Evaluation）
-> 
+>
 > ES modules: A cartoon deep-dive 构造每个 Module 在构造阶段要执行三个操作：
 >     1. 找到包含模块的文件
 >     2. 下载文件
 >     3. 将文件解析为 Module Record
-> 
-> 
+>
+>
 > 上述这两个步骤和运行时相关，例如浏览器中文件通过 script 标签引入的；而 Node.js 中文件从文件系统中引入。
-> 
+>
 > 浏览器会建立一个 Module Map，当请求一个 URL 时，浏览器把这个 URL 放入 Module Map，并将其打上标记来标识正在下载该文件。之后就发送请求获取该文件，然后继续获取下一个文件；同时 Module Map 也充当起模块缓存的作用，当请求的 URL 已存在时，会直接从 Map 中取得模块。
-> 
+>
 > 当文件下载完成后，浏览器会将文件转换为 Module Record，然后保存在 Module Map 中。实例化是给各个 Module Record 中 export 的变量和函数分配内存地址，接着将其它模块中对应的 import 部分，指向对应的 export 内存地址。JS 引擎会深度优先遍历模块树，此时变量和函数只分配内存地址，没有值。赋值在最后一步进行。
 > ```
 
@@ -365,7 +365,7 @@ Description: ES6+语法Ⅱ
 >   };
 >   return { get, set, };
 > })();
-> 
+>
 > /* 功能模块（调用状态） */
 > var module_color = (function () {
 >   //用这种方式执行第二步引入操作，类似 import state from 'module_status'
@@ -384,13 +384,13 @@ Description: ES6+语法Ⅱ
 >   }
 >   return { render, };
 > })();
-> 
+>
 > /* 主模块（执行功能模块） */
 > var module_main = (function () {
 >   var state = module_status;
 >   var color = module_color;
 >   var context = module_context;
-> 
+>
 >   setInterval(function () {
 >     state.set("number", state.get("number") + 1);
 >     color.render();
@@ -411,7 +411,7 @@ Description: ES6+语法Ⅱ
 >   <a href="movies.html" data-entry-module="movies">Movies</a>
 >   <a href="video-games.html" data-entry-module="video-games">Video Games</a>
 > </nav>
-> 
+>
 > <main>Content will load here!</main>
 > ```
 >
@@ -420,7 +420,7 @@ Description: ES6+语法Ⅱ
 > for (const link of document.querySelectorAll('nav > a')) {
 >   link.addEventListener('click', (e) => {
 >     e.preventDefault()
-> 
+>
 >     import(`./section-modules/${link.dataset.entryModule}.js`)
 >       .then((module) => {
 >       module.loadPageInto(main)
@@ -441,13 +441,13 @@ Description: ES6+语法Ⅱ
 > ;(async () => {
 >   const response = await fetch(new URL('../hamsters.jpg', import.meta.url))
 >   const blob = await response.blob()
-> 
+>
 >   const size = import.meta.scriptElement.dataset.size || 300
-> 
+>
 >   const image = new Image()
 >   image.src = URL.createObjectURL(blob)
 >   image.width = image.height = size
-> 
+>
 >   document.body.appendChild(image)
 > })()
 > ```
@@ -496,26 +496,26 @@ export default es6
 ## 正则表达式  RegExp
 
 > ```bash
-> ### 正则表达式 RegExp 
-> 
+> ### 正则表达式 RegExp
+>
 > ### 正则作用
 >     - 检索、替换符合某个模式（规则）的文本
 >     - 过滤页面内容中的一些敏感词（替换）
 >     - 从字符串中获取特定部分（提取）
-> 
-> 
-> 
+>
+>
+>
 > ### 创建正则表达式
 > 1. 通过 `RegExp` 对象的构造函数创建正则表达式
 > 		- `let reg = new RegExp(/正则表达式/)`
 > 		- `let reg = new RegExp(字符串, 匹配模式修饰符Flag)`
-> 
+>
 > 2. 通过字面量创建
 > 		- `let reg = /表达式/`
 > 		- `let reg = /正则表达式/匹配模式`
-> 
-> 
-> 
+>
+>
+>
 > ### 字符串的正则方法
 > 字符串对象共有 4 个方法，可以使用正则表达式：match()、replace()、search()和split()。
 > ES6 将这 4 个方法，在语言内部全部调用RegExp的实例方法，从而做到所有与正则相关的方法，全都定义在RegExp对象上。
@@ -523,48 +523,68 @@ export default es6
 >     - String.prototype.replace 调用 RegExp.prototype[Symbol.replace]
 >     - String.prototype.search 调用 RegExp.prototype[Symbol.search]
 >     - String.prototype.split 调用 RegExp.prototype[Symbol.split]
-> 
+>
 > ```
 
-### 匹配模式
+### 匹配模式（标志）
 
-> ```bash
-> ## 匹配模式
-> ### `i`：指忽略大小写 ignore
-> 
-> 
-> ### `g`：指全局匹配模式 global
->     - 全局匹配模式`g`一般用于 `exec()、match()、replace()` 等方法
->     - 全局匹配模式`g`如果用于test()方法会有问题。因为g模式会生成一个`lastindex`参数来存储匹配最后一次的位置。
-> 
-> 
-> ### `y`：指黏连 sticky
->     - 类似全局匹配，后一次匹配都从上一次匹配成功的下一个位置开始；
->     - `g`修饰符只要剩余位置中存在匹配就行，而`y`修饰符确保匹配必须从剩余的第一个位置开始。
-> 
-> 
-> ### `u` 修饰符：含义为 Unicode 模式
-> 		- 用来正确处理大于`\uFFFF` 的 Unicode 字符，即会正确处理四个字节的UTF-16编码。
-> 		- 在 ES5 中不支持四个字节的 UTF-16 编码，会将其识别为两个字符；加上 `u` 修饰符后，ES6就会识别其为一个字符。
-> 		- 如：`/𠮷{2}/u.test('𠮷𠮷') === true`。
->           /^\uD83D/u.test('\uD83D\uDC2A') // false
->           /^\uD83D/.test('\uD83D\uDC2A') // true
-> 
-> 
-> ### `.` 修饰符：含义是除了换行符以外的任意单个字符
-> 		- 对于码点大于0xFFFF的 Unicode 字符，点字符不能识别，必须加上u修饰符。
-> 
-> 
-> 
-> ### `s` 修饰符：dotAll 模式
-> 正则表达式中，点（.）是一个特殊字符，代表任意的单个字符，但是有两个例外。一个是四个字节的 UTF-16 字符，这个可以用u修饰符解决；另一个是行终止符（line terminator character）。
-> 所谓行终止符，就是该字符表示一行的终结。以下四个字符属于“行终止符”。
->     - U+000A 换行符（\n）
->     - U+000D 回车符（\r）
->     - U+2028 行分隔符（line separator）
->     - U+2029 段分隔符（paragraph separator）
-> 
-> ```
+```bash
+## 匹配模式
+### `i`：忽略大小写 ignore(Case Insensitive)
+- 修饰语 `i` 用于忽略大小写。
+- 如：`'The fat cat sat on the mat.'.match(/The/gi)` 会返回 `['The', 'the']`
+
+
+### `g`：全局搜索 global(Global search)
+- 修饰符 `g` 常用于执行一个全局搜索匹配，即（不仅仅返回第一个匹配的，而是返回全部）
+- 全局匹配模式`g`一般用于 `exec()、match()、replace()` 等方法
+- 全局匹配模式`g`如果用于test()方法会有问题。因为g模式会生成一个`lastindex`参数来存储匹配最后一次的位置。
+- 如：`'The fat cat sat on the mat.'.match(/.(at)/g)` 会返回 `['fat', 'cat', 'sat', 'mat']`
+
+
+### `m`: 多行修饰符 (Multiline)
+- 多行修饰符 `m` 常用于执行一个多行匹配。
+- 像 `(^,$)` 用于检查格式是否是在待检测字符串的开头或结尾。但我们如果想要它在每行的开头和结尾生效，我们需要用到多行修饰符 `m`。
+- 如：`'The fat cat sat on the mat.'.match(/.at(.)?$/gm)` 会返回 `['mat.']`
+
+
+### `y`：指黏连 sticky
+    - 类似全局匹配，后一次匹配都从上一次匹配成功的下一个位置开始；
+    - `g`修饰符只要剩余位置中存在匹配就行，而`y`修饰符确保匹配必须从剩余的第一个位置开始。
+
+
+### `u` 修饰符：含义为 Unicode 模式
+		- 用来正确处理大于`\uFFFF` 的 Unicode 字符，即会正确处理四个字节的UTF-16编码。
+		- 在 ES5 中不支持四个字节的 UTF-16 编码，会将其识别为两个字符；加上 `u` 修饰符后，ES6就会识别其为一个字符。
+		- 如：`/𠮷{2}/u.test('𠮷𠮷') === true`。
+          /^\uD83D/u.test('\uD83D\uDC2A') // false
+          /^\uD83D/.test('\uD83D\uDC2A') // true
+
+
+### `.` 修饰符：含义是除了换行符以外的任意单个字符
+		- 对于码点大于0xFFFF的 Unicode 字符，点字符不能识别，必须加上u修饰符。
+
+
+
+### `s` 修饰符：dotAll 模式
+正则表达式中，点（.）是一个特殊字符，代表任意的单个字符，但是有两个例外。一个是四个字节的 UTF-16 字符，这个可以用u修饰符解决；另一个是行终止符（line terminator character）。
+所谓行终止符，就是该字符表示一行的终结。以下四个字符属于“行终止符”。
+    - U+000A 换行符（\n）
+    - U+000D 回车符（\r）
+    - U+2028 行分隔符（line separator）
+    - U+2029 段分隔符（paragraph separator）
+```
+
+| 修饰符 | 描述                                                         |
+| :----- | :----------------------------------------------------------- |
+| `i`    | 忽略大小写。                                                 |
+| `g`    | 全局匹配（查找所有匹配而非在找到第一个匹配后停止）。         |
+| `m`    | 多行匹配：锚点元字符 `^` `$` 工作范围在每行的起始。          |
+| `u`    | Unicode 模式                                                 |
+| `y`    | 粘连（sticky），与 `g` 修饰符类似，也是全局匹配。`y` 修饰符确保匹配必须从剩余的第一个位置开始 |
+| `s`    | ES2018 引入 `s` 修饰符，使得 `.` 可以匹配任意单个字符。 `dotAll` 模式。即点（dot）代表一切字符。 |
+
+
 
 #### `y` 修饰符
 
@@ -576,9 +596,9 @@ export default es6
 > r2.exec(s) // ["aaa"]
 > r1.exec(s) // ["aa"]
 > r2.exec(s) // null
-> 
-> 
-> 
+>
+>
+>
 > /** g修饰符通过 lastIndex 来排查 */
 > const REGEX = /a/g;
 > // 指定从2号位置（y）开始匹配
@@ -591,9 +611,9 @@ export default es6
 > REGEX.lastIndex // 4
 > // 4号位开始匹配失败
 > REGEX.exec('xaya') // null
-> 
-> 
-> 
+>
+>
+>
 > /** y修饰符通过 lastIndex 来排查 */
 > const REGEX = /a/y;
 > // 指定从2号位置开始匹配
@@ -614,31 +634,31 @@ export default es6
 > /** u 修饰符 */
 > /^\uD83D/u.test('\uD83D\uDC2A') // false
 > /^\uD83D/.test('\uD83D\uDC2A') // true
-> 
-> 
+>
+>
 > /** 点修饰符 与 u 修饰符搭配 */
 > /^.$/.test('𠮷') // false
 > /^.$/u.test('𠮷') // true
 > // 上面代码如果不添加u修饰符，正则表达式就会认为字符串为两个字符，从而匹配失败。
-> 
-> 
-> 
+>
+>
+>
 > /** Unicode 字符表示法 */
 > // 使用大括号表示 Unicode 字符，这种表示法在正则表达式中必须加上`u`修饰符，才能识别当中的大括号，否则会被解读为量词。
 > /\u{61}/.test('a') // false
 > /\u{61}/u.test('a') // true
 > /\u{20BB7}/u.test('𠮷') // true
-> 
-> 
-> 
+>
+>
+>
 > /** 量词 */
 > /a{2}/.test('aa') // true
 > /a{2}/u.test('aa') // true
 > /𠮷{2}/.test('𠮷𠮷') // false
 > /𠮷{2}/u.test('𠮷𠮷') // true
-> 
-> 
-> 
+>
+>
+>
 > /** 预定义模式 */
 > /^\S$/.test('𠮷') // false
 > /^\S$/u.test('𠮷') // true
@@ -677,7 +697,7 @@ export default es6
 >
 > ```js
 > const re = /foo.bar/s;
-> 
+>
 > // 另一种写法
 > const re = new RegExp('foo.bar', 's');
 > re.test('foo\nbar') // true
@@ -707,7 +727,7 @@ export default es6
 >
 > ```js
 > const reg = /foo.bar/s
-> 
+>
 > reg.test('foo\nbar') // true
 > reg.dotAll // true
 > reg.flags // 's'
@@ -716,6 +736,21 @@ export default es6
 > `/s` 修饰符和多行修饰符 `/m` 不冲突，两者一起使用的情况下，`.` 匹配所有字符，而 `^` 和 `$` 匹配每一行的行首和行尾。
 
 ### `[]` 元字符
+
+| 元字符   | 描述                                                         |
+| -------- | ------------------------------------------------------------ |
+| `.`      | 匹配任意单个任何字符，除了换行符                             |
+| `[ ]`    | 字符种类。匹配方括号内的任意字符。                           |
+| `[^]`    | 否定的字符种类。匹配除了方括号里的任意字符。                 |
+| `*`      | 匹配 `>=0` 个重复的在 `*` 号之前的字符。                     |
+| `+`      | 匹配 `>=1` 个重复的 `+` 号前的字符。                         |
+| `?`      | 标记 `?` 之前的字符为可选。                                  |
+| `{n, m}` | 匹配 `num` 个大括号之前的字符或字符集 (n <= num <= m)。      |
+| `(xyz)`  | 字符集，匹配与 `xyz` 完全相等的字符串。                      |
+| `\`      | 转义字符，用于匹配一些保留的字符 `[ ] ( ) { } . \* + ? ^ $ \ |
+| `^`      | 从开始行开始匹配。                                           |
+| `$`      | 从末端开始匹配。                                             |
+| `|`      | 匹配符号前或后的字符                                         |
 
 #### [ 值- 值] 范围
 
@@ -734,17 +769,17 @@ export default es6
 > var reg = /[^ab]/; // 规则：字符串中，除了a、b之外，还有没有其他的字符内容？
 > var str = "acb";
 > console.log(reg.test(str)); // 打印结果：true
-> 
+>
 > // 举例2：（可以用来验证某字符串是否为 纯数字）
 > var reg = /[^0-9]/;  // 规则：字符串中，除了数字之外，还有没有其他的内容？
 > var str1 = "1991";
 > var str2 = "199a1";
-> 
+>
 > console.log(reg.test(str1)); // 打印结果：false （如果字符串是 纯数字，则返回 false）
 > console.log(reg.test(str2)); // 打印结果：true
 > ```
 
-### 转义字符
+#### 转义字符
 
 > - `.`(点) ：任意字符
 > - `\d` (数字)：`[0-9]`
@@ -756,21 +791,74 @@ export default es6
 > - ``^` ：行首
 > - `$`：行尾
 
-### 量词
+#### 量词
 
-> - `{n}`：刚好出现 n 次
-> - `{n,m}` 至少出现 n 次，最多 m 次
-> - `{n,}` 至少 n 次，无上限
-> - `*` 任意次 `{0,}` 可以为0次，不建议使用
-> - `？` 零次或一次 `{0,1}`
-> - `+` 一次或任意次`{1,}`
->
-> ```js
-> // 固定电话:010-23456789-1234 或 23456789
-> (0\d{2,3}-)?[1-9]\d{7}(-\d{1,5})?
-> ```
+| `a*`     | 匹配 0 或更多     |
+| -------- | ----------------- |
+| `a+`     | 匹配 1 或更多     |
+| `a?`     | 匹配 0 或 1       |
+| `a{5}`   | 精确匹配 5        |
+| `a{,3}`  | 最多匹配 3 个     |
+| `a{3,}`  | 匹配 3 或更多     |
+| `a{1,3}` | 1 和 3 之间的匹配 |
 
-### RegExp 命名捕获组`?<name>`
+- `{n}`：刚好出现 n 次
+- `{n,m}` 至少出现 n 次，最多 m 次
+- `{n,}` 至少 n 次，无上限
+- `*` 任意次 `{0,}` 可以为0次，不建议使用
+- `？` 零次或一次 `{0,1}`
+- `+` 一次或任意次`{1,}`
+
+```js
+// 固定电话:010-23456789-1234 或 23456789
+(0\d{2,3}-)?[1-9]\d{7}(-\d{1,5})?
+```
+
+
+
+#### 锚点
+
+| `\G`      | 匹配开始       |
+| --------- | -------------- |
+| `^`、`\A` | 字符串开头     |
+| `$`、`\Z` | 字符串结尾     |
+| `\z`      | 字符串绝对结尾 |
+| `\b`      | 单词边界       |
+| `\B`      | 非单词边界     |
+| `^abc`    | 以 `abc` 结尾  |
+| `abc$`    | 以 `abc` 开头  |
+
+
+
+#### 字符集
+
+字符集也叫做字符类。方括号 `[]` 用来指定一个字符集。 在方括号中使用连字符来指定字符集的范围。 在方括号中的字符集不关心顺序。
+
+| `[abc]`       | `a`、`b` 或 `c` 中的任何一种        |
+| ------------- | ----------------------------------- |
+| `[a-z]`       | 介于和 `a` 和 `z` 之间的字符        |
+| `[1-9]`       | 介于和 `1` 和 `9` 之间的数字        |
+| `[[:print:]]` | 包括空格在内的任何可打印字符        |
+| `[^abc]`      | 除了 `a`、`b` 或 `c` 以外的任何字符 |
+
+| `.`  | 除换行符外的所有字符                                         |
+| ---- | ------------------------------------------------------------ |
+| `\w` | 文字（字母、数字、下划线）。相当于 `[A-Za-z0-9_]`            |
+| `\d` | 数字。相当于 `[0-9]`                                         |
+| `\s` | 空白（任何空白字符，包括空格、制表符、换页符等）。相当于 `[ \f\n\r\t\v]` |
+| `\W` | 非文字                                                       |
+| `\D` | 非数字                                                       |
+| `\S` | 非空白                                                       |
+| `\f` | 匹配一个换页符                                               |
+| `\n` | 匹配一个换行符                                               |
+| `\r` | 匹配一个回车符                                               |
+| `\t` | 匹配一个制表符                                               |
+| `\v` | 匹配一个垂直制表符                                           |
+| `\p` | 匹配 CR/LF（等同于 `\r\n`），用来匹配 DOS 行终止符           |
+
+
+
+### 命名捕获组`?<name>`
 
 > JavaScript 正则表达式可以返回一个匹配的对象 —— 一个包含匹配字符串的类数组，例如：以 `YYYY-MM-DD` 的格式解析日期：
 >
@@ -804,7 +892,7 @@ export default es6
 > usDate = d.replace(reDate, '$<month>-$<day>-$<year>')
 > ```
 
-### RegExp Unicode 属性转义
+### Unicode 属性转义
 
 > 在 ES9 之前，在正则表达式中访问 Unicode 字符属性是不被允许的。
 >
@@ -817,57 +905,186 @@ export default es6
 >
 > 此特性可以避免使用特定 Unicode 区间来进行内容类型判断，提升可读性和可维护性。
 
+
+
+### 实例属性
+
+- `ignoreCase` 只读属性。返回一个布尔值，表示是否设置了 `i` 修饰符。
+- `multiline` 只读属性。返回一个布尔值，表示是否设置了 `m` 修饰符。
+- `global` 只读属性。返回一个布尔值，表示是否设置了 `g` 修饰符。
+
+```js
+const reg = /abc/gim
+
+reg.ignoreCase // true
+reg.global // true
+reg.multiline // true
+```
+
+`lastIndex` 可读可写。返回一个数值，表示下一次开始搜索的位置。
+
+```js
+;/(hi)?/g.lastIndex // 0
+```
+
+`source` 只读属性。返回正则表达式的字符串形式（不包括反斜杠）。
+
+```js
+;/abc/gim.source // "abc"
+```
+
+`unicode` 只读属性。属性表明正则表达式带有 `u` 修饰符。
+
+```js
+;/\u{61}/u.unicode // true
+```
+
+`sticky` ES6 新增的只读属性。表示是否设置了`y`修饰符。
+
+```js
+;/foo/y.sticky // true
+```
+
+`flags` ES6 新增。该属性返回一个字符串，由当前正则表达式对象的修饰符组成，以字典序排序（从左到右，即 `"gimuy"`）。
+
+```js
+;/foo/gi.flags / // "gi"
+  bar /
+  myu.flags.flags // "muy"
+```
+
+
+
+### 零宽度断言（前后预查）
+
+先行断言和后发断言都属于**非捕获簇**（不捕获文本 ，也不针对组合计进行计数）。 先行断言用于判断所匹配的格式是否在另一个确定的格式之前，匹配结果不包含该确定格式（仅作为约束）。
+
+例如，我们想要获得所有跟在 `$` 符号后的数字，我们可以使用正后发断言 `(?<=\$)[0-9\.]*`。 这个表达式匹配 `$` 开头，之后跟着 `0,1,2,3,4,5,6,7,8,9,.` 这些字符可以出现大于等于 0 次。
+
+```js
+'$'.match(/(?<=\$)[0-9\.]*/) // ['', index: 1, input: '$', groups: undefined]
+'$1'.match(/(?<=\$)[0-9\.]*/) // ['1', index: 1, input: '$1', groups: undefined]
+```
+
+| 符号  | 描述            |
+| ----- | --------------- |
+| `?=`  | 正先行断言-存在 |
+| `?!`  | 负先行断言-排除 |
+| `?<=` | 正后发断言-存在 |
+| `?<!` | 负后发断言-排除 |
+
+#### `?=` 正先行断言
+
+`?=` 正先行断言，表示第一部分表达式之后必须跟着 `?=...`定义的表达式。
+
+返回结果只包含满足匹配条件的第一部分表达式。 定义一个正先行断言要使用 `()`。在括号内部使用一个问号和等号： `(?=...)`。
+
+正先行断言的内容写在括号中的等号后面。
+
+```js
+'The fat cat sat on the mat.'.match(/(T|t)he(?=\sfat)/) // ['The', 'T', index: 0, input: 'The fat cat sat on the mat.', groups: undefined]
+'The fat cat sat on the mat.'.match(/(T|t)he(?=\sfat)/) // ['The', 'T', index: 0, input: 'The fat cat sat on the mat.', groups: undefined]
+```
+
+#### `?!` 负先行断言
+
+`?!` 负先行断言，用于筛选所有匹配结果，筛选条件为 其后不跟随着断言中定义的格式。 正先行断言定义和负先行断言一样，区别就是 `=` 替换成 `!` 也就是 `(?!...)`。
+
+```js
+;/(T|t)he(?!\sfat)/.exec('The fat cat sat on the mat.') // ['the', 't', index: 19, input: 'The fat cat sat on the mat.', groups: undefined]
+```
+
+#### `?<=` 正后发断言
+
+`?<=` 正后发断言，用于筛选所有匹配结果，筛选条件为 其前跟随着断言中定义的格式。
+
+```js
+;/(?<=(T|t)he\s)(fat|mat)/.exec('The fat cat sat on the mat.') // ['fat', 'T', 'fat', index: 4, input: 'The fat cat sat on the mat.', groups: undefined]
+```
+
+#### `?<!` 负后发断言
+
+`?<!` 负后发断言，用于筛选所有匹配结果，筛选条件为 其前不跟随着断言中定义的格式。
+
+```js
+;/(?<!(T|t)he\s)(cat)/.exec('The fat cat sat on the mat.') // ['cat', undefined, 'cat', index: 8, input: 'The fat cat sat on the mat.', groups: undefined]
+```
+
+
+
+#### 反向断言（lookbehind）
+
+目前 JavaScript 在正则表达式中支持先行断言（lookahead）。这意味着匹配会发生，但不会有任何捕获，并且断言没有包含在整个匹配字段中。例如从价格中捕获货币符号：
+
+```js
+const reLookahead = /\D(?=\d+)/
+const match = reLookahead.exec('$123.89')
+
+console.log(match[0]) // $
+```
+
+ES9 引入以相同方式工作但是匹配前面的反向断言（lookbehind），这样我就可以忽略货币符号，单纯的捕获价格的数字：
+
+```js
+const reLookbehind = /(?<=\D)\d+/
+const match = reLookbehind.exec('$123.89')
+
+console.log(match[0]) // 123.89
+```
+
+以上是**肯定反向断言**，非数字 `\D` 必须存在。同样的，还存在**否定反向断言**，表示一个值必须不存在，例如：
+
+```js
+const reLookbehindNeg = /(?<!\D)\d+/
+const match = reLookbehind.exec('$123.89')
+
+console.log(match[0]) // null
+```
+
+
+
+### 贪婪匹配与惰性匹配（Greedy vs lazy matching）
+
+正则表达式默认采用贪婪匹配模式，在该模式下意味着会匹配尽可能长的子串。我们可以使用 `?` 将贪婪匹配模式转化为惰性匹配模式。
+
+- `*?`：表示某个模式出现 0 次或多次，匹配时采用非贪婪模式。
+- `+?`：表示某个模式出现 1 次或多次，匹配时采用非贪婪模式。
+
+```js
+'The fat cat sat on the mat.'.match(/(.*at)/) // ['The fat cat sat on the mat', 'The fat cat sat on the mat', index: 0, input: 'The fat cat sat on the mat.', groups: undefined]
+
+'The fat cat sat on the mat.'.match(/(.*?at)/) // ['The fat', 'The fat', index: 0, input: 'The fat cat sat on the mat.', groups: undefined]
+```
+
+
+
 ### 检测`test()`
 
-> ```bash
-> ## 检测 test()
-> - `regExp.test(要测试的文本str)`：只要正则表达式匹配，就返回 true
-> - 对于 '非全局匹配' 的正则表达式，test() 只会检测 '是否存在某个目标字符串'(只要存在就为 true)，多次检测的见过都相同。
-> - 注意：全局匹配 g 慎用 test() 方法，因为每次检测的结果可能会出现不一致。
-> ```
->
-> ```js
-> const reg = /test/g;
-> const str = '_test_test';
-> 
-> console.log(reg.test(str)); // true
-> console.log(reg.lastIndex); // 5
-> 
-> console.log(reg.test(str)); // true
-> console.log(reg.lastIndex); // 10
-> 
-> console.log(reg.test(str)); // false
-> console.log(reg.lastIndex); // 0
-> ```
+```bash
+### 检测 test()
+- `regExp.test(要测试的文本str)`：方法返回一个布尔值，表示当前模式是否能匹配参数字符串
+- 对于 '非全局匹配' 的正则表达式，test() 只会检测 '是否存在某个目标字符串'(只要存在就为 true)，多次检测的见过都相同。
+- 注意：全局匹配 g 慎用 test() 方法，因为每次检测的结果可能会出现不一致。
+```
 
-### RegExp 反向断言（lookbehind）
+```js
+/lit/.test('I am a lit') // true
 
-> 目前 JavaScript 在正则表达式中支持先行断言（lookahead）。这意味着匹配会发生，但不会有任何捕获，并且断言没有包含在整个匹配字段中。例如从价格中捕获货币符号：
->
-> ```js
-> const reLookahead = /\D(?=\d+)/
-> const match = reLookahead.exec('$123.89')
-> 
-> console.log(match[0]) // $
-> ```
->
-> ES9 引入以相同方式工作但是匹配前面的反向断言（lookbehind），这样我就可以忽略货币符号，单纯的捕获价格的数字：
->
-> ```js
-> const reLookbehind = /(?<=\D)\d+/
-> const match = reLookbehind.exec('$123.89')
-> 
-> console.log(match[0]) // 123.89
-> ```
->
-> 以上是**肯定反向断言**，非数字 `\D` 必须存在。同样的，还存在**否定反向断言**，表示一个值必须不存在，例如：
->
-> ```js
-> const reLookbehindNeg = /(?<!\D)\d+/
-> const match = reLookbehind.exec('$123.89')
-> 
-> console.log(match[0]) // null
-> ```
+
+const reg = /test/g;
+const str = '_test_test';
+
+console.log(reg.test(str)); // true
+console.log(reg.lastIndex); // 5
+
+console.log(reg.test(str)); // true
+console.log(reg.lastIndex); // 10
+
+console.log(reg.test(str)); // false
+console.log(reg.lastIndex); // 0
+```
+
+
 
 ### 替换`replace()`
 
@@ -875,17 +1092,17 @@ export default es6
 > ## 替换 replace()
 > - `replace()`：将字符串中的指定内容替换为新的内容并返回。不会修改原字符串。
 > - `新的字符串 = 原字符串.replace(被替换的内容, 要替换的新内容)`
-> 
+>
 > - 对于不带标志 `/g` 的正则表达式，replace() 只访问第一个匹配项。
 > - 若在正则表达还是后面加上 `/g`，replace() 会执行多次。
-> 
-> 
-> 
+>
+>
+>
 > ### replaceAll()
 > - `replaceAll()` 替换正则表达式或字符串的所有匹配项。
 > - `String.prototype.replaceAll(searchValue, replaceValue)`
 > 		- `searchValue` 可以是一个字符串或正则表达式。
-> 		
+>
 > 		- `.*` — 单个字符匹配任意次，即贪婪匹配
 >     - `u` — Unicode 模式
 >     - `g` — 全局匹配，查找所有的匹配项
@@ -895,13 +1112,13 @@ export default es6
 > var str2 = "Today is fine day,today is fine day !!!"
 > console.log(str2.replace("today", "tomorrow"));  //只能替换第一个today
 > console.log(str2.replace(/today/gi, "tomorrow")); //这里用到了正则为“全局匹配”模式，才能替换所有的today
-> 
-> 
+>
+>
 > /** replace */
 > const regExp = /^([A-Za-z]+): (.*)$/gu
 > 'first: Jane'.replaceAll(regExp, 'KEY: $1, VALUE: $2') // 'KEY: first, VALUE: Jane'
-> 
-> 
+>
+>
 > /** replaceAll() 对插入命名组的捕获 */
 > const regExp = /^(?<key>[A-Za-z]+): (?<value>.*)$/gu
 > 'first: Jane'.replaceAll(regExp, 'KEY: $<key>, VALUE: $<value>') // 'KEY: first, VALUE: Jane'
@@ -922,14 +1139,14 @@ export default es6
 > ```bash
 > ## 提取 match()
 > - `match()`：根据正则表达式从一个字符串中将符合条件的内容提取出来，封装到一个数组中返回。
-> 
+>
 > 注意：默认情况下，`match()` 方法只找到 '第一个' 符合要求的内容后就停止检索，但是设置正则表达式为 '全局匹配' 模式，就会匹配到所有相关的内容，并以 '数组' 的形式返回。
-> 
-> 
-> 
+>
+>
+>
 > ### 提取所有匹配项 matchAll()
 > - ES2020 增加 `String.prototype.matchAll()` 方法，可以一次性提取所有匹配。不过，它返回的是一个遍历器(Iterator)，而不是数组。
-> 
+>
 > - 由于 `string.matchAll(regex)` 返回的是遍历器，所以可以用 `for...of` 循环取出。相对于返回数组，返回遍历器的好处在于，如果匹配结果是一个很大的数组，那么遍历器比较节省资源。
 > 遍历器可以使用 `...`运算符 和 `Array.from()` 方法来转为数组。
 > ```
@@ -941,8 +1158,8 @@ export default es6
 > var r2 = str.match(/[a-z]/g);  // 设置为“全局匹配”模式，匹配字符串中 所有的小写字母
 > var r3 = str.match(/[a-z]/gi); // 设置多个匹配模式，匹配字符串中 所有的字母（忽略大小写）
 > console.log(r1, r2, r3); // 打印结果：["a"], ["a", "a", "e"], ["a", "a", "e", "A", "B"]
-> 
-> 
+>
+>
 > /** matchAll() */
 > const string = 'test1test2test3';
 > // g 修饰符加不加都可以
@@ -953,15 +1170,15 @@ export default es6
 > // ["test1", "e", "st1", "1", index: 0, input: "test1test2test3"]
 > // ["test2", "e", "st2", "2", index: 5, input: "test1test2test3"]
 > // ["test3", "e", "st3", "3", index: 10, input: "test1test2test3"]
-> 
-> 
+>
+>
 > // 转为数组方法一
 > [...string.matchAll(regex)]
 > // 转为数组方法二
 > Array.from(string.matchAll(regex))
 > ```
 
-### 拆分`split()`
+### 拆分 split
 
 > - `split()` 可以使用字符串或正则表达式指定分隔符来进行拆分字符串成一个数组。
 >   - 如果该正则表达式至少包含一个捕获组，则 `split()` 返回一个数组，其中子字符串与第一个组捕获的内容交错
@@ -971,15 +1188,24 @@ export default es6
 > const regExp = /[A-z]/
 > const result = str.split(regExp) // 参数是一个正则表达式：表示所有字母
 > console.log(result)  // [ '11', '22', '33', '44', '55', '66', '77', '' ]
-> 
-> 
+>
+>
 > const regExp1 = /<(-+)>/gu
 > const str1 = 'a<--->b<->c'
 > str1.split(regExp1) // [ 'a', '---', 'b', '-', 'c' ]
 > ```
 
-### RegExp.prototype.exec()
+### 搜索匹配 exec
 
+> `exec()` 方法在一个指定字符串中执行一个搜索匹配。返回一个结果数组或 `null`。
+>
+> ```js
+> const str = '_x_x'
+>
+> /x/.exec(str) // ['x', index: 1, input: '_x_x', groups: undefined]
+> /y/.exec(str) // null
+> ```
+>
 > 在以下示例中，我们收集数组匹配中组 1 的所有捕获：
 >
 > ```js
@@ -993,7 +1219,7 @@ export default es6
 >   }
 >   return matches
 > }
-> 
+>
 > collectGroup1(/"([^"]*)"/gu, `"foo" and "bar" and "baz"`) // [ 'foo', 'bar', 'baz' ]
 > ```
 >
@@ -1002,13 +1228,121 @@ export default es6
 > ```js
 > const re = /[abc]/
 > re.exec('abc') // [ 'a', index: 0, input: 'abc' ]
-> 
+>
 > re.exec('abc') // [ 'a', index: 0, input: 'abc' ]
 > ```
 >
 > 这对 `collectGroup1()` 来说是个坏消息，因为如果 `regExp` 没有标志 `/g`，它将永远不会完成。
 
-### 常规正则
+#### 捕获组
+
+捕获组允许您获取匹配字符串的特定部分，只需将部分正则表达式括在括号中即可 `(...)`：
+
+```js
+const str = 'JavaScript is a programming language';
+/(JavaScript) is a (.*)/.exec(str)
+
+/*
+  [
+    0: 'JavaScript is a programming language',
+    1: 'JavaScript',
+    2: 'programming language'
+    ...
+  ]
+*/
+```
+
+
+
+#### 非捕获组
+
+非捕获组用于匹配某些内容而不捕获它，例如您并不真正需要的一个 `/` 或匹配组。它们的定义类似于捕获组，但前缀为 `?:`：
+
+```js
+const str = 'JavaScript is a programming language';
+/(?:JavaScript|Python) is a (.+)/.exec(str)
+
+/*
+  [
+    0: 'JavaScript is a programming language',
+    1: 'programming language'
+    ...
+  ]
+*/
+```
+
+
+
+#### 捕获组反向引用
+
+反向引用帮你写较短的正则表达式，通过重复现有的捕获组，使用 `\1`，`\2` 等等。同样地，你也可以重复命名捕捉使用群体 `\k` `<name>`：
+
+```js
+const str = 'JavaScript is a programming language - an awesome programming language JavaScript is';
+/(.+) is a (?<description>.+) - an awesome \k<description> \1 is/.exec(str)
+
+/*
+  [
+    0: 'JavaScript is a programming language - an awesome programming language JavaScript is',
+    1: 'JavaScript',
+    2: 'programming language',
+    groups: {
+      description: 'programming language'
+    }
+    ...
+  ]
+*/
+```
+
+
+
+#### 前瞻
+
+前瞻（Lookaheads）允许您检查某些内容是否遵循特定模式，而无需实际匹配它。您可以使用以下方法创建正先行断言（`?=`）和负先行断言（`?!`）：
+
+```js
+const str = 'JavaScript is not the same as Java and you should remember that';
+
+/Java(?=Script)(.*)/.exec(str)
+/*
+  [
+    0: 'JavaScript is not the same as Java and you should remember that',
+    1: 'Script is not the same as Java and you should remember that'
+    ...
+  ]
+*/
+
+
+/Java(?!Script)(.*)/.exec(str)
+/*
+  [
+    0: 'Java and you should remember that',
+    1: ' and you should remember that'
+    ...
+  ]
+*/
+```
+
+
+
+#### Unicode 字符
+
+最后，可以匹配 unicode 字符，使用 `/p{...}` 和 `/u` 标志。示例包括但不限于 `{Emoji}`，`{Math_Symbols}` 和 `{Script=Greek}`：
+
+```js
+const str = 'Greek looks like this: γεια'
+;/\p{Script=Greek}+/u.exec(str)
+/*
+  [
+    0: 'γεια'
+    ...
+  ]
+*/
+```
+
+
+
+### 常用正则
 
 #### 匹配是否包含汉字
 
@@ -1045,14 +1379,14 @@ const pattern = /\p{Script=Han}/u
 > s.size	// 2
 > s.delete(2)	// s: {1}
 > s.has(2)	// false
-> 
+>
 > const s1 = new Set([1, 2, 3, 4, 2, 1]);	//	{1, 2, 3, 4}
 > const set = new Set(["a", "b", "a", "b"]);	//	{"a", "b"}
 > const arr = [...set];	//把set结构转换为数组结构 [ 'a', 'b' ]
-> 
+>
 > //遍历set数据结构
 > set.forEach(value => { console.log(value) })	//a b
-> 
+>
 > /* 遍历器：只能用for of来遍历 */
 > // Array.keys()指的是返回键名的遍历器
 > for (let s of arr.keys()) {
@@ -1066,7 +1400,7 @@ const pattern = /\p{Script=Han}/u
 > for (let y of arr.entries()) {
 >     console.log(y); // [ 0, 'a' ] [ 1, 'b' ]
 > }
-> 
+>
 > /* map 和 filter方法可间接用于Set */
 > let set = new Set([1, 2, 3, 4, 2, 1])
 > set = new Set([...set].map(val => val * 2))
@@ -1075,21 +1409,21 @@ const pattern = /\p{Script=Han}/u
 >
 > ```js
 > let set1 = new Set([1, 2, 3]), set2 = new Set([2, 1, 4]);
-> // 模拟求交集 
+> // 模拟求交集
 > let intersection = new Set([...set1].filter(x => set2.has(x)));
-> 
+>
 > // 模拟求差集
 > let difference = new Set([...set1].filter(x => !set2.has(x)));
-> 
+>
 > // Set集合与数组互换
 > const arr = Array.from([...set1])
 > const mySet = new Set(arr)
-> 
+>
 > // 数组去重
 > const arr = [123, [1, 2, 3], [1, "2", 3], [1, 2, 3], "meili"]
 > let m  = [...new Set(arr.map(JSON.stringify))].map(JSON.parse);
 > console.log(m)	// [ 123, [ 1, 2, 3 ], [ 1, '2', 3 ], 'meili' ]
-> 
+>
 > // 去除数组重复成员
 > let arr = [...new Set([1, 2, 2, 1])]
 > // 去除字符串的重复字符
@@ -1265,14 +1599,15 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 >     let logoData = weakMap.get(document.getElementById('logo'));
 >     logoData.timesClicked++;
 >   }, false);
->   
->   
+>   ```
+>
+>
 >   /**
 >    * 使用WeakMap 部署私有属性
->    */
->   const _counter = new WeakMap();
->   const _action = new WeakMap();
->   
+>       */
+>     const _counter = new WeakMap();
+>     const _action = new WeakMap();
+>
 >   class Countdown {
 >     constructor(counter, action) {
 >       _counter.set(this, counter);
@@ -1288,13 +1623,14 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 >       }
 >     }
 >   }
->   
+>
 >   const c = new Countdown(2, () => console.log("DONE"));
 >   c.dec();
 >   c.dec();
 >   // DONE
 >   ```
 >
+>   ```
 
 ### WeakRef
 
@@ -1316,8 +1652,8 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 > if(obj) { // target 未被垃圾回收机制清除
 >   /* .... */
 > }
-> 
-> 
+>
+>
 > /**
 >  * @ makeWeakCached() 用于建立一个缓存，缓存里面保存对原始文件的弱引用
 >  */
@@ -1329,7 +1665,7 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 >       const cached = ref.deref();
 >       if (cached !== undefined) return cached;
 >     }
-> 
+>
 >     const fresh = files(key);
 >     cache.set(key, new WeakMap(fresh));
 >     return fresh;
@@ -1357,17 +1693,17 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 > const registry = new FinalizationRegistry(heldValue => {
 >   // ....
 > });
-> 
+>
 > /**
 >  * @registry 注册表实例的registry 方法，来用注册索要观察的目标对象
 >  * theObject是索要观察的目标对象，一旦该对象被垃圾回收机制清除，注册表就会在清除完成后，调用早前注册表的回调函数，并将`some value`作为参数传入回调函数
 > */
 > registry.register(theObject, "some value");
-> 
+>
 > // 第三个参数用于取消已注册的回调函数
 > registry.register(theObject, "some value", theObject);
 > // ...其他操作
-> 
+>
 > // ...过了一段时间，如果你不再关心 theObject
 > registry.unregister(theObject);
 > ```
@@ -1386,21 +1722,21 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 >     const ref = cache.get(key);
 >     if (ref && !ref.deref()) cached.delete(key);
 >   });
-> 
+>
 >   return key => {
 >     const ref = cache.get(key);
 >     if (ref) {
 >       const cached = ref.deref();
 >       if (cached !== undefined) return cached;
 >     }
-> 
+>
 >     const fresh = files(key);
 >     cache.set(key, new WeakMap(fresh));
 >     cleanup.register(fresh, key);
 >     return fresh;
 >   }
 > }
-> 
+>
 > const getImageCached = makeWeakCached(getImage);
 > ```
 
@@ -1457,9 +1793,9 @@ function* gen() {
 const g = gen();
 let
   a = g.next().value, // another()中返回的值
-  b = g.next().value, // 
+  b = g.next().value, //
   c = g.next('world').value, // 把语句 yield a+1 中的值
-  d = g.next('!').value,  // 把语句 yield b 中的值替换为 ! 
+  d = g.next('!').value,  // 把语句 yield b 中的值替换为 !
   e = g.next().value, // return返回的值
   f = g.next().value; // 超出界限
 console.log([a, b, c, d, e, f]);  // [ 'willy', 'hello', 'world1', '!', 'return', undefined ]
@@ -1574,17 +1910,17 @@ console.log(s1.toString() == s2.toString());  // true
 > ```js
 > // 属于另一个代码库
 > const user = {name: 'Willy'}
-> 
+>
 > // 添加标识符
 > const flag = Symbol('flag')
 > user[flag] = 'Their flag value'
-> 
+>
 > // 定义变量
 > const id = Symbol('id')
 > user[id] = 1
-> 
+>
 > console.log(user[id]) // 可以使用 symbol 作为键来访问数据
-> 
+>
 > ```
 >
 > 在上述代码中，由于 `user` 对象属于另一个代码库，所以向它添加字段是不安全的，因为我们可能会影响代码库中的其他预定义行为。但 symbol 属性不会被意外访问到。第三方代码不会知道新定义的 symbol，因此将 symbol 添加到 `user` 对象是安全的。
@@ -1861,19 +2197,19 @@ while (true) {
 > ## 代理对象 Proxy
 > - `Proxy`用于修改某些操作的默认行为，等同于在语言层里面做出修改，所以属于一种“元编程”，即对编程语言进行编程。
 > - Proxy给目标对象设置一层“拦截”，外界对该对象的访问必须通过这层拦截，可对外界的访问进行过滤和改写等自定义操作（代理完成对数据的处理、对构造函数的处理，对数据的验证）
-> 
-> 
+>
+>
 > ## 反射 Reflect
 >   - `Reflect`是一个内置对象，它提供拦截`JavaScript`操作的方法。这些方法与`Proxy handlers`的方法相同
 >   - `Reflect`不是一个函数对象，因此它是不可构造的，所以不能通过`new`来对其进行调用，或作为一个函数来调用。
 >   - `Reflect`的所有属性和方法都是静态的
->   
->   
->   
+>
+>
+>
 >  let p = new Proxy(target, handler);
 > 	- 代理实例中没有指定的`handler`，实际就是操作原对象`target`。
 > 	- `target`：需要使用`Proxy`包装的目标对象（可以是任何类型的对象，包括原生数组、函数、甚至是另一个代理）
-> 	- `handler`：一个对象，其属性是当执行一个操作时定义代理的行为函数（可理解为某种触发器）  
+> 	- `handler`：一个对象，其属性是当执行一个操作时定义代理的行为函数（可理解为某种触发器）
 > ```
 >
 > ```js
@@ -1886,20 +2222,20 @@ while (true) {
 >     if (propKey in target) return target[propKey];
 >     throw new ReferenceError("Prop name \"" + propKey + "\" does not exist.");
 >   },
-> 
+>
 >   apply: function(target, thisBinding, args) {
 >     return args[0];
 >   },
-> 
+>
 >   construct: function(target, args) {
 >     return {value: args[1]};
 >   }
 > };
-> 
+>
 > var fproxy = new Proxy(function(x, y) {
 >   return x + y;
 > }, handler);
-> 
+>
 > fproxy(1, 2) // 1
 > new fproxy(1, 2) // {value: 2}
 > fproxy.prototype === Object.prototype // true
@@ -1941,38 +2277,39 @@ while (true) {
 > - 一般处理异步事件时，使用`Promise`对这个异步操作进行封装（如网络请求）
 >   - 封装一个网络请求函数，因不能立即拿到结果，所以往往会传入另一个函数，在数据请求成功时，将数据通过传入的函数回调出去（网络请求复杂，会耗时过长）
 > - new：构造函数（1.保存一些状态信息；2.执行传入的函数）
-> 
-> 
-> 
+>
+>
+>
 > ### Promise 的状态
 > 1. Promise 对象代表异步操作，有三种状态，且不受外界影响:
 > 		- pending: 等待状态，在等响应跳转。
 > 		- resolved/fulfilled: 满足状态，当我们主动回调resolve时处于该状态，并且会回调`.then()`。
 > 		- rejected: 拒绝状态，当我们主动回调了reject时处于该状态，并且会回调`.catch()`。
 > 	注意：只有异步操作的结果，可以决定当前是哪一种状态，任何其他操作都无法改变这个状态。
-> 
+>
 > 2. 一旦状态改变，就不会再变，任何时候都可以得到这个结果(不可逆)
 >   Promise 对象的状态改变只有两种可能：从 Pending 变为 Resolved 和从 Pending 变为 Rejected。
 >   只要这两种情况发生，状态就凝固(一直保持这个结果，不再改变)。
 >   就算改变已经发生，再对 Promise 对象添加回调函数，也会立即得到这个结果。
 >   这与事件（Event）完全不同的是如果错过了该事件再去监听，是得不到结果的。
-> 
-> 
-> 
+>
+>
+>
 > ### Promise 优缺点
 > - 优点：
 > 		- 一旦状态改变，就不会再变，之后的任何时候都可以得到和这个结果。
 > 		- Promise 对象提供统一的接口，可以将异步操作以同步操作的流程表达出来，避免了层层嵌套的回调函数(解决了回调地狱问题)
->    
+>
 > - 缺点：
 >    - 无法取消 Promise，一旦新建它就会立即执行，无法中途取消。
 >    - 如果不设置回调函数，Promise 内部抛出的错误，不会反应到外部。
 >    - 当处于 Pending 状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）
-> 
-> 
-> 
+>
+>
+>
 > ### Promise 和 setTimeout 的区别
 > Promise 是微任务，setTimeout 是宏任务，同一个事件循环中，promise.then总是先于 setTimeout 执行。
+>
 > ```
 
 ### Promise创建
@@ -2024,29 +2361,29 @@ new Promise((resolve, reject) => {
 >
 > ```js
 > new Promise((resolve, reject) => {
->   setTimeout(() => {
->     resolve('Hello World')
->   }, 1000)
+>     setTimeout(() => {
+>        resolve('Hello World')
+>     }, 1000)
 > }).then(res => {
->   console.log(res + 'start')
->   return res + '111'
+>     console.log(res + 'start')
+>     return res + '111'
 > }).then(res => {
->   console.log(res)
->   return res + '222'
+>     console.log(res)
+>     return res + '222'
 > }).then(res => {
->   console.log(res)
->   return Promise.reject(res + 'error')
+>     console.log(res)
+>     return Promise.reject(res + 'error')
 > }).then(res => {
->   // 此部分不执行，所以不输出
->   console.log(res)
->   return res + '333'
+>     // 此部分不执行，所以不输出
+>     console.log(res)
+>     return res + '333'
 > }).catch(err => {
->   console.log(err)
->   return err + '444'
+>     console.log(err)
+>     return err + '4 44'
 > }).then(res => {
->   console.log(res + 'end');
+>     console.log(res + 'end');
 > })
-> 
+>
 > /* Hello Worldstart
 > Hello World111
 > Hello World111222
@@ -2174,8 +2511,8 @@ const promise3 = new Promise((resolve, reject) => { setTimeout(resolve, 200, 'pr
     console.error(err);
   }
 })()
-// 输出- "promise 2 rejected"   
-// 尽管promise1和promise3可以解决，但promise2拒绝的速度比它们快。   
+// 输出- "promise 2 rejected"
+// 尽管promise1和promise3可以解决，但promise2拒绝的速度比它们快。
 // 因此Promise.race方法将以promise2拒绝
 ```
 
@@ -2194,9 +2531,9 @@ Promise.race([]).then((res) => {
 > ```bash
 > ## Promise.any() 与 AggregateError
 > - Promise.any() 接收一个 Promise 可迭代对象(如数组)，只要其中一个 Promise 成功，就返回那个已经成功的 Promise
-> 
+>
 > - 如果传入的可迭代对象中的所有 Promise 都失败，将返回一个包含所有拒绝值的 `AggregateError` 实例。它是 Error 的一个子类，用于把单一的错误集合在一起。
-> 
+>
 > - 只要一个成功就返回成功，如果所有的都失败才会报错；
 > - 如果 Promise.any 接收的是一个非 promise 数组，则返回成功。
 > ```
@@ -2213,7 +2550,7 @@ Promise.race([]).then((res) => {
 >     console.log(error)
 >   }
 > })()
-> //Output - "promise 2 resolved at 400 ms" 
+> //Output - "promise 2 resolved at 400 ms"
 > ````
 >
 > ```js
@@ -2224,14 +2561,14 @@ Promise.race([]).then((res) => {
 >   Promise.reject('ERROR B'),
 >   Promise.resolve('result'),
 > ]
-> 
+>
 > Promise.any(promises1).then((value) => {
 >   console.log('value: ', value)
 > }).catch((err) => {
 >   console.log('err: ', err)
 > })
 > // 输出结果：value:  result
-> 
+>
 > /* 传入的所有Promises都失败 */
 > const promises2 = [
 >   Promise.reject('ERROR A'),
@@ -2266,7 +2603,7 @@ Promise.race([]).then((res) => {
 > ```js
 > const sleep = (sm) => new Promise((resolve) => setTimeout(() => resolve(sm), sm))
 > const err = (ms) => sleep(ms).then(() => Promise.reject(ms))
-> 
+>
 > Promise.allSettled([1, 2, 3]).then(console.log)
 > Promise.allSettled([sleep(300), sleep(100), sleep(200)]).then(console.log)
 > Promise.allSettled([sleep(3000), err(100), sleep(2000)]).then(console.log)
@@ -2288,13 +2625,13 @@ Promise.race([]).then((res) => {
 >         reject(new Error(req.statusText));
 >       }
 >     };
->     
+>
 >     req.onerror = function () {
 >       reject(new Error(req.statusText));
 >     };
 >   });
 > }
-> 
+>
 > // 返回的还是一个 Promise对象，所以需要用then/catch
 > ajax("./test.php")
 >   .then(function onFulfilled(value) {
@@ -2349,7 +2686,7 @@ Promise.race([]).then((res) => {
 >     console.log('文件读取成功');
 >   }
 > });
-> 
+>
 > // jQuery的 ajax 写法中，成功回调和失败回调，是通过两个回调函数来区分
 > $.ajax({
 >   url: '/ajax.json',
@@ -2371,15 +2708,15 @@ Promise.race([]).then((res) => {
 > 原因是当异步函数抛出异常时，
 >     - 对于宏任务而言，执行函数时已经将该函数推入栈，此时并不在 try-catch 所在的栈，所以 try-catch 并不能捕获到错误。
 >     - 对于微任务而言（如 Promise 的构造函数的异常只能被自带的 reject（.catch函数）捕获到）
-> 
-> 
-> 
+>
+>
+>
 > ### `promiseA().then().catch()` 和 `promiseA.catch().then()` 的区别
 > 		- 前者可以捕获到 `then` 里面的异常；
 > 		- 后者不能捕获到 `then` 里面的异常。
-> 
-> 
-> 
+>
+>
+>
 > ### 可选 catch 绑定
 > 在 ES10 之前，语法迫使我们为 `catch` 子句绑定一个异常变量，不管它是否必要。
 > 很多时候可以注意到，`catch` 块只是多余的。ES10 提案使我们能够完全忽略变量，让我们少关心一件事。
@@ -2397,9 +2734,9 @@ Promise.race([]).then((res) => {
 > ## 异步函数 async/await
 > - `async/await` 是 Generator 的语法糖，是一个自执行的 generate 函数。
 > 		`async function` 代替了 `function *`，`await` 代替了 `yield`，同时也无需自己手写一个自动执行器 run。
-> 
-> 
-> 
+>
+>
+>
 > ```
 >
 > ```js
@@ -2410,8 +2747,8 @@ Promise.race([]).then((res) => {
 >   const res2 = yield readFile(path.resolve(__dirname, './json.js'), { encoding: 'utf8' });
 >   console.log(res2);
 > })();
-> 
-> 
+>
+>
 > /** async...await */
 > const readFile = async () => {
 >   const res1 = await readFile(path.resolve(__dirname, './test.css'), { encoding: 'utf8' });
@@ -2480,7 +2817,7 @@ step3 = (k, m, n) => {
             console.log(`Pormise .then() result is ${result}`);
             console.timeEnd('Pormise .then()');
         })
-    
+
 }
 doIt(); */
 /* 输出 doIt()
@@ -2535,9 +2872,9 @@ async reqHttp = () => {
 > ```bash
 > ## 异步迭代器 for-await...of
 > -  ES2018 引入异步迭代器（asynchronous iterators），这就像常规迭代器，除了`next()` 方法返回一个 Promise。因此 `await` 可以和 `for...of` 循环一起使用，以串行的方式运行异步操作。
-> 
+>
 > - for-await...of 主要用于遍历异步可迭代对象。其会在异步或同步可迭代对象中创建一个迭代循环（String/Array/类数组/Map/Set/自定义可迭代对象）
-> 
+>
 > - 注意1：for-await...of 语句只能在 async function 内使用。
 > - 注意2：如果是寻常的同步遍历方法进行循环，其执行顺序不会按顺序执行。
 > ```
@@ -2550,7 +2887,7 @@ async reqHttp = () => {
 >     }, time)
 >   })
 > }
-> 
+>
 > /** 正确代码示例 */
 > async function test1() {
 >   const arr = [Gen(2000), Gen(100), Gen(3000)]
@@ -2559,18 +2896,18 @@ async reqHttp = () => {
 >   }
 > }
 > test1()	// 输出：2000, 100, 3000
-> 
-> 
+>
+>
 > /** 正确代码示例：for-await...of 的实现原理 */
 > async function test2() {
 >   const arr = [Gen(2000), Gen(100), Gen(3000)]
 >   for (let i of arr) {
 >   	const res = await i
 >     console.log(res)
->   } 
+>   }
 > }
 > test2()	// 输出：100, 2000, 3000
-> 
+>
 > /** 错误代码示例：不会有效执行的循环（不会按顺序执行） */
 > async function test3() {
 >   const arr = [Gen(2000), Gen(100), Gen(3000)]

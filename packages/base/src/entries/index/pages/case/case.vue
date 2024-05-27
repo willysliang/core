@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-12-24 16:31:31
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 14:54:37
+ * @ ModifierTime: 2024-04-16 12:53:07
  * @ Description: case 组件案例
  -->
 
@@ -50,5 +50,6 @@ const showPopver = ref(false)
       :content="`<span style='color:red'>23728379273927398</span>`"
       >assahjskahksj</Popover
     >
+    <div id="root"></div>
   </div>
 </template>

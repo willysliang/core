@@ -20,6 +20,7 @@
     "dev": "pnpm -F \"@willy/base\" dev",
     "build": "pnpm -F \"@willy/base\" build",
     "server": "pnpm -F \"@willy/server\" start",
+    "server:pm2": "pnpm -F \"@willy/server\" pm2",
     "blog:dev": "pnpm -F \"@willy/blog\" dev",
     "blog:build": "pnpm -F \"@willy/blog\" build",
     "blog:deploy": "pnpm -F \"@willy/blog\" deploy",

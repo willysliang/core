@@ -4,17 +4,24 @@
 <!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!--
- * @ Modified by: willysliang
- * @ Modified time: 2023-02-15 17:30:11
- * @ Modified by: willysliang
- * @ Modified time: 2023-02-14 13:40:32
- * @ Description: 测试组件
+ * @ Author: willysliang
+ * @ CreateTime: 2023-02-15 17:30:11
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-05-09 14:23:36
+ * @ Description:测试组件
  -->
 
 <script setup lang="ts">
 import { demoPages } from '../constant'
 import Test from './test.vue'
 import { ref } from 'vue'
+import './test'
+
+// eslint-disable-next-line no-undef
+defineOptions({
+  name: demoPages.TEST.name,
+  inheritAttrs: false,
+})
 
 const isShow = ref<boolean>(false)
 
@@ -26,12 +33,6 @@ const handleClose = () => {
   isShow.value = false
 }
 // import VirtualList from './VirtualList.vue'
-
-// eslint-disable-next-line no-undef
-defineOptions({
-  name: demoPages.TEST.name,
-  inheritAttrs: false,
-})
 
 // const add = () => {
 //   console.log('add')

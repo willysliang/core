@@ -28,6 +28,7 @@
     "@vueuse/core": "^9.2.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
+    "@willy/utils": "workspace:^",
     "axios": "^0.27.2",
     "clipboard": "^2.0.11",
     "cropperjs": "^1.5.13",

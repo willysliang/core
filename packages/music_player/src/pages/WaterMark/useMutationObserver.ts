@@ -11,7 +11,7 @@ import { onMounted } from 'vue'
 /** 检查页面的水印是否被删除 */
 export const useMutationObserver = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const DOMHandler: MutationCallback = (mutationList, observer) => {
+  const DOMHandler: MutationCallback = (mutationList, _) => {
     mutationList.forEach((mutation) => {
       const { target, nextSibling, removedNodes } = mutation
       // 如果列表不为空，说明触发操作的动作是删除

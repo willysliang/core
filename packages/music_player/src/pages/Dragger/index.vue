@@ -1,8 +1,8 @@
 <!--
- * @ Author: willysliang
- * @ Create Time: 2022-11-25 11:07:23
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-01 11:27:21
+ * @ Author: willy
+ * @ CreateTime: 2022-11-25 11:07:23
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-05-09 14:34:43
  * @ Description: 拖拽组件
  -->
 
@@ -12,6 +12,9 @@ import draggable from 'vuedraggable'
 import IconPark from '@comp/common/IconPark.vue'
 import { Bug } from '@icon-park/vue-next'
 
+/**
+ * 注意：如果给每个拖拽的 item 添加上绝对定位，则可以避免在拖拽过程中导致上下拖拽替换的现象
+ */
 const tasklist = ref([
   {
     title: '待处理',
@@ -137,22 +140,22 @@ const group = reactive({
 
 <style lang="scss">
 .board {
-	background-color: #fff;
+  background-color: #fff;
 
-	.task {
-		min-height: 35rem;
+  .task {
+    min-height: 35rem;
 
-		.task-desc {
-			overflow: hidden; // 超出的隐藏显示
-			text-overflow: ellipsis; // 省略号显示溢出部分
-			display: flex;
-			line-clamp: 2;
-			-webkit-line-clamp: 2; // 限制在一个块元素显示的文本行数
-			-webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列顺序
-			word-wrap: break-word;
-			line-height: 1rem;
-			height: 2rem;
-		}
-	}
+    .task-desc {
+      overflow: hidden; // 超出的隐藏显示
+      text-overflow: ellipsis; // 省略号显示溢出部分
+      display: flex;
+      line-clamp: 2;
+      -webkit-line-clamp: 2; // 限制在一个块元素显示的文本行数
+      -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列顺序
+      word-wrap: break-word;
+      line-height: 1rem;
+      height: 2rem;
+    }
+  }
 }
 </style>

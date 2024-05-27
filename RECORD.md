@@ -22,14 +22,50 @@ Description: 日志记录
   - wip 开发中
   - bug 发现但未修复的bug
 
-
 # 更新记录
 
+
+## 2024年5月22日
+  - chore(ci/cd): Node version changes for build docs ci/cd
+
+## 2024年5月13日
+  - feat(utils): [algorithm/handwritingPrinciples/TemplateEngine] JS模板引擎
+
+## 2024年5月9日
+  - feat(mp): [split-view] 拆分视图
+
+## 2024年5月9日
+  - feat(mp/utils): [Tracker] 埋点上报功能整理
+
+## 2024年5月8日
+  - feat(mp): [Dragger] 原生拖拽组件
+
+## 2024年4月26日
+  - feat(utils): [utils/http] AjaxHttp
+## 2024年4月25日
+  - feat(utils): [hooks/tracker] Tracker 日志埋点上报
+
+## 2024年4月22日
+  - chore(server): 引入 pm2 服务
+
+## 2024年4月21日
+  - chore(blog): 设置忽略的 md 文件名的名单
+
+## 2024年4月20日
+  - fix(utils): [FetchRequest] 修复query-string报错
+
+## 2024年4月14日
+  - refactor(utils): [all] 重构 - 优化文件结构
+
+## 2024年4月12日
+  - feat(utils): [algorithm/Classic/KMeans] 聚类算法 - K 均值
+  - feat(utils): [utils/app/favion] 网站图标类
 
 ## 2024年4月11日
   - feat(utils): [http] [FetchRequest] 封装fetch网络请求
   - feat(next): 添加 Nextjs Demo
   - fix(base): [Picker] 修复打包报错问题
+  - build(ci/cd): 添加可触发 CI/CD 的分支
 
 ## 2024年3月29日
   - style(all): [editorconfig] 配置文件格式化

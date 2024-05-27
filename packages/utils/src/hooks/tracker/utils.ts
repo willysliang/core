@@ -1,12 +1,14 @@
 /**
- * @ Author: willy <willysliang@qq.com>
- * @ Create Time: 2023-05-23 20:15:03
- * @ Modifier by: willy <willysliang@qq.com>
- * @ Modifier time: 2023-05-23 20:22:46
- * @ Description: utils - 工具类
+ * @ Author: willy
+ * @ CreateTime: 2024-04-25 15:38:45
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-04-25 18:25:41
+ * @ Description: 埋点的工具方法
  */
 
-/** ====================== PV 相关工具类 ============================= */
+interface CreateHistoryEventReturn<T = any> {
+  (type: T): any
+}
 
 /***
  * Event 创建自定义事件
@@ -15,9 +17,7 @@
  * removeEventListener 删除事件
  * ===> 等同于 发布订阅模式
  */
-interface CreateHistoryEventReturn<T = any> {
-  (type: T): any
-}
+
 export const createHistoryEvent = <T extends keyof History>(
   type: T,
 ): CreateHistoryEventReturn => {
@@ -25,7 +25,6 @@ export const createHistoryEvent = <T extends keyof History>(
   return function (this: any) {
     // eslint-disable-next-line prefer-rest-params
     const res = origin.apply(this, arguments)
-    // 通过 type 来创建自定义事件
     const e = new Event(type)
     window.dispatchEvent(e)
     return res

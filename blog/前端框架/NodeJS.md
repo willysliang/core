@@ -277,7 +277,7 @@ const uselessMiddlewareError = (req, res, next) => {
 
 洋葱模型执行示意图：
 请求 -> 中间件1(前置处理) -> 中间件2(前置处理) -> 中间件3(前置处理) -> 业务处理 -> 中间件3(后置处理) -> 中间件2(后置处理) -> 中间件1(后置处理) -> 最终结果的响应。
-	
+
 
 在洋葱模型中，请求从外层开始，依次经过每个中间件函数的前置处理，然后进入业务处理结果，最后依次经过每个中间件函数的后置处理，最终得到响应结果。
 
@@ -368,7 +368,7 @@ koa.listen(3000)
 
 
 
-## Express 
+## Express
 
 ```bash
 ## Express 中间件
@@ -504,12 +504,12 @@ app.get("/example/c", [cb0, cb1, cb2])
 	- request.url
 	- request.httpVersion
 	- request.headers
-	
+
 2. express 内置
 	- request.path
 	- request.query
 	- request.ip		获取 IP 地址
-	
+
 	- request.get('请求头中某个属性名') 	获取请求头
 
 ```
@@ -719,7 +719,7 @@ const result = ejs.render(
 
 console.log(result)
 
-/* 
+/*
 <!-- 输出 result 转化为以下内容 -->
 <ul>
     <li>a</li>
@@ -750,9 +750,9 @@ const result = ejs.render(
 
 console.log(result)
 
-/* 
+/*
 <!-- 输出 result 转化为以下内容 -->
-<button>登录</button> 
+<button>登录</button>
 */
 
 ```
@@ -848,6 +848,10 @@ mongoose.model(modelName, schemaObj, collection, skipInit, connection)
 
 ```
 
+
+
+### 连接 MongoDB
+
 ```ts
 /**
  * db.connect.js
@@ -882,7 +886,67 @@ module.exports = function (success = null, error = null) {
 
 ```
 
-### 字段定义及约束 Schema 
+
+
+### 删除数据库
+
+```bash
+### 删除库
+在 MongoDB 中，您可以通过切换到该数据库并运行 `db.dropDatabase()` 方法或 `dropDatabase` 命令来删除数据库。
+
+```
+
+#### `db.dropDatabase()` 方法
+
+首先，让我们检查一下我们的数据库列表：
+
+```bash
+$ show databases
+# or
+$ show dbs
+# local  0.000GB
+# user   0.000GB
+# test   0.005GB
+```
+
+切换到 `user` 数据库，使用 `db.dropDatabase()` 方法删除当前数据库。
+
+```bash
+$ use user
+$ db.dropDatabase()
+# { "dropped" : "user", "ok" : 1 }
+```
+
+再次查看数据库列表：
+
+```bash
+$ show databases
+# local  0.000GB
+# test   0.005GB
+```
+
+可以看到，`user` 数据库已删除
+
+#### `dropDatabase` 命令
+
+您也可以使用 `dropDatabase` 命令来做同样的事情。
+
+```bash
+$ use test
+$ db.runCommand( { dropDatabase: 1 } )
+# { "dropped" : "test", "ok" : 1 }
+```
+
+我们的数据库列表再次减少：
+
+```bash
+$ show databases
+# local  0.000GB
+```
+
+
+
+### 字段定义及约束 Schema
 
 ```bash
 ### 模型的配置对象 Schema 和 SchemaType
@@ -1082,8 +1146,8 @@ doc.testId // 313263686172313263686172
 stuModel.find({ $where: 'this.grades == this.test' || 'obj.grages == obj.test' })
 
 // 函数
-stuModel.find({ 
-  $where: () => { return this.grades == this.test || obj.grades === obj.test } 
+stuModel.find({
+  $where: () => { return this.grades == this.test || obj.grades === obj.test }
 })
 
 ```
@@ -1097,12 +1161,12 @@ stuModel.find({
 			- conditions：查询条件
 			- doc：需要修改的数据（插入的数据）
 			- [options]：控制选项
-					- safe (boolean)： 默认为true。安全模式。 
-					- upsert (boolean)： 默认为false。如果不存在则创建新记录。 
-					- multi (boolean)： 默认为false。是否更新多个查询记录。 
-					- runValidators： 如果值为true，执行Validation验证。 
-					- setDefaultsOnInsert： 如果upsert选项为true，在新建时插入文档定义的默认值。 
-					- strict (boolean)： 以strict模式进行更新。 
+					- safe (boolean)： 默认为true。安全模式。
+					- upsert (boolean)： 默认为false。如果不存在则创建新记录。
+					- multi (boolean)： 默认为false。是否更新多个查询记录。
+					- runValidators： 如果值为true，执行Validation验证。
+					- setDefaultsOnInsert： 如果upsert选项为true，在新建时插入文档定义的默认值。
+					- strict (boolean)： 以strict模式进行更新。
 					- overwrite (boolean)： 默认为false。禁用update-only模式，允许覆盖记录。
 
 
@@ -1279,11 +1343,11 @@ stuModel.find((err, docs) => {
 ### 关系型数据库与非关系型数据库的区别
 关系型数据库最典型的数据结构是表，由二维表及其之间的联系所组成的一个数据组织。
   优点：
-    1. 易于维护：都是使用表结构，格式一致。 
+    1. 易于维护：都是使用表结构，格式一致。
     2. 使用方便：SQL语言通用，可用于复杂查询。
-    3. 复杂操作：支持SQL，可用于一个表以及多个表之间非常复杂的查询。 
-  缺点： 
-    1. 读写性能比较差，尤其是海量数据的高效率读写。 
+    3. 复杂操作：支持SQL，可用于一个表以及多个表之间非常复杂的查询。
+  缺点：
+    1. 读写性能比较差，尤其是海量数据的高效率读写。
     2. 固定的表结构，灵活度稍欠。
     3. 高并发读写需求，传统关系型数据库来说，硬盘I/O是一个很大的瓶颈。
 
@@ -1291,7 +1355,7 @@ stuModel.find((err, docs) => {
   优点：
     1. 格式灵活：存储数据的格式可以是key,value形式、文档形式、图片形式等，使而关系型数据库只支持基础类型。
     2. 速度快：nosql 可以使用硬盘或者随机存储器作为载体，而关系型数据库只能使用硬盘。
-    3. 高扩展性。 
+    3. 高扩展性。
     4. 成本低：nosql数据库部署简单，基本都是开源软件。
   缺点：
     1. 不提供sql支持。
@@ -1533,4 +1597,164 @@ const userService = {
 
 module.exports = userService
 ```
+
+
+
+## PM2
+
+```bash
+##  PM2 - Node 应用进程管理器
+- pm2 是 node 进程管理工具，可以利用它来简化很多 node 应用管理的繁琐任务，如性能监控、自动重启、负载均衡等。因为在工作中遇到服务器重启后，正常情况是需要一个个去重新启动每个服务（如`node index.js`的方式启动），这样不仅繁琐、效率低，而且若是服务器端口过多，容易遗忘开启一些服务。
+
+对于 node 的项目，如果报错可能会直接停止导致整个服务器崩溃，一般监控 node 的方案有:
+	- supervisor: 一般用于开发环境的使用。
+	- forever: 管理多个站点，一般每个站点的访问量不大的情况，不需要监控。
+	- PM2: 网站的访问量比较大，需要完整的监控页面。
+
+
+
+### PM2 的特性
+  - 内建负载均衡（使用 Node cluster 集群模块）
+  - 后台运行
+  - 0 秒停机重载（维护升级时不需要停机）
+  - 具有 Ubuntu 和 CentOS 的启动脚本
+  - 停止不稳定的进程（避免无限循环）
+  - 控制台检测
+  - 提供 HTTP API
+  - 远程控制和实时的接口 API（Nodejs 模块,允许和 PM2 进程管理器交互）
+
+
+
+### 安装 & 使用
+  - 全局安装：`$ npm i -g pm2`
+  - 安装 bun: `$ npm i -g bun`
+  - 创建目录：`$ mkdir pm2`
+  - 创建 index.js：`$ echo >index.js`
+  - 查看所在目录是否成功创建目录：`dir`
+  - 初始化生成package.json文件：`$ npm init -y`
+  - 启动服务命令：`$ pm2 start 文件名.js`
+
+```
+
+
+
+### 常用命令
+
+```bash
+### 常用命令
+1. 启动服务：pm2 start app.js
+2. 重启命令：pm2 restart app.js
+
+3. 停止命令：
+    - 停止特定的应用，可以通过 pm2 list 先获取应用的名字或者进程的 id，然后再调用以下命令停止相应的应用
+        pm2 stop app_name | app_id
+    - 停止全部的应用：
+        pm2 stop all
+
+4. 删除命令：
+		 - 删除特定的应用，可以通过 pm2 list 先获取应用的名字或者进程的 id，然后再调用以下命令删除相应的应用
+        pm2 delete app_name | app_id
+    - 停止全部的应用：
+        pm2 delete all
+
+5. 查看存在进程：$ pm2 list
+
+6. 命令行参数
+    可以在最基本的启动命令后面添加一些参数选项，常用的参数选项如下：
+    --watch：监听应用目录的变化，一旦发生变化，自动重启。
+    -i 或 --instance：启用多少个实例，可用于负载均衡，如果 -i 0 或者 -i max，则根据当前机器核数确定实例数目。
+    --ignore-watch：排除监听的目录或文件，可以是特定的文件名，也可以是正则。
+    完整命令示例：pm2 start index2.js --watch -i max -n willy
+
+
+ #### 查看这状态信息
+ - 查看详细状态信息: `$ pm2 show (appname|id)`
+ - 查看所有启动的进程列表: `$ pm2 list`
+
+
+```
+
+
+
+
+
+### 配置文件
+
+```bash
+### 配置文件
+如果使用命令行参数定义一些选项，那么在每次启动进程时，都需要敲上一大堆的命令，非常繁琐；
+所以可以使用配置文件来将命令行参数进行配置，配置文件里的配置项跟命令行参数是基本一致的。
+
+如下 pm2 的配置文件 ecosystem.config.js ，然后在项目中运行 `$ pm2 start ecosystem.config.js`
+
+```
+
+#### ecosystem.config.js文件
+
+````json
+module.exports = {
+  apps: [
+    {
+      name: 'server', // 启动项目的别名
+      script: './app.ts', // 项目的启动文件
+      cwd: './', // 项目的目录位置
+      kill_timeout: 10000,
+      args: '', // 传递给脚本的参数
+      interpreter: '', // 指定的脚本解释器
+      interpreter_args: '', // 传递给解释器的参数
+      wait_ready: true,
+      watch: true, // 是否监听文件改动，而重新启动服务
+      ignore_watch: ['node_modules', 'public', './node_modules', './data'], // 忽略监听的目录
+      exec_mode: 'cluster_mode', // 应用启动模式，支持 fork 和 cluster 模式
+      instances: 'max', // 应用启动实例个数，仅在 cluster 模式有效 默认为 fork
+      error_file: './logs/app-err.log', // 错误日志文件
+      out_file: './logs/app-out.log', // 正常日志文件
+      merge_logs: true, // 设置追加日志而不是新建日志
+      log_date_format: 'YYYY-MM-DD HH:mm:ss', // 指定日志文件的时间格式
+      min_uptime: '60s', // 应用运行少于时间被认为是异常启动
+      max_restarts: 30, // 最大异常重启次数
+      autorestart: true, // 默认为 true, 发生异常的情况下自动重启
+      restart_delay: '60', // 异常重启情况下，延时重启时间
+      env: {
+        NODE_ENV: 'production', // 环境参数，当前指定为生产环境
+        REMOTE_ADDR: '',
+      },
+      env_dev: {
+        NODE_ENV: 'development', // 环境参数，当前指定为开发环境
+        REMOTE_ADDR: '',
+      },
+      env_test: {
+        // 环境参数，当前指定为测试环境
+        NODE_ENV: 'test',
+        REMOTE_ADDR: '',
+      },
+    },
+  ],
+}
+
+````
+
+
+
+#### 高阶应用
+
+```bash
+### 高阶应用
+1. 负载均衡
+	- 可以使用 -i 参数配置集群数，实现负载均衡
+      - $ pm2 start app.js -i 3 // 开启三个进程
+      - $ pm2 start app.js -i max // 根据机器CPU核数，开启对应数目的进程
+
+2. 日志查看
+    - 可以通过打开日志文件查看日志外，还可以通过 pm2 logs 来查看实时日志，这点有对于线上问题排查
+    - $ pm2 logs
+
+3. 监控
+    - 可以使用以下命令，查看当前通过 pm2 运行的进程的状态
+    - $ pm2 monit
+
+
+```
+
+
 
