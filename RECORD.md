@@ -25,6 +25,10 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年5月28日
+  - fix(ci/cd): fix ci/cd build blog error
+  - chore(ci/cd): update the branch that triggers the ci/cd process
+
 ## 2024年5月22日
   - chore(ci/cd): Node version changes for build docs ci/cd
 
