@@ -28,6 +28,7 @@ Description: 日志记录
 ## 2024年5月28日
   - fix(ci/cd): fix ci/cd build blog error
   - chore(ci/cd): update the branch that triggers the ci/cd process
+  - feat(scripts): 添加减小 .git 目录大小的脚本
 
 ## 2024年5月22日
   - chore(ci/cd): Node version changes for build docs ci/cd
