@@ -28,6 +28,7 @@ Description: 记录
 
 ## 2024年5月29日
   - docs(前端框架): [React] 函数式Hooks
+  - docs(构建工具): [Vite] 开发模式下vite比Webpack构建快的原因、Tree-Shaking
 
 ## 2024年5月27日
   - docs(前端基础): 滚动事件、正则匹配
