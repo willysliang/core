@@ -150,88 +150,100 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 
 ```
 
-### 学习准备
 
-> ```js
-> js基础
-> class类的概念
-> class的继承（实现类组件的继承）
-> this的改变（通过call/bind/apply改变函数组件的this）
-> 
-> 原型与原型链
-> 箭头函数（借助箭头函数的不存在this，使得函数的this指向类本身）
-> 箭头函数的返回值（在箭头函数体中使用只写返回值，可以使用小括号包裹内容，小括号会把里面的内容作为一个个主体来进行返回）
-> 展开运算符（展开传入props的参数，不用繁杂的写）
-> 
-> 阻止默认事件触发event.preventDefault() （为了防止表单提交后自动跳转页面）
-> 函数柯里化（使用函数柯里化调用event和传入函数参数，用来表单信息数据的更新；因为函数柯里化可以通过返回函数并调用的方式来执行，所以可以在最底层的返回函数中携带event作为参数使用），因为一般的函数无法在携带参数的情况下使用event参数，而函数柯里化可以
-> 对象应用（使用对象来响应式更新变量，因为对象的属性名其实是字符串的，所以可以通过`[属性名]:值`的方式来使用；注意：`属性名:值`与其不同）
-> 
-> 组件模块化、样式模块化（在CLI中拆分组件，拆分css样式）
-> 同步、异步的区别（因为state的更新是异步的，所以需要使用函数来进行数据的更新来防止数据出错）
-> 连续解构赋值+重命名：let obj={a:{b:{c:1}}}; const {a: {b:{c:value}}} = obj;=>c重命名为value
-> 
-> redux的reducer纯函数应用（redux的reducer必须是一个纯函数，不能修改传来的实参数据）
-> 
-> 高阶函数的应用（通过使用函数柯里化，达到封装组件的效果，使其组件具备复用高效性）
-> 
-> 
-> 求解
-> - 在对象为空的时候是否存在比（遍历+判断是否为空）还好的方式？ 对
-> - 函数式组件因为没有钩子函数，是否还有其他方式达到类似钩子函数的调用？ 一般只有effect
-> - 错误边界在日常开发中是否常用，还是只是为了测试BUG存在或掩盖BUG？ 一般用作掩盖BUG，使得系统上线后让其他模块能正常运行
-> ```
+
+### 前置准备
+
+```bash
+js基础
+class类的概念
+class的继承（实现类组件的继承）
+this的改变（通过call/bind/apply改变函数组件的this）
+
+原型与原型链
+箭头函数（借助箭头函数的不存在this，使得函数的this指向类本身）
+箭头函数的返回值（在箭头函数体中使用只写返回值，可以使用小括号包裹内容，小括号会把里面的内容作为一个个主体来进行返回）
+展开运算符（展开传入props的参数，不用繁杂的写）
+
+阻止默认事件触发event.preventDefault() （为了防止表单提交后自动跳转页面）
+函数柯里化（使用函数柯里化调用event和传入函数参数，用来表单信息数据的更新；因为函数柯里化可以通过返回函数并调用的方式来执行，所以可以在最底层的返回函数中携带event作为参数使用），因为一般的函数无法在携带参数的情况下使用event参数，而函数柯里化可以
+对象应用（使用对象来响应式更新变量，因为对象的属性名其实是字符串的，所以可以通过`[属性名]:值`的方式来使用；注意：`属性名:值`与其不同）
+
+组件模块化、样式模块化（在CLI中拆分组件，拆分css样式）
+同步、异步的区别（因为state的更新是异步的，所以需要使用函数来进行数据的更新来防止数据出错）
+连续解构赋值+重命名：let obj={a:{b:{c:1}}}; const {a: {b:{c:value}}} = obj;=>c重命名为value
+
+redux的reducer纯函数应用（redux的reducer必须是一个纯函数，不能修改传来的实参数据）
+
+高阶函数的应用（通过使用函数柯里化，达到封装组件的效果，使其组件具备复用高效性）
+
+
+求解
+- 在对象为空的时候是否存在比（遍历+判断是否为空）还好的方式？ 对
+- 函数式组件因为没有钩子函数，是否还有其他方式达到类似钩子函数的调用？ 一般只有effect
+- 错误边界在日常开发中是否常用，还是只是为了测试BUG存在或掩盖BUG？ 一般用作掩盖BUG，使得系统上线后让其他模块能正常运行
+```
+
+
 
 ### 概念
 
-> - react是将数据渲染成页面视图的js库，还可在React Native中使用react语法进行移动端开发
-> - 特点：采用**组件化**模式、**声明式编码**，提高开发效率及组件复用率。
-> - react高效：使用虚拟DOM(不直接操作页面真实DOM)和Diffing算法(最小化页面重绘)，尽量减少与真实DOM的交互
-> - 创建虚拟DOM
->   - js：**React.createElement(component, props, ...children)**
->   - JSX：**` const VDOM = <h1>Hello,React</h1>`**
-> - 渲染虚拟DOM到页面： **ReactDOM.render(虚拟DOM’virtualDOM’, 容器‘containerDOM’)**
-> - 使用React开发者工具调试：`React Developer Tools`
-> - `shift + F5`会刷新整个浏览器
+- react是将数据渲染成页面视图的js库，还可在React Native中使用react语法进行移动端开发
+- 特点：采用**组件化**模式、**声明式编码**，提高开发效率及组件复用率。
+- react高效：使用虚拟DOM(不直接操作页面真实DOM)和Diffing算法(最小化页面重绘)，尽量减少与真实DOM的交互
+- 创建虚拟DOM
+    - js：**React.createElement(component, props, ...children)**
+    - JSX：**` const VDOM = <h1>Hello,React</h1>`**
+- 渲染虚拟DOM到页面： **ReactDOM.render(虚拟DOM’virtualDOM’, 容器‘containerDOM’)**
+- 使用React开发者工具调试：`React Developer Tools`
+- `shift + F5`会刷新整个浏览器
+
+
 
 ### JSX
 
-> - JSX：JS+XML，XML早期用于存储和传输数据（后来因JSON格式简便且可跟字符串相互转换被JSON替代）
-> - 使用JSX的原因：因为用纯js写生成的html代码，当为多层标签嵌套时，会产生很多嵌套循环语句，代码相对不简便
-> - jsx语法规则
->   1. 虚拟DOM元素**只能有一个根元素**
->   2. DOM元素标签必须闭合
->   3. 定义虚拟DOM时，不能用引号
->   4. 标签中混入JS**表达式**要用`{}`(注意：只能混入表达式，不能混入语句)
->   5. 样式的类名指定用`className`，而不是class
->   6. 内联样式要用`style={key:value}`的形式写，且样式要用驼峰法
->   7. 标签首字母大小写
->      1. 若小写字母开头，则将该标签转为html中同名标签元素，若html中无该标签对应的同名元素，会导致因该标签不存在Html定义中而报错
->      2. 若大写字母开头，react就会渲染对应的组件，若该组件名没有定义，则报错
+- JSX：JS+XML，XML早期用于存储和传输数据（后来因JSON格式简便且可跟字符串相互转换被JSON替代）
+- 使用JSX的原因：因为用纯js写生成的html代码，当为多层标签嵌套时，会产生很多嵌套循环语句，代码相对不简便
+- jsx语法规则
+    1. 虚拟DOM元素**只能有一个根元素**
+    2. DOM元素标签必须闭合
+    3. 定义虚拟DOM时，不能用引号
+    4. 标签中混入JS**表达式**要用`{}`(注意：只能混入表达式，不能混入语句)
+    5. 样式的类名指定用`className`，而不是class
+    6. 内联样式要用`style={key:value}`的形式写，且样式要用驼峰法
+    7. 标签首字母大小写
+        1. 若小写字母开头，则将该标签转为html中同名标签元素，若html中无该标签对应的同名元素，会导致因该标签不存在Html定义中而报错
+        2. 若大写字母开头，react就会渲染对应的组件，若该组件名没有定义，则报错
+
+
 
 ### 语句与表达式
 
-> - 表达式：一个表达式会产生一个值，可以放在任何一个需要值的地方`a、a+b、demo(1)、arr.map()、function test(){}`
-> - 语句(代码)：`if(){} 、 for(){} 、 switch(){case:xxx}`
-> - 虚拟DOM里面只可以放表达式，不能放语句
->
-> ```js
-> const data = ['Angular', 'React', 'Vue']
-> // 创建虚拟DOM  
-> const VDOM = (
-> 	<div>
->   	<ul>
->   		{ 
->         data.map((item, index) => { 
->   				return <li key={index+item}>item</li> x
-> 				}) 
-> 			}
->   	</ul>
->   </div>
-> )
-> // 渲染虚拟DOM到页面
-> ReactDOM.render(VDOM, document.getElementById('test'))
-> ```
+- 表达式：一个表达式会产生一个值，可以放在任何一个需要值的地方`a、a+b、demo(1)、arr.map()、function test(){}`
+- 语句(代码)：`if(){} 、 for(){} 、 switch(){case:xxx}`
+- 虚拟DOM里面只可以放表达式，不能放语句
+
+```jsx
+const data = ['Angular', 'React', 'Vue']
+
+// 创建虚拟DOM  
+const VDOM = (
+	<div>
+  	<ul>
+  		{ 
+        data.map((item, index) => { 
+  				return <li key={index+item}>{item}</li>
+				}) 
+			}
+  	</ul>
+  </div>
+)
+
+// 渲染虚拟DOM到页面
+ReactDOM.render(VDOM, document.getElementById('test'))
+```
+
+
 
 ### 模块化与组件化
 
@@ -249,86 +261,84 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 
 ### 组件类型
 
-> #### 函数式组件(适用于简单组件的定义)
->
-> - **函数名开头需要大写**
-> - **函数里面的this是undefined**，因为script中定义的`type='text/babel'`，babel编译后会开启成严格模式
->
-> ```js
-> function Demo() {	// 函数开头需要大写（即Deom是一个组件
->   console.log(this)		// undefined
->   return <p>函数式组件[适用于简单组件的定义]</p>
-> }
-> ReactDOM.render(<Demo/>, document.getElementById('app'))
-> ```
->
-> #### 类式组件(适用于复杂组件的定义)
->
-> - 类式组件的类必须继承`React.Compoment`，类中render的this指向实例对象
-> - 不写构造器，则不需要写super
->
-> ```js
-> class MyCompoment extends React.Compoment {
->   render() {
->     console.log(this)		// 指向MyCompoment这个实例对象
->     return <h1>类定义的组件[适用于复杂组件的定义]</h1>
->   }
-> }
-> ReactDOM.render(<MyCompoment/>, document.getElementById('app'))
-> ```
->
-> **渲染类组件标签的基本流程**
->
-> 1. React内部解析组件标签，通过new来创建组件实例对象
-> 2. 通过该实例来调用render()得到虚拟DOM, 并解析为真实DOM
-> 3. 插入到指定的页面元素内部
+#### 类式组件
 
-### 函数组件的props
+- 类式组件的类必须继承`React.Compoment`，类中render的this指向实例对象
+- 不写构造器，则不需要写super
+- 该组件还需要一个 `render()` 方法，该方法返回 HTML。
+- **渲染类组件标签的基本流程**
 
-> - 函数组件可以使用props属性，但不能使用state和refs（除非使用Hooks）
-> - 函数式组件没有自己的this，this为undefined
-> - props属性中的值只读，不可修改
->
-> ```jsx
-> <!-- 准备好一个“容器” -->
-> <div id="test1"></div>
-> 
-> <!-- 引入react核心库 -->
-> <script type="text/javascript" src="../js/react.development.js"></script>
-> <!-- 引入react-dom，用于支持react操作DOM -->
-> <script type="text/javascript" src="../js/react-dom.development.js"></script>
-> <!-- 引入babel，用于将jsx转为js -->
-> <script type="text/javascript" src="../js/babel.min.js"></script>
-> <!-- 引入prop-types，用于对组件标签属性进行限制 -->
-> <script type="text/javascript" src="../js/prop-types.js"></script>
-> 
-> <script type="text/babel">
-> 	//创建组件
-> 	function Person (props){
-> 		const {name,age,sex} = props
-> 		return (
-> 				<ul>
-> 					<li>姓名：{name}</li>
-> 					<li>性别：{sex}</li>
-> 					<li>年龄：{age}</li>
-> 				</ul>
-> 			)
-> 	}
-> 	Person.propTypes = {
-> 		name:PropTypes.string.isRequired, //限制name必传，且为字符串
-> 		sex:PropTypes.string,//限制sex为字符串
-> 		age:PropTypes.number,//限制age为数值
-> 	}
-> 
-> 	//指定默认标签属性值
-> 	Person.defaultProps = {
-> 		sex:'男',//sex默认值为男
-> 		age:18 //age默认值为18
-> 	}
-> 	//渲染组件到页面
-> 	ReactDOM.render(<Person name="jerry"/>,document.getElementById('test1'))
-> </script>
-> ```
+    1. React内部解析组件标签，通过new来创建组件实例对象
+    2. 通过该实例来调用 `render()` 得到虚拟DOM, 并解析为真实DOM
+    3. 插入到指定的页面元素内部
+
+```jsx
+class MyCompoment extends React.Compoment {
+  render() {
+    console.log(this)		// 指向MyCompoment这个实例对象
+    return <h1>类定义的组件[适用于复杂组件的定义]</h1>
+  }
+}
+ReactDOM.render(<MyCompoment/>, document.getElementById('app'))
+```
+
+
+
+#### 函数式组件
+
+- `Function` 组件也返回 HTML，其行为方式与 `Class` 组件非常相似，但 `Function` 组件可以使用更少的代码编写，更易于理解。
+- **函数名开头需要大写**
+- **函数里面的this是undefined**，因为script中定义的`type='text/babel'`，babel编译后会开启成严格模式
+
+```jsx
+function Demo() {	// 函数开头需要大写（即Deom是一个组件
+  console.log(this)		// undefined
+  return <p>函数式组件[适用于简单组件的定义]</p>
+}
+
+ReactDOM.render(<Demo/>, document.getElementById('app'))
+```
+
+
+
+#### 组件中的组件
+
+我们可以在其他组件内部引用组件：
+
+```jsx
+function SayHello() {
+  return <h2>Hello React!</h2>
+}
+
+function Person() {
+  return (
+    <>
+      <h1>我编写的代码输出的第一段内容</h1>
+      <SayHello />
+    </>
+  )
+}
+
+ReactDOM.render(<Person />, document.getElementById('root'))
+```
+
+
+
+#### 文件中的组件
+
+React 就是重用代码，建议将组件拆分为单独的 js 文件中
+
+***\*注意\****：文件名必须以大写字符开头。
+
+```js
+function SayHello() {
+  return <h2>Hello React!</h2>
+}
+
+export default SayHello
+```
+
+
 
 ### 类组件实例的三大属性
 
@@ -495,6 +505,90 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 >   - `myRef = React.createRef() `
 >   - `<input ref={ this.myRef }/>`
 
+
+
+### 单向数据流 props
+
+```bash
+单向数据流意味着数据只有一种方式可以传输到应用程序的其他部分。
+
+
+在 React 中，这意味着：
+  - 状态传递给视图和子组件
+  - 操作由视图触发
+  - 操作可以更新状态
+  - 状态更改被传递给视图和子组件
+
+
+
+### 视图是应用程序状态的结果。状态只能在操作发生时改变。当操作发生时，状态会更新。
+由于单向绑定，数据不能以相反的方式流动（例如，双向绑定（Vue）会发生这种情况），这具有一些关键优势：
+  - 它不易出错，因为您可以更好地控制数据
+  - 调试起来更容易，因为您知道来自哪里
+  - 它更有效，因为库已经知道系统每个部分的边界是什么
+  
+状态始终由一个组件拥有。任何受此状态影响的数据都只能影响它下面的组件：它的子组件。
+
+更改组件的状态不会影响其父组件、同级组件或应用程序中的任何其他组件：仅影响其子组件。
+
+这就是状态经常在组件树中向上移动的原因，以便可以在需要访问它的组件之间共享。
+```
+
+![单向数据流](./image/18281896-156f51f6a5f6afcd.png)
+
+
+
+#### 函数组件的props
+
+- 函数组件可以使用props属性，但不能使用state和refs（除非使用Hooks）
+- 函数式组件没有自己的this，this为undefined
+- props属性中的值只读，不可修改
+
+```jsx
+<!-- 准备好一个“容器” -->
+<div id="test1"></div>
+
+<!-- 引入react核心库 -->
+<script type="text/javascript" src="../js/react.development.js"></script>
+<!-- 引入react-dom，用于支持react操作DOM -->
+<script type="text/javascript" src="../js/react-dom.development.js"></script>
+<!-- 引入babel，用于将jsx转为js -->
+<script type="text/javascript" src="../js/babel.min.js"></script>
+<!-- 引入prop-types，用于对组件标签属性进行限制 -->
+<script type="text/javascript" src="../js/prop-types.js"></script>
+
+<script type="text/babel">
+	//创建组件
+	function Person (props){
+		const {name,age,sex} = props
+		return (
+				<ul>
+					<li>姓名：{name}</li>
+					<li>性别：{sex}</li>
+					<li>年龄：{age}</li>
+				</ul>
+			)
+	}
+	Person.propTypes = {
+		name:PropTypes.string.isRequired, //限制name必传，且为字符串
+		sex:PropTypes.string,//限制sex为字符串
+		age:PropTypes.number,//限制age为数值
+	}
+
+	//指定默认标签属性值
+	Person.defaultProps = {
+		sex:'男',//sex默认值为男
+		age:18 //age默认值为18
+	}
+	//渲染组件到页面
+	ReactDOM.render(<Person name="jerry"/>,document.getElementById('test1'))
+</script>
+```
+
+
+
+
+
 ### 合成事件
 
 > ```bash
@@ -604,6 +698,78 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 > 	)
 > }
 > ```
+
+
+
+### React CSS
+
+#### 内联样式
+
+```bash
+要使用内联样式属性设置元素的样式，值必须是 JavaScript 对象
+
+**注意**：在 JSX 中，JavaScript 表达式写在花括号内，由于 JavaScript 对象也使用花括号，所以样式写在两组花括号内 `{{}}`。
+
+由于内联 CSS 是在 JavaScript 对象中编写的，因此带有连字符分隔符的属性，例如 `background-color`，必须使用驼峰式语法编写
+还可以创建带有样式信息的对象，并在样式属性中引用它
+```
+
+```jsx
+const Header = () => {
+  const myStyle = {
+    color: 'white',
+    backgroundColor: 'plum',
+    padding: '10px',
+    fontFamily: 'Sans-Serif'
+  }
+
+  return (
+    <>
+      <h1 style={{ color: 'green', backgroundColor: 'plum' }}>Hello Style!</h1>
+      <p style={myStyle}>添加一点样式!</p>
+    </>
+  )
+}
+```
+
+
+
+#### CSS 样式表
+
+可以在单独的文件中编写 CSS 样式，只需使用 `.css` 文件扩展名保存文件，然后将其导入您的应用程序
+
+```scss
+// index.scss
+body {
+  background-color: plum;
+  color: white;
+  padding: 40px;
+  font-family: Sans-Serif;
+  text-align: center;
+}
+```
+
+```js
+// main.js
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
+
+const Header = () => {
+  return (
+    <>
+      <h1>Hello Style!</h1>
+      <p>添加一点样式!</p>
+    </>
+  )
+}
+
+ReactDOM.render(<Header />, document.getElementById('root'))
+```
+
+
+
+
 
 ### 组件生命周期
 
@@ -805,6 +971,8 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 >   - componentWillMount：已被标记废弃，在新的异步渲染架构下回触发多次渲染，容易引发 Bug，不利于未来 React 升级后的代码维护。
 > ```
 
+
+
 ### 虚拟DOM与Diffing算法
 
 #### 虚拟DOM
@@ -961,7 +1129,7 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 > ReactDOM.render(<Person/>,document.getElementById('test'))
 > ```
 
-## react CLI
+## React CLI
 
 **创建项目**
 
@@ -1216,9 +1384,88 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 > this.setState((prevState, props) => ({ count: prevState.count + 1 }))
 > ```
 
-## react路由
 
-> ```js
+
+## React 内置组件
+
+### `<>` 和 `React.Fragment`
+
+```bash
+`<>` 是 `React.Fragment` 的简写标签。它允许我们对元素列表进行分组，而无需将它们包装到新节点中。
+基本上，我们应该在任何时候使用 `React.Fragment` 或 `<>`，它可以避免不必要的 `div` 包装器，得到一个更加清晰的标签结构。
+
+它们之间唯一的区别是简写版本不支持 `key` 属性。以下是在多行字符串中插入新行（`br`）标签的常见示例：
+```
+
+```jsx
+return (
+  <>
+  <Header />
+  <Navigation />
+  <Main />
+  <Footer />
+  </>
+)
+```
+
+```jsx
+str.split('\\n').map((item, index) => {
+  return (
+    <Fragment key={index}>
+      {item}
+      <br />
+    </Fragment>
+  )
+})
+```
+
+
+
+### React 严格模式
+
+```bash
+可以使用 `React.StrictMode` 内置组件，用于启用一组检查，以执行 React 并向您发出警告。
+
+
+该组件的主要用例之一是用作自动化的最佳实践、潜在问题和弃用检查。
+它无法捕捉所有内容，但您在这里有很多不错的检查可以帮助您解决开发问题。
+它在 React 16.3 中引入，对生产环境没有影响，因此您可以始终将组件保留在代码库中。在开发中使用，它将在浏览器 JavaScript 控制台中打印有用的警告。
+
+
+一种简单的方法是将整个 App 组件包装在 `main.js` 文件中的 `<React.StrictMode></React.StrictMode>` 中。
+```
+
+```js
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+)
+​```
+
+您也可以通过包装应用程序的一个或多个组件来使用它：
+
+​```js
+import React from 'react'
+
+function Hello() {
+  return (
+    <>
+      <React.StrictMode>{/* ... */}</React.StrictMode>
+    </>
+  )
+}
+```
+
+
+
+## React 路由
+
+> ```bash
 > - SPA单页面：整个应用只有一个完整的页面，点击页面中的链接不会刷新页面，只会做页面的局部刷新，数据都需要通过ajax请求获取，并在前端异步展现
 > 
 > - 路由：一个路由就是一个映射关系(key:value)，key为路径，value可能是function或component
@@ -1295,6 +1542,105 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 >           path: '/routeName'
 >          url: 'routeName'
 > ```
+
+### 基本用法
+
+**路由器**
+
+```bash
+首先用 `<BrowserRouter>` 包装我们的内容，然后定义一个 `<Routes>`。一个应用程序可以有多个 `<Routes>`（本示例仅使用一个）。
+
+`<Route>` 可以嵌套。第一个 `<Route>` 具有 `/` 组件的路径，并渲染 `Layout` 组件。
+
+嵌套的 `<Route>` 继承并添加到父路由。因此，`blogs` 路径与父路径合并，成为 `/blogs`。
+
+`Home` 组件路由没有路径，但有 `index` 属性。将此路由指定为父路由的默认路由，即 `/`。
+
+设置 `path` 为 `*` 将作为任何未定义 URL 的回退。这对于 404 错误页面是很好的。
+```
+
+```js
+// main.js
+import ReactDOM from 'react-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Layout from './pages/Layout.js'
+import Home from './pages/Home.js'
+import Blogs from './pages/Blogs.js'
+import Contact from './pages/Contact.js'
+import NotFoundPage from './pages/NotFoundPage.js'
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path='blogs' element={<Blogs />} />
+          <Route path='contact' element={<Contact />} />
+          <Route path='*' element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
+
+**页面/组件**
+
+```bash
+`Layout` 组件具有 `<Outlet>` 和 `<Link>` 元素。
+	- `<Outlet>` 渲染当前选择的路由。
+	- `<Link>` 用于设置 URL 并跟踪浏览历史记录。
+每当我们链接到内部路径时，我们将使用 `<Link>` 而不是 `<a href="">`。
+`Layout` 路由是一个共享组件，可以在所有页面上插入公共内容，例如导航菜单。
+```
+
+```js
+// Layout.js
+import { Outlet, Link } from 'react-router-dom'
+
+const Layout = () => {
+  return (
+    <>
+      <nav>
+        <ul>
+          <li><Link to='/'>Home</Link></li>
+          <li><Link to='/blogs'>Blogs</Link></li>
+          <li><Link to='/contact'>Contact</Link></li>
+        </ul>
+      </nav>
+      <Outlet />
+    </>
+  )
+}
+
+export default Layout
+```
+
+```js
+// Home.js
+const Home = () => <h1>Home</h1>
+export default Home
+
+
+// Blogs.js
+const Blogs = () => <h1>Blog Articles</h1>
+export default Blogs
+
+
+// Contact.js
+const Contact = () => <h1>Contact Me</h1>
+export default Contact
+
+
+// NotFoundPage.js
+const NotFoundPage = () => <h1>404</h1>
+export default NotFoundPage
+```
+
+
 
 ### 路由传参
 
@@ -1925,132 +2271,382 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 
 ### hooks注意事项
 
-> ```bash
-> ### hooks 使用注意事项
-> 1. useState 的 setter 方法其实是异步的。
-> 2. 有时候使用hook 莫名其妙组件卡顿了，此时可考虑使用 useMemo。
-> 3. useCallback 是缓存函数，useMemo 是缓存函数的返回值。
-> 4. 在组件内部，会成为其他 useEffect 依赖项的方法，建议使用 useCallback 包裹，或直接编写在引用它的 useEffect 中。
-> 5. 如果 function 会作为 props 传递给子组件，一定要使用 useCallback 包裹。
-> 6. 使用高阶函数的场景，建议使用 useMemo。
-> 7. useState 不适用函数就 set 依赖之前状态的状态
->     const [visible, setVisible] = useState(false)
->     setVisible(!visible) // bad
->     setVisible(visible => !visible)	// good
-> 8. 函数式组件自身this为undefined，函数式组件不存在声明周期，但可通过`useEffect`来模拟`componentDidMount()、componentWillUnmount()、componentDidUpdate()`此三个钩子函数。 
->     
->     
-> 
-> ### hooks 中不能使用 if-else 逻辑判断
-> 确保 hook 在每一次渲染中都按照同样的顺序被调用。这让 react 能够在多次的 useState 和 useEffect 调用之间保持 hook 状态的正确。
-> 在 hook/src/index.js 下，找到 useState 源码，底层调用了 useReducer 是通过全局索引去获取 hook state。
-> ```
+```bash
+### hooks 使用注意事项
+1. useState 的 setter 方法其实是异步的。
+2. 有时候使用hook 莫名其妙组件卡顿了，此时可考虑使用 useMemo。
+3. useCallback 是缓存函数，useMemo 是缓存函数的返回值。
+4. 在组件内部，会成为其他 useEffect 依赖项的方法，建议使用 useCallback 包裹，或直接编写在引用它的 useEffect 中。
+5. 如果 function 会作为 props 传递给子组件，一定要使用 useCallback 包裹。
+6. 使用高阶函数的场景，建议使用 useMemo。
+7. useState 不适用函数就 set 依赖之前状态的状态
+    const [visible, setVisible] = useState(false)
+    setVisible(!visible) // bad
+    setVisible(visible => !visible)	// good
+8. 函数式组件自身this为undefined，函数式组件不存在声明周期，但可通过`useEffect`来模拟`componentDidMount()、componentWillUnmount()、componentDidUpdate()`此三个钩子函数。 
+    
+    
+
+### hooks 中不能使用 if-else 逻辑判断
+确保 hook 在每一次渲染中都按照同样的顺序被调用。这让 react 能够在多次的 useState 和 useEffect 调用之间保持 hook 状态的正确。
+在 hook/src/index.js 下，找到 useState 源码，底层调用了 useReducer 是通过全局索引去获取 hook state。
+
+
+
+### 挂钩规则
+钩子有 3 条规则：
+  - Hooks 只能在 React 函数组件内部调用。
+  - Hooks 只能在组件的顶层调用。
+  - Hooks 不能是有条件的
+**注意**：钩子在 React 类组件中不起作用。
+
+```
+
+
 
 ### useState
 
-> ```bash
-> ## State HOOK：让函数组件可以有state状态，并进行状态数据的读写操作
->   - 语法： const [xxx, setXxx] = React.useState(initValue)
-> 
->   - useState()说明
->   		- 参数：第一次初始化指定的值在内部作缓存
-> 			- 返回值：包含2个元素的数组，第一个为内部当前状态值，第二个为更新状态值的函数
-> 
-> 	- setXxx()的两种写法
->   		- setXxx(newValue)：参数为非函数值，直接指定新的状态值，内部用其覆盖原来的状态值
->   		- setXxx(val => newVal)：参数为函数，接收原本状态值，返回新状态值，内部用其覆盖原来的状态值
-> 
-> 
-> ### useState 回调函数的参数
-> 参数只会在初始化渲染中起作用，后续渲染时会被忽略。如果初始 state 需要通过计算才能获得，则可以传入一个函数，在函数中计算并返回初始的 state
-> const [count, setCount] = useState(() => {
-> 	// 编写计算逻辑，并 return 计算之后的初始值
-> 	return props.count
-> })
-> 
-> 
-> ### 使用规则
-> 1. 为了减少团队开发中其他开发者的理解成本，useState变量放到函数组件顶部，且最好增加注释
-> 2. 尽量把 state 往上层组件提取，公共状态提取到公共父组件中。
-> 3. 任何数据，都要保证只有一个数据来源，而且避免直接复制它，也不要随意派生state。很多场景可以使用传递 props、useMemo 解决。
-> 4. state 拆分粒度：
-> 	- 当 state 状态过多，或 state 有关联变动时，可根据数据状态的相关联性放到一个 state 对象中。
-> 	- 复杂状态的处理方式更推荐使用 useReducer
-> 			- 页面里定义了一堆的 state 状态
-> 			- 状态数据之间有联动变更的操作，比如 a 改变，需要变动 b、c 等。
-> ```
+```bash
+### State HOOK：让函数组件可以有state状态，并进行状态数据的读写操作
+  - 语法： const [xxx, setXxx] = React.useState(initValue)
+  - 注意：不应该直接更新状态，需要使用 `setXxx`来更新状态。
+
+  - useState()说明
+  		- 参数：第一次初始化指定的值在内部作缓存
+			- 返回值：包含2个元素的数组，第一个为内部当前状态值，第二个为更新状态值的函数
+
+	- setXxx()的两种写法
+  		- setXxx(newValue)：参数为非函数值，直接指定新的状态值，内部用其覆盖原来的状态值
+  		- setXxx(val => newVal)：参数为函数，接收原本状态值，返回新状态值，内部用其覆盖原来的状态值
+
+
+#### useState 回调函数的参数
+参数只会在初始化渲染中起作用，后续渲染时会被忽略。如果初始 state 需要通过计算才能获得，则可以传入一个函数，在函数中计算并返回初始的 state
+const [count, setCount] = useState(() => {
+	// 编写计算逻辑，并 return 计算之后的初始值
+	return props.count
+})
+
+
+#### 使用规则
+1. 为了减少团队开发中其他开发者的理解成本，useState变量放到函数组件顶部，且最好增加注释
+2. 尽量把 state 往上层组件提取，公共状态提取到公共父组件中。
+3. 任何数据，都要保证只有一个数据来源，而且避免直接复制它，也不要随意派生state。很多场景可以使用传递 props、useMemo 解决。
+4. state 拆分粒度：
+	- 当 state 状态过多，或 state 有关联变动时，可根据数据状态的相关联性放到一个 state 对象中。
+	- 复杂状态的处理方式更推荐使用 useReducer
+			- 页面里定义了一堆的 state 状态
+			- 状态数据之间有联动变更的操作，比如 a 改变，需要变动 b、c 等。
+```
+
+```jsx
+import { useState } from 'react'
+import ReactDOM from 'react-dom'
+
+function FavoriteColor() {
+  const [color, setColor] = useState('red')
+
+  const [user, setUser] = useState({
+    name: 'O.O',
+    age: 20,
+    year: 1998
+  })
+
+  const updateUser = () => {
+    setUser((previousState) => {
+      return { ...previousState, age: 18 }
+    })
+  }
+
+  return (
+    <>
+    <h1>我最喜欢的颜色是 {color}!</h1>
+    <button type='button' onClick={() => setColor('blue')}>Blue</button>
+    <p>个人信息: {user.name}，今年{user.age}岁，生于{user.year}年</p>
+    <button onClick={updateUser}>18</button>
+    </>
+  )
+}
+
+ReactDOM.render(<FavoriteColor />, document.getElementById('root'))
+```
+
+
 
 ### useRef
 
-> ```bash
-> ## Ref Hook：可在函数组件中存储/查找组件内的标签或任意其他数据
-> 	- 语法：const refContainer = useRef()
-> 	- 作用：保存标签对象，功能与React.createRef()一样
-> 
-> 
-> ### 使用场景
-> 1. 指向组件 dom 元素
->     - 获取组件元素的属性值。
->     - 用以操作目标指向dom的API。
->       export const Page = () => {
->         const myRef = useRef(null)
->         useEffect(() => {
->           myRef.current.focus()	// 目标 input 聚焦
->         })
->         return (<input ref={myRef} type="text" />)
->       }
-> 
-> 2. 存放变量
->     - 可以保存任何可变值，且值不会进入依赖收集项内。
->     - 类似 class 组件使用实例字段的方式，类似于 this，在重渲染时，每次都会返回相同的引用。
->         import React, { useRef } from 'react'
->         const LikeButton: React.FC = () => {
->           const like = useRef(0) // 定义一个实例变量
->           return (<button onClick={() => { like.current = like.current + 1 }}>{like.current}赞</button>)
->         }
->         export default LikeButton
-> ```
+```bash
+### Ref Hook：可在函数组件中存储/查找组件内的标签或任意其他数据
+	- 语法：const refContainer = useRef()
+	- `useRef` 钩子允许在渲染之间持久化值。
+	- 它可用于存储在更新时不会导致重新渲染的可变值，也可用于直接访问 DOM 元素（功能与React.createRef()一样）
+	- 注意：`useRef()` 只返回一个为 `current` 的对象。
+
+
+#### 使用场景
+1. 指向组件 dom 元素
+    - 获取组件元素的属性值。
+    - 用以操作目标指向dom的API。
+      export const Page = () => {
+        const myRef = useRef(null)
+        useEffect(() => {
+          myRef.current.focus()	// 目标 input 聚焦
+        })
+        return (<input ref={myRef} type="text" />)
+      }
+
+2. 存放变量
+    - 可以保存任何可变值，且值不会进入依赖收集项内。
+    - 类似 class 组件使用实例字段的方式，类似于 this，在重渲染时，每次都会返回相同的引用。
+        import React, { useRef } from 'react'
+        const LikeButton: React.FC = () => {
+          const like = useRef(0) // 定义一个实例变量
+          return (<button onClick={() => { like.current = like.current + 1 }}>{like.current}赞</button>)
+        }
+        export default LikeButton
+```
+
+
+
+#### 不会导致重新渲染
+
+如果我们试图计算应用程序使用 `useState` 钩子渲染的次数，将陷入无限循环，因为这个钩子本身会导致重新渲染。
+
+为了避免这种情况，可以使用 `useRef` 钩子。
+
+- `useRef` 创建了一个 `renderCount` 引用，它可以在组件的整个生命周期内保持持久，不会因为组件的重新渲染而丢失其值。
+- `renderCount.current += 1`：每次组件渲染时，增加 `renderCount` 的值。
+
+```jsx
+import React, { useState, useRef } from 'react';
+import ReactDOM from 'react-dom/client';
+
+function App() {
+  const [inputValue, setInputValue] = useState('');
+  const renderCount = useRef(0);
+  
+  // 更新渲染计数
+  renderCount.current += 1;
+
+  return (
+    <>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h1>渲染次数: {renderCount.current}</h1>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+```
+
+
+
+#### 访问 DOM 元素
+
+在 React 中处理所有 DOM 操作，可以向元素添加 `ref` 属性，以便直接在 DOM 中访问它。
+
+```js
+import { useRef } from 'react'
+import ReactDOM from 'react-dom'
+
+function App() {
+  const inputElement = useRef()
+
+  const focusInput = () => inputElement.current.focus()
+
+  return (
+    <>
+      <input type='text' ref={inputElement} />
+      <button onClick={focusInput}>聚焦 input</button>
+    </>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
+
+
+
+#### 跟踪状态变化
+
+`useRef` 钩子还可用于跟踪先前的状态值。这是因为我们能够在渲染之间持久化 `useRef` 值。
+
+```js
+import { useState, useEffect, useRef } from 'react'
+import ReactDOM from 'react-dom'
+
+function App() {
+  const [inputValue, setInputValue] = useState('')
+  const previousInputValue = useRef('')
+
+  useEffect(() => {
+    previousInputValue.current = inputValue
+  }, [inputValue])
+
+  return (
+    <>
+      <input
+        type='text'
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h2>当前值: {inputValue}</h2>
+      <h2>先前值: {previousInputValue.current}</h2>
+    </>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
+
+
 
 ### useEffect
 
-> ```bash
-> ## Effect HOOK：可让你在函数组件中执行副作用操作（用于模拟类组件中的生命周期钩子，类似vue的watch）
-> 	- React中的副作用操作
->       1. 发ajax请求数据获取
->       2. 设置订阅、启动定时器
->       3. 手动更改真实DOM
->   - 可把useEffect Hook看做如下三个函数的组合
->   		1. componentDidMount()
-> 			2. componentDidUpdate()
-> 			3. componentWillUnmount()
-> 		
-> 
-> ### 参数说明
-> - 第一个参数：柯里化函数
-> - 第二个参数一定是一个数组，不写则默认监听所有状态，使得回调函数只在初始化时执行一次，如果写内容，则只监听所定义变量的状态是否更新，并在其内容改变时触发
-> 
->   - 语法及说明：
-> 		useEffect(() => { 
->       // 此为模拟componentDidMount钩子函数，在此执行任何带副作用操作
->       return () = > { // 在组件卸载钱执行
->         // 此为模拟componentWillUnmount钩子函数，在此做清除定时器、取消订阅等收尾工作
->       }
->     }, [stateValue]) // 如果指定的是[]，回调函数只会在第一次render()后执行
-> 
-> 
-> ### useEffect 引用类型更新 浅比较问题
-> useEffect、useCallback、useMemo 等依赖项都是钱比较，对于复杂对象，如果只用到了某些属性，则依赖项完全可以只添加对应属性
->     useEffect(() => {
->       // do Something ...
->     }, [info.name, info.age])
-> 
-> 
-> ### 在依赖列表中省略函数是否安全
-> 在 useEffect 中调用函数，尽量写在 useEffect 中再自调用，防止因为该函数中存在未知变量变化
-> 
-> [在依赖列表中省略函数是否安全](https://zh-hans.reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies)
-> 
-> ```
+```bash
+### Effect HOOK：允许您在函数组件中执行副作用操作（用于模拟类组件中的生命周期钩子，类似vue的watch）
+	- React中的副作用操作
+      1. 发ajax请求获取数据
+      2. 设置订阅、启动定时器
+      3. 直接手动更改真实DOM
+  - 可把useEffect Hook看做如下三个函数的组合
+  		1. componentDidMount()
+			2. componentDidUpdate()
+			3. componentWillUnmount()
+		
+
+#### 参数说明
+- 第一个参数：柯里化函数
+- 第二个参数一定是一个数组，不写则默认监听所有状态，使得回调函数只在初始化时执行一次，如果写内容，则只监听所定义变量的状态是否更新，并在其内容改变时触发
+
+  - 语法及说明：
+		useEffect(() => { 
+      // 此为模拟componentDidMount钩子函数，在此执行任何带副作用操作
+      return () = > { // 在组件卸载钱执行
+        // 此为模拟componentWillUnmount钩子函数，在此做清除定时器、取消订阅等收尾工作
+      }
+    }, [stateValue]) // 如果指定的是[]，回调函数只会在第一次render()后执行
+
+
+#### useEffect 引用类型更新 浅比较问题
+useEffect、useCallback、useMemo 等依赖项都是钱比较，对于复杂对象，如果只用到了某些属性，则依赖项完全可以只添加对应属性
+    useEffect(() => {
+      // do Something ...
+    }, [info.name, info.age])
+
+
+#### 在依赖列表中省略函数是否安全
+在 useEffect 中调用函数，尽量写在 useEffect 中再自调用，防止因为该函数中存在未知变量变化
+
+[在依赖列表中省略函数是否安全](https://zh-hans.reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies)
+
+```
+
+```jsx
+import { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
+function Timer() {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCount((count) => count + 1)
+    }, 1000)
+  }, []) // <- 在此处添加空括号
+
+  return <h1>我渲染了 {count} 次!</h1>
+}
+
+ReactDOM.render(<Timer />, document.getElementById('root'))
+```
+
+
+
+#### 控制副作用何时运行
+
+`useEffect` 在每个渲染上运行。这意味着当计数发生变化时，会发生渲染，然后触发另一个效果。
+
+我们应该始终包含接受数组的第二个参数。我们可以选择将依赖项传递给该数组中的 `useEffect`。
+
+```js
+// 没有任何依赖：
+useEffect(() => {
+  // 在每个渲染上运行
+})
+
+
+// 一个空数组：
+useEffect(() => {
+  // 仅在第一次渲染时运行
+}, [])
+
+
+// `prop` 或 `state` 值：
+useEffect(() => {
+  // 在第一次渲染和任何依赖项值更改时运行
+}, [prop, state])
+```
+
+```jsx
+import { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
+function Counter() {
+  const [count, setCount] = useState(0)
+  const [calculation, setCalculation] = useState(0)
+
+  useEffect(() => {
+    setCalculation(() => count * 2)
+  }, [count]) // <- 在这里添加 count 变量
+
+  return (
+    <>
+      <p>总数: {count}</p>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
+      <p>计算: {calculation}</p>
+    </>
+  )
+}
+
+ReactDOM.render(<Counter />, document.getElementById('root'))
+```
+
+
+
+#### 清理 Effect
+
+有些效果需要清理以减少内存泄漏。
+超时、订阅、事件监听器和其他不再需要的效果应该被处理。
+可以通过在 `useEffect` 钩子的末尾包含一个返回函数来实现这一点。
+
+```jsx
+import { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
+function Timer() {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      setCount((count) => count + 1)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  return <h1>我渲染了 {count} 次!</h1>
+}
+
+ReactDOM.render(<Timer />, document.getElementById('root'))
+```
+
+
 
 #### 异步更新 - 竞态问题
 
@@ -2170,58 +2766,7 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 > export default Demo
 > ````
 
-### 自定义Hooks组件
 
-> ```jsx
-> /* 自定义Hooks组件：输入框值响应式Demo */
-> import React, { useState } from "react";
-> 
-> /***
->  * 自定义HOOK
->  * - 当内容改变，会触发输入框值的响应式更新
->  * - 当输入框失去焦点，会触发内容提交
->  * - 输入框触发提交事件时，会清空输入框
-> */
-> const TodoForm = ({ onSubmit }) => {
->   /* 封装，响应式定义值与获取值 */
->   const useInputValue = (initVal) => {
->     const [value, setValue] = useState(initVal);
->     return {
->       value,
->       onChange: (e) => setValue(e.target.value),
->       reset: () => setValue(""), // 清空输入框
->       onBlur: () => submit(), // 当失去焦点就触发提交
->     };
->   };
-> 
->   const { reset, ...text } = useInputValue(""); // 封装函数响应式更新数据
->   const submit = () => {
->     onSubmit(text.value);
->     reset();
->   };
-> 
->   return (<input type="text" {...text} />);
-> };
-> 
-> /* 调用自定义HOOK组件 */
-> const TodoList = () => {
->   const [todos, setTodos] = useState([]);
->   const setValue = (text) => {
->     setTodos([{ text }, ...todos]);
->   };
-> 
->   return (
->     <>
->     <TodoForm onSubmit={setValue} />
->     <div>
->       {todos.map((item, i) => <p key={i}>{item.text}</p>)}
->     </div>
->     </>
->   );
-> };
-> 
-> export default TodoList;
-> ```
 
 ### React.memo()
 
@@ -2242,163 +2787,477 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 
 ### useMemo
 
-> ```bash
-> ## useMemo 用法
-> 1. 缓存复杂计算值，减少不必要的状态管理，同时可避免维护不必要的派生 state
-> 下面的money字段通过useMemo缓存，只有info.num变更才会重新计算，减少不必要计算的同时还避免维护不必要的派生state
->     export defualt Demo = ({ info }) => {
->       const money = useMemo(() => {
->         // 计算 渲染值
->         const res = calculateNum(info.num)
->         return res
->       }, [info.num])
->       return <div>价格是：{money}</div>
->     }
-> 
-> 
-> 
-> 2. 缓存部分 jsx 或 组件，避免不必要的渲染
-> 下面的这段代码，一来可以通过在部分状态数据不变时，缓存对应的jsx；一来可以适当拆分复杂逻辑，使组件更简洁；
-> 当然处理逻辑复杂到一定程度，还是推荐抽离成独立组件，并通过memo包裹子组件；
->     export default Demo = ({ info }) => {
->       const topEl = useMemo(() => {
->         <div>
->           <p>用户信息</p>
->           {/* 渲染用户数据... */}
->         </div>
->       }, [info.user])
->       return <div> 
->         {topEl} 
->         {/* 渲染列表数据... */} 
->       </div>
->     }
-> ```
+```bash
+### `useMemo` Hooks
+- `useMemo` 钩子返回一个已记忆的值，它仅在其中一个依赖项更新时运行，提高性能。
+- `useMemo` 钩子可以用来防止昂贵的、资源密集型的函数不必要地运行。
+- `useMemo` 和 `useCallback` 钩子类似。
+		- `useMemo` 返回一个已记忆的值，
+	  - `useCallback` 返回一个已记忆的函数。
+
+
+
+### useMemo 用法
+1. 缓存复杂计算值，减少不必要的状态管理，同时可避免维护不必要的派生 state
+下面的money字段通过useMemo缓存，只有info.num变更才会重新计算，减少不必要计算的同时还避免维护不必要的派生state
+    export defualt Demo = ({ info }) => {
+      const money = useMemo(() => {
+        // 计算 渲染值
+        const res = calculateNum(info.num)
+        return res
+      }, [info.num])
+      return <div>价格是：{money}</div>
+    }
+
+
+
+2. 缓存部分 jsx 或 组件，避免不必要的渲染
+下面的这段代码，
+	- 可以通过在部分状态数据不变时，缓存对应的jsx；
+	- 可以适当拆分复杂逻辑，使组件更简洁；
+当然处理逻辑复杂到一定程度，还是推荐抽离成独立组件，并通过memo包裹子组件；
+    export default Demo = ({ info }) => {
+      const topEl = useMemo(() => {
+        <div>
+          <p>用户信息</p>
+          {/* 渲染用户数据... */}
+        </div>
+      }, [info.user])
+      return <div> 
+        {topEl} 
+        {/* 渲染列表数据... */} 
+      </div>
+    }
+```
+
+```js
+import { useState, useMemo } from 'react'
+import ReactDOM from 'react-dom'
+
+const expensiveCalculation = (num) => {
+  console.log('计算...')
+  for (let i = 0; i < 1000000000; i++) {
+    num += 1
+  }
+  return num
+}
+
+const App = () => {
+  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState([])
+  
+  const calculation = useMemo(() => expensiveCalculation(count), [count])
+
+  const increment = () => {
+    setCount((c) => c + 1)
+  }
+  const addTodo = () => {
+    setTodos((t) => [...t, 'New Todo'])
+  }
+
+  return (
+    <div>
+      <div>
+        <h2>Todos List</h2>
+        {todos.map((todo, index) => {
+          return <p key={index}>{todo}</p>
+        })}
+        <button onClick={addTodo}>新增 Todo</button>
+      </div>
+      <hr />
+      <div>
+        Count: {count}
+        <button onClick={increment}>+</button>
+        <h2>昂贵的计算</h2>
+        {calculation}
+      </div>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
+
+
 
 ### useCallback
 
-> - 存在缓存的行为，函数的第二个参数决定是否允许第一个参数执行
->
->   ```js
->   const memoizedCallback = useCallback(
->     () => {
->       doSomething(a, b);
->     },
->     [a, b],
->   );
->   ```
->
-> ````jsx
-> import React, { useCallback, useState } from "react";
-> 
-> export default function FuncHooksDemo() {
->   const [count, setCount] = useState(0);
->   const [sum, setSum] = useState(0);
-> 
->   return (
->     <>
->       <p>如果count发生变化，sum按钮点击才会发生变化</p>
->       <p>count:{count}sum:{sum}</p>
->       <button onClick={() => setCount(count + 1)}>CLICK COUNT</button>
->       <button onClick={useCallback(() => setSum(sum + count), [count])}>
->         CLICK SUM
->       </button>
->     </>
->   );
-> }
-> ````
+```bash
+### `useCallback` Hooks
+React `useCallback` Hook 返回一个已记忆的回调函数。这使我们能够隔离资源密集型函数，以便它们不会在每次渲染时自动运行。
+
+  - 存在缓存的行为，函数的第二个参数决定是否允许第一个参数执行
+  - 作用：使用 `useCallback` 钩子可以防止组件被重新创建并渲染，除非其 `props` 已更改
+
+
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+
+```jsx
+// main.js
+import { useState, useCallback } from 'react'
+import ReactDOM from 'react-dom'
+import Todos from './Todos'
+
+const App = () => {
+  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState([])
+
+  const increment = () => {
+    setCount((c) => c + 1)
+  }
+
+  /*
+  // 即使 `todos` 没有更改，`Todos` 组件也会重新渲染。
+  // 使用的是 `memo`，所以 `Todos` 组件不应该重新渲染，因为当 `count `增加时，`todos` 状态和 `addTodo` 函数都没有改变。
+  // 每次组件重新渲染时，都会重新创建其函数。因此，`addTodo` 函数实际上发生了变化
+  const addTodo = () => {
+    setTodos((t) => [...t, 'New Todo'])
+  }
+  */
+  
+  // 使用 `useCallback` 钩子可以防止 `Todos` 组件不必要地重新渲染
+  const addTodo = useCallback(() => {
+    setTodos((t) => [...t, 'New Todo'])
+  }, [todos])
+
+
+  return (
+    <>
+    <Todos todos={todos} addTodo={addTodo} />
+    <div>
+      次数: {count}
+      <button onClick={increment}>+</button>
+    </div>
+    </>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
+
+```js
+// Todos.js
+import { memo } from 'react'
+
+const Todos = ({ todos, addTodo }) => {
+  console.log('子渲染')
+  return (
+    <>
+      <h2>Todos List</h2>
+      {todos.map((todo, index) => {
+        return <p key={index}>{todo}</p>
+      })}
+      <button onClick={addTodo}>添加 Todo</button>
+    </>
+  )
+}
+
+export default memo(Todos)
+```
+
+
 
 ### useContext
 
-> ```bash
-> ## 作用
-> 获取上层组件传递下来的上下文对象（一般是获取通过 Provider 提供的数据）
-> 
-> ## 使用步骤
-> 1. 使用 createContext 创建 Context 对象并导出
-> 2. 在顶层组件通过 Provider 提供数据
-> 3. 在底层组件接收顶层导出的 Context 对象，并通过 useContext 函数获取数据
-> 
-> 
-> ## 替代 redux
-> 可以使用 useReducer + useContext 来替代 redux
-> ```
->
-> ```jsx
-> import { createContext, useContext } from 'react'
-> 
-> /** 创建 Context 对象 */
-> export const Context = createContext('')
-> 
-> function Bar() {
->   /** 底层组件通过 useContext 函数获取数据 */
->   const name = useContext(Context)
->   return <div>Bar {name}</div>
-> }
-> 
-> function Foo() {
->   return <div>Foo <Bar /></div>
-> }
-> 
-> function App() {
->   return (
->     // 顶层组件通过 Provider 提供数据
->     <Context.Provider value={'this is name'}>
->       <div><Foo /></div>
->     </Context.Provider>
->   )
-> }
-> 
-> export default App
-> ```
+```bash
+### `useContext` Hooks
+React Context 是一种全局管理状态的方法。
+与单独使用 `useState` 相比，它可以与 `useState` 钩子一起使用，在深度嵌套的组件之间更容易地共享状态。
+
+#### 作用
+获取上层组件传递下来的上下文对象（一般是获取通过 Provider 提供的数据）
+
+
+#### 使用步骤
+1. 使用 createContext 创建 Context 对象并导出
+2. 在顶层组件通过 Provider 提供数据
+3. 在底层组件接收顶层导出的 Context 对象，并通过 useContext 函数获取数据
+
+
+### 问题
+状态应由堆栈中需要访问状态的最高父组件持有。
+举例来说，我们有许多嵌套组件。堆栈顶部和底部的组件需要访问状态。
+要在没有上下文的情况下实现这一点，我们需要将状态作为 `props` 传递给每个嵌套组件。这被称为 **prop drilling**。
+
+
+#### 替代 redux
+可以使用 useReducer + useContext 来替代 redux
+```
+
+```jsx
+import { createContext, useContext } from 'react'
+
+/** 创建 Context 对象 */
+export const Context = createContext('')
+
+function Bar() {
+  /** 底层组件通过 useContext 函数获取数据 */
+  const name = useContext(Context)
+  return <div>Bar {name}</div>
+}
+
+function Foo() {
+  return <div>Foo <Bar /></div>
+}
+
+function App() {
+  return (
+    // 顶层组件通过 Provider 提供数据
+    <Context.Provider value={'this is name'}>
+      <div><Foo /></div>
+    </Context.Provider>
+  )
+}
+
+export default App
+```
+
+#### props 跟 useContext 传递变量的区别
+
+**通过props不断往子组件传递变量**
+
+```jsx
+import { useState } from 'react'
+import ReactDOM from 'react-dom'
+
+function Comp1() {
+  const [user, setUser] = useState('O.O')
+
+  return (
+    <>
+      <h1>{`Hello ${user}!`}</h1>
+      <Comp2 user={user} />
+    </>
+  )
+}
+
+function Comp2({ user }) {
+  return (
+    <>
+      <h1>组件 2</h1>
+      <Comp3 user={user} />
+    </>
+  )
+}
+
+function Comp3({ user }) {
+  return (
+    <>
+      <h1>组件 3</h1>
+      <Comp4 user={user} />
+    </>
+  )
+}
+
+function Comp4({ user }) {
+  return (
+    <>
+      <h1>组件 4</h1>
+      <Comp5 user={user} />
+    </>
+  )
+}
+
+function Comp5({ user }) {
+  return (
+    <>
+      <h1>组件 5</h1>
+      <h2>{`Hello ${user} again!`}</h2>
+    </>
+  )
+}
+
+ReactDOM.render(<Comp1 />, document.getElementById('root'))
+```
+
+**使用createContext来是创建上下文传递**
+
+```jsx
+import { useState, createContext, useContext } from 'react'
+import ReactDOM from 'react-dom'
+
+const UserContext = createContext()
+
+function Component1() {
+  const [user, setUser] = useState('O.O')
+
+  return (
+    <UserContext.Provider value={user}>
+      <h1>{`Hello ${user}!`}</h1>
+      <Comp2 user={user} />
+    </UserContext.Provider>
+  )
+}
+
+function Comp2() {
+  return (
+    <>
+      <h1>组件 2</h1>
+      <Comp3 />
+    </>
+  )
+}
+
+function Comp3() {
+  return (
+    <>
+      <h1>组件 3</h1>
+      <Comp4 />
+    </>
+  )
+}
+
+function Comp4() {
+  return (
+    <>
+      <h1>组件 4</h1>
+      <Comp5 />
+    </>
+  )
+}
+
+function Comp5() {
+  const user = useContext(UserContext)
+
+  return (
+    <>
+      <h1>组件 5</h1>
+      <h2>{`Hello ${user} again!`}</h2>
+    </>
+  )
+}
+
+ReactDOM.render(<Component1 />, document.getElementById('root'))
+```
+
+
+
+#### 使用 useContext 切换暗/亮主题
+
+将 `Theme` 定义为 `light` 或 `dark`，并将 `ThemeContext` 定义为具有两个属性的对象：`theme` 和 `toggleTheme`（它们通过 `useContext` 钩子提供给其他组件）。
+我们必须确保使用 React 导出 `createContext` 创建 `ThemeContext` 对象。
+
+使用 `useState` 钩子维护 `theme` 状态，并创建一个 `toggleTheme` 函数，该函数将在 `light` 和 `dark` 之间切换状态。
+
+简洁版：根据 `theme` 状态当前是 `light` 还是 `dark` 来设置文档正文的 `color` 和 `backgroundColor` 样式。最后返回 `ThemeContext.Provider`，其值设置为具有 `theme` 和 `toggleTheme` 属性的对象，并在 `ThemeContext.Provider` 组件中渲染子级。
+
+```tsx
+// ThemeProvider.tsx
+import React, { createContext, useState } from 'react'
+
+type Theme = 'light' | 'dark'
+type ThemeContext = { theme: Theme; toggleTheme: () => void }
+
+const ThemeContext = createContext<ThemeContext>({} as ThemeContext)
+
+const ThemeProvider: React.FC = ({ children }) => {
+  const [theme, setTheme] = useState<Theme>('light')
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light')
+  }
+
+  const color = theme === 'light' ? '#333' : '#FFF'
+  const backgroundColor = theme === 'light' ? '#FFF' : '#333'
+
+  document.body.style.color = color
+  document.body.style.backgroundColor = backgroundColor
+
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
+}
+```
+
+在 `App` 组件中，使用 `useContext` 钩子来访问 `theme` 字符串，并创建一个可以切换主题的按钮来执行`toggleTheme` 函数。
+
+```tsx
+// APP.tsx
+import React, { useContext } from 'react'
+
+const App: React.FC = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext)
+
+  return (
+    <>
+      <div>Hi friend!</div>
+      <button onClick={toggleTheme}>Switch to {theme === 'light' ? 'dark' : 'light'} mode</button>
+    </>
+  )
+}
+```
+
+将整个 `App` 包装在 `ThemeProvider` 组件中。当然，我们不需要在实际项目应用层面这样做，我们只需要确保任何需要 `theme` 或 `toggleTheme` 的组件都在我们的 Provider 的子树中即可
+
+```ts
+// main.ts
+import ReactDOM from 'react-dom'
+
+ReactDOM.render(
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>,
+  document.getElementById('app')
+)
+```
+
+
 
 ### useReducer
 
-> ```bash
-> ## useReducer
-> - useReducer 是 useState 的替代方案。
-> - 它接收一个形如 `(state, action) => newState` 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法
-> 
-> 格式：`const [state, dispatch] = useReducer(reducer, initialArg, init)`
-> ```
->
-> ```jsx
-> //	useState 计数器
-> function Counter() {
->     const initialCount = {count: 0};
->     const [count, setCount] = useState(initialCount);
->     return (
->        <>
->        <p>Count: {count}</p>
->        <button onClick={() => setCount(initialCount)}>Reset</button>
->        <button onClick={() => setCount(prevCount => prevCount - 1)}>-</button>
->        <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
->        </>
->     );
-> }
-> 
-> 
-> //	reducer 计数器
-> function Counter() {
->   const initialCount = {count: 0};
->   
->   const reducer = (state, action) => {
->       switch (action.type) {
->          case 'increment': return {count: state.count + 1};
->          case 'decrement': return {count: state.count - 1};
->          default: throw new Error();
->        }
->      }
->     const [state, dispatch] = useReducer(reducer, initialState);
->     
->     return (
->    		<>
->          <p>Count: {state.count}</p>
->          <button onClick={() => dispatch({type: 'decrement'})}>-</button>
->          <button onClick={() => dispatch({type: 'increment'})}>+</button>
->      	</>
->   	);
-> }
-> ```
+```bash
+### useReducer
+- useReducer 是 useState 的替代方案。
+- 它接收一个形如 `(state, action) => newState` 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法
+
+格式：`const [state, dispatch] = useReducer(reducer, initialArg, init)`
+
+```
+
+```jsx
+//	useState 计数器
+function Counter() {
+  const initialCount = {count: 0};
+  const [count, setCount] = useState(initialCount);
+  return (
+    <>
+    <p>Count: {count}</p>
+    <button onClick={() => setCount(initialCount)}>Reset</button>
+    <button onClick={() => setCount(prevCount => prevCount - 1)}>-</button>
+    <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
+    </>
+  );
+}
+
+
+//	reducer 计数器
+function Counter() {
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'increment': return {count: state.count + 1};
+      case 'decrement': return {count: state.count - 1};
+      default: throw new Error();
+    }
+  }
+  const initialCount = {count: 0};
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <>
+    <p>Count: {state.count}</p>
+    <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+    <button onClick={() => dispatch({type: 'increment'})}>+</button>
+    </>
+  );
+}
+```
+
+
+
+
 
 ### useStartTransition
 
@@ -2470,6 +3329,95 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 >   // ...
 > }
 > ```
+
+
+
+### 自定义 Hooks 组件
+
+```js
+/* 自定义Hooks组件：输入框值响应式Demo */
+import React, { useState } from "react";
+
+/***
+ * 自定义HOOK
+ * - 当内容改变，会触发输入框值的响应式更新
+ * - 当输入框失去焦点，会触发内容提交
+ * - 输入框触发提交事件时，会清空输入框
+*/
+const TodoForm = ({ onSubmit }) => {
+  /* 封装，响应式定义值与获取值 */
+  const useInputValue = (initVal) => {
+    const [value, setValue] = useState(initVal);
+    return {
+      value,
+      onChange: (e) => setValue(e.target.value),
+      reset: () => setValue(""), // 清空输入框
+      onBlur: () => submit(), // 当失去焦点就触发提交
+    };
+  };
+
+  const { reset, ...text } = useInputValue(""); // 封装函数响应式更新数据
+  const submit = () => {
+    onSubmit(text.value);
+    reset();
+  };
+
+  return (<input type="text" {...text} />);
+};
+
+/* 调用自定义HOOK组件 */
+const TodoList = () => {
+  const [todos, setTodos] = useState([]);
+  const setValue = (text) => {
+    setTodos([{ text }, ...todos]);
+  };
+
+  return (
+    <>
+    <TodoForm onSubmit={setValue} />
+    <div>
+      {todos.map((item, i) => <p key={i}>{item.text}</p>)}
+    </div>
+    </>
+  );
+};
+
+export default TodoList;
+```
+
+```js
+import { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
+export const useFetch = (url) => {
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => setData(data))
+  }, [url])
+
+  return [data]
+}
+
+const Home = () => {
+  const [data] = useFetch('https://jsonplaceholder.typicode.com/todos')
+
+  return (
+    <>
+      {data &&
+        data.map((item) => {
+          return <p key={item.id}>{item.title}</p>
+        })}
+    </>
+  )
+}
+
+ReactDOM.render(<Home />, document.getElementById('root'))
+```
+
+
 
 ## react Router 6
 
@@ -3106,36 +4054,37 @@ vue和react的核心都是专注于轻量级的视图层，虽然只是解决一
 
 #### redux的action函数
 
-> - 注意：action必须返回一个一般对象(`plain object`)，如果要返回一个函数则需要使用`async`，否则会报错
->
-> > - 延迟的动作不想交给组件自身，想交给action
-> > - 何时需要异步action：想要对状态进行操作，但是具体的数据靠异步任务返回
-> > - 具体编码
-> >   1. `yarn add redux-thunk`，并配置在store中
-> >   2. 创建action的函数不再返回一般对象，而是一个函数，该函数中写异步任务
-> >   3. 异步任务有结果后，分发一个同步的action去真正操作数据
-> >   4. 异步action不是必须要写的，完全可以自己等待异步任务的结果再去分发同步的action
->
-> ```js
-> // redux/count_action.js
-> /* 该文件专门为Count组件生成action对象 */
-> import { INCREMENT,DECREMENT } from './constant'
-> import store from "./store"
-> 
-> // 同步action，指action的值为Object类型的一般对象
-> export const increment = (data) => ({ type:INCREMENT, data })
-> export const decrement = (data) => ({ type:DECREMENT, data })
-> 
-> // 异步action是指action的值为函数，异步action中一般会调用同步action 
-> export const incrementAsync = (data, time) => {
->   return (dispatch) => {
->     setTimeout(() => {
->       // store.dispatch(increment(data))
->       dispatch(increment(data))
->     },time)
->   }
-> }
-> ```
+注意：action必须返回一个一般对象(`plain object`)，如果要返回一个函数则需要使用`async`，否则会报错
+
+- 延迟的动作不想交给组件自身，想交给action
+- 何时需要异步action：想要对状态进行操作，但是具体的数据靠异步任务返回
+    1. `yarn add redux-thunk`，并配置在store中
+    2. 创建action的函数不再返回一般对象，而是一个函数，该函数中写异步任务
+    3. 异步任务有结果后，分发一个同步的action去真正操作数据
+    4. 异步action不是必须要写的，完全可以自己等待异步任务的结果再去分发同步的action
+
+```js
+// redux/count_action.js
+/* 该文件专门为Count组件生成action对象 */
+import { INCREMENT,DECREMENT } from './constant'
+import store from "./store"
+
+// 同步action，指action的值为Object类型的一般对象
+export const increment = (data) => ({ type:INCREMENT, data })
+export const decrement = (data) => ({ type:DECREMENT, data })
+
+// 异步action是指action的值为函数，异步action中一般会调用同步action 
+export const incrementAsync = (data, time) => {
+  return (dispatch) => {
+    setTimeout(() => {
+      // store.dispatch(increment(data))
+      dispatch(increment(data))
+    },time)
+  }
+}
+```
+
+
 
 #### Count组件的主内容
 
