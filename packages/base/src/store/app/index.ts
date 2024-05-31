@@ -1,14 +1,18 @@
 /**
  * @ Author: willy
  * @ Create Time: 2023-11-02 20:49:42
- * @ Modifier by: willy
- * @ Modifier time: 2023-11-16 14:01:54
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-05-31 15:00:45
  * @ Description: index app 相关的持久化数据
  */
 
 import { defineStore } from 'pinia'
 import store from '@/store'
-import { logoDefault, logoDark, avatar } from '../../assets'
+import { logoDefault, logoDark, avatar } from '@/assets'
+import { BASE_URL, API_TARGET_URL } from '@/config/constant/cache'
+import { LOCALE_KEY, IS_LOCKSCREEN } from '@/config/constant/app'
+import { Storage } from '@utils/cache'
+import { LocaleType } from '@/locales/config'
 
 /** 项目配置类 */
 interface IAppConfig {
@@ -33,6 +37,17 @@ interface IUserInfo {
 
 /** app 全局状态 */
 interface IAppIndexSate {
+  /** 后端接口地址 */
+  baseUrl: string
+
+  /** 国际化语言类型 */
+  localeType: LocaleType
+
+  /** 是否锁屏 */
+  isLock: boolean
+  /** 自动锁屏时限 */
+  lockTime: number
+
   /** 项目名称 */
   appName: string
   /** 项目描述 */
@@ -48,9 +63,20 @@ interface IAppIndexSate {
   tags: Array<string | number>
 }
 
-export const useAppIndexStore = defineStore({
+const initLockTime = 5 * 60 * 1000
+export const useAppStore = defineStore({
   id: 'app-index',
   state: (): IAppIndexSate => ({
+    /** 后端接口地址 */
+    baseUrl: localStorage.getItem(BASE_URL) || API_TARGET_URL,
+
+    /** 国际多语言模块 */
+    localeType: Storage.get(LOCALE_KEY, 'zh_CN'),
+
+    /** 锁屏模块 */
+    isLock: Storage.get(IS_LOCKSCREEN, false),
+    lockTime: Storage.get(IS_LOCKSCREEN, false) ? initLockTime : 0,
+
     appName: `Willy`,
     appDesc: '落叶缤纷诉秋意，风雪飘摇牵梅舞',
 
@@ -79,6 +105,11 @@ export const useAppIndexStore = defineStore({
     ],
   }),
   getters: {
+    isInit: () => localStorage.getItem(BASE_URL),
+
+    /** 获取国际化语言类型 */
+    getLocale: (state): LocaleType => state.localeType ?? 'zh_CN',
+
     logoIcon: (state): string =>
       state.appConfig.isDark ? logoDark : logoDefault,
     cardInfos: () => {
@@ -116,9 +147,35 @@ export const useAppIndexStore = defineStore({
       ]
     },
   },
+  actions: {
+    /** 设置系统后端地址 */
+    setHost(host: string) {
+      localStorage.setItem(BASE_URL, host)
+      location.reload()
+    },
+
+    /** 切换语言类型，并设置国际化语言缓存 */
+    setLocale(locale: LocaleType) {
+      this.localeType = locale
+      Storage.set(LOCALE_KEY, locale)
+    },
+
+    /***
+     * 锁屏模块
+     */
+    /** 设置锁屏状态 */
+    setLockscreen(isLock: boolean) {
+      this.isLock = isLock
+      Storage.set(IS_LOCKSCREEN, this.isLock)
+    },
+    /** 设置锁屏默认时间 */
+    setLockTime(lockTime = initLockTime) {
+      this.lockTime = lockTime
+    },
+  },
 })
 
 /** 在非 setup 函数外面使用 */
 export function useAppStoreWithOut() {
-  return useAppIndexStore(store)
+  return useAppStore(store)
 }
