@@ -1,11 +1,21 @@
 # Changelog
 
-## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-05-27)
+## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-05-31)
 
-[Full Changelog](https://github.com/willysliang/core/compare/v1.0.4...v2.0.0)
+[Full Changelog](https://github.com/willysliang/core/compare/v1.0.5...v2.0.0)
 
 **Merged pull requests:**
 
+- Develop [\#8](https://github.com/willysliang/core/pull/8) ([willysliang](https://github.com/willysliang))
+- Feature/merge mp module [\#7](https://github.com/willysliang/core/pull/7) ([willysliang](https://github.com/willysliang))
+
+## [v1.0.5](https://github.com/willysliang/core/tree/v1.0.5) (2024-05-31)
+
+[Full Changelog](https://github.com/willysliang/core/compare/v1.0.4...v1.0.5)
+
+**Merged pull requests:**
+
+- Bugfix/ci cd error [\#6](https://github.com/willysliang/core/pull/6) ([willysliang](https://github.com/willysliang))
 - Merge branch 'develop' into 'master': v1.0.4 blog stable version [\#5](https://github.com/willysliang/core/pull/5) ([willysliang](https://github.com/willysliang))
 - Develop [\#4](https://github.com/willysliang/core/pull/4) ([willysliang](https://github.com/willysliang))
 - Develop [\#3](https://github.com/willysliang/core/pull/3) ([willysliang](https://github.com/willysliang))
