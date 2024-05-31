@@ -25,6 +25,10 @@ Description: 日志记录
 # 更新记录
 
 
+
+## 2024年5月31日
+  - refactor(base): 整合 @willy/mp（music-player）子项目的内容到 @willy/base
+
 ## 2024年5月28日
   - fix(ci/cd): fix ci/cd build blog error
   - chore(ci/cd): update the branch that triggers the ci/cd process

@@ -24,15 +24,19 @@ import { serverConfig } from './config/vite/server'
 import fs from 'fs'
 import path from 'path'
 
-/**
- * eslint 相关
- */
+// mockjs
+import { viteMockServe } from 'vite-plugin-mock'
+
+// element-plus
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 /**
  * 打包优化相关
  */
 /** vite 打包压缩 gzip */
-// import viteCompression from 'vite-plugin-compression'
+import viteCompression from 'vite-plugin-compression'
 
 /** 读取 package.json 文件内容 */
 const packageJSON = JSON.parse(
@@ -68,10 +72,13 @@ export default defineConfig(({ mode }) => {
       write: true, // 启用将构建后的文件写入磁盘
       emptyOutDir: true, // 构建时清空该目录
       // brotliSize: true, // 启用 brotli 压缩大小报告
-      // chunkSizeWarningLimit: 500, // chunk 大小警告的限制
+      chunkSizeWarningLimit: 500, // chunk 大小警告的限制
       watch: null, // 设置为 {} 则会启用 rollup 的监听器
       // 自定义底层的 Rollup 打包配置
       rollupOptions: {
+        // input: {
+        //   main: path.resolve(__dirname, 'index.html'),
+        // },
         input: getAllBuildHtml(),
         // external: [/\blog\/.*\.(png|jpe?g|gif|svg|webp)$/i],
       },
@@ -90,6 +97,8 @@ export default defineConfig(({ mode }) => {
         '@utils': path.resolve(__dirname, 'src/utils'),
         '@img': path.resolve(__dirname, 'src/assets'),
         '@styles': path.resolve(__dirname, 'src/styles'),
+
+        '@mp': path.resolve(__dirname, 'src/entries/music-player'),
       },
       //  导入时想要忽略的扩展名列表 导入时想要省略的扩展名列表。不建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响 IDE 和类型支持
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
@@ -100,6 +109,32 @@ export default defineConfig(({ mode }) => {
       ...mdPlugins(),
       ...eslintPlugins(),
       ...buildPlugins(),
+      /* 配置 mockjs */
+      viteMockServe({
+        mockPath: './mock',
+        localEnabled: true,
+        prodEnabled: false, // 实际开发请关闭，会影响打包体积
+        // https://github.com/anncwb/vite-plugin-mock/issues/9
+        injectCode: `
+       import { setupProdMockServer } from './mock/_createProdMockServer';
+       setupProdMockServer();
+       `,
+      }),
+      viteCompression({
+        verbose: true, // 默认即可
+        disable: false, // 开启压缩(不禁用)，默认即可
+        deleteOriginFile: false, // 删除源文件
+        threshold: 10240, // 压缩前最小文件大小
+        algorithm: 'gzip', // 压缩算法
+        ext: '.gz', // 文件类型
+      }),
+      /* 配置 element-plus */
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
     ],
     server: serverConfig(importMetaEnv.VITE_PORT),
   }
