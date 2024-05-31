@@ -29,6 +29,7 @@ Description: 日志记录
 ## 2024年5月31日
   - refactor(base): 整合 @willy/mp（music-player）子项目的内容到 @willy/base
   - fix(base): 修复整合 @willy/base 子项目时依赖缺失问题
+  - fix(base): [record.md] 修复文档头部信息导致的构建报错
 
 ## 2024年5月28日
   - fix(ci/cd): fix ci/cd build blog error
