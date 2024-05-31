@@ -22,7 +22,7 @@ useThemeInit()
 
 const route = useRoute()
 const isDemoRoute = computed(() =>
-  Object.values(demoPages).some((page) => `/${page.path}` === route.path),
+  Object.values(demoPages).some((page) => route.path.includes(`/${page.path}`)),
 )
 </script>
 
