@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 15:18:16
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 15:46:30
+ * @ ModifierTime: 2024-05-31 15:53:27
  * @ Description: css 相关配置
  */
 
@@ -11,7 +11,8 @@ import { CSSOptions } from 'vite'
  * postcss 解析
  */
 import autoprefixer from 'autoprefixer'
-import postCssPxToRem from 'postcss-pxtorem'
+// import postCssPxToRem from 'postcss-pxtorem'
+import tailwindcss from 'tailwindcss'
 
 export const cssConfig = (): CSSOptions => {
   return {
@@ -26,13 +27,14 @@ export const cssConfig = (): CSSOptions => {
             'ie >= 8',
           ],
         }),
-        postCssPxToRem({
-          // 自适应，px>rem转换
-          rootValue: 75, // 75表示750设计稿，37.5表示375设计稿
-          propList: ['*'], // 需要转换的属性，这里选择全部都进行转换
-          selectorBlackList: ['.willy', '.px', 'body', 'html'], // 过滤掉 willy- 开头的 class，不进行rem转换
-          exclude: '../../../node_modules', // 忽略包文件转换rem
-        }),
+        // postCssPxToRem({
+        //   // 自适应，px>rem转换
+        //   rootValue: 75, // 75表示750设计稿，37.5表示375设计稿
+        //   propList: ['*'], // 需要转换的属性，这里选择全部都进行转换
+        //   selectorBlackList: ['.willy', '.px', 'body', 'html'], // 过滤掉 willy- 开头的 class，不进行rem转换
+        //   exclude: '../../../node_modules', // 忽略包文件转换rem
+        // }),
+        tailwindcss,
       ],
     },
     preprocessorOptions: {

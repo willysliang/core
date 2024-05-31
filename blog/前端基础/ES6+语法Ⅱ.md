@@ -1605,6 +1605,7 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 >   /**
 >    * 使用WeakMap 部署私有属性
 >       */
+>
 >     const _counter = new WeakMap();
 >     const _action = new WeakMap();
 >
@@ -1760,104 +1761,6 @@ fn(1, 2, function() {
 $("div").animate({left: 500}, function(){
     $("div").css("background","purple");
 })
-```
-
-## `generator`生成器
-
-- generator 生成器是ES6引入的新数据类型，**可返回多次值**。
-- generator 与一般函数的区别
-  - 一般函数在执行过程中，如果没有遇到`return `语句(函数末尾如果没有`return`，默认为`return undefined;`)，控制权无法返回被调用的代码。
-  - generator与一般函数不同的是，generator由`function*`定义，并且除了`return`语句，还可用`yield`返回多次。
-- `yield*`表达式用于委托给另一个generator或可迭代对象。其表达式本身的值是当迭代器关闭时返回值(即done为true时)
-- 调用一个生成器函数并不会马上执行它里面的语句，而是返回一个这个生成器的迭代器对象，当这个迭代器的`next()` 方法被调用时，其内的语句会执行到出现 `yield` 的位置为止（让执行处于**暂停状态**），`yield` 后紧跟迭代器要返回的值。或者如果用的是 `yield*`，则表示将执行权移交给另一个生成器函数（当前生成器**暂停执行**），调用 `next()`方法时如果传入参数，则此参数会作为**上一条执行的 `yield` 语句的返回值**
-- 调用 generator 对象由两个方法：
-  1. 不断地调用generator对象的`next()`方法。
-     `next()`方法会执行generator的代码，然后每次遇到`yield x;`就返回一个对象`{value:x, done:true/false}`，然后“暂停”。返回的`value`就是`yield`的返回值，`done`表示这个generator是否已经执行结束；如果`done`为`true`，则`value`就是`return`的返回值。
-  2. 用`for...of`循环迭代 generator 对象，这种方式不需要判断`done`
-- generator应用场景
-  1. 每次返回一个值：在同一场合下，函数只能返回一次，所以必须返回一个`Array`；但是换成generator，就**可以一次返回一个数，不断返回多次**。
-  2. 用一个对象来保存状态：因为generator可以在执行过程中多次返回，所以它就像一个可记住执行状态的函数。
-  3. 可把ajax的异步回调变成同步式ajax，相对传统的 then式，优化了回调地狱
-
-```js
-function* another() {
-  yield 'willy';
-}
-function* gen() {
-  yield* another();
-  const a = yield 'hello';
-  const b = yield a + 1;
-  yield b;
-  return "return"
-}
-const g = gen();
-let
-  a = g.next().value, // another()中返回的值
-  b = g.next().value, //
-  c = g.next('world').value, // 把语句 yield a+1 中的值
-  d = g.next('!').value,  // 把语句 yield b 中的值替换为 !
-  e = g.next().value, // return返回的值
-  f = g.next().value; // 超出界限
-console.log([a, b, c, d, e, f]);  // [ 'willy', 'hello', 'world1', '!', 'return', undefined ]
-```
-
-```js
-/* 普通函数 */
-function fib(max) {
-  let a = 0, b = 1, arr = [0, 1,];
-  while (arr.length < max) {
-    [a, b] = [b, a + b];
-    arr.push(b);
-  }
-  return arr;
-}
-console.log(fib(5));    // [ 0, 1, 1, 2, 3 ]
-
-/* 生成器 */
-function* fibGenerator(max) {
-  let a = 0, b = 1, n = 0;
-  while (n < max) {
-    yield a;
-    [a, b] = [b, a + b];
-    n++;
-  }
-  return '最后return的值';
-}
-// next()方法循环迭代generator
-let f = fibGenerator(5);
-let f1 = f.next().value, f2 = f.next().value, f3 = f.next().value;
-let f4 = f.next().value, f5 = f.next().value, f6 = f.next().value;
-console.log("next()", [f1, f2, f3, f4, f5, f6]); // next() [ 0, 1, 1, 2, 3, '最后return的值' ]
-
-// for...of 循环迭代generator
-let ff = fibGenerator(5), ffResult = [];
-for (let x of ff) {
-  // console.log(x);
-  ffResult = [...ffResult, x];
-}
-console.log("for...of：", ffResult);  // for...of： [ 0, 1, 1, 2, 3 ]
-
-
-// while 循环迭代generator
-let fff = fibGenerator(5);
-let res = fff.next(), result = [];
-while (!res.done) {
-  result = [...result, res.value];
-  res = fff.next();
-}
-console.log("while", result);  // while [ 0, 1, 1, 2, 3 ]
-
-
-// 用generator 生成同步式ajax，相对传统的 then，优化了回调地狱
-/* try {
-  r1 = yield ajax('http://url-1', data1);
-  r2 = yield ajax('http://url-2', data2);
-  r3 = yield ajax('http://url-3', data3);
-  success(r3);
-} catch (err) {
-  handle(err);
-} */
-
 ```
 
 
@@ -2185,6 +2088,218 @@ while (true) {
   console.log(result.value) // // 一个接一个地输出字符
 }
 
+```
+
+
+
+## 生成器 generator
+
+- generator 生成器是ES6引入的新数据类型，**可返回多次值**。
+- generator 与一般函数的区别
+    - 一般函数在执行过程中，如果没有遇到`return `语句(函数末尾如果没有`return`，默认为`return undefined;`)，控制权无法返回被调用的代码。
+    - generator与一般函数不同的是，generator由`function*`定义，并且除了`return`语句，还可用`yield`返回多次。
+- `yield*`表达式用于委托给另一个generator或可迭代对象。其表达式本身的值是当迭代器关闭时返回值(即done为true时)
+- 调用一个生成器函数并不会马上执行它里面的语句，而是返回一个这个生成器的迭代器对象，当这个迭代器的`next()` 方法被调用时，其内的语句会执行到出现 `yield` 的位置为止（让执行处于**暂停状态**），`yield` 后紧跟迭代器要返回的值。或者如果用的是 `yield*`，则表示将执行权移交给另一个生成器函数（当前生成器**暂停执行**），调用 `next()`方法时如果传入参数，则此参数会作为**上一条执行的 `yield` 语句的返回值**
+- 调用 generator 对象由两个方法：
+    1. 不断地调用generator对象的`next()`方法。
+        `next()`方法会执行generator的代码，然后每次遇到`yield x;`就返回一个对象`{value:x, done:true/false}`，然后“暂停”。返回的`value`就是`yield`的返回值，`done`表示这个generator是否已经执行结束；如果`done`为`true`，则`value`就是`return`的返回值。
+    2. 用`for...of`循环迭代 generator 对象，这种方式不需要判断`done`
+- generator应用场景
+    1. 每次返回一个值：在同一场合下，函数只能返回一次，所以必须返回一个`Array`；但是换成generator，就**可以一次返回一个数，不断返回多次**。
+    2. 用一个对象来保存状态：因为generator可以在执行过程中多次返回，所以它就像一个可记住执行状态的函数。
+    3. 可把ajax的异步回调变成同步式ajax，优化了传统的 then式产生的回调地狱
+
+```js
+function* another() {
+  yield 'willy';
+}
+function* gen() {
+  yield* another();
+  const a = yield 'hello';
+  const b = yield a + 1;
+  yield b;
+  return "return"
+}
+const g = gen();
+let
+  a = g.next().value, // another()中返回的值
+  b = g.next().value, //
+  c = g.next('world').value, // 把语句 yield a+1 中的值
+  d = g.next('!').value,  // 把语句 yield b 中的值替换为 !
+  e = g.next().value, // return返回的值
+  f = g.next().value; // 超出界限
+console.log([a, b, c, d, e, f]);  // [ 'willy', 'hello', 'world1', '!', 'return', undefined ]
+```
+
+```js
+/* 普通函数 */
+function fib(max) {
+  let a = 0, b = 1, arr = [0, 1,];
+  while (arr.length < max) {
+    [a, b] = [b, a + b];
+    arr.push(b);
+  }
+  return arr;
+}
+console.log(fib(5));    // [ 0, 1, 1, 2, 3 ]
+
+
+/* 生成器 */
+function* fibGenerator(max) {
+  let a = 0, b = 1, n = 0;
+  while (n < max) {
+    yield a;
+    [a, b] = [b, a + b];
+    n++;
+  }
+  return '最后return的值';
+}
+// next()方法循环迭代generator
+let f = fibGenerator(5);
+let f1 = f.next().value, f2 = f.next().value, f3 = f.next().value;
+let f4 = f.next().value, f5 = f.next().value, f6 = f.next().value;
+console.log("next()", [f1, f2, f3, f4, f5, f6]); // next() [ 0, 1, 1, 2, 3, '最后return的值' ]
+
+
+// for...of 循环迭代generator
+let ff = fibGenerator(5), ffResult = [];
+for (let x of ff) {
+  // console.log(x);
+  ffResult = [...ffResult, x];
+}
+console.log("for...of：", ffResult);  // for...of： [ 0, 1, 1, 2, 3 ]
+
+
+// while 循环迭代generator
+let fff = fibGenerator(5);
+let res = fff.next(), result = [];
+while (!res.done) {
+  result = [...result, res.value];
+  res = fff.next();
+}
+console.log("while", result);  // while [ 0, 1, 1, 2, 3 ]
+
+
+// 用generator 生成同步式ajax，相对传统的 then，优化了回调地狱
+/* try {
+  r1 = yield ajax('http://url-1', data1);
+  r2 = yield ajax('http://url-2', data2);
+  r3 = yield ajax('http://url-3', data3);
+  success(r3);
+} catch (err) {
+  handle(err);
+} */
+```
+
+
+
+### 使用 generator 进行迭代
+
+**使用 Iteable**
+
+```js
+let range = {
+  from: 1,
+  to: 5,
+
+  // for..of range 在一开始就调用一次这个方法
+  [Symbol.iterator]() {
+    // ...它返回 iterator object：
+    // 后续的操作中，for..of 将只针对这个对象，并使用 next() 向它请求下一个值
+    return {
+      current: this.from,
+      last: this.to,
+
+      // for..of 循环在每次迭代时都会调用 next()
+      next() {
+        // 它应该以对象 {done:.., value :...} 的形式返回值
+        if (this.current <= this.last) {
+          return { done: false, value: this.current++ };
+        } else {
+          return { done: true };
+        }
+      }
+    };
+  }
+};
+
+// 迭代整个 range 对象，返回从 `range.from` 到 `range.to` 范围的所有数字
+alert([...range]); // 1,2,3,4,5
+```
+
+**使用generator进行迭代**
+
+```js
+let range = {
+  from: 1,
+  to: 5,
+
+  // [Symbol.iterator]: function*() 的简写形式
+  *[Symbol.iterator]() {
+    for(let value = this.from; value <= this.to; value++) {
+      yield value;
+    }
+  }
+};
+
+alert( [...range] ); // 1,2,3,4,5
+```
+
+
+
+### generator 组合
+
+generator 组合（composition）是 generator 的一个特殊功能，它允许透明地（transparently）将 generator 彼此“嵌入（embed）”到一起。
+
+**例：有一个生成数字序列的函数**
+
+```js
+function* generateSequence(start, end) {
+  for (let i = start; i <= end; i++) yield i;
+}
+
+function* generatePasswordCodes() {
+  // 0..9
+  // yield* generateSequence(48, 57);
+  for (let i = 48; i <= 57; i++) yield i;
+
+  // A..Z
+  // yield* generateSequence(65, 90);
+  for (let i = 48; i <= 57; i++) yield i;
+
+  // a..z
+  // yield* generateSequence(97, 122);
+  for (let i = 97; i <= 122; i++) yield i;
+}
+
+let str = '';
+for(let code of generatePasswordCodes()) {
+  str += String.fromCharCode(code);
+}
+alert(str); // 0..9A..Za..z
+```
+
+
+
+###  `yield` 是一条双向路
+
+`yield` 是一条双向路（two-way street）：它不仅可以向外返回结果，而且还可以将外部的值传递到 generator 内。
+
+调用 `generator.next(arg)`，我们就能将参数 `arg` 传递到 generator 内部。这个 `arg` 参数会变成 `yield` 的结果。
+
+```js
+function* gen() {
+  // 向外部代码传递一个问题并等待答案
+  let result = yield "2 + 2 = ?"; // (*)
+
+  alert(result);
+}
+
+let generator = gen();
+
+let question = generator.next().value; // <-- yield 返回的 value
+
+generator.next(4); // --> 将结果传递到 generator 中
 ```
 
 

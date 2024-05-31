@@ -26,7 +26,7 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    
+
     // "allowJs": true, // 允许在ts中使用普通 JS 代码
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -55,18 +55,19 @@
       "@utils/*": ["./src/utils/*"],
       "@img/*": ["./src/assets/*"],
       "@styles/*": ["./src/styles/*"],
-    },
+      "@mp/*": ["./src/entries/music-player/*"]
+    }
   },
-  "types": ["vite/client", "**/*.d.ts"],
+  "types": ["vite/client", "**/*.d.ts", "element-plus/global"],
   "include": [
-    "./src/**/*.ts", 
-    "./src/**/*.d.ts", 
-    "./src/**/*.tsx", 
-    "./src/**/*.vue", 
+    "./src/**/*.ts",
+    "./src/**/*.d.ts",
+    "./src/**/*.tsx",
+    "./src/**/*.vue",
     "./types/**/*.d.ts",
     "./types/**/*.ts",
     "./config/**/*.ts",
-    "./vite.config.ts",
+    "./vite.config.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.js", "./public", "./node_modules"],
   "references": [{ "path": "../../tsconfig.node.json" }]

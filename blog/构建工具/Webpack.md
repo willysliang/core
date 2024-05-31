@@ -3,37 +3,37 @@
 > ```bash
 > ## 本地安装webpack
 > npm install webpack -save-dev
-> 
-> 
+>
+>
 > # 核心概念
 > ## Entry 和 Output
 > webpack的解析入口，项目的打包出口所在
-> 
-> 
+>
+>
 > # webpack打包：
 > `webpack 被解析的文件路径 -o 存放打包文件所在的目录`
 > webpack .\src\main.js .\dist\bundle.js	 #把main.js文件打包生成bundle.js文件
-> 
-> 
+>
+>
 > ## 全局 webpack 作用
 > - 通过 npm i webpack -g 安装的 webpack 为全局 weback
 > - 全局 webpack 是必须安装的，我们在命令行直接执行 webpack 指令时，使用的是全局 webpack 去完成的
-> 
+>
 > ## 局部 webpack 作用
 > - 局部 webpack 是指安装在项目文件夹下 node_modules 的 webpack
 > - 全局的 webpack 有且只有一个，但实际情况下，不同项目的 webpack 版本可能完全不同。当我们项目需求的 webpack 版本和我们全局的 webpack 不一致时，就需要安装局部 webpack
-> 
-> 
+>
+>
 > ## 编译 TypeScript 流程
 > 1. 安装 typescript 和 ts-loader：npm i typescript ts-loader --save-dev
 > 2. 在 webpack.config.js 配置文件中中写入 ts-loader 编译规则
 > 3. 编写 tsconfig.json：类似于 .babelrc、ts-loader 的额外配置
-> 
-> 
+>
+>
 > ## 观察应用变化 --watch
 > - `$ npm webpack --watch`
-> 
-> 
+>
+>
 > ## 从bundle中排除某个导入：externals
 > Webpack externals 告诉 Webpack 从 bundle 中排除某个导入。`external` 通常用于排除将通过 CDN 加载的导入。
 > ```
@@ -46,21 +46,21 @@
 > //main.js
 > //使用commonjs模块化规范
 > const {add,mul} = require('./mathUtils.js')
-> 
+>
 > console.log(add(20,39));
 > console.log(mul(10,20));
-> 
+>
 > //使用ES6模块化规范
 > import {name,age,height} from './info'
 > console.log(name);
 > console.log(age);
 > console.log(height);
-> 
+>
 > //info.js
 > export const name = 'Kobe';
 > export const age = 14;
 > export const height = 12.2;
-> 
+>
 > //mathUtils.js
 > function add(num1,num2){
 >      return num1 + num2
@@ -100,38 +100,38 @@
 > ## loader
 > 使用 webpack 可以在 JavaScript 代码中使用 `import` 或 `require` 语句，不仅可以包括其他 JavaScript，还包括任何类型的文件，例如 CSS。
 > Webpack 旨在处理我们所有的依赖关系，而不仅仅是 JavaScript，而 loader 是实现此目的的一种方式。
-> 
-> 
+>
+>
 > ### 常用的 loader
 > - css-loader、style-loader等css处理loader
 > - url-loader、image-loader等图片字体文件等资源处理loader
 > - less-loader、sass-loader、babel-loader等编译loader
-> 
+>
 > 1. babel-preset
 >   `npm i babel-loader @bable/core @babel/preset-env --save-dev`
 >   - Babel-preset 是存储 JavaScript 不同标准的插件，通过使用正确的 presets 告诉 babel 按照哪个规范编译
 >       - Target 是 preset的核心配置，告诉 preset 编译的具体目标
 >       - Target 可以以 browsers(通常情况下会用)、node的版本、特定的浏览器为目标
-> 
+>
 > 2. ES6 方法的编译
 >   `npm i babel-polyfill --save-dev`
 >   `npm i babel-plugin-transform-runtime babel-runtime --save-dev`
 > 	- babel-polyfill 会生成一个全局对象
 > 	- babel-transform-runtime 会生成一个局部对象
-> 
+>
 > 3. 引入解析 css 文件
 > - `npm i style-loader css-loader --save`
 > - css-loader：让 css 可以被 js 正确的引入
 > - style-loader：让 css 被引入后可以被正确的以一个 style 标签插入页面
 > - 注意：两者顺序很重要，要先引入 css-loader 处理，再由 style-loader 处理
-> 
+>
 > ### style-loader 核心配置
 > - insertAt：style 标签插入在哪一块区域
 > - insertInto：插入指定的dom
 > - singleton：是否合并为一个 style 标签
 > - transform：在浏览器环境下，插入 style 到页面前，用 js 对 css 进行操作
-> 
-> 
+>
+>
 > ### css-loader 核心配置
 > - minimize：是否压缩 css
 > - module：是否使用 css 模块化
@@ -265,22 +265,22 @@
 > ## plugin
 > - commonsChunkPlugin、uglifyjsWebpackPlugin、PurifyCSS等优化文件体积的插件
 > - HtmlWebpackPlugin、HotModuleReplacementPlugin等额外功能的插件
-> 
-> 
+>
+>
 > ## plugin作用：
 > - plugin是插件，通常是对于某个现有的架构进行扩展。
 > - webpack中的插件，即是对webpack现有功能扩展，如打包优化，文件压缩
-> 
-> 
+>
+>
 > ## loader和plugin的区别
 > - loader主要用于转换某些类型的模块，是转换器
 > - plugin是插件，是扩展器
-> 
-> 
+>
+>
 > ### **HtmlWebPlugin插件作用：**
 > - 自动生成一个index.html文件（可指定模块生成）
 > - 将打包的js文件，自动通过script标签插入到body中
-> 
+>
 > ### **UglifyJsPlugin插件作用：**
 > - 丑化js代码，在打包js代码时，会把注释等删掉
 > ```
@@ -351,18 +351,18 @@
 >   - 接口代理
 >   - 浏览器中显示编译问题
 >   - 热更新
->   
->   
+>
+>
 > ## 本地服务器安装
 > cnpm i webpack-dev-server --save-dev
-> 
-> 
+>
+>
 > ## 属性说明
 > - 本地服务器基于nodejs搭建，内部使用express框架，实现我们想要让浏览器刷新显示我们修改后的结果
 > - deserver属性选项
 >   - contentBase：为哪一个文件夹提供本地服务，默认为根文件夹，一般写./dist
 >   - port：代理端口号,默认8080端口
->   - proxy：代理请求  
+>   - proxy：代理请求
 >   - inline：服务的开启模式，可使得页面实时刷新
 >   - historyApiFallback：路径重定向，在SPA页面中依赖HTML5的history模式
 >   - open 参数表示直接打开浏览器
@@ -381,7 +381,7 @@
 >   	inline: true,
 > 		port: 8080,
 >     overlay: true,
->     
+>
 >     // 路径重定向,控制 html5的history模式的显示
 >     historyApiFallback: {
 >       rewrites: [
@@ -389,7 +389,7 @@
 >         to: (context) => './' + context.match[1] + '.html'
 >       ]
 >     },
->   
+>
 >   	// 接口代理
 >   	proxy: {
 >       '^/api': {
@@ -399,7 +399,7 @@
 >         headers: {}
 >       }
 >     },
->       
+>
 >     // 热更新
 >     hot: true,
 >     hotOnly: true,
@@ -423,16 +423,16 @@
 > ## webpack 打包
 > - Webpack 依赖于 Node 的环境与文件操作系统
 > - Webpack 的打包过程就是利用 Node 去读取文件，然后进行一些字符串处理后，再利用 Node 去写入文件
-> 
-> 
+>
+>
 > ## Webpack 打包流程
 > 1. 读取配置文件
 > 2. 注册内部插件与配置插件
 > 3. loader 编译
 > 4. 组织模块
 > 5. 生成最终文件导出
-> 
-> 
+>
+>
 > ## 打包结果分析
 > (function(modules) {
 > 	function __webpack_require__(moduleId){};
@@ -451,7 +451,7 @@
 > ```bash
 > ## loader 编译
 > - Loader 是一个方法，接收一个字符串，方法内部处理完后再返回字符串
-> 
+>
 > module.exports = function(source) {
 > 	return source
 > }
@@ -513,7 +513,7 @@
 ## source-map
 
 > ```bash
-> ## source-map 
+> ## source-map
 > - 为方便调试，需要知道打包后的代码对应于原文件的位置
 > - 如果代码有一处错误，无 source-map 只能追踪到错误发生在打包后文件的哪个位置，但是打包后的文件不方便阅读
 > - 而 source-map 就可以查看错误发生在原模块哪个位置
@@ -536,19 +536,19 @@
 > const webpack = require('webpack')
 > const config = require('./webpack.config.js')
 > const compiler = webpack(config)
-> 
+>
 > const app = express()
-> 
+>
 > // 开启自定义配置的本地服务器
-> app.use(webpackDevMid(compiler, {})) 
-> 
+> app.use(webpackDevMid(compiler, {}))
+>
 > // 开启热更新（需要遍历入口文件，开启更改）
 > Object.keys(config.entry).forEach((name) => {
 >   config.entry[name] = ['webpack-hot-middle/client?noInfo=true&reload=true'].concat(config.entry[name])
 > })
 > app.use(webpackHotMid(compiler, {
 >   overlayStyles: true
-> })) 
+> }))
 > app.listen(2007)
 > ```
 >
@@ -559,12 +559,12 @@
 > ## Webpack 减少构建时间
 > - Webpack 构建项目的速度很大程度上取决于项目的复杂度和电脑配置。确保项目在有足够的磁盘空间和良好的处理器情况下运行。
 > - webpack 的 [Build Performance](https://webpack.docschina.org/guides/build-performance/) 章节提供了一些提高构建/编译性能的方法。
-> 
-> 
+>
+>
 > ### 1. 保持最新的 Webpack、Node 和包管理器
 > 使用最新的 webpack 版本（新优化），并且与 Node 版本同步，重点是 `npm/yarn/pnpm` 包管理器，较新的版本创建更高效的模块树并提高解析速度。
-> 
-> 
+>
+>
 > ### 2. 优化 Loader 的文件搜索范围
 > 通过使用 `include` 和 `exclude` 字段，仅将 loader 应用在实际需要将其转换的模块。
 > 另外，将 Babel 编译过的文件缓存起来，下次只需要编译更改过的文件即可，这样可以大幅度加快打包时间。
@@ -580,9 +580,9 @@
 >         ]
 >       }
 >     }
->     
-> 
-> 
+>
+>
+>
 > ### 3.  别名 — `resolve.alias`
 >     const path = require('path')
 >     const resolve = (dir) => path.join(__dirname, dir)
@@ -591,9 +591,9 @@
 >         alias: { '@': resolve('src') }
 >       }
 >     }
->     
-> 
-> 
+>
+>
+>
 > ### 4. 解析
 > 减少以下方法条目数量，因为他们会增加文件系统调用的次数(层级不要过深)
 > - `resolve.modules` 告诉 webpack 解析模块时应该搜索的目录。
@@ -604,17 +604,17 @@
 > 		`resolve: { symlinks: false }`
 > - 如果你使用自定义 resolve plugin 规则，并且没有指定 context 上下文，可以设置：
 > 		`resolve: { cacheWithContext: false }`
-> 		
-> 
+>
+>
 > ### 5. 减少项目体积
 > 减少编译结果的整体大小，以提高构建性能。尽量保持 chunk 体积小
 > - 使用数量更少/体积更小的 library（例如：`moment -> day.js`、`lodash -> lodash/es`）。
 > - 在多页面应用程序中使用 SplitChunksPlugin，并开启 `async` 模式。
 > - 移除未引用代码 — 涉及到了 Tree Shaking。
 > - 只编译你当前正在开发的那些代码（缓存）。
-> 
-> 
-> 
+>
+>
+>
 > ## 6. 最小化 entry chunk
 > 确保在生成 entry chunk 时，尽量减少其体积以提高性能。将 `optimization.runtimeChunk` 设置为 `true` 或 `'multiple'`，会为每个入口添加一个只含有 runtime 的额外 chunk。所以它的生成代价较低。
 >     module.exports = {
@@ -623,9 +623,9 @@
 >         runtimeChunk: true
 >       }
 >     }
-> 
-> 
-> 
+>
+>
+>
 > ## 7. 解析构建资源
 > webpack 提供了 `thread-loader` 允许我们可以将耗时的 loader 放置在独立的线程下运行(`happypack` 插件已经未维护好几年，使用 `thread-loader` 替换)。
 >     module.exports = {
@@ -642,7 +642,7 @@
 >         ]
 >       }
 >     }
-> 
+>
 > ```
 
 ## 从bundle中排除某个导入
@@ -650,9 +650,9 @@
 > ```bash
 > ## 从bundle中排除某个导入: externals
 > Webpack externals 告诉 Webpack 从 bundle 中排除某个导入。`external` 通常用于排除将通过 CDN 加载的导入。
-> 
+>
 > 如 `webpack.config.js` 将 `vue` 添加为 `externals`，这意味着 Webpack 不会捆绑 Vue。相反，当 `component.js` 调用 `require('vue')` 时，Webpack 将返回 `global.Vue`。
-> 
+>
 > `externals` 的另一个用例是需要在 Node.js 中使用 polyfill 的浏览器 API，比如 `FormData`。而 `FormData` 又是一个浏览器 API，所以在编译上述代码时不需要捆绑。因此，您可以将 `form-data` 添加到 `externals`：
 > ```
 >
@@ -693,13 +693,13 @@
 > ```bash
 > ## 说说对 Webpack 的理解
 > webpack 是一个静态模块的打包工具。它会在内部从一个或多个入口点构建一个依赖图，然后将项目中所需的每一个模块组合成一个或多个 bundles 进行输出，它们均为静态资源。输出的文件已经编译好了，可以在浏览器运行。 webpack 具有打包压缩、编译兼容、能力扩展等功能。其最初的目标是实现前端项目的模块化，也就是如何更高效地管理和维护项目中的每一个资源。
-> 
-> 
+>
+>
 > ### 概述
 > - Webpack 是一种用于编译 JavaScript 模块的工具，也称为模块捆绑器（一个现代的js应用的静态模块化打包工具）。
 > - 常用 webpack 处理项目所编写的 js 代码，并且 webpack 会自动处理 js 之间相关的依赖。
-> 
-> 
+>
+>
 > ### Webpack 作用
 > - 捆绑资源。
 > - 将 ES6+ 语法转译为 ES5代码，允许使用最新的 JavaScript 功能，而不必担心浏览器的支持限制。
@@ -713,7 +713,6 @@
 > - 可以执行 Tree Shaking（摇树）。
 > ```
 >
-> 
 
 ### Webpack 解析流程
 
@@ -728,8 +727,8 @@
 >     6. 输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个 Chunk 转换成一个单独的文件加入到输出列表，这步是可以修改输出内容的最后机会。
 >     7. 输出完成：在确定好输出内容后，根据配置确定输出的路径和文件，把文件内容写入到文件系统。
 > 在以上过程中，Webpack 会在特定的时间点广播出特定的事件，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用 Webpack 提供的 API 改变 Webpack 的运行结果。
-> 
-> 
+>
+>
 > ### 简单描述
 > 1. 初始化：启动构建，读取与合并配置参数，加载 Plugin，实例化 Compiler
 > 2. 编译：从 Entry 出发，针对每个 Module 串行调用对应的 Loader 去翻译文件的内容，再找到该 Module 依赖的 Module，递归地进行编译处理
@@ -740,10 +739,9 @@
 
 > ```bash
 > ## 解析器 Loader
-> 
+>
 > ```
 >
-> 
 
 ### Loader 与 Plugin 的区别？
 
@@ -751,55 +749,11 @@
 > ### Loader 与 Plugin 的区别？
 > 1. 性质上的区别：
 > - 'Loader' 本质就是一个函数，在该函数中对接收到的内容进行转换，返回转换后的结果。因为 Webpack 只认识 JavaScript，所以 Loader 就成了翻译官，对其他类型的资源进行转译的预处理工作。
-> 
+>
 > - 'Plugin' 就是插件，基于事件流框架 'Tapable'，插件可以扩展 Webpack 的功能，在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
-> 
-> 
+>
+>
 > 2. 配置上的区别：
 >     - Loader 在 `module.rules` 中配置，作为模块的解析规则，类型为数组，每一项都是一个 Object，内部包含了 test（类型文件）、loader、options（参数） 等属性。
 >     - Plugin 在 `module.plugins` 中单独配置，类型为数组，每一项是一个 Plugin 的实例，参数都通过构造函数传入。
-> ```
-
-## Vite
-
-## Vite问题
-
-### vite项目修改依赖不更新，清除依赖缓存
-
-> ```bash
-> ### vite 报错问题展述
-> 11:23:46 [vite] error while updating dependencies:
-> Error: ENOENT: no such file or directory, rename 'F:\项目\portfolio\packages\music-player\node_modules\.vite\deps_temp' -> 'F:\项目\portfolio\packages\music-player\node_modules\.vite\deps'
-> 11:23:46 [vite] error while updating dependencies:
-> Error: ENOENT: no such file or directory, rename 'F:\项目\portfolio\packages\music-player\node_modules\.vite\deps_temp' -> 'F:\项目\portfolio\packages\music-player\node_modules\.vite\deps' (x2)
-> 
-> 
-> 
-> ### github 的 vite 问题提出
-> https://github.com/vitejs/vite/issues/10839
-> 
-> 
-> 
-> 
-> ### vite项目修改依赖不更新，清除依赖缓存的解决方案（个人尝试无法解决）
-> 有些时候我们会直接修改依赖文件，但修改后没有更新，大多数情况下就是被缓存了
-> 
-> 解决方法
-> 1、手动删除node_modules/.vite
-> 		Vite 会将预构建的依赖缓存到 node_modules/.vite;然后手动删除即可
-> 
-> 2、强制vite重新构建依赖
-> 		用 --force 命令行选项启动开发服务器
->      “scripts”: {
->      “dev”: “vite --force”
->      },
-> 
-> vite的缓存只会在以下情况发生时重新构建
->     - package.json 中的 dependencies 列表
->     - 包管理器的 lockfile，例如 package-lock.json, yarn.lock，或者 pnpm-lock.yaml
->     - 可能在 vite.config.js 相关字段中配置过的
-> 
-> 
-> ### 个人解决
-> 复制另一个项目中成功构建的 node_modules/.vite 文件夹过阿里
 > ```
