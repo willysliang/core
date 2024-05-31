@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { demoPages } from '../constant'
-import Test from './test.vue'
+import Test from '@comp/Dialog/index.vue'
 import { ref } from 'vue'
 import './test'
 

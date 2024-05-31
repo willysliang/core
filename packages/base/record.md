@@ -29,6 +29,9 @@ Description: 日志记录
 
 
 ## 2024年5月31日
+  - feat(comp): [Dialog] mask-layer 遮罩层
+
+## 2024年5月31日
   - refactor(base): 整合 @willy/mp（music-player）子项目的内容到 @willy/base
 
 ## 2024年5月16日

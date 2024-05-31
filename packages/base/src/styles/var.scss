@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2023-11-01 15:10:14
  * @ Modifier: willy
- * @ ModifierTime: 2024-01-03 19:46:06
+ * @ ModifierTime: 2024-05-31 18:32:00
  * @ Description: 类型样式
  */
 
@@ -161,6 +161,7 @@ $mask-color: map.merge(
     '': rgba(255, 255, 255, 0.65),
     'extra-light': rgba(255, 255, 255, 0.3),
     'transparent': rgba(255, 255, 255, 0),
+    'extra-dark': rgba(0, 0, 0, 0.3),
   ),
   $mask-color
 );
