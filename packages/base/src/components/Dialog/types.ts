@@ -1,0 +1,47 @@
+/**
+ * @ Author: willy
+ * @ CreateTime: 2024-06-03 10:38:22
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-06-03 21:35:57
+ * @ Description: Dialog 的类型声明
+ */
+
+export interface IDialogProps {
+  /** 是否显示 */
+  modelValue?: boolean
+  /** 标题 */
+  title?: string
+  /** 是否点击esc关闭 */
+  escCloseable?: boolean
+  /** 点击遮罩层关闭 */
+  maskClosable?: boolean
+  /** 距离顶部距离 */
+  top?: number | string
+  /** 距离底部距离 */
+  bottom?: number | string
+  /** modal宽度 */
+  width?: number | string
+
+  showCloseIcon?: boolean
+
+  /**
+   * 底部按钮相关属性
+   */
+  /** 是否显示底部 */
+  showFooter?: boolean
+  /** 确认按钮的文本 */
+  okText?: string
+  /** 是否显示取消按钮 */
+  showCancel?: boolean
+  /** 取消按钮文字 */
+  cancelText?: string
+}
+
+/** 所有事件的名称 */
+export type IEventName = 'update:modelValue' | 'confirm' | 'cancel' | 'close'
+
+/** 回传给父组件的事件 */
+export interface IDialogEmits {
+  (event: Extract<IEventName, 'update:modelValue'>, state: boolean): void
+  (event: Extract<IEventName, 'confirm' | 'cancel' | 'close'>): void
+}

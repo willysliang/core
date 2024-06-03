@@ -7,7 +7,7 @@
  */
 
 import { demoPages } from '@/pages/constant'
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import { IPages, Pages } from './constant'
 import { createRouterGuards } from './routerGuards'
 import { demoRoutes } from './routes/demoRoutes'
@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/system/Login.vue'),
   },
   {
-    path: '/core',
+    path: '/',
     name: Pages.INDEX.name,
     meta: {
       ...Pages.INDEX,
@@ -236,7 +236,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.VITE_BASE_PATH as string),
+  history: createWebHashHistory(import.meta.env.VITE_BASE_PATH as string),
   scrollBehavior() {
     return {
       top: 0,

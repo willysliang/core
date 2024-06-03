@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     Comments: typeof import('./src/components/songList/Comments.vue')['default']
     ComponentCacheSetting: typeof import('./src/components/layout/header/headerThemeSetting/ComponentCacheSetting.vue')['default']
     CoverPlay: typeof import('./src/components/common/CoverPlay.vue')['default']
+    Demo: typeof import('./src/components/Dialog/demo.vue')['default']
     Dialog: typeof import('./src/components/Dialog/index.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAlert: typeof import('element-plus/es')['ElAlert']

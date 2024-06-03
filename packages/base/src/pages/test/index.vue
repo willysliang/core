@@ -12,9 +12,8 @@
  -->
 
 <script setup lang="ts">
+import DialogDemo from '@comp/Dialog/demo.vue'
 import { demoPages } from '../constant'
-import Test from '@comp/Dialog/index.vue'
-import { ref } from 'vue'
 import './test'
 
 // eslint-disable-next-line no-undef
@@ -23,15 +22,6 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const isShow = ref<boolean>(false)
-
-const handleClick = () => {
-  isShow.value = true
-}
-
-const handleClose = () => {
-  isShow.value = false
-}
 // import VirtualList from './VirtualList.vue'
 
 // const add = () => {
@@ -48,10 +38,9 @@ for (let i = 1; i <= 1000000; i++) {
 </script>
 
 <template>
-  <div @click="handleClick">按钮</div>
   <button target-key="btn">添加target-key的按钮</button>
 
-  <Test v-model="isShow" @close="handleClose" />
+  <DialogDemo />
 
   <!--  <VirtualList :list-data="data">
     <template #default="{ listItem }">

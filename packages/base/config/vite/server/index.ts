@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 15:12:21
  * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 15:17:05
+ * @ ModifierTime: 2024-06-03 14:09:10
  * @ Description: server 相关配置
  */
 
@@ -16,9 +16,10 @@ export const serverConfig = (
 ): ServerOptions => {
   return {
     // 禁用或配置 HMR 连接 设置 server.hmr.overlay 为 false 可以禁用服务器错误遮罩层
-    hmr: {
-      overlay: false,
-    },
+    // hmr: {
+    //   overlay: false,
+    // },
+    hmr: true,
 
     // 服务配置
     port: Number(VITE_PORT), // 类型： number 指定服务器端口;

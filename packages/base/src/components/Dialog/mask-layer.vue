@@ -1,5 +1,13 @@
+<!--
+ * @ Author: willy
+ * @ CreateTime: 2024-05-31 18:34:27
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-06-03 17:43:58
+ * @ Description: 遮罩层
+ -->
+
 <script setup lang="ts">
-import { COMP_NAMESPACE } from '../contants'
+import { COMP_NAMESPACE } from '../constants'
 
 const namespace = COMP_NAMESPACE.MASK_LAYER
 defineOptions({
@@ -16,13 +24,13 @@ const handleClickMask = (): void => {
 </script>
 
 <template>
-  <div class="fixed" :class="namespace" @click.self="handleClickMask">
+  <div :class="namespace" @click.self="handleClickMask">
     <slot></slot>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.mask-layer {
+.w-mask-layer {
   position: fixed;
   top: 0;
   left: 0;

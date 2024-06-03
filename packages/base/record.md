@@ -28,6 +28,10 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年6月3日
+  - feat(comp): [Dialog] 弹窗
+  - feat(router): 使用 Hash 路由模式
+
 ## 2024年5月31日
   - feat(comp): [Dialog] mask-layer 遮罩层
 
