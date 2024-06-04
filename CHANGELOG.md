@@ -1,8 +1,8 @@
 # Changelog
 
-## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-05-31)
+## [v1.1.0](https://github.com/willysliang/core/tree/v1.1.0) (2024-05-31)
 
-[Full Changelog](https://github.com/willysliang/core/compare/v1.0.5...v2.0.0)
+[Full Changelog](https://github.com/willysliang/core/compare/v1.0.5...v1.1.0)
 
 **Merged pull requests:**
 
