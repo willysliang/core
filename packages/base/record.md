@@ -27,6 +27,8 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年6月4日
+  - feat(comp): [Dialog] JS方法拉起弹窗
 
 ## 2024年6月3日
   - feat(comp): [Dialog] 弹窗

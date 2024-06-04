@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-05-31 18:34:27
  * @ Modifier: willy
- * @ ModifierTime: 2024-06-03 21:52:35
+ * @ ModifierTime: 2024-06-04 11:53:40
  * @ Description: 弹窗
  -->
 
@@ -19,7 +19,8 @@ defineOptions({
 
 const props = withDefaults(defineProps<IDialogProps>(), {
   modelValue: true,
-  title: '示例标题',
+  title: '提示',
+  content: '',
   escCloseable: true,
   maskClosable: true,
   showCloseIcon: false,
@@ -30,23 +31,27 @@ const props = withDefaults(defineProps<IDialogProps>(), {
   top: 150,
   bottom: 150,
   width: 450,
-})
+  cancelCallback: () => {},
+  confirmCallback: () => {},
+  closeCallback: () => {},
+} as Required<IDialogProps>)
 
 const emits = defineEmits(['update:modelValue', 'confirm', 'cancel', 'close'])
 
 const handleCloseDialog = (): void => {
   emits('close')
   emits('update:modelValue', false)
+  props.closeCallback()
 }
 
 /**
  * 遮罩层点击事件
  */
 const handleClickMask = (): void => {
-  if (props.maskClosable) {
-    // return
+  if (!props.maskClosable) {
+    return
   }
-  // handleCloseDialog()
+  handleCloseDialog()
 }
 
 /**
@@ -73,6 +78,13 @@ onBeforeUnmount(() => {
  */
 const handleActionDialog = (event: 'confirm' | 'cancel') => {
   emits(event)
+
+  if (event === 'confirm') {
+    props.confirmCallback()
+  } else {
+    props.cancelCallback()
+  }
+
   handleCloseDialog()
 }
 </script>
@@ -104,7 +116,9 @@ const handleActionDialog = (event: 'confirm' | 'cancel') => {
             </button>
           </div>
           <div :class="`${namespace}__content`">
-            <slot></slot>
+            <slot>
+              <div v-html="props.content"></div>
+            </slot>
           </div>
           <div v-if="props.showFooter" :class="`${namespace}__footer`">
             <button
