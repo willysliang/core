@@ -28,6 +28,7 @@ Description: 记录
 
 ## 2024年6月4日
   - docs(构建工具): [monorepo] pnpm、pnpm修改node_modules的内容
+  - docs(计算机网络): [HTTP] 如何取消已发送的网络请求
 
 ## 2024年5月31日
   - docs(前端基础): [es6+语法II] generator
