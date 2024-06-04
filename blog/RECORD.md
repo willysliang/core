@@ -26,6 +26,9 @@ Description: 记录
 # 2024
 
 
+## 2024年6月4日
+  - docs(构建工具): [monorepo] pnpm、pnpm修改node_modules的内容
+
 ## 2024年5月31日
   - docs(前端基础): [es6+语法II] generator
 

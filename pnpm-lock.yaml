@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  pinia@2.1.7:
+    hash: ermpp7xxese6ultfl6q34megky
+    path: patches/pinia@2.1.7.patch
+
 importers:
 
   .:
@@ -263,7 +268,7 @@ importers:
         version: 0.2.0
       pinia:
         specifier: ^2.1.7
-        version: 2.1.7(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2))
+        version: 2.1.7(patch_hash=ermpp7xxese6ultfl6q34megky)(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2))
       postcss-pxtorem:
         specifier: ^6.0.0
         version: 6.1.0(postcss@8.4.38)
@@ -15367,7 +15372,7 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pinia@2.1.7(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2)):
+  pinia@2.1.7(patch_hash=ermpp7xxese6ultfl6q34megky)(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2)):
     dependencies:
       '@vue/devtools-api': 6.6.1
       vue: 3.4.21(typescript@5.4.2)
