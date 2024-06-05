@@ -8,10 +8,357 @@ Description: WEB API
 
 ## WEB API
 
-```bash
-## WEB API
+## HTML5 API
 
+### 地理定位 Geolocation
+
+```bash
+地理定位API(Geolocation API) 可以获取用户的地理位置。
+
+它是基于权限的，要求用户批准在一个网站和一个请求的基础上共享该数据。它还需要 SSL 证书，尽管在本地运行时可以不使用 SSL 证书。
+
+- `Geolocation.getCurrentPosition()` — 返回一个 Position 对象，表示用户的当前位置。
+
+
+- `Geolocation.watchPosition()` — 指定一个监听函数，每当用户的位置发生变化，就执行该监听函数。
+
+
+- `navigator.getCurrentPosition(successCallback, errorCallback, options)` 获取当前地理信息
+- `navigator.watchPosition(successCallback, errorCallback, options) ` 指定一个监听函数，每当用户的位置发生变化，就执行该监听函数。
+- `Geolocation.clearWatch()` — 取消 watchPosition 方法指定的监听函数。
+
+说明：
+- 当成功获取地理信息后，会调用succssCallback，并返回一个包含位置信息的对象`position`
+    - `coords`即坐标
+    - `position.coords.latitude`纬度
+    - `position.coords.longitude`经度
+
+- 当获取地理信息失败后，会调用errorCallback，并返回错误信息error。
+
+- 可选参数 options 对象可以调整位置信息数据收集方式
+    - `enableHighAccuracy` — 是否返回高精度结果。
+    		如果设为 `true`，可能导致响应时间变慢或（移动设备的）功耗增加；
+    		如果设为 `false`，设备可以更快速地响应。
+    		默认值为 `false`。
+    - `timeout` — 正整数，表示等待查询的最长时间，单位为毫秒。默认值为 `Infinity`。
+    - `maximumAge` — 正整数，表示可接受的缓存最长时间，单位为毫秒。
+    		如果设为 `0`，表示不返回缓存值，必须查询当前的实际位置；
+    		如果设为 `Infinity`，必须返回缓存值，不管缓存了多少时间。
+    		默认值为 `0`。
+
+
+
+### Coordinates 对象
+`Position.coords` 属性来使用 `Coordinates` 对象，该坐标接口用于表示设备在地球上的位置和海拔，以及计算这些属性的精确度。
+    - `Coordinates.latitude` — 表示纬度。
+    - `Coordinates.longitude` — 表示经度。
+    - `Coordinates.altitude` — 表示相对于海平面的位置海拔（单位：米）。如果实现无法提供数据，则此值可以为 `null`。
+    - `Coordinates.accuracy` — 表示经度和纬度属性的精度（单位：米）。
+    - `Coordinates.altitudeAccuracy` —表示海拔的精度（单位：米）。此值可以为 `null`。
+    - `Coordinates.speed` — 表示设备的速度（单位：米/秒）。此值可以为 `null`。
+    - `Coordinates.heading` — 表示设备运行的方向（单位：度）。表示设备离正北方向有多远。0 度表示正北，方向是顺时针方向确定的（这意味着东是 90 度，西是 270 度）。如果 `Coordinates.speed` 为 0，`heading` 属性返回 `NaN`。如果设备无法提供标题信息，则此值为 `null`。
 ```
+
+```js
+/* 兼容处理;如果支持，获取用户地理信息
+navigator:导航  geolocation:地理定位 */
+if (window.navigator.geolocation) {
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+  }
+
+  const success = (pos) => {
+    const crd = pos.coords
+    console.log(`经度：${crd.latitude} 度`)
+    console.log(`纬度：${crd.longitude} 度`)
+    console.log(`海拔：${crd.altitude} 米`)
+    console.log(`经度和纬度属性的精度：${crd.accuracy} 米`)
+    console.log(`海拔的精确度：${crd.altitudeAccuracy} 米`)
+    console.log(`设备的速度：${crd.speed} 米/秒`)
+    console.log(`设备运行的方向：${crd.heading} 度`)
+  }
+
+  const error = (err) => {
+    console.warn(`ERROR(${err.code}): ${err.message}`)
+  }
+  navigator.geolocation.getCurrentPosition(success, error, options)
+} else {
+  console.log('sorry,你的浏览器不支持地理定位');
+}
+```
+
+
+
+### 视频 Viode
+
+```bash
+## <video>标签的属性
+src ：视频的属性
+poster：视频封面，没有播放时显示的图片
+preload：预加载
+autoplay：自动播放
+loop：循环播放
+controls：浏览器自带的控制条
+width：视频宽度
+height：视频高度
+
+
+<video id="media" src="http://www.sundxs.com/test.mp4" controls width="400px" heigt="400px"></video>
+
+### audio和video都可以通过JS获取对象,JS通过id获取video和 audio的对象
+获取video对象
+Media = document.getElementById("media");
+Media方法和属性：
+HTMLVideoElement和HTMLAudioElement 均继承自HTMLMediaElement
+Media.error; //null:正常
+Media.error.code; //1.用户终止 2.网络错误 3.解码错误 4.URL无效
+
+### 网络状态
+- Media.currentSrc; //返回当前资源的URL
+- Media.src = value; //返回或设置当前资源的URL
+- Media.canPlayType(type); //是否能播放某种格式的资源
+- Media.networkState; //0.此元素未初始化 1.正常但没有使用网络 2.正在下载数据 3.没有找到资源
+- Media.load(); //重新加载src指定的资源
+- Media.buffered; //返回已缓冲区域，TimeRanges
+- Media.preload; //none:不预载 metadata:预载资源信息 auto:
+
+### 准备状态
+- Media.readyState;//1:HAVE_NOTHING 2:HAVE_METADATA 3.HAVE_CURRENT_DATA 4.HAVE_FUTURE_DATA 5.HAVE_ENOUGH_DATA
+- Media.seeking; //是否正在seeking
+
+### 回放状态
+Media.currentTime = value; //当前播放的位置，赋值可改变位置
+Media.startTime; //一般为0，如果为流媒体或者不从0开始的资源，则不为0
+Media.duration; //当前资源长度 流返回无限
+Media.paused; //是否暂停
+Media.defaultPlaybackRate = value;//默认的回放速度，可以设置
+Media.playbackRate = value;//当前播放速度，设置后马上改变
+Media.played; //返回已经播放的区域，TimeRanges，关于此对象见下文
+Media.seekable; //返回可以seek的区域 TimeRanges
+Media.ended; //是否结束
+Media.autoPlay; //是否自动播放
+Media.loop; //是否循环播放
+Media.play(); //播放
+Media.pause(); //暂停
+
+
+### 视频控制
+Media.controls;//是否有默认控制条
+Media.volume = value; //音量
+Media.muted = value; //静音
+TimeRanges(区域)对象
+TimeRanges.length; //区域段数
+TimeRanges.start(index) //第index段区域的开始位置
+TimeRanges.end(index) //第index段区域的结束位置
+
+
+### 相关事件
+  var eventTester = function(e){
+     Media.addEventListener(e,function(){
+         console.log((new Date()).getTime(),e)
+     },false);
+ }
+eventTester("loadstart"); //客户端开始请求数据
+eventTester("progress"); //客户端正在请求数据
+eventTester("suspend"); //延迟下载
+eventTester("abort"); //客户端主动终止下载（不是因为错误引起）
+eventTester("loadstart"); //客户端开始请求数据
+eventTester("progress"); //客户端正在请求数据
+eventTester("suspend"); //延迟下载
+eventTester("abort"); //客户端主动终止下载（不是因为错误引起），
+eventTester("error"); //请求数据时遇到错误
+eventTester("stalled"); //网速失速
+eventTester("play"); //play()和autoplay开始播放时触发
+eventTester("pause"); //pause()触发
+eventTester("loadedmetadata"); //成功获取资源长度
+eventTester("loadeddata"); //
+eventTester("waiting"); //等待数据，并非错误
+eventTester("playing"); //开始回放
+eventTester("canplay"); //可以播放，但中途可能因为加载而暂停
+eventTester("canplaythrough"); //可以播放，歌曲全部加载完毕
+eventTester("seeking"); //寻找中
+eventTester("seeked"); //寻找完毕
+eventTester("timeupdate"); //播放时间改变
+eventTester("ended"); //播放结束
+eventTester("ratechange"); //播放速率改变
+eventTester("durationchange"); //资源长度改变
+eventTester("volumechange"); //音量改变
+```
+
+
+
+### 全屏 fullScreen
+
+- HTML5规范允许用户自定义网页上任意元素全屏显示
+- 开启全屏显示：`requestFullscreen()`
+- 关闭全屏显示：`cancleFullscreen()`
+- 检测当前是否处于全屏状态：`document.fullScreen`
+
+```js
+// 1. 开启全屏显示
+requestFullscreen()
+webkitRequestFullScreen
+webkitCancleFullScreen
+
+// 2. 关闭全屏下显示
+cancleFullscreen()
+mozRequestFullScreen
+mozCancleFullScreen
+
+// 3. 检测当前是否处于全屏状态
+document.fullScreen
+document.webkitIsFullScreen
+document.mozFullScreen
+
+// 4. 全屏的伪类
+:full-screen {}
+:-webkit-full-screen {}
+:moz-full-screen {}
+```
+
+```html
+<style>
+  .box {
+    width: 250px;
+    height: 250px;
+    background-color: green;
+    margin: 100px auto;
+    border-radius: 50%;
+  }
+
+  /*全屏伪类：当元素处于全屏时，改变元素的背景色*/
+  .box:-webkit-full-screen,
+  .box:-moz-full-screen,
+  .box:-ms-fullscreen {
+    background-color: red;
+  }
+</style>
+
+<script>
+  // 开启全屏显示的兼容写法
+  function launchFullScreen(elem) {
+    if (elem.requestFullScreen) {
+      // 如果支持全屏，那就让元素全屏
+      elem.requestFullScreen()
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen()
+    } else if (elem.webkitRequestFullScreen) {
+      elem.webkitRequestFullScreen()
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen()
+    } else {
+      elem.oRequestFullScreen()
+    }
+  }
+
+  document.querySelector('.box').onclick = () => {
+    launchFullScreen(document.querySelector('.box'))
+  }
+</script>
+```
+
+
+
+### Web存储 Storage
+
+> ````bash
+> ## 本地存储
+> - 本地存储`window.localStorage`：保存在浏览器内存或硬盘中
+> - 永久生效，除非手动删除
+> - 可以多窗口共享数据
+> 
+> 
+> ## 会话存储
+> - 会话存储`window.sessionStorage`：保存在内存中
+> - 当窗口关闭时销毁数据
+> - 在同一个窗口下可共享数据
+> 
+> 
+> ## Web存储特性
+> - 设置、读取方便。
+> - 容量较大，sessionStorage 约5M、localStorage 约20M（`document.cookie`只有4k）
+> - 只能存储字符串，可以将对象 JSON.stringify() 编码后存储。
+> 
+> 
+> ## 存储方式
+> 1. 设置存储内容(若存在该则替换内容)：`setItem(key, value);`
+> 2. 读取存储内容：`getItem(key);`
+> 3. 根据键，删除存储内容：`removeItem(key);`
+> 4. 清空所有存储内容：`clear();`
+> 5. 根据索引值来获取存储内容：`key(n);`
+> ````
+>
+> #### 使用class设置本地存储过期时间
+>
+> ```js
+> class Storage {
+>   constructor(time) {
+>     this.time = time;
+>   }
+>   // this.time/1000 秒后清除localhost成功
+>   setItems(key, val) {
+>     localStorage.setItem(key,val);
+>     setTimeout(() => {
+>       localStorage.removeItem(key)
+>     }, this.time);
+>   }
+> }
+> let a = new Storage(5000).setItems('a', 'b');
+> ```
+
+### 网络状态 online/offline
+
+> ```bash
+> - `window.online` ：检测用户当前的网络状况，返回一个布尔值
+> - `window.online`：用户网络连接时被调用
+> - `window.offline`：用户网络断开时被调用（拔掉网线或者禁用以太网）
+> ```
+>
+> ```js
+> window.addEventListener('online', function () {
+>   alert('网络连接建立！');
+> });
+> window.addEventListener('offline', function () {
+>   alert('网络连接断开！');
+> })
+> ```
+
+### 应用缓存 cache
+
+> - 构建一个离线（无网络状态）应用，需要创建 `cache manifest` 缓存清单文件
+>     缓存清单文件中列出了浏览器应缓存，以供离线访问的资源。
+>     推荐使用 `.appcache`作为后缀名，另外还要添加MIME类型。
+> - 应用缓存的优势
+>     - 可配置需要缓存的资源；
+>     - 网络无连接应用仍可用；
+>     - 本地读取缓存资源，提升访问速度，增强用户体验；
+>     - 减少请求，缓解服务器负担。
+>
+> - **应用缓存清单内容**
+>     1. 顶行写CACHE MANIFEST。
+>     2. CACHE: 指定需要缓存的静态资源，如.css、image、js等。
+>     3. NETWORK: 指定需要在线访问的资源，可使用通配符（不需缓存、必须在网络下才能访问的资源）。
+>     4. FALLBACK: 当被缓存的文件找不到时的备用资源（当访问不到某个资源时，自动由另外一个资源替换）。
+>
+> ```appcache
+> CACHE MANIFEST
+> 
+> #要缓存的文件
+> CACHE:
+>     images/img1.jpg
+>     images/img2.jpg
+> 
+> #指定必须联网才能访问的文件
+> NETWORK:
+>      images/img3.jpg
+>      images/img4.jpg
+> 
+> #当前页面无法访问是回退的页面
+> FALLBACK:
+>     404.html
+> ```
 
 
 
@@ -1278,11 +1625,12 @@ Web Worker 作用是为 JavaScript 创造多线程环境，允许主线程创建
 
 在HTML 页面中，如果在执行脚本时，页面的状态是不可相应的，直到脚本执行完成后，页面才变成可响应。web worker 是运行在后台的js，独立于其他脚本，不会影响页面的性能。并且通过 postMessage 将结果回传到主线程。
 
-使用 WebWorker 的好处：在进行复杂操作时，如一些计算密度型或高延迟（大量计算、耗时）的任务被 Worker 线程负担了，主线程(通常负责UI交互)就会很流畅，不会被阻塞或拖慢。
+使用 WebWorker 的主要作用：是为了解决大量计算而不影响页面性能。
+在进行复杂操作时，如一些计算密度型或高延迟（大量计算、耗时）的任务被 Worker 线程负担了，主线程不会被阻塞或拖慢，(通常负责UI交互)就会很流畅。
 
 Worker 线程一旦新建成功，就会始终执行，不会被主线程上的活动（如用户点击按钮、表单提交）打断。这样有利于随时响应主线程的通信。但是，这也造成了 Worker 比较耗费资源，不应该过度使用，而且一旦使用完毕，就应该关闭。
 
-主要作用：是为了解决大量计算而不影响页面性能。
+
 如何创建web worker：检测浏览器对于web worker 的支持性，创建web worker 文件（js，回传函数等），创建web worker 对象。
 
 
@@ -1332,6 +1680,31 @@ Worker 线程一旦新建成功，就会始终执行，不会被主线程上的�
 		- `self.postMessage()`：向产生这个 Worker 线程发送消息。
 		- `self.close()`：关闭 Worker 线程。
 		- `self.importScripts()`：加载 JS 脚本。
+```
+
+
+
+#### webWorker 中可用的API
+
+```bash
+Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象进行交互。此外，`parent` 不可用。但如下的 API 可以使用：
+  - XHR API
+  - Fetch API
+  - BroadcastChannel API
+  - FileReader API
+  - IndexedDB
+  - Notifications API
+  - Promises
+  - Service Workers
+  - Channel Messaging API
+  - Cache API
+  - Console API（`console.log()`...）
+  - JavaScript Timers（`setTimeout`，`setInterval`...）
+  - CustomEvents API: `addEventListener()` and `removeEventListener()`
+  - 当前 URL，您可以在读取模式下通过 `location` 属性访问该 URL
+  - WebSockets
+  - WebGL
+  - SVG Animations
 ```
 
 
@@ -1453,6 +1826,31 @@ Worker 线程一旦新建成功，就会始终执行，不会被主线程上的�
 > const ab = new ArrayBuffer(1)
 > worker.postMessage(ab, [ab])
 > ```
+
+#### 使用 Channel Messaging API
+
+```js
+// main.js
+const worker = new Worker('worker.js')
+const messageChannel = new MessageChannel()
+
+messageChannel.port1.addEventListener('message', (event) => {
+  console.log(event.data)
+})
+
+worker.postMessage('main', [messageChannel.port2])
+```
+
+```js
+// worker.js
+addEventListener('message', (event) => {
+  console.log(event.data)
+  // 通过向 `messageChannel.port2` 发送消息来返回消息
+  event.ports[0].postMessage(data)
+})
+```
+
+
 
 #### 同页面的Web Worker
 
