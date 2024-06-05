@@ -288,7 +288,7 @@ nrm test
 
 ```
 
-### 上传自己的包
+### 对 npm package 进行发包
 
 ###### 1 编写模块
 
@@ -359,11 +359,12 @@ $ npm install gp19-npm
 
 ###### 6 卸载包
 
-```
-查看当前项目引用了哪些包 ：
-npm ls
-卸载包：
-npm unpublish --force
+```bash
+# 查看当前项目引用了哪些包：
+$ npm ls
+
+# 卸载包：
+$ npm unpublish --force
 ```
 
 ###### 7 使用引入包
