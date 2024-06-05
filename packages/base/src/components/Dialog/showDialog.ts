@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-06-04 10:54:44
  * @ Modifier: willy
- * @ ModifierTime: 2024-06-04 12:01:46
+ * @ ModifierTime: 2024-06-05 11:48:08
  * @ Description: 通过方法来拉起组件
  */
 
@@ -10,7 +10,7 @@ import WDialog from './index.vue'
 import { createVNode, render, h } from 'vue'
 import type { IDialogProps } from './types'
 
-const divEl = document.createElement('div')
+const divEl = document.createElement('div') as Element
 divEl.setAttribute('class', 'w-dialog-container')
 document.body.appendChild(divEl)
 

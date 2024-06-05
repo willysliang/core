@@ -33,16 +33,16 @@ export class VirtualList {
   private readonly virtualListConfig!: IVirtualListConfig
   private updateListItemTimer: NodeJS.Timeout | null = null
 
-  constructor (options: IVirtualListConfig) {
+  constructor(options: IVirtualListConfig) {
     this.virtualListConfig = options
     this.init()
   }
 
-  public disconnect (): void {
+  public disconnect(): void {
     this.listAreaIntersectionObserver?.disconnect()
   }
 
-  public startObserve (): void {
+  public startObserve(): void {
     const { listItemSelector, listArea } = this.virtualListConfig
     const listItemList = listArea?.querySelectorAll(listItemSelector) || []
     listItemList.forEach((listItem) => {
@@ -51,30 +51,34 @@ export class VirtualList {
     })
   }
 
-  public getToBeUpdateItemMap (): ToBeUpdateItemMapType {
+  public getToBeUpdateItemMap(): ToBeUpdateItemMapType {
     return this.toBeUpdateItemMap
   }
 
-  private init (): void {
+  private init(): void {
     const { listArea, rootMargin, threshold } = this.virtualListConfig
-    this.listAreaIntersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach((row) => {
-        const { intersectionRatio } = row
-        const target = row.target as HTMLElement
-        const index = target.getAttribute(V_LIST_ITEM_INDEX_PROP_NAME)
-        const targetHeight = `${target.clientHeight}px`
-        const state = Number(intersectionRatio > 0)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.toBeUpdateItemMap[index!] = {
-          state, height: targetHeight,
-        }
-      })
-      this.diffVirtualHeightAndInvokeUpdate()
-    }, { root: listArea, rootMargin, threshold })
+    this.listAreaIntersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((row) => {
+          const { intersectionRatio } = row
+          const target = row.target as HTMLElement
+          const index = target.getAttribute(V_LIST_ITEM_INDEX_PROP_NAME)
+          const targetHeight = `${target.clientHeight}px`
+          const state = Number(intersectionRatio > 0)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.toBeUpdateItemMap[index!] = {
+            state,
+            height: targetHeight,
+          }
+        })
+        this.diffVirtualHeightAndInvokeUpdate()
+      },
+      { root: listArea as Element, rootMargin, threshold },
+    )
     this.startObserve()
   }
 
-  private diffVirtualHeightAndInvokeUpdate (): void {
+  private diffVirtualHeightAndInvokeUpdate(): void {
     const { cb } = this.virtualListConfig
     if (!this.updateListItemTimer) {
       cb()

@@ -15,7 +15,6 @@ import { useI18nHooks } from '@/hooks/useI18n'
 const { t } = useI18nHooks()
 
 const { toggle, isFullscreen } = useFullscreen()
-
 /** 获取中英标题 */
 const getTitle = computed(() => {
   return unref(isFullscreen)
