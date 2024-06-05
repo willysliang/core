@@ -1507,60 +1507,73 @@ eventTester("volumechange"); //音量改变
 
 ### 全屏 fullScreen
 
-> - HTML5规范允许用户自定义网页上任意元素全屏显示
-> - 开启全屏显示：`requestFullscreen()`
-> - 关闭全屏显示：`cancleFullscreen()`
-> - 检测当前是否处于全屏状态：`document.fullScreen`
->
-> ```js
-> // 1. 开启全屏显示
-> requestFullscreen()
-> webkitRequestFullScreen
-> webkitCancleFullScreen
->
-> // 2. 关闭全屏下显示
-> cancleFullscreen()
-> mozRequestFullScreen
-> mozCancleFullScreen
->
-> // 3. 检测当前是否处于全屏状态
-> document.fullScreen
-> document.webkitIsFullScreen
-> document.mozFullScreen
->
-> // 4. 全屏的伪类
-> :full-screen {}
-> :-webkit-full-screen {}
-> :moz-full-screen {}
-> ```
->
-> ```js
-> document.querySelector('.box').onclick = function () {
->   // 开启全屏显示的兼容写法
->   if (box.requestFullscreen) {  //如果支持全屏，那就让元素全屏
->     box.requestFullscreen();
->   } else if (box.webkitRequestFullScreen) {
->     box.webkitRequestFullScreen();
->   } else if (box.mozRequestFullScreen) {
->     box.mozRequestFullScreen();
->   }
-> }
->
-> <style>
-> .box {
->   width: 250px;
->   height: 250px;
->   background-color: green;
->   margin: 100px auto;
->   border-radius: 50%;
-> }
-> /*全屏伪类：当元素处于全屏时，改变元素的背景色*/
-> .box:-webkit-full-screen {
->   background-color: red;
-> }
-> </style>
-> ```
->
+- HTML5规范允许用户自定义网页上任意元素全屏显示
+- 开启全屏显示：`requestFullscreen()`
+- 关闭全屏显示：`cancleFullscreen()`
+- 检测当前是否处于全屏状态：`document.fullScreen`
+
+```js
+// 1. 开启全屏显示
+requestFullscreen()
+webkitRequestFullScreen
+webkitCancleFullScreen
+
+// 2. 关闭全屏下显示
+cancleFullscreen()
+mozRequestFullScreen
+mozCancleFullScreen
+
+// 3. 检测当前是否处于全屏状态
+document.fullScreen
+document.webkitIsFullScreen
+document.mozFullScreen
+
+// 4. 全屏的伪类
+:full-screen {}
+:-webkit-full-screen {}
+:moz-full-screen {}
+```
+
+```html
+<style>
+  .box {
+    width: 250px;
+    height: 250px;
+    background-color: green;
+    margin: 100px auto;
+    border-radius: 50%;
+  }
+
+  /*全屏伪类：当元素处于全屏时，改变元素的背景色*/
+  .box:-webkit-full-screen,
+  .box:-moz-full-screen,
+  .box:-ms-fullscreen {
+    background-color: red;
+  }
+</style>
+
+<script>
+  // 开启全屏显示的兼容写法
+  function launchFullScreen(elem) {
+    if (elem.requestFullScreen) {
+      // 如果支持全屏，那就让元素全屏
+      elem.requestFullScreen()
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen()
+    } else if (elem.webkitRequestFullScreen) {
+      elem.webkitRequestFullScreen()
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen()
+    } else {
+      elem.oRequestFullScreen()
+    }
+  }
+
+  document.querySelector('.box').onclick = () => {
+    launchFullScreen(document.querySelector('.box'))
+  }
+</script>
+```
 
 
 

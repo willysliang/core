@@ -25,6 +25,8 @@ Description: 日志记录
 
 
 
+## 2024年6月5日
+  - feat(app): [browser] 全屏 fullScreen
 ## 2024年6月4日
   - feat(utils): [http] axios 请求封装
 
