@@ -26,6 +26,10 @@ Description: 记录
 # 2024
 
 
+## 2024年6月5日
+  - docs(前端基础): [HTML与CSS] 全屏FullScreen
+  - docs(前端基础): [WEB_API] 地理定位 Geolocation、迁移[HTML与CSS]的WEB_API
+
 ## 2024年6月4日
   - docs(构建工具): [monorepo] pnpm、pnpm修改node_modules的内容
   - docs(计算机网络): [HTTP] 如何取消已发送的网络请求

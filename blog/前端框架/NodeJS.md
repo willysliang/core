@@ -946,6 +946,12 @@ $ show databases
 
 
 
+### 删除集合
+
+在 MongoDB 中，可以使用 `db.collection.drop()` 方法从数据库中删除集合。如果集合存在，它将返回 `true`，如果它不存在，它将返回 `false`。
+
+
+
 ### 字段定义及约束 Schema
 
 ```bash

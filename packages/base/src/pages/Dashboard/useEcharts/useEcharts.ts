@@ -85,7 +85,7 @@ export default function useChart(
       elRef.value.style.transition = 'width 1s, height 1s'
     }
     const resizeObserver = new ResizeObserver(() => resize())
-    resizeObserver.observe(elRef.value)
+    resizeObserver.observe(elRef.value as Element)
   }
 
   // 显示加载状
