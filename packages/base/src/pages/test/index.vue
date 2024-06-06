@@ -19,30 +19,8 @@ defineOptions({
   name: demoPages.TEST.name,
   inheritAttrs: false,
 })
-
-// import VirtualList from './VirtualList.vue'
-
-// const add = () => {
-//   console.log('add')
-// }
-
-/* const data = ref<Array<any>>([])
-for (let i = 1; i <= 1000000; i++) {
-  data.value.push({
-    id: i,
-    value: '字符内容'.repeat(Math.random() * 100),
-  })
-} */
 </script>
 
 <template>
-  <button target-key="btn">添加target-key的按钮</button>
-
-  <DialogDemo />
-
-  <!--  <VirtualList :list-data="data">
-    <template #default="{ listItem }">
-      <div> <span class="text-red-600">{{ listItem.idx }}</span> {{ listItem.value }}</div>
-    </template>
-  </VirtualList> -->
+  <el-button>按钮</el-button>
 </template>
