@@ -32,6 +32,7 @@ Description: 日志记录
   - refactor(base): 重构页面框架布局、自动引入组件
   - feat(base): 优化 MP 页面样式
   - style(base): 调整 menuList 顺序 & 移除无用代码
+  - feat(base): [layout] 菜单栏显隐可控
 
 ## 2024年6月4日
   - feat(comp): [Dialog] JS方法拉起弹窗

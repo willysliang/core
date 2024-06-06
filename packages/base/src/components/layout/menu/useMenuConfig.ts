@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-05-31 17:26:31
  * @ Modifier: willy
- * @ ModifierTime: 2024-06-06 16:16:15
+ * @ ModifierTime: 2024-06-06 21:34:22
  * @ Description: 菜单的配置
  */
 
@@ -12,13 +12,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { menuListMap, type IPages } from '@mp/router/constant'
 import { ThemeLayout } from '@/config/constant/theme'
 import { useThemeStore } from '@store/app/theme'
-import { usePlayerSettingStore } from '@store/player/playerSetting'
+import { useSettingStore } from '@store/app/setting'
 
 /** 菜单的配置 */
 export function useMenuConfig() {
   const route = useRoute()
   const router = useRouter()
-  const { showPlayerModule } = storeToRefs(usePlayerSettingStore())
+  const { showPlayerModule } = storeToRefs(useSettingStore())
 
   /***
    * 判断主题是否为横栏

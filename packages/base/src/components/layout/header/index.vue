@@ -9,23 +9,53 @@
 <script setup lang="ts">
 import HeaderSearch from '@comp/layout/header/headerSearch/index.vue'
 import UserInfo from '@comp/layout/header/userInfo/index.vue'
-import { Left, Right } from '@icon-park/vue-next'
-import { HeaderFullScreen } from './HeaderFullScreen'
+import HeaderFullScreen from './HeaderFullScreen/index.vue'
 import LockScreen from './lockscreen/index.vue'
-import { HeaderLocale } from './headerLocale'
 import HeaderThemeSetting from './headerThemeSetting/index.vue'
+import HeaderGuide from './Guide/index.vue'
+import HeaderLocale from './headerLocale/index.vue'
+import { Left, Right, AlignTextLeft, AlignTextRight } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { usePlayerSettingStore } from '@store/player/playerSetting'
-import { HeaderGuide } from './Guide'
+import { useSettingStore } from '@store/app/setting'
+import { useThemeStore } from '@store/app/theme'
 
 const router = useRouter()
 
-const { showPlayerModule } = storeToRefs(usePlayerSettingStore())
+const { showMenu, showPlayerModule } = storeToRefs(useSettingStore())
+const { themeLayoutIsVertical } = storeToRefs(useThemeStore())
+const toggleMenuStatus = () => {
+  showMenu.value = !showMenu.value
+}
+const menuConfig = computed(() => {
+  const className = themeLayoutIsVertical.value ? 'rotate-90' : 'rotate-0'
+  return showMenu.value
+    ? {
+        tooltipName: 'layout.header.tooltipHideMenu',
+        icon: AlignTextLeft,
+        class: className,
+      }
+    : {
+        tooltipName: 'layout.header.tooltipShowMenu',
+        icon: AlignTextRight,
+        class: className,
+      }
+})
 </script>
 
 <template>
   <div class="flex items-center">
+    <el-tooltip :content="$t(menuConfig.tooltipName)" placement="bottom">
+      <IconPark
+        :icon="menuConfig.icon"
+        size="22"
+        :stroke-width="4"
+        :class="`hover-text mr-2 ${menuConfig.class}`"
+        @click="toggleMenuStatus"
+      />
+    </el-tooltip>
+
     <el-tooltip :content="$t('layout.header.tooltipBack')" placement="bottom">
       <IconPark
         :icon="Left"

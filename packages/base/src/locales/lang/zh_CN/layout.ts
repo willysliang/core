@@ -9,12 +9,15 @@
 export default {
   header: {
     /** 提示信息 */
+    tooltipShowMenu: '展示菜单',
+    tooltipHideMenu: '隐藏菜单',
     tooltipBack: '页面回退',
     tooltipForward: '页面前进',
-    tooltipGuide: '页面引导: 通常用于首次进入app应用的功能介绍、组件交互、用户注意力转移等场景。引用插件：',
+    tooltipGuide:
+      '页面引导: 通常用于首次进入app应用的功能介绍、组件交互、用户注意力转移等场景。引用插件：',
     tooltipLock: '锁定屏幕',
     tooltipEntryFull: '全屏',
     tooltipExitFull: '退出全屏',
-    tooltipThemeSetting: "主题设置",
+    tooltipThemeSetting: '主题设置',
   },
 }
