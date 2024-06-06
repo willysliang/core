@@ -27,6 +27,7 @@ import {
   Magic,
   InboxOut,
   Form,
+  NotebookAndPen,
 } from '@icon-park/vue-next'
 
 export const demoPages = {
@@ -37,6 +38,14 @@ export const demoPages = {
     title: '测试',
     icon: TestTube,
     component: () => import('./test/index.vue'),
+  },
+  CUSTOM_COMPOMENT: {
+    path: 'customComponent',
+    key: 'customComponent',
+    name: 'customComponent',
+    title: '自定义组件',
+    icon: NotebookAndPen,
+    component: () => import('./CustomComponent/index.vue'),
   },
   EXCEL: {
     path: 'demoExcel',

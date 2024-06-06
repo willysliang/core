@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-06-03 18:08:37
  * @ Modifier: willy
- * @ ModifierTime: 2024-06-04 12:05:43
+ * @ ModifierTime: 2024-06-06 18:29:52
  * @ Description: Dialog 组件的案例使用
  -->
 
@@ -30,9 +30,19 @@ const handleShowDialog = () => {
     <template #header>
       <span>Dialog</span>
     </template>
-    <div @click="handleDialogStatus(true)">弹窗显隐开关{{ '<组件版>' }}</div>
+    <div
+      class="inline-block border-b-2 border-dotted border-b-indigo-500 cursor-pointer"
+      @click="handleDialogStatus(true)"
+    >
+      弹窗显隐开关{{ '<组件版>' }}
+    </div>
     <br />
-    <div @click="handleShowDialog">弹窗显隐开关{{ '<命令版>' }}</div>
+    <div
+      class="inline-block mt-4 border-b-2 border-dotted border-b-indigo-500 cursor-pointer"
+      @click="handleShowDialog"
+    >
+      弹窗显隐开关{{ '<命令版>' }}
+    </div>
   </el-card>
 
   <WDialog v-model="isShow" :content="contentEl" @close="handleDialogStatus">

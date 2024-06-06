@@ -12,11 +12,9 @@
  -->
 
 <script setup lang="ts">
-import DialogDemo from '@comp/Dialog/demo.vue'
 import { demoPages } from '../constant'
 import './test'
 
-// eslint-disable-next-line no-undef
 defineOptions({
   name: demoPages.TEST.name,
   inheritAttrs: false,

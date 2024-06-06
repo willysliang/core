@@ -30,6 +30,7 @@ Description: 日志记录
 
 ## 2024年6月6日
   - refactor(base): 重构页面框架布局、自动引入组件
+  - feat(base): 优化 MP 页面样式
 
 ## 2024年6月4日
   - feat(comp): [Dialog] JS方法拉起弹窗
