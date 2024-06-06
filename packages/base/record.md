@@ -28,6 +28,14 @@ Description: 日志记录
 # 更新记录
 
 
+## 2024年6月6日
+  - refactor(base): 重构页面框架布局、自动引入组件
+  - feat(base): 优化 MP 页面样式
+  - style(base): 调整 menuList 顺序 & 移除无用代码
+
+## 2024年6月4日
+  - feat(comp): [Dialog] JS方法拉起弹窗
+
 ## 2024年6月3日
   - feat(comp): [Dialog] 弹窗
   - feat(router): 使用 Hash 路由模式

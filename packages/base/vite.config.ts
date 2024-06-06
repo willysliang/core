@@ -14,6 +14,7 @@ import { baseVuePlugin } from './config/vite/plugin/base'
 import { mdPlugins } from './config/vite/plugin/mdPlugin'
 import { eslintPlugins } from './config/vite/plugin/eslintPlugins'
 import { buildPlugins } from './config/vite/plugin/buildPlugin'
+import { elementUiPlugins } from './config/vite/plugin/elementUiPlugin'
 import { getAllBuildHtml } from './config/vite/utils'
 import { cssConfig } from './config/vite/css'
 import { serverConfig } from './config/vite/server'
@@ -26,17 +27,6 @@ import path from 'path'
 
 // mockjs
 import { viteMockServe } from 'vite-plugin-mock'
-
-// element-plus
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-
-/**
- * 打包优化相关
- */
-/** vite 打包压缩 gzip */
-import viteCompression from 'vite-plugin-compression'
 
 /** 读取 package.json 文件内容 */
 const packageJSON = JSON.parse(
@@ -109,6 +99,7 @@ export default defineConfig(({ mode }) => {
       ...mdPlugins(),
       ...eslintPlugins(),
       ...buildPlugins(),
+      ...elementUiPlugins(),
       /* 配置 mockjs */
       viteMockServe({
         mockPath: './mock',
@@ -119,21 +110,6 @@ export default defineConfig(({ mode }) => {
        import { setupProdMockServer } from './mock/_createProdMockServer';
        setupProdMockServer();
        `,
-      }),
-      viteCompression({
-        verbose: true, // 默认即可
-        disable: false, // 开启压缩(不禁用)，默认即可
-        deleteOriginFile: false, // 删除源文件
-        threshold: 10240, // 压缩前最小文件大小
-        algorithm: 'gzip', // 压缩算法
-        ext: '.gz', // 文件类型
-      }),
-      /* 配置 element-plus */
-      AutoImport({
-        resolvers: [ElementPlusResolver()],
-      }),
-      Components({
-        resolvers: [ElementPlusResolver()],
       }),
     ],
     server: serverConfig(importMetaEnv.VITE_PORT),

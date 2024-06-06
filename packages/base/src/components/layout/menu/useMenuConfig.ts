@@ -1,11 +1,25 @@
+/**
+ * @ Author: willy
+ * @ CreateTime: 2024-05-31 17:26:31
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-06-06 16:16:15
+ * @ Description: 菜单的配置
+ */
+
 import { computed, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
-import { menuList } from '@mp/router/constant'
+import { menuListMap, type IPages } from '@mp/router/constant'
 import { ThemeLayout } from '@/config/constant/theme'
 import { useThemeStore } from '@store/app/theme'
-import { storeToRefs } from 'pinia'
+import { usePlayerSettingStore } from '@store/player/playerSetting'
 
-export function useMenuHooks() {
+/** 菜单的配置 */
+export function useMenuConfig() {
+  const route = useRoute()
+  const router = useRouter()
+  const { showPlayerModule } = storeToRefs(usePlayerSettingStore())
+
   /***
    * 判断主题是否为横栏
    */
@@ -15,9 +29,22 @@ export function useMenuHooks() {
     () => themeLayoutCurrent.value === ThemeLayout.MENU_TOP,
   )
 
-  /** 获取路由 */
-  const route = useRoute()
-  const router = useRouter()
+  /**
+   * 菜单的标题
+   */
+  const menuTitle = computed<string>(() =>
+    showPlayerModule.value ? 'WILLY云音乐' : 'WILLY DEMO',
+  )
+
+  /**
+   * 显示的菜单列表
+   */
+  const menuList = computed<IPages[]>(() => {
+    let result: IPages[] = []
+    result = result.concat(menuListMap.DEMO.list)
+    if (showPlayerModule.value) result = result.concat(menuListMap.MUSIC.list)
+    return result
+  })
 
   /** 当前所选中的菜单项 */
   const currentMenuKey = ref<string>((route.meta?.name || '') as string)
@@ -26,6 +53,7 @@ export function useMenuHooks() {
     (newVal) => {
       currentMenuKey.value = newVal as string
     },
+    { immediate: true },
   )
 
   /** 选择菜单项 */
@@ -38,6 +66,7 @@ export function useMenuHooks() {
 
   return {
     themeLayoutIsVertical,
+    menuTitle,
     menuList,
     currentMenuKey,
     handleMenuSelect,

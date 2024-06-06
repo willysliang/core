@@ -1,8 +1,8 @@
 /**
  * @ Author: willysliang
  * @ CreateTime: 2024-04-13 13:20:50
- * @ Modifier: willysliang
- * @ ModifierTime: 2024-04-13 13:22:51
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-06-05 11:46:14
  * @ Description: 检查滚动相关
  */
 
@@ -15,7 +15,7 @@ export class CheckScroll {
   /**
    * @descption 检查元素是否可滚动
    */
-  public isScrollable(ele: HTMLElement): boolean {
+  public isScrollable(ele: Element): boolean {
     // 比较高度以查看元素是否具有可滚动内容
     const hasScrollableContent = ele.scrollHeight > ele.clientHeight
 

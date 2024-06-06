@@ -1,23 +1,9 @@
 body {
-	/* 格子背景色 */
-	// background-image: linear-gradient(
-	//     90deg,
-	//     rgb(50 0 0 / 5%) 3%,
-	//     rgb(0 0 0 / 0%) 3%
-	//   ),
-	//   linear-gradient(360deg, rgb(50 0 0 / 5%) 3%, rgb(0 0 0 / 0%) 3%);
-	// background-size: p2r(20) p2r(20);
-	// background-repeat: repeat;
-	// background-position: center center;
-
-	// font-family: 'PingFang SC', STHeitiSC-Light, Helvetica-Light, arial, sans-serif, 'Droid Sans Fallback';
-
-	/** 字体大小 */
 	font-size: 62.5%; // 以10px为基数,此时class为a的标签字体大小为20px
 	font-family: "'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif";
 	margin: 0;
-	min-width: 750px;
-	min-height: 100vh;
+	min-width: 600px;
+	height: 100vh;
 	box-sizing: border-box;
 
 	// background: $color-background;
@@ -31,45 +17,3 @@ body {
 	width: 100%;
 	height: 100%;
 }
-
-// @media (min-width: 1440px) {
-//   body {
-//     font-size: 63.75%;
-//   }
-// }
-
-// @media (min-width: 1600px) {
-//   body {
-//     font-size: 73.125%;
-//   }
-// }
-
-// @media (min-width: 1680px) {
-//   body {
-//     font-size: 77%;
-//   }
-// }
-
-// @media (min-width: 1920px) {
-//   body {
-//     font-size: 87.9375%;
-//   }
-// }
-
-// @media (min-width: 2560px) {
-//   body {
-//     font-size: 116.875%;
-//   }
-// }
-
-// @media (min-width: 3440px) {
-//   body {
-//     font-size: 157.5%;
-//   }
-// }
-
-// @media (min-width: 3840px) {
-//   body {
-//     font-size: 176%;
-//   }
-// }

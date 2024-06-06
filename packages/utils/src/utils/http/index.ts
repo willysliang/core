@@ -6,5 +6,7 @@
  * @ Description: Http 请求相关
  */
 
-export * from './request'
+export * from './FetchRequest'
 export * from './ajaxHttp'
+export * from './httpStatus'
+export * from './axios'

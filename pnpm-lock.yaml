@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  pinia@2.1.7:
+    hash: ermpp7xxese6ultfl6q34megky
+    path: patches/pinia@2.1.7.patch
+
 importers:
 
   .:
@@ -263,7 +268,7 @@ importers:
         version: 0.2.0
       pinia:
         specifier: ^2.1.7
-        version: 2.1.7(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2))
+        version: 2.1.7(patch_hash=ermpp7xxese6ultfl6q34megky)(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2))
       postcss-pxtorem:
         specifier: ^6.0.0
         version: 6.1.0(postcss@8.4.38)
@@ -563,6 +568,9 @@ importers:
 
   packages/utils:
     dependencies:
+      axios:
+        specifier: ^1.7.2
+        version: 1.7.2
       clipboard:
         specifier: ^2.0.11
         version: 2.0.11
@@ -575,6 +583,9 @@ importers:
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
+      qs:
+        specifier: ^6.11.0
+        version: 6.11.0
       query-string:
         specifier: ^9.0.0
         version: 9.0.0
@@ -10967,7 +10978,7 @@ snapshots:
 
   axios@1.7.2:
     dependencies:
-      follow-redirects: 1.15.6
+      follow-redirects: 1.15.6(debug@4.3.4)
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -13005,7 +13016,7 @@ snapshots:
 
   extrareqp2@1.0.0(debug@4.3.4):
     dependencies:
-      follow-redirects: 1.15.5(debug@4.3.4)
+      follow-redirects: 1.15.6(debug@4.3.4)
     transitivePeerDependencies:
       - debug
 
@@ -13177,7 +13188,9 @@ snapshots:
     optionalDependencies:
       debug: 4.3.4(supports-color@5.5.0)
 
-  follow-redirects@1.15.6: {}
+  follow-redirects@1.15.6(debug@4.3.4):
+    optionalDependencies:
+      debug: 4.3.4(supports-color@5.5.0)
 
   for-each@0.3.3:
     dependencies:
@@ -15367,7 +15380,7 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pinia@2.1.7(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2)):
+  pinia@2.1.7(patch_hash=ermpp7xxese6ultfl6q34megky)(typescript@5.4.2)(vue@3.4.21(typescript@5.4.2)):
     dependencies:
       '@vue/devtools-api': 6.6.1
       vue: 3.4.21(typescript@5.4.2)

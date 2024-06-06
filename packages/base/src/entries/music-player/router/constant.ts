@@ -35,6 +35,14 @@ export interface IPages {
   children?: IPages[]
 }
 
+type IMenuListMap = Record<
+  'DEMO' | 'MUSIC',
+  {
+    key: string
+    list: IPages[]
+  }
+>
+
 /***
  * 路由数据集定义
  */
@@ -219,42 +227,49 @@ export const Pages = {
 } as const
 
 /** 菜单列表 */
-export const menuList: IPages[] = [
+export const menuListMap: IMenuListMap = {
   /** demo相关 */
-  {
-    title: '案例',
-    name: 'demo',
+  DEMO: {
     key: 'demo',
-    path: 'demo',
-    icon: VideoOne,
-    children: [
-      ...Object.values(demoPages),
+    list: [
+      {
+        title: '案例',
+        name: 'demo',
+        key: 'demo',
+        path: 'demo',
+        icon: VideoOne,
+        children: [...Object.values(demoPages)],
+      },
     ],
   },
-
   /** 音乐 */
-  {
-    title: '在线音乐',
-    name: 'onlineMusic',
-    key: 'onlineMusic',
-    path: 'onlineMusic',
-    icon: VideoOne,
-    children: [Pages.DISCOVER, Pages.MUSIC, Pages.VIDEO, Pages.DJ],
-  },
-  {
-    title: '我的音乐',
-    name: 'oneselfMusic',
-    key: 'oneselfMusic',
-    path: 'oneselfMusic',
-    icon: VideoOne,
-    children: [
-      Pages.ONESELF_LOVE_MUSIC,
-      Pages.LOCAL_MUSIC,
-      Pages.DOWNLOAD_MUSIC,
-      Pages.RECENTLY_MUSIC,
+  MUSIC: {
+    key: 'music',
+    list: [
+      {
+        title: '在线音乐',
+        name: 'onlineMusic',
+        key: 'onlineMusic',
+        path: 'onlineMusic',
+        icon: VideoOne,
+        children: [Pages.DISCOVER, Pages.MUSIC, Pages.VIDEO, Pages.DJ],
+      },
+      {
+        title: '我的音乐',
+        name: 'oneselfMusic',
+        key: 'oneselfMusic',
+        path: 'oneselfMusic',
+        icon: VideoOne,
+        children: [
+          Pages.ONESELF_LOVE_MUSIC,
+          Pages.LOCAL_MUSIC,
+          Pages.DOWNLOAD_MUSIC,
+          Pages.RECENTLY_MUSIC,
+        ],
+      },
     ],
   },
-]
+}
 
 /** 音乐馆相关模块路由 */
 export const musicHallMenulist: IPages[] = [

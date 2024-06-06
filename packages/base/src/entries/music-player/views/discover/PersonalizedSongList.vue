@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import Title from '@comp/common/Title.vue'
 import CoverPlay from '@/components/common/CoverPlay.vue'
-import { useDiscoverStore } from '@/store/discover'
+import { useDiscoverStore } from '@/store/player/discover'
 import { onBeforeMount, toRefs } from 'vue'
 import { sampleSize } from 'lodash'
 import { useRouter } from 'vue-router'

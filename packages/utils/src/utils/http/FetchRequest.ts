@@ -2,9 +2,12 @@
  * @ Author: willy
  * @ CreateTime: 2024-04-08 17:57:02
  * @ Modifier: willy
- * @ ModifierTime: 2024-05-27 20:58:09
+ * @ ModifierTime: 2024-06-04 21:49:07
  * @ Description: fetch 请求封装
  */
+
+import { MyStorage } from '../cache'
+import { USER_TOKEN } from '../../constants'
 
 type IMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 interface IRequestConfig {
@@ -30,6 +33,7 @@ interface IHttpFactoryProps extends IRequestConfig {
 
 export class FetchRequest {
   private baseUrl: string
+
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl
   }
@@ -46,22 +50,18 @@ export class FetchRequest {
       customStringify(obj) // "name=John%20Doe&age=30&job=Developer"
    */
   private customStringify(queryParams: Record<string, any>): string {
-    const keys = Object.keys(queryParams)
-    // 使用Array的map方法遍历所有键，将每个键值对转换为字符串形式
-    const queryParts = keys
-      .map((key) => {
-        const value = queryParams[key]
+    return (
+      Object.entries(queryParams)
         // 如果值为undefined或null，则不包括在结果字符串中
-        if (value === undefined || value === null) {
-          return ''
-        }
+        .filter(([, value]) => value !== undefined && value !== null)
         // 使用encodeURIComponent确保键和值被正确地URL编码
-        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-      })
-      .filter((part) => part) // 过滤掉空字符串，即那些值为undefined或null的键值对
-
-    // 使用join方法将所有键值对连接起来，并以&符号分隔
-    return queryParts.join('&')
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+        )
+        // 使用join方法将所有键值对连接起来，并以&符号分隔
+        .join('&')
+    )
   }
 
   /** 请求拦截器 */
@@ -74,10 +74,13 @@ export class FetchRequest {
     needAuthorization,
   }: IRequestParams) {
     let queryParams = '' // url 的参数
-    let requestPayload = '' // 请求体载荷数据
+    let requestPayload: BodyInit | null = null // 请求体载荷数据
 
-    const { headers = {} } = config
-    if (needAuthorization) headers.authorization = `Bearer ...`
+    let headers = config?.headers || {}
+
+    const storage = new MyStorage(localStorage, '')
+    const token = storage.get(USER_TOKEN)
+    if (token && needAuthorization) headers.authorization = `Bearer ${token}`
 
     if (['GET', 'DELETE'].includes(method)) {
       // fetch 对 GET 请求不支持参数传在 body，所以需要手动拼接到 url 中
@@ -85,16 +88,24 @@ export class FetchRequest {
         queryParams = this.customStringify(params)
         url = `${url}?${queryParams}`
       }
-    } else {
+    } else if (params) {
       // 非form-data传输JSON数据格式
       if (
         !['[object FormData]', '[object URLSearchParams]'].includes(
           Object.prototype.toString.call(params),
         )
       ) {
-        Object.assign(headers, { 'Content-Type': 'application/json' })
+        headers = Object.assign(
+          {
+            Accept: 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          headers,
+        )
         requestPayload = JSON.stringify(params)
       }
+    } else {
+      requestPayload = params as BodyInit & null
     }
 
     const options: Record<string, unknown> = {

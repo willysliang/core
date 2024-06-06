@@ -1,10 +1,11 @@
 /**
  * @ Author: willysliang
- * @ Create Time: 2022-10-08 18:41:13
- * @ Modified by: willysliang
- * @ Modified time: 2023-01-08 15:07:10
- * @ Description: 推荐页存储的数据
+ * @ CreateTime: 2022-10-08 18:41:13
+ * @ Modifier: willy
+ * @ ModifierTime: 2024-06-06 18:00:12
+ * @ Description:推荐页存储的数据
  */
+
 import { useBanner, usePersonalizedSongList } from '@/api/module/discover'
 import { Banner, PersonalizedSongList } from '@/types/discover'
 import { defineStore } from 'pinia'

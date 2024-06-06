@@ -8,6 +8,7 @@
 
 <script setup lang="ts">
 import ComponentCacheSetting from './ComponentCacheSetting.vue'
+import PlayerSetting from './PlayerSetting.vue'
 import { Select } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { themeStyle, themeLayout, themeColors } from '@/config/constant/theme'
@@ -17,6 +18,10 @@ const { drawer, themeStyleCurrent, themeLayoutCurrent, themeColorsCurrent } =
   storeToRefs(useThemeStore())
 const { changeThemeLayout, changeThemeStyle, changeThemeColor } =
   useThemeStore()
+
+const handleCloseDrawer = () => {
+  drawer.value = false
+}
 </script>
 
 <template>
@@ -100,5 +105,8 @@ const { changeThemeLayout, changeThemeStyle, changeThemeColor } =
 
     <!-- 缓存页面 -->
     <ComponentCacheSetting />
+
+    <!-- 音乐播放器的设置 -->
+    <PlayerSetting @close="handleCloseDrawer" />
   </el-drawer>
 </template>
