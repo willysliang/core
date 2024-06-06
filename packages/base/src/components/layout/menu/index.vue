@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import IconPark from '@comp/common/IconPark.vue'
 import { Music } from '@icon-park/vue-next'
-import { useMenuHooks } from './MenuHooks'
-import { menuList } from '@mp/router/constant'
+import { useMenuConfig } from './useMenuConfig'
 import { useThemeStore } from '@store/app/theme'
-import { storeToRefs } from 'pinia'
 
 const {
   themeLayoutIsVertical,
@@ -12,7 +11,8 @@ const {
   menuBgColor,
   menuTextColor,
 } = storeToRefs(useThemeStore())
-const { handleMenuSelect, currentMenuKey } = useMenuHooks()
+const { handleMenuSelect, currentMenuKey, menuList, menuTitle } =
+  useMenuConfig()
 </script>
 
 <template>
@@ -25,20 +25,23 @@ const { handleMenuSelect, currentMenuKey } = useMenuHooks()
     :mode="themeLayoutIsVertical ? 'horizontal' : 'vertical'"
     :collapse-transition="false"
     :class="[
-      'menus',
+      'menu',
       themeLayoutIsVertical ? 'overflow-y-hidden' : 'overflow-x-hidden',
     ]"
     @select="handleMenuSelect"
   >
     <el-menu-item index="logo">
-      <IconPark
-        :icon="Music"
-        size="28"
-        theme="multi-color"
-        :fill="['#d42121', '#e07813', '#da1616', '#d8ba24']"
-        :stroke-width="3"
-      />
-      <span class="ml-2">WILLY云音乐</span>
+      <div class="menu__logo">
+        <IconPark
+          :icon="Music"
+          size="28"
+          theme="multi-color"
+          :fill="['#d42121', '#e07813', '#da1616', '#d8ba24']"
+          :stroke-width="3"
+          class="shrink-0"
+        />
+        <span class="menu__logo--title">{{ menuTitle }}</span>
+      </div>
     </el-menu-item>
     <el-sub-menu
       v-for="menuItem in menuList"
@@ -63,9 +66,22 @@ const { handleMenuSelect, currentMenuKey } = useMenuHooks()
   @apply bg-gradient-to-r from-teal-400 to-emerald-400 text-slate-50 cursor-default;
 }
 
-.menus {
+.menu {
   height: 100%;
   width: 100%;
+
+  .menu__logo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    &--title {
+      flex: 1;
+      height: 100%;
+      margin-left: 0.5rem;
+      overflow: hidden;
+    }
+  }
 
   &::-webkit-scrollbar {
     width: 4px;

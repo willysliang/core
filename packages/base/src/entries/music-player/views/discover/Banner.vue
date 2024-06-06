@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
-import { useDiscoverStore } from '@/store/discover'
+import { useDiscoverStore } from '@/store/player/discover'
 import { usePlayerStore } from '@/store/player'
 import { onBeforeMount, toRefs } from 'vue'
 import type { Banner } from '@/types/discover'

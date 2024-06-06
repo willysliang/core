@@ -6,8 +6,8 @@
  * @ Description: 主题配置相关的持久化数据
  */
 
-import { defineStore } from 'pinia'
-import { onBeforeMount } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
+import { onBeforeMount, computed } from 'vue'
 import { ThemeStype, ThemeLayout } from '@/config/constant/theme'
 import { Storage } from '@utils/cache'
 import {
@@ -36,6 +36,15 @@ interface ThemeStore {
   /** 菜单字体色 */
   menuTextColor: string
 }
+
+/** 方向 - Direction */
+export enum DIRECTION {
+  /** 垂直方向 */
+  VERTICAL = 'vertical',
+  /** 水平方向 */
+  HORIZONTAL = 'horizontal',
+}
+
 export const useThemeStore = defineStore({
   id: 'theme',
   state: (): ThemeStore => ({
@@ -131,11 +140,22 @@ export const useThemeStore = defineStore({
  * 主题背景初始化
  */
 export const useThemeInit = () => {
-  const { themeStyleLevel, setRealDarkTheme, setThemeColor } = useThemeStore()
+  const store = useThemeStore()
+  const { themeStyleLevel, setRealDarkTheme, setThemeColor } = store
+  const { themeLayoutIsVertical } = storeToRefs(store)
 
   onBeforeMount(() => {
     themeStyleLevel()
     setRealDarkTheme()
     setThemeColor()
   })
+
+  /** 方向 */
+  const direction = computed(() =>
+    themeLayoutIsVertical.value ? DIRECTION.VERTICAL : DIRECTION.HORIZONTAL,
+  )
+
+  return {
+    direction,
+  }
 }

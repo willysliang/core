@@ -13,11 +13,15 @@ import { Left, Right } from '@icon-park/vue-next'
 import { HeaderFullScreen } from './HeaderFullScreen'
 import LockScreen from './lockscreen/index.vue'
 import { HeaderLocale } from './headerLocale'
-import { HeaderThemeSetting } from './headerThemeSetting'
+import HeaderThemeSetting from './headerThemeSetting/index.vue'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { usePlayerSettingStore } from '@store/player/playerSetting'
 import { HeaderGuide } from './Guide'
 
 const router = useRouter()
+
+const { showPlayerModule } = storeToRefs(usePlayerSettingStore())
 </script>
 
 <template>
@@ -46,7 +50,7 @@ const router = useRouter()
   </div>
 
   <!-- 搜索栏 -->
-  <HeaderSearch />
+  <HeaderSearch v-if="showPlayerModule" />
 
   <!-- 设置类 -->
   <div class="flex items-center justify-end">

@@ -7,7 +7,7 @@
  -->
 
 <script setup lang="ts">
-import { ThemeSetting } from './index'
+import ThemeSetting from './ThemeSetting.vue'
 import IconPark from '@comp/common/IconPark.vue'
 import { Config } from '@icon-park/vue-next'
 import { storeToRefs } from 'pinia'
@@ -16,7 +16,6 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const { drawer } = storeToRefs(useThemeStore())
-
 </script>
 
 <template>
@@ -24,13 +23,13 @@ const { drawer } = storeToRefs(useThemeStore())
     :content="t('layout.header.tooltipThemeSetting')"
     placement="bottom"
   >
-      <IconPark
-        :icon="Config"
-        size="22"
-        :stroke-width="3"
-        class="hover-text mx-2"
-        @click="drawer = true"
-      />
+    <IconPark
+      :icon="Config"
+      size="22"
+      :stroke-width="3"
+      class="hover-text mx-2"
+      @click="drawer = true"
+    />
   </el-tooltip>
 
   <!-- 个性化主题设置弹层 -->
