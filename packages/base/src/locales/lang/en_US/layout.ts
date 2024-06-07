@@ -9,9 +9,12 @@
 export default {
   header: {
     /** 提示信息 */
+    tooltipShowMenu: 'Show Menu',
+    tooltipHideMenu: 'Hide Menu',
     tooltipBack: 'Pages Back',
     tooltipForward: 'Pages Forward',
-    tooltipGuide: 'Page guidance: usually used for function introduction, component interaction, user attention diversion and other scenarios when entering app applications for the first time. Reference plug-in: ',
+    tooltipGuide:
+      'Page guidance: usually used for function introduction, component interaction, user attention diversion and other scenarios when entering app applications for the first time. Reference plug-in: ',
     tooltipLock: 'Lock screen',
     tooltipEntryFull: 'Full Screen',
     tooltipExitFull: 'Exit Full Screen',

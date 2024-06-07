@@ -2,16 +2,16 @@
  * @ Author: willy
  * @ CreateTime: 2024-06-06 14:59:08
  * @ Modifier: willy
- * @ ModifierTime: 2024-06-06 17:48:31
+ * @ ModifierTime: 2024-06-06 21:34:10
  * @ Description: 音乐设置
  -->
 
 <script setup lang="ts">
 import { watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { usePlayerSettingStore } from '@store/player/playerSetting'
+import { useSettingStore } from '@store/app/setting'
 
-const { showPlayerModule } = storeToRefs(usePlayerSettingStore())
+const { showPlayerModule } = storeToRefs(useSettingStore())
 const emits = defineEmits(['close'])
 watch(showPlayerModule, () => emits('close'))
 </script>

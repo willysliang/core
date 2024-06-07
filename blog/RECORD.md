@@ -26,6 +26,10 @@ Description: 记录
 # 2024
 
 
+## 2024年6月7日
+  - docs(前端框架): [移动开发] JSBridge
+  - docs(前端框架): [移动端开发] meta viewport 与移动端动态更新 rem 数值(flexible 原理)
+
 ## 2024年6月5日
   - docs(前端基础): [HTML与CSS] 全屏FullScreen
   - docs(前端基础): [WEB_API] 地理定位 Geolocation、迁移[HTML与CSS]的WEB_API

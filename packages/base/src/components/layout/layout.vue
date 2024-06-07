@@ -15,6 +15,7 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { useThemeStore, useThemeInit } from '@store/app/theme'
+import { useSettingStore } from '@store/app/setting'
 import { demoPages } from '@/pages/constant'
 
 const route = useRoute()
@@ -24,13 +25,14 @@ const isDemoRoute = computed(() =>
 
 const { themeLayoutIsVertical } = storeToRefs(useThemeStore())
 const { direction } = useThemeInit()
+const { showMenu } = storeToRefs(useSettingStore())
 </script>
 
 <template>
   <div class="layout flex flex-col w-full h-full overflow-hidden">
     <template v-if="themeLayoutIsVertical">
       <!-- 顶部菜单 -->
-      <div :class="`layout__menu layout__menu--${direction}`">
+      <div v-if="showMenu" :class="`layout__menu layout__menu--${direction}`">
         <my-menu />
       </div>
 
@@ -44,7 +46,7 @@ const { direction } = useThemeInit()
     <div class="layout__main">
       <!-- 左侧菜单栏 -->
       <div
-        v-if="!themeLayoutIsVertical"
+        v-if="!themeLayoutIsVertical && showMenu"
         :class="`layout__menu layout__menu--${direction}`"
       >
         <my-menu />
