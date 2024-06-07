@@ -1,11 +1,12 @@
 # Changelog
 
-## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-06-06)
+## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-06-07)
 
 [Full Changelog](https://github.com/willysliang/core/compare/v1.1.0...v2.0.0)
 
 **Merged pull requests:**
 
+- feat: 优化base与更新blog [\#10](https://github.com/willysliang/core/pull/10) ([willysliang](https://github.com/willysliang))
 - 重构Base页面布局框，优化样式 [\#9](https://github.com/willysliang/core/pull/9) ([willysliang](https://github.com/willysliang))
 
 ## [v1.1.0](https://github.com/willysliang/core/tree/v1.1.0) (2024-05-31)
