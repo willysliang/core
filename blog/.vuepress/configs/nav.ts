@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
- * @ Modifier: willy
- * @ ModifierTime: 2024-05-16 14:51:14
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-06-10 22:58:58
  * @ Description: 导航栏
  */
 
@@ -38,7 +38,7 @@ const getDirectoryPathFileNames = (
   ]
 
   // 忽略的md名单 （只要 md 文件名存在这个名，则忽略这个文件的构建）
-  const ignoreMdList = ['前端面试']
+  const ignoreMdList = ['前端面试', '杂记']
 
   // files 参数是包含文件名的数组
   files.forEach((file) => {
@@ -137,8 +137,13 @@ const shareNavs = [
   {
     text: 'HOME',
     children: [
-      { text: '记录', link: '/RECORD' },
-      { text: '活动页', link: 'https://willysliang.github.io/core' },
+      // { text: '记录', link: '/RECORD' },
+      { text: '案例系统', link: 'https://willysliang.github.io/core' },
+      { text: '旧版仓库', link: 'https://github.com/willysliang/portfolio' },
+      {
+        text: '旧版音乐仓库',
+        link: 'https://github.com/willysliang/music-player',
+      },
       {
         text: '提交日志',
         link: 'https://api.github.com/repos/willysliang/core/commits',
