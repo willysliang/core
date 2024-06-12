@@ -105,9 +105,9 @@ Description: ES6+语法Ⅱ
 > // 入口文件引入 sea.js
 > <script src="sea.js"></script>
 > <script>
-> seajs.config({
->  base: "js",
->  alias: { jquery: "jquery/jquery/1.10.1/jquery.js" },
+>   seajs.config({
+>    base: "js",
+>    alias: { jquery: "jquery/jquery/1.10.1/jquery.js" },
 > });
 > seajs.use("js/main.js");
 > </script>
@@ -115,17 +115,17 @@ Description: ES6+语法Ⅱ
 >
 > // moduleA.js
 > define(function () {
-> // 私有变量
-> var id = 1
-> var getId = function () { console.log(id) }
-> // 暴露模块
-> return { getId }
+>   // 私有变量
+>   var id = 1
+>   var getId = function () { console.log(id) }
+>   // 暴露模块
+>   return { getId }
 > })
 >
 >
 > // moduleB.js
 > define(/** 第一个参数是模块引用列表 */['moduleA'], function () {
-> console.log(moduleA.getId())
+>   console.log(moduleA.getId())
 > })
 > ```
 
@@ -141,9 +141,9 @@ Description: ES6+语法Ⅱ
 > // 入口文件引入 sea.js
 > <script src="sea.js"></script>
 > <script>
-> seajs.config({
->  base: "js",
->  alias: { jquery: "jquery/jquery/1.10.1/jquery.js" },
+>   seajs.config({
+>    base: "js",
+>    alias: { jquery: "jquery/jquery/1.10.1/jquery.js" },
 > })
 > seajs.use("js/main.js")
 > </script>
@@ -151,18 +151,18 @@ Description: ES6+语法Ⅱ
 >
 > // moduleA.js
 > define(function (require, exports, module) {
-> // 私有变量
-> var id = 1
-> var getId = function () { console.log(id) }
-> // 暴露模块
-> module.exports = { getId }
+>   // 私有变量
+>   var id = 1
+>   var getId = function () { console.log(id) }
+>   // 暴露模块
+>   module.exports = { getId }
 > })
 >
 >
 > // moduleB.js
 > define(function (require, exports, module) {
-> const moduleA = require("moduleA")
-> console.log(moduleA.getId())
+>   const moduleA = require("moduleA")
+>   console.log(moduleA.getId())
 > })
 > ```
 
@@ -353,49 +353,49 @@ Description: ES6+语法Ⅱ
 > ```js
 > /* 状态模块（存变量） */
 > var module_status = (function () {
->   var status = {
->     number: 0,
->     color: null,
->   };
->   var get = function (prop) {
->     return status[prop];
->   };
->   var set = function (prop, value) {
->     status[prop] = value;
->   };
->   return { get, set, };
+>     var status = {
+>        number: 0,
+>        color: null,
+>     };
+>     var get = function (prop) {
+>        return status[prop];
+>     };
+>     var set = function (prop, value) {
+>        status[prop] = value;
+>     };
+>     return { get, set, };
 > })();
 >
 > /* 功能模块（调用状态） */
 > var module_color = (function () {
->   //用这种方式执行第二步引入操作，类似 import state from 'module_status'
->   var state = module_status;
->   var colors = ["orange", "#ccc", "pink"];
->   function render() {
->     state.set("color", colors[state.get("number") % colors.length])
->     console.log(state.get('color'));
->   }
->   return { render, };
+>     //用这种方式执行第二步引入操作，类似 import state from 'module_status'
+>     var state = module_status;
+>     var colors = ["orange", "#ccc", "pink"];
+>     function render() {
+>        state.set("color", colors[state.get("number") % colors.length])
+>        console.log(state.get('color'));
+>     }
+>     return { render, };
 > })();
 > var module_context = (function () {
->   var state = module_status;
->   function render() {
->     console.log("this Number is" + state.get("number"));
->   }
->   return { render, };
+>     var state = module_status;
+>     function render() {
+>        console.log("this Number is" + state.get("number"));
+>     }
+>     return { render, };
 > })();
 >
 > /* 主模块（执行功能模块） */
 > var module_main = (function () {
->   var state = module_status;
->   var color = module_color;
->   var context = module_context;
+>     var state = module_status;
+>     var color = module_color;
+>     var context = module_context;
 >
->   setInterval(function () {
->     state.set("number", state.get("number") + 1);
->     color.render();
->     context.render();
->   }, 1000);
+>     setInterval(function () {
+>        state.set("number", state.get("number") + 1);
+>        color.render();
+>        context.render();
+>     }, 1000);
 > })();
 > ```
 
@@ -418,17 +418,17 @@ Description: ES6+语法Ⅱ
 > ```js
 > const main = document.querySelector('main')
 > for (const link of document.querySelectorAll('nav > a')) {
->   link.addEventListener('click', (e) => {
->     e.preventDefault()
+>     link.addEventListener('click', (e) => {
+>        e.preventDefault()
 >
->     import(`./section-modules/${link.dataset.entryModule}.js`)
->       .then((module) => {
->       module.loadPageInto(main)
+>        import(`./section-modules/${link.dataset.entryModule}.js`)
+>          .then((module) => {
+>          module.loadPageInto(main)
+>        })
+>          .catch((err) => {
+>          main.textContent = err.message
+>        })
 >     })
->       .catch((err) => {
->       main.textContent = err.message
->     })
->   })
 > }
 > ```
 >
@@ -439,16 +439,16 @@ Description: ES6+语法Ⅱ
 >
 > ```js
 > ;(async () => {
->   const response = await fetch(new URL('../hamsters.jpg', import.meta.url))
->   const blob = await response.blob()
+>     const response = await fetch(new URL('../hamsters.jpg', import.meta.url))
+>     const blob = await response.blob()
 >
->   const size = import.meta.scriptElement.dataset.size || 300
+>     const size = import.meta.scriptElement.dataset.size || 300
 >
->   const image = new Image()
->   image.src = URL.createObjectURL(blob)
->   image.width = image.height = size
+>     const image = new Image()
+>     image.src = URL.createObjectURL(blob)
+>     image.width = image.height = size
 >
->   document.body.appendChild(image)
+>     document.body.appendChild(image)
 > })()
 > ```
 >
