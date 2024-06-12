@@ -8,6 +8,59 @@ Description: Vue3
 
 ## vue3
 
+## 原理
+
+### 异步更新队列：vue采用异步渲染原因
+
+```bash
+一、vue 中的 DOM 操作都是异步执行的原因：
+	1. 为了避免频繁操作DOM造成的性能消耗，如果每次数据发生变化都立即更新DOM的话，会造成频繁操作DOM。
+	2. 避免重复的DOM操作，如果同一个 watcher 被多次触发，只会被推入到队列中一次（所有数据变化都会合并处理）。
+
+
+二、实现原理：
+只要侦听到数据变化，vue 将开启一个队列，并缓冲在同一个事件循环中发生的所有数据变化。
+如果同一个 watcher 被多次触发，只会被推入到队列中依次。
+这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作时非常重要的。
+然后，在下一个的事件循环 'Tick' 中，vue 刷新队列并执行实际（已去重的）工作。
+vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObserver` 和 `setTmmediate`，如果执行环境不支持，则采用 `setTimeout(fn, 0)` 代替。
+```
+
+
+
+### vue模板编译原理
+
+```bash
+一、编译过程
+1. 解析器：将 `模板字符串` 转换成 `element ASTs`（VirtualDOM）
+2. 优化器：对 AST 遍历来标记静态节点，主要用来做虚拟 DOM 的渲染优化
+3. 代码生成器：将优化后的 AST 转换成 `render` 函数代码字符串
+
+
+
+二、阶段描述
+1. 解析器（Parser）：主要任务是将模板字符串转换成抽象语法树（AST）
+	- 模板字符串：这是用户编写的模板代码，包含 HTML 元素、指令、绑定等。
+	- 词法分析（Tokenization）：将模板字符串分割成一个个标记（tokens），例如标签、属性、文本等。
+	- 语法分析（Parsing）：将标记转换成一棵树形结构，即 AST，表示模板的结构和内容。
+
+
+2. 优化器（Optimizer）：主要是对 AST 进行优化标记，主要是标记静态节点
+	- 遍历 AST：对 AST 进行深度优先遍历。
+	- 标记静态节点：静态节点是那些在渲染过程中不需要改变的节点。通过标记这些节点，Vue 可以在后续的更新过程中跳过这些节点，从而提升性能。
+
+	- 标记静态节点的意义：
+			- 避免不必要的更新：通过标记静态节点，Vue 可以在数据变化时跳过这些节点，从而减少不必要的 DOM 操作和重新渲染。
+			- 提升渲染性能：因为静态节点不会改变，Vue 可以直接复用这些节点，提高渲染性能。
+
+
+3. 代码生成器（Code Generator）：主要是将优化后的 AST 转换成渲染函数（render function） 的代码字符串
+	- 遍历 AST：对优化后的 AST 进行遍历。
+	- 生成代码字符串：将 AST 转换成 JavaScript 代码字符串，这些代码字符串将用来生成渲染函数。
+```
+
+
+
 ## 组合式Composition API
 
 > ```bash
@@ -18,8 +71,8 @@ Description: Vue3
 >     4. 组件定义方式变更(Options API => Function_Based API)
 > 		5. vue3 组件模板中可以没有跟标签
 > 		6. 相对于vue2性能提升：打包大小减少、渲染时间减少、内存减少
-> 
-> 
+>
+>
 > - vue3需要cli版本在4.5.0以上
 > - 项目创建：`vue create projectName`
 > - 使用vite（新一代前端构件工具）
@@ -66,8 +119,8 @@ Description: Vue3
 > <span>{{msg}}/span>
 > <span>Hello world!</span>
 > <span>Hello world! </span>
-> 
-> 
+>
+>
 > /* --------- Vue3编译后的Vdom ------------------- */
 > export function render(_ctx, _cache, $props, $setup, $data, $options) {
 >   return (
@@ -117,19 +170,19 @@ Description: Vue3
 > ```js
 > 1. onBeforeMount()
 > 在组件DOM实际渲染安装之前调用。在这一步中，根元素还不存在。
-> 
+>
 > 2. onMounted()
 > 在组件的第一次渲染后调用，该元素现在可用，允许直接DOM访问
-> 
+>
 > 3. onBeforeUpdate()
 > 数据更新时调用，发生在虚拟 DOM 打补丁之前。
-> 
+>
 > 4. updated()
 > DOM更新后，updated的方法即会调用。
-> 
+>
 > 5. onBeforeUnmount()
 > 在卸载组件实例之前调用。在这个阶段，实例仍然是完全正常的。
-> 
+>
 > 6. onUnmounted()
 > 卸载组件实例后调用。调用此钩子时，组件实例的所有指令都被解除绑定，所有事件侦听器都被移除，所有子组件实例被卸载。
 > ```
@@ -146,7 +199,7 @@ Description: Vue3
 >    :r="200"
 > />
 > </template>
-> 
+>
 > <script setup>
 >   import { reactive, ref } from "vue";
 >   const state = reactive({
@@ -163,34 +216,34 @@ Description: Vue3
 >   };
 > </script>
 > ```
-> 
+>
 > ```js
 >/* main.js */
 > import { createApp, createRenderer } from 'vue'
 > import App from './App.vue'
 > import CanvasApp from './CanvasApp.vue'
-> 
+>
 > createApp(App).mount('#app')
-> 
+>
 > // 自定义渲染器
 > const nodeOps = {
->   // 处理元素创建逻辑
->     createElement(tag, isSVG, is) {
->       // 创建元素时由于没有需要创建的dom元素，只需返回当前元素数据对象
+>     // 处理元素创建逻辑
+>      createElement(tag, isSVG, is) {
+>        // 创建元素时由于没有需要创建的dom元素，只需返回当前元素数据对象
 >        return { tag }
 >      },
->    
->   // 处理元素插入逻辑：
->     insert(child, parent, anchor) {
->       // 1. 如果是子元素，不是真实dom，此时只需将数据保存到前面虚拟dom上
+>
+>     // 处理元素插入逻辑：
+>      insert(child, parent, anchor) {
+>        // 1. 如果是子元素，不是真实dom，此时只需将数据保存到前面虚拟dom上
 >        child.parent = parent
 >        if (!parent.childs) {
 >          parent.childs = [child]
 >        } else {
 >          parent.childs.push(child)
 >        }
->    
->      // 2. 如果是真实dom元素，在这会是canvas，需要绘制
+>
+>        // 2. 如果是真实dom元素，在这会是canvas，需要绘制
 >        if (parent.nodeType === 1) {
 >          draw(child)
 >          // 如果子元素附加事件，需要给canvas添加监听器
@@ -202,35 +255,35 @@ Description: Vue3
 >          }
 >        }
 >      },
->    
->   remove: child => { },
->     createText: text => { },
->     createComment: text => { },
->     setText: (node, text) => { },
->     setElementText: (el, text) => { },
->     parentNode: node => { },
->     nextSibling: node => { },
->     querySelector: selector => { },
->     setScopeId(el, id) { },
->     cloneNode(el) { },
->     insertStaticContent(content, parent, anchor, isSVG) { },
->   
->   // 属性更新
->     patchProp(el, key, prevValue, nextValue) {
->       el[key] = nextValue
+>
+>     remove: child => { },
+>      createText: text => { },
+>      createComment: text => { },
+>      setText: (node, text) => { },
+>      setElementText: (el, text) => { },
+>      parentNode: node => { },
+>      nextSibling: node => { },
+>      querySelector: selector => { },
+>      setScopeId(el, id) { },
+>      cloneNode(el) { },
+>      insertStaticContent(content, parent, anchor, isSVG) { },
+>
+>     // 属性更新
+>      patchProp(el, key, prevValue, nextValue) {
+>        el[key] = nextValue
 >      },
 >    };
-> 
+>
 > const renderer = createRenderer(nodeOps);
 > let ctx, canvas
-> 
+>
 > // 绘制方法：el为子元素
 > const draw = (el, noClear) => {
->   if(!noClear) {
->       ctx.clearRect(0, 0, canvas.width, canvas.height)
+>     if(!noClear) {
+>        ctx.clearRect(0, 0, canvas.width, canvas.height)
 >      }
 >      if(el.tag === 'piechart') {
->       let { data, r, x, y } = el;
+>        let { data, r, x, y } = el;
 >        let total = data.reduce((memo, current) => memo + current.count, 0)
 >        let start = 0, end = 0;
 >        data.forEach(item => {
@@ -242,37 +295,37 @@ Description: Vue3
 >      }
 >      el.childs && el.childs.forEach(child => draw(child, true));
 >   }
-> 
+>
 > const d2a = n => n * Math.PI / 180
-> 
+>
 > const drawPieChart = (start, end, color, cx, cy, r) => {
->   const x = cx + Math.cos(dsa(start)) * r;
->     const y = cy + Math.cos(dsa(start)) * r;
->     ctx.beginPath();
->     ctx.moveTo(cx, cy);
->     ctx.lineTo
+>     const x = cx + Math.cos(dsa(start)) * r;
+>      const y = cy + Math.cos(dsa(start)) * r;
+>      ctx.beginPath();
+>      ctx.moveTo(cx, cy);
+>      ctx.lineTo
 >   }
-> 
-> 
+>
+>
 > // 扩展mount：首先创建一个画布元素
 > function createCanvasApp(App) {
->   const app = renderer.createApp(App);
->     const mount = app.mount
->     app.mount = function (selector) {
->       // 创建并插入画布
+>     const app = renderer.createApp(App);
+>      const mount = app.mount
+>      app.mount = function (selector) {
+>        // 创建并插入画布
 >        canvas = document.createElement('canvas');
 >        ctx = canvas.getContext('2d');
->    
->      // 设置画布基础属性
+>
+>        // 设置画布基础属性
 >        canvas.width = 600
 >        canvas.height = 600
 >        document.querySelector(selector).appendChild(canvas)
->    
->      // 执行默认mount
+>
+>        // 执行默认mount
 >        mount(canvas)
 >      }
 >    }
-> 
+>
 > createCanvasApp(CanvasApp).mount();
 > ```
 
@@ -327,10 +380,10 @@ Description: Vue3
 >
 > ```js
 > // 模拟vue3中实现响应式
-> let person = { 
+> let person = {
 >   a: "a", b: "b", c: { d: "e" },
 > };
-> 
+>
 > // 1.Proxy代理对象实现响应
 > const p = new Proxy(person, {
 >   // 读取p某个属性时调用
@@ -340,28 +393,28 @@ Description: Vue3
 >       target[propName] += "天";
 >     return target[propName]
 >   },
-> 
+>
 >   // 修改p某个属性或给p追加属性时调用
 >   set(target, propName, value) {
 >     console.log(`修改了p的${propName}`);
-> 
+>
 >     // 字段过滤
 >     if (propName === 'age' && typeof value != 'number') {
 >       throw Error("age字段必须为number类型");
 >     }
-> 
+>
 >     // 返回数据
 >     // target[propName] = value;
 >     return Reflect.set(target, propName, value); // 等同target[propName] = value;
 >   },
-> 
+>
 >   // 删除p的某个属性时调用
 >   deleteProperty(target, propName) {
 >     console.log(`删除p的${propName}属性`);
 >     return delete target[propName]  // 返回的是true || false
 >   }
 > })
-> 
+>
 > let obj = {}
 > // Object.defineProperty 实现响应
 > try {
@@ -374,7 +427,7 @@ Description: Vue3
 > } catch (err) {
 >   console.log("Object DefineProperty error", err)
 > }
-> 
+>
 > // Reflect.defineProperty 实现响应
 > const x1 = Reflect.defineProperty(obj, 'c', {
 >   get() { return 3 }
@@ -396,7 +449,7 @@ Description: Vue3
 > /**
 >  * vue2 -> 基于 Object.defineProperty() 实现
 >  * vue3 -> 基于 Proxy 实现
-> 
+>
 > * Proxy 与 Object.defineProperty(obj, prop, desc) 方式相比有以下优势：
 >  *    1. 丢掉麻烦的备份数据
 >  *    2. 省去for in 循环
@@ -416,13 +469,15 @@ Description: Vue3
 > })
 > ```
 
+
+
 ## vue2迁移改动
 
 ### v-model的改变
 
 > ```css
 > # v-model 本质是 props 和 emit 组合成的语法糖
-> 
+>
 > # 默认值的改变
 >   1. props：value -> modelValue
 >   2. 事件：input -> update:modelValue
@@ -436,7 +491,7 @@ Description: Vue3
 >   <button @click="show = !show">开关{{show}}</button>
 >   <Dialog v-model:title='title' v-model="show"/>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import Dialog from "./Dialog.vue";
 > import {ref} from 'vue'
@@ -454,7 +509,7 @@ Description: Vue3
 >   <div class="dialog-content">内容</div>
 > </div>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 >   type Props = {
 >     modelValue: boolean,
@@ -466,10 +521,10 @@ Description: Vue3
 >   		default: () => {}
 >   	}
 >   }
-> 
+>
 >   const propData = defineProps<Props>()
 >   const emit = defineEmits(['update:modelValue', 'update:title'])
-> 
+>
 >   const close = () => {
 >     console.log(propData.modelModifiers);
 >     emit('update:modelValue', false)
@@ -477,9 +532,9 @@ Description: Vue3
 >   }
 > </script>
 > ````
-> 
+>
 > #### model选项和v-bind的sync修饰符被移除，统一为v-model参数形式
-> 
+>
 > ````vue
 > <template>
 > 	<comp v-model="data" />
@@ -491,7 +546,7 @@ Description: Vue3
 > const data = ref('aaa')
 > </script>
 > ````
-> 
+>
 > ```js
 > /* main.js */
 > import { createApp } from 'vue'
@@ -519,7 +574,7 @@ Description: Vue3
 >   data: () => ({ count: 0 }),
 >   template: '<button @click="count++">Clicked {{ count }} times.</button>'
 > })
-> 
+>
 > //注册全局指令
 > Vue.directive('focus', {
 >   inserted: el => el.focus()
@@ -554,8 +609,8 @@ Description: Vue3
 > })
 > app.config.globalProperties.$axios = axios
 > app.mount('#root')
-> 
-> 
+>
+>
 > // 调用文件：在setup中访问（ setup中没有this）
 > <script setup>
 > 	import { getCurrentInstance } from 'vue'
@@ -616,7 +671,7 @@ Description: Vue3
 > ```vue
 > <!-- keyCode方式不再被支持 -->
 > <input v-on:keyup.13="submit" />
-> 
+>
 > <!-- 只能使用alias方式 -->
 > <input v-on:keyup.entry="submit" />
 > ```
@@ -633,31 +688,31 @@ Description: Vue3
 > 而HTML5支持多线程webWorker，但不允许操作DOM。
 > 单线程意味着所有任务都需要排队，后面的任务需要等前面的任务执行完才能执行。若前面的任务耗时过长，后面的任务就需要一直等待。
 > 一些从用户角度上不需要等待的任务一直在等待，这从用户体验角度上是不可接收的，所以JS中就出现了异步概念。
-> 
-> 
+>
+>
 > # 同步任务
 > 代码从上到下按顺序执行，会造成任务阻塞
-> 
+>
 > # 异步任务
 > 1. 宏任务：script（整体代码）、setTimeout、setInterval、UI交互事件、postMessage、Ajax
 > 2. 微任务：Promise then catch finally、MutationObserver、process.nextTick(Node.js环境)
-> 
-> 
+>
+>
 > # 事件循环 Event Loop 运行机制
 > 所有的同步任务都是在主进程执行的形成一个执行栈，主线程外，还存在一个“任务队列”。
 > 异步任务执行队列先执行宏任务，然后清空当次宏任务中的所有微任务，然后进行下一个tick如此形成循环
-> 
-> 
+>
+>
 > # nextTick
 > nextTick 即是创建一个异步任务，等到同步任务执行完成后才执行。
 > 作用：使得视图层与数据层同时间更新数据
-> 
-> 
+>
+>
 > # nextTick 源码
 > // 源码地址：core\packages\runtime-core\src\scheduler.ts
 > const resolvedPromise: Promise<any> = Promise.resolve()
 > let currentFlushPromise: Promise<void> | null = null
-> 
+>
 > export function nextTick<T = void>(
 >   this: T,
 >   fn?: (this: T) => void
@@ -665,8 +720,8 @@ Description: Vue3
 >   const p = currentFlushPromise || resolvedPromise
 >   return fn ? p.then(this ? fn.bind(this) : fn) : p
 > }
-> 
-> 
+>
+>
 > # nextTick 源码解析
 > nextTick 接收一个参数fn（函数）定义了一个变量P，这个P最终返回都是Promise，最后是return；
 > 如果传递了fn，就使用变量 P.then 执行一个微任务去执行 fn 函数，then 里面 this 如果有值就调用 bind 改变 this 执行返回新的函数，否则直接调用 fn，如果没有传 fn，就返回一个 promise。
@@ -678,13 +733,13 @@ Description: Vue3
 >    <div ref="willy">{{ text }}</div>
 >    <button @click="change">change div</button>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { ref,nextTick } from 'vue';
-> 
+>
 > const text = ref('willysliang')
 > const willy = ref<HTMLElement>()
-> 
+>
 > const change = async () => {
 >    text.value = 'william'
 >    console.log(willy.value?.innerText) // willysliang
@@ -700,18 +755,18 @@ Description: Vue3
 > # 插槽选择器 :slotted()
 > :slotted() 的作用是改变父组件传递给子组件的样式（默认会认为插槽所替换的内容为父组件的内容，在该插槽子组件中是无法渲染到定义该样式的内容）
 > 如	:slotted(.a) { color: red; }
-> 
-> 
+>
+>
 > # 全局选择器	:global()
 > :global() 的作用是所设定的样式全局生效
 > 如	：global(div) { color: red; }
-> 
-> 
+>
+>
 > # 动态CSS：v-bind
 > 	- 单文件组件的 <style> 标签可以通过 v-bind 这一 CSS 函数将 CSS 的值关联到动态的组件状态上
 > 			（注意：如果是对象 v-bind 请加引号）
-> 
-> 
+>
+>
 > # 动态CSS：CSS module
 > 	通过把 style 设定为 module 模式，然后在 绑定 样式 :class="$style.样式名" 或 :class="[$style.样式名1, $style.样式名2]"
 > 	- <style module> 标签会被编译为 CSS Modules 并且将生成的 CSS 类作为 $style 对象的键暴露给组件
@@ -727,13 +782,13 @@ Description: Vue3
 > ## scoped 属性
 > - scoped 代表作用域。
 > - 在 `<style scoped></stype>` 中添加scope属性，该style中的css样式只会针对当前组件起效果；若不添加，其他组件中的css样式相同样式，会在该组件中其效果。
-> 
-> 
+>
+>
 > ### scoped 的原理
 > vue中的 scoped 通过在DOM结构以及css样式上加唯一不重复的标记:data-v-hash的方式，以保证唯一（而这个工作是由过PostCSS转译实现的），达到样式私有化模块化的目的。
 > PostCSS会给一个组件中的所有dom添加了一个独一无二的动态属性data-v-xxxx，然后，给CSS选择器额外添加一个对应的属性选择器来选择该组件中dom，这种做法使得样式只作用于含有该属性的dom——组件内部dom, 从而达到了'样式模块化'的效果。
-> 
-> 
+>
+>
 > ### scoped 渲染规则
 > 1. 给HTML的DOM节点加一个不重复data属性(形如：data-v-123)来表示他的唯一性
 > 2. 在每句css选择器的末尾（编译后的生成的css语句）加一个当前组件的data属性选择器（如[data-v-123]）来私有化样式
@@ -751,7 +806,7 @@ Description: Vue3
 >
 > ```vue
 > <style scoped>
->   :deep(input) { background: red; }  
+>   :deep(input) { background: red; }
 > 	:deep(.uni-select) { border: 1px solid red; }
 > </style>
 > ```
@@ -762,7 +817,7 @@ Description: Vue3
 > <template>
 > 	<slot>我是插槽</slot>
 > </template>
-> 
+>
 > <style scoped>
 > .a{ color:red } /* 此种设置是无效的，因为解析器会认为这是父组件的东西，无法进行渲染到a标签 */
 > :slotted(.a) { color:red }  /* 此种就可以渲染到替换插槽的内容 */
@@ -775,7 +830,7 @@ Description: Vue3
 >        <div class="a">私人定制div</div>
 >     </A>
 > </template>
-> 
+>
 > <script setup>
 > import A from "@/components/A.vue"
 > </script>
@@ -787,14 +842,14 @@ Description: Vue3
 > <template>
 > <div class="div">动态CSS</div>
 > </template>
-> 
+>
 > <script setup lang="ts">
 >   import { ref } from 'vue'
 >   const style = ref({ color: 'red', })
 >   const green = ref<string>('green')
 >   setTimeout(() => { style.value.color = 'blue' }, 1000)
 > </script>
-> 
+>
 > <style scoped>
 >   .div {
 >      color: v-bind('style.color');
@@ -811,14 +866,14 @@ Description: Vue3
 > 	<div :class="[$style.div, $style.border]">多个CSS module</div>
 > 	<div :class="[willy.yellow, willy.bg]">自定义注入 CSS module 名称</div>
 > </template>
-> 
+>
 > <script setup lang="ts">
 > import { useCssModule } from 'vue'
 > const css = useCssModule('willy')
 > console.log(css);
 > const render = (<div class={css.yellow}>render CSS</div>)
 > </script>
-> 
+>
 > <style module>
 > .div { color: red }
 > .border { border: 1px solid green; }
@@ -870,7 +925,7 @@ Description: Vue3
 > <script setup>
 > 	import MyComponent from './MyComponent.vue'
 > </script>
-> 
+>
 > <template>
 > <MyComponent />
 > </template>
@@ -888,17 +943,17 @@ Description: Vue3
 > 	<Child :title="title"  @on-click='childFn' />
 >   <p>接收子组件传递的数据{{childData}} </p>
 > </template>
-> 
+>
 > <script setup lang="ts">
 >   import { ref, reactive } from 'vue'
 >   import Child from './child.vue'
-> 
+>
 > 	const title = ref('这是标题');
->   const childData = reactive<number[]>([])    
+>   const childData = reactive<number[]>([])
 >   const childFn = (e) => {
 >     consloe.log('子组件触发了父组件childFn，并传递了参数e')
 >     childData = e.value
->   } 
+>   }
 > </script>
 > ```
 >
@@ -908,10 +963,10 @@ Description: Vue3
 >   <div>父组件传递的值：{{title}}</div>
 > 	<button @click="toEmits">子组件向外暴露数据</button>
 > </template>
-> 
+>
 > <script setup lang="ts">
 >    import { reactive } from 'vue'
-> 
+>
 >    type Props = {
 >      title?: string,
 >      data?: number[]
@@ -921,7 +976,7 @@ Description: Vue3
 >      data: () => [1, 2, 3],
 >    });
 >    console.log(props.title) //父的值
-> 
+>
 >    const  emits = defineEmits(['on-click']);
 >    const list = reactive<number[]>([1, 2, 3])
 >    const  toEmits = () => {
@@ -938,7 +993,7 @@ Description: Vue3
 > <!-- 子组件 -->
 > <script setup>
 > import { ref } from 'vue'
-> 
+>
 > const a = 1
 > const b = ref(2)
 > //主动暴露组件属性
@@ -956,16 +1011,16 @@ Description: Vue3
 > <Child  ref='childRef' />
 > <button @click='getChildData'>通过ref获取子组件的属性 </button>
 > </template>
-> 
+>
 > <script setup>
 > import {ref} from 'vue'
 > import Child from './child.vue'
-> const childRef= ref()  //注册响应数据  
+> const childRef= ref()  //注册响应数据
 > const getChildData =()=>{
 > //子组件接收暴露出来得值
 > console.log(childRef.value.a) //1
 > console.log(childRef.value.b) //2  响应式数据
-> }    
+> }
 > </script>
 > ```
 
@@ -992,7 +1047,7 @@ Description: Vue3
 > </template>
 > </Child>
 > </template>
-> 
+>
 > <script setup>
 > // 引入子组件
 > import Child from './child.vue'
@@ -1013,15 +1068,15 @@ Description: Vue3
 > <!--true  没想到有啥作用... -->
 > <p>{{ slots == $slots }}</p>
 > </template>
-> 
-> 
+>
+>
 > <script setup>
 > import { useSlots, useAttrs, reactive, toRef } from 'vue'
 > const state = reactive({
 > name: '张三',
 > age: '18'
 > })
-> 
+>
 > const slots = useSlots()
 > console.log(slots.default()); //获取到默认插槽的虚拟dom对象
 > console.log(slots.title());   //获取到具名title插槽的虚拟dom对象
@@ -1060,9 +1115,9 @@ Description: Vue3
 > /* main.ts */
 > import { createApp } from 'vue'
 > import App from './App.vue'
-> 
+>
 > const app = createApp(App)
-> 
+>
 > /* 声明文件 不然TS无法正确类型 推导，然后会导致VSCode中报红 */
 > type Filter = {
 >     format: <T extends any>(str: T) => T
@@ -1074,7 +1129,7 @@ Description: Vue3
 >         $filters: Filter
 >     }
 >   }
-> 
+>
 > app.config.globalProperties.$filters = {
 >   format<T extends any>(str: T): string {
 >     return `$${str}`
@@ -1088,7 +1143,7 @@ Description: Vue3
 > </template>
 > <script setup lang="ts">
 > import { getCurrentInstance, ComponentInternalInstance } from 'vue';
-> 
+>
 > const { appContext } = <ComponentInternalInstance>getCurrentInstance()
 > console.log(appContext.config.globalProperties.$filters);
 > </script>
@@ -1106,11 +1161,11 @@ Description: Vue3
 >         <div class="loading-content">Loading...</div>
 >     </div>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { ref } from 'vue';
 > const isShow = ref(false)//定位loading 的开关
-> 
+>
 > const show = () => {
 >     isShow.value = true
 > }
@@ -1124,7 +1179,7 @@ Description: Vue3
 >     hide
 > })
 > </script>
-> 
+>
 > <style scoped lang="less">
 > .loading {
 >     position: fixed;
@@ -1145,7 +1200,7 @@ Description: Vue3
 > /* loading/index.ts */
 > import {  createVNode, render, VNode, App } from 'vue';
 > import Loading from './index.vue'
-> 
+>
 > export default {
 >     install(app: App) {
 >         //createVNode vue提供的底层方法 可以给我们组件创建一个虚拟DOM 也就是Vnode
@@ -1166,10 +1221,10 @@ Description: Vue3
 > /* main.ts */
 > import { createApp } from 'vue'
 > import Loading from './loading'
-> 
+>
 > let app = createApp(App)
 > app.use(Loading)
-> 
+>
 > type Lod = {
 >     show: () => void,
 >     hide: () => void
@@ -1180,7 +1235,7 @@ Description: Vue3
 >         $loading: Lod
 >     }
 > }
-> 
+>
 > app.mount('#app')
 > ```
 >
@@ -1191,9 +1246,9 @@ Description: Vue3
 > </template>
 > <script setup lang="ts">
 > import { getCurrentInstance, ComponentInternalInstance } from 'vue'
-> 
+>
 > const { appContext } = getCurrentInstance() as ComponentInternalInstance
-> 
+>
 > const showLoading = () => {
 >   appContext.config.globalProperties.$loading.show()
 >   setTimeout(() => {
@@ -1210,21 +1265,21 @@ Description: Vue3
 > 	- mixins的优点：将多个相同的逻辑抽离出来，各个组件只需引入 mixins 就能实现一次写代码多组件受益的效果
 > 	- mixins的缺点：会涉及到覆盖问题，组件的data、methods、filters 会覆盖mixins里同名的data、methods、filters
 > 	- mixins的缺点二：变量来源不明确（隐式传入），不利于代码阅读，使得代码难以维护
-> 
+>
 > # vue3 中使用自定义 hooks
 > ```
 >
 > ```ts
-> /** 
+> /**
 > 	* hooks.ts
 > 	* @function 图片转换为 base64
 > */
 > import { onMounted } from 'vue'
-> 
+>
 > type Options = {
 >     el: string
 > }
-> 
+>
 > export default function (option: Options): Promise<{ Baseurl: string | null }> {
 >     return new Promise((resolve) => {
 >         onMounted(() => {
@@ -1233,15 +1288,15 @@ Description: Vue3
 >             resolve({ Baseurl: toBase64(file) })
 >           }
 >         })
-> 
+>
 >         const toBase64 = (el: HTMLImageElement): string => {
 >           const canvas: HTMLCanvasElement = document.createElement('canvas')
 >           const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-> 
+>
 >           canvas.width = el.width
 >           canvas.height = el.height
 >           ctx.drawImage(el, 0, 0, canvas.width,canvas.height)
-> 
+>
 >           return canvas.toDataURL('./image/png')
 >         }
 >     })
@@ -1252,7 +1307,7 @@ Description: Vue3
 > <template>
 > 	<img id="img" width="300" height="300" src='./assets/test.png' />
 > </template>
-> 
+>
 > <srcipt setup lang="ts">
 > import useBase64 from './hooks'
 > useBase64({ el: "#img" }).then(res => { console.log(res.baseUrl) })
@@ -1263,7 +1318,7 @@ Description: Vue3
 
 > ```css
 > 注意的限制：必须以 vNameOfDirective 的形式来命名本地自定义指令，以使得它们可以直接在模板中使用
-> 
+>
 > # 生命周期钩子参数详解
 > - 第一个 el  当前绑定的DOM 元素
 > - 第二个 binding
@@ -1274,7 +1329,7 @@ Description: Vue3
 >     modifiers：包含修饰符(如果有的话) 的对象。例如在 v-my-directive.foo.bar 中，修饰符对象为 {foo: true，bar: true}。
 >     dir：一个对象，在注册指令时作为参数传递。
 > - 第三个 当前元素的虚拟DOM 也就是Vnode
-> - 第四个 prevNode 上一个虚拟节点，仅在 beforeUpdate 和 updated 钩子中可用 
+> - 第四个 prevNode 上一个虚拟节点，仅在 beforeUpdate 和 updated 钩子中可用
 > ```
 >
 > #### 自定义指令声明周期
@@ -1284,11 +1339,11 @@ Description: Vue3
 >   <button>切换</button>
 >   <A v-move:willy.aa="{background:'green',flag:flase}"/>
 > </template>
-> 
+>
 > <script setup lang="ts">
-> import { ref, Directive, DirevtiveBinding } from 'vue' 
+> import { ref, Directive, DirevtiveBinding } from 'vue'
 > import A from './A.vue'
-> 
+>
 > const vMoveDirective: Directive = {
 >   created: () => {
 >     console.log("初始化====>");
@@ -1328,7 +1383,7 @@ Description: Vue3
 >   <input v-model="value" type="text" />
 >   <A v-move="{ background: value }"></A>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import A from './components/A.vue'
 > import { ref, Directive, DirectiveBinding } from 'vue'
@@ -1353,7 +1408,7 @@ Description: Vue3
 >     </div>
 >   </div>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { Directive } from "vue";
 > const vMove: Directive = {
@@ -1378,7 +1433,7 @@ Description: Vue3
 >   },
 > };
 > </script>
-> 
+>
 > <style lang='less'>
 > .box {
 >   position: fixed;
@@ -1436,35 +1491,35 @@ Description: Vue3
 >
 > ```bash
 > - 组件中所用到的数据、方法等均要配置在setup中
-> 
+>
 > - setup的参数
 >   - props：值为对象，包含组件外部传递过来且组件内部接收了的属性
 >   - context：上下文对象
 >     - attrs：值为对象，包含组件外部传递过来，但没有在props配置中声明的属性，相当于`this.$attrs`
 >     - slots：收到的插槽内容，相当于`this.$slots`
 >     - emit：分发自定义事件的函数，相当于`this.$emit`
-> 
-> 
+>
+>
 > - setup有两种返回值
 >   - 若返回一个对象，则对象中的属性、方法，在模板中均可直接使用
 >   - 若返回一个渲染函数，则可以自定义渲染内容
->   
-> 
+>
+>
 > - 与vue2混合使用（一般不建议混合使用）
 >   - vue2.x配置(data、methods、computed...)中可以访问到setup中的属性和方法。
 >   - 但在setup中不能访问到vue2.x配置(但可以通过箭头函数调用)
 >   - 如果有重名，setup会优先（因为setup是渲染时调用，所以会把之前重名的方法覆盖）
-> 
-> 
+>
+>
 > - setup不能是一个async函数，因为返回值不是return的对象，而是promise，模板看不到return对象中的属性。
 >   注意：当使用Suspense和异步组件配合时，可以返回一个Promise实例，且可使用async函数
-> 
-> 
+>
+>
 > - ref函数和reactive函数的作用：
 >   - 为了让数据可以响应式改变；
 >   - 在vue2中，对象或者数组的数据改变，需要调用`this.$set或vue.set`方法来实现才可以做出响应式改变。
-> 
-> 
+>
+>
 > - 执行时机
 >   - 在`beforeCreate`之前执行一次，`this`是`undefined`
 > ```
@@ -1752,7 +1807,7 @@ export default defineComponent({
 > ```vue
 > <script setup lang='ts'>
 >   import { unRef } from 'vue'
-> 
+>
 >   const valueRef = ref('');
 >   const value = unref(valueRef);
 >   if (!value) {
@@ -1772,18 +1827,18 @@ export default defineComponent({
 > ## toRef() 作用
 > 当把一个响应式对象转换成普通对象（如使用扩展运算符提取响应式对象的数据赋值给另一个对象会失去响应式），该普通对象的每个 property 都是一个 ref ，和响应式对象 property 一一对应。
 > 并且，当想要从一个组合逻辑函数中返回响应式对象时，用 toRefs 是很有效的，该 API 让消费组件可以 解构 / 扩展（使用 … 操作符）返回的对象，并不会丢失响应性
-> 
+>
 > 即是：
 > - toRef()函数可以把原本通过ref()函数定义却失去响应式的对象重新转换为响应式对象
 > - 创建一个 ref 对象，其value值指向另一个对象中的某个属性（类似浅拷贝，跟原对象共同使用同一内存）
-> 
+>
 > ## 应用
 > - 要将响应式对象中的某个属性单独提供给外部使用时不丢失响应式
-> 
+>
 > ## 扩展：
 > - ```toRefs``` 与```toRef```功能一致，但可以批量创建多个 ref 对象（类似ES10的flat()方法把获取对象中的属性平铺，但只平铺一层）
-> 
-> 
+>
+>
 > ## 案例
 > const person = ref({ name: 'willy' })
 > const name = toRef(person,'name');
@@ -1794,7 +1849,7 @@ export default defineComponent({
 > ```vue
 > <script>
 >   import { reactive, toRef, toRefs  } from 'vue'
->   
+>
 >   export default {
 >     setup() {
 >       const person = reactive({
@@ -1806,7 +1861,7 @@ export default defineComponent({
 >           }
 >         }
 >       })
->       
+>
 >       return {
 >         person,
 >         name: person.name,  // 不会改变person中的name值
@@ -1823,29 +1878,29 @@ export default defineComponent({
 
 > ```bash
 > # reactive 作用：定义一个 对象类型 的响应式数据
-> 
+>
 > # 语法：let 代理对象 = reactive(被代理对象)
-> 
+>
 > # 说明：
 > 	- reactive 接收一个对象或数组，返回一个代理器对象(proxy对象)
 > 	- 内部基于ES6的Proxy实现，通过代理对象操作原对象内部数据都是响应式的
-> 
-> 
+>
+>
 > # reactive 对比 ref
 >   1. 从数据定义角度对比
 >     - ref 用来定义：基本类型数据
 >     - reactive 用来定义：对象（或数组）类型数据
 >     - 注意：ref 也可用来定义对象（或数组）类型数据，它内部会自动通过 reactive 转为代理对象
-> 
+>
 >   2. 从原理角度对比
 >     - ref 通过 Object.defineProperty() 的 get() 与 set() 方法来实现响应式（数据劫持）
 >     - reactive 通过使用 Proxy 来实现响应式（数据劫持），并通过 Reflect 操作源对象内部的数据
-> 
+>
 >   3. 从使用角度对比
 >     - ref 定义的数据：操作数据需要 .value，读取数据时从模板中直接读取不需要 .value 后缀
 >     - reactive 定义的数据：操作数据与读取数据 均不需要 .value 后缀
-> 
-> 
+>
+>
 > # reactive 数据被重新赋值后无法双向绑定问题
 >   - 问题原因：因为 reactive 数据被重新赋值后，原来数据的代理函数和最新的代理函数不是同一个，无法被处罚
 >   - 问题分析：当接收到接口数据，不要直接赋值，比如 list = res.data
@@ -1880,7 +1935,7 @@ export default defineComponent({
 >       },
 >     })
 >     let move = reactive(["跳", "跑", "走"])
-> 
+>
 >     function changeInfo() {
 >       name.value = "willysliang";
 >       hobbies.value.play = "game";
@@ -1889,17 +1944,17 @@ export default defineComponent({
 >         a: "js",
 >         b: "java"
 >       }
-> 
+>
 >       /* drink = {  // 不会响应式改变
 >         a: "牛奶",
 >         b: "可乐",
 >       } */
 >       drink.a = "牛奶"
 >       drink.b.c.d = "可乐";
-> 
+>
 >       move[0] = "飞"
 >     }
-> 
+>
 >     return { name, hobbies, study, drink, move, changeInfo }
 >   },
 > }
@@ -1950,7 +2005,7 @@ export default defineComponent({
 > <button @click="changeMsg">change</button>
 >  <div>{{ message }}</div>
 > </template >
-> 
+>
 > <script setup lang="ts">
 >     import { Ref, shallowRef,triggerRef } from 'vue'
 >     type Obj = {
@@ -1959,12 +2014,12 @@ export default defineComponent({
 >      let message: Ref<Obj> = shallowRef({
 >        name: "小满"
 >     })
->  
+>
 >     const changeMsg = () => {
 >        message.value.name = '大满'
 >        triggerRef(message)
 >      }
-> </script> 
+> </script>
 > ```
 
 ### 自定义ref：customRef
@@ -1980,7 +2035,7 @@ export default defineComponent({
 >     <input type="text" v-model="keyword" />
 >     <h3>{{ keyword }}</h3>
 >   </template>
->   
+>
 >   <script setup>
 >   import {ref,customRef} from 'vue'
 >   export default {
@@ -2013,7 +2068,7 @@ export default defineComponent({
 
 > ```bash
 > # 响应性语法糖版本要求： vue版本 3.2.25 及以上
-> 
+>
 > # 需要在 vite.config.js 中设定 reactivityTransform 为 true 才能使用新特性
 >  import { fileURLToPath, URL } from 'url'
 >  import { defineConfig } from 'vite'
@@ -2034,8 +2089,8 @@ export default defineComponent({
 >      }
 >    },
 >    })
->  
-> 
+>
+>
 > # 若在 vue-cli 中，则需要在 vue.config.js 中配置
 > // vue.config.js
 >  module.exports = {
@@ -2051,10 +2106,10 @@ export default defineComponent({
 >        })
 >    }
 >    }
->  
-> 
+>
+>
 > # $ref
-> 	在之前 ref 修改值和获取值都要添加 .value 后缀才可，不想用.value 可以使用vue3的新特性$ref 
+> 	在之前 ref 修改值和获取值都要添加 .value 后缀才可，不想用.value 可以使用vue3的新特性$ref
 > <template>
 >       <button @click="add">add：{{count}}</button>
 >    </template>
@@ -2063,8 +2118,8 @@ export default defineComponent({
 >    let count = $ref(0)
 >    const add = () => { count++ }
 >    </script>
->    
-> 
+>
+>
 > # 与 $ref 相关函数的改动
 > 	当然跟ref 有关的函数都做处理 都不需要.value了
 > ref -> $ref
@@ -2072,13 +2127,13 @@ export default defineComponent({
 >    shallowRef -> $shallowRef
 >    customRef -> $customRef
 >    toRef -> $toRef
->    
-> 
+>
+>
 > # $ref 的弊端
 >   - 因为他编译之后就是 count.value 并不是一个ref对象所以 watch 无法监听而且会抛出一个警告
->   - [Vue warn]: Invalid watch source:  0 A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types. 
->   - 解决方法：解决这个问题需要$$ 符号 就是再让他编译的时候变成一个ref 对象不加.value 
-> 
+>   - [Vue warn]: Invalid watch source:  0 A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.
+>   - 解决方法：解决这个问题需要$$ 符号 就是再让他编译的时候变成一个ref 对象不加.value
+>
 >       <script setup lang='ts'>
 >         import { reactive, ref, toRefs,watch } from 'vue';
 >         import { $ref,$$ } from 'vue/macros'
@@ -2087,13 +2142,13 @@ export default defineComponent({
 >         watch($$(count),(v)=>{ console.log(v) }) // 正常的代码
 >         setInterval(()=>{ count++ },1000)
 >       </script>
-> 
-> 
-> 
+>
+>
+>
 > # 解构
 >   - 在之前解构一个对象使用 toRefs 解构完成之后 获取值和修改值 还是需要.value
 >   - vue3 也提供了 语法糖  $() 解构完之后可以直接赋值
-> 
+>
 >         <template>
 >             <div>{{name}}</div>
 >         </template>
@@ -2141,12 +2196,12 @@ export default defineComponent({
 > watch(num, (newVal, oldVal) => {
 >   console.log('sum改变了', num, newVal, oldVal)
 > },{immediate: true})
-> 
+>
 > // watch 情况二：监听多个响应数据
 > watch([num, msg], (newVal, oldVal) => {
 >   console.log('sum或msg改变了', newVal, oldVal)
 > },{immediate: true})
-> 
+>
 > /* watch 情况三：监听reactive所定义的一个响应式数据。
 >  注意1：此处无法正确的获取oldVal值，都是新值；因为返回的是Proxy对象
 >  注意2：强制开启了深度监视（deep配置无效），且不可关闭深度监视（即多层内的数据都可以改变，但不可阻止其改变）
@@ -2154,17 +2209,17 @@ export default defineComponent({
 > watch(person, (newVal, oldVal) => {
 >   console.log('person改变了', newVal, oldVal)
 > },{immediate: true})
-> 
+>
 > //情况四：监视reactive定义的响应式数据中的某个属性
 > watch(()=>person.job,(newValue,oldValue)=>{
 >   console.log('person的job变化了',newValue,oldValue)
-> },{immediate:true,deep:true}) 
-> 
+> },{immediate:true,deep:true})
+>
 > //情况五：监视reactive定义的响应式数据中的某些属性
 > watch([()=>person.job,()=>person.name],(newValue,oldValue)=>{
 >   console.log('person的job变化了',newValue,oldValue)
 > },{immediate:true,deep:true})
-> 
+>
 > //特殊情况
 > watch(()=>person.job,(newValue,oldValue)=>{
 >   console.log('person的job变化了',newValue,oldValue)
@@ -2194,27 +2249,27 @@ export default defineComponent({
 > watchEffect(() => {
 >   console.log(message.value, message2.value);
 > })
-> 
-> 
+>
+>
 > /* 清除副作用：就是在触发监听之前会调用一个函数可以处理你的逻辑例如防抖 */
 > watchEffect((oninvalidate) => {
 >   oninvalidate(()=>{
-> 
+>
 >   })
 >   console.log(message.value, message2.value);
 > })
-> 
-> 
+>
+>
 > /* 停止跟踪 watchEffect 返回一个函数 调用之后将停止更新 */
 > const stop =  watchEffect((oninvalidate) => {
 >   oninvalidate(()=>{
-> 
+>
 >   })
 >   console.log(message.value, message2.value);
 > },{
 >   flush:"post",
 >   onTrigger () {
-> 
+>
 >   }
 > })
 > stop()
@@ -2261,9 +2316,9 @@ export default defineComponent({
 >   function Heading(props, context) {
 >     return h(`h{props.level}`, context.attrs, context.slots)
 >   }
-> 
+>
 >   // Heading.props = ['level']
-> 
+>
 >   export default Heading;
 > </script>
 > ```
@@ -2274,7 +2329,7 @@ export default defineComponent({
 > </template>
 > <script setup>
 > 	import Functional from './Heading'
-> 
+>
 > </script>
 > ```
 
@@ -2283,37 +2338,37 @@ export default defineComponent({
 > ```css
 > # h函数常用场景
 > 	- 常用于 表格列的动态生成 或 动态渲染
-> 
+>
 > # h 接收三个参数
 >   - type 元素的类型
 >   - propsOrChildren 数据对象, 这里主要表示(props, attrs, dom props, class 和 style)
 >   - children 子节点
-> 
+>
 > # h函数的组合方式
 > 	1. 除类型之外的所有参数都是可选的
 >     h('div')
 >     h('div', { id: 'foo' })
-> 
+>
 >   2. 属性和属性都可以在道具中使用（Vue会自动选择正确的分配方式）
 >   	h('div', { class: 'bar', innerHTML: 'hello' })
-> 
+>
 >   3. props modifiers such as .prop and .attr can be added
 >   	// with '.' and `^' prefixes respectively
 >   	h('div', { '.name': 'some-name', '^width': '100' })
-> 
+>
 >   4. class 和 style 可以是对象或者数组
 >   	h('div', { class: [foo, { bar }], style: { color: 'red' } })
-> 
+>
 >   5. 定义事件需要加on 如 onXxx
 >   	h('div', { onClick: () => {} })
-> 
+>
 >   6. 子集可以字符串
 >   	h('div', { id: 'foo' }, 'hello')
-> 
+>
 >   7. 如果没有props是可以省略props 的
 >     h('div', 'hello')
 >     h('div', [h('span', 'hello')])
-> 
+>
 >   8. 子数组可以包含混合的VNode和字符串
 >   	h('div', ['hello', h('span', 'hello')])
 > ```
@@ -2324,7 +2379,7 @@ export default defineComponent({
 > <template>
 >     <Btn text="按钮"></Btn>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { h, } from 'vue';
 > type Props = {
@@ -2333,7 +2388,7 @@ export default defineComponent({
 > const Btn = (props: Props, ctx: any) => {
 >     return h('div', {
 >         class: 'p-2.5 text-white bg-green-500 rounded shadow-lg w-20 text-center inline m-1',
-> 
+>
 >     }, props.text)
 > }
 > </script>
@@ -2345,7 +2400,7 @@ export default defineComponent({
 > <template>
 >     <Btn @on-click="getNum" text="按钮"></Btn>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { h, } from 'vue';
 > type Props = {
@@ -2359,7 +2414,7 @@ export default defineComponent({
 >         }
 >     }, props.text)
 > }
-> 
+>
 > const getNum = (num: number) => {
 >     console.log(num);
 > }
@@ -2374,7 +2429,7 @@ export default defineComponent({
 >     <template #default>按钮slots</template>
 >   </Btn>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { h, } from 'vue';
 > type Props = {
@@ -2388,7 +2443,7 @@ export default defineComponent({
 >     }
 >   }, ctx.slots.default())
 > }
-> 
+>
 > const getNum = (num: number) => {
 >   console.log(num);
 > }
@@ -2430,7 +2485,7 @@ export default defineComponent({
 >     <slot :sad="item">作用域插槽</slot>
 >   </div>
 > </template>
-> 
+>
 > <script lang="ts" setup>
 >   import { reactive } from 'vue';
 >   type names = {
@@ -2456,7 +2511,7 @@ export default defineComponent({
 >     </template>
 >   </A>
 > </template>
-> 
+>
 > <script lang="ts" setup>
 > import A from './A.vue';
 > import { ref } from 'vue';
@@ -2475,7 +2530,7 @@ export default defineComponent({
 >   </div>
 > </div>
 > </template>
-> 
+>
 > <script setup lang="ts">
 > type Props = {
 >  content:string
@@ -2489,7 +2544,7 @@ export default defineComponent({
 > import { createApp } from 'vue'
 > import App from './App.vue'
 > import Card from './components/Card/index.vue'
-> 
+>
 > createApp(App).component('Card',Card).mount('#app')
 > ```
 >
@@ -2519,13 +2574,13 @@ export default defineComponent({
 > <script setup lang="ts">
 > import { reactive } from 'vue'
 > import Tree from '@/components/Tree/index.vue'
-> 
+>
 > type TreeList = {
 >  name: string;
 >  icon?: string;
 >  children?: TreeList[] | [];
 > };
-> 
+>
 > const data = reactive<TreeList[]>([
 >  {
 >    name: "no.1",
@@ -2569,7 +2624,7 @@ export default defineComponent({
 >  	</div>
 >  </div>
 > </template>
-> 
+>
 > <!-- 子组件接收值 第一个script -->
 > <script setup lang="ts">
 > import TreeItem form './index.vue'
@@ -2578,14 +2633,14 @@ export default defineComponent({
 >  icon?: string;
 >  children?: TreeList[] | [];
 > };
-> 
+>
 > type Props<T> = {
 >  data?: T[] | [];
 > };
-> 
+>
 > defineProps<Props<TreeList>>();
 > defineEmits(['on-click'])
-> 
+>
 > const clickItem = (item: TreeList) => {
 >  emit('on-click', item);
 > }
@@ -2608,7 +2663,7 @@ export default defineComponent({
 > <template>
 > 	<component :is="A" />
 > </template>
-> 
+>
 > <script setup>
 > 	import A from './A.vue'
 >   import B from './B.vue'
@@ -2619,12 +2674,12 @@ export default defineComponent({
 
 > ```css
 > 1. 在Vue2 的时候is 是通过组件名称切换的 在Vue3 setup 是通过组件实例切换的
-> 
-> 
-> 2. 如果你把组件实例放到Reactive Vue会给你一个警告runtime-core.esm-bundler.js:38 [Vue warn]: Vue received a Component which was made a reactive object. This can lead to unnecessary performance overhead, and should be avoided by marking the component with `markRaw` or using `shallowRef` instead of `ref`. 
-> Component that was made reactive: 
+>
+>
+> 2. 如果你把组件实例放到Reactive Vue会给你一个警告runtime-core.esm-bundler.js:38 [Vue warn]: Vue received a Component which was made a reactive object. This can lead to unnecessary performance overhead, and should be avoided by marking the component with `markRaw` or using `shallowRef` instead of `ref`.
+> Component that was made reactive:
 > 这是因为reactive 会进行proxy 代理 而我们组件代理之后毫无用处 节省性能开销 推荐我们使用shallowRef 或者  markRaw 跳过proxy 代理
-> 
+>
 > 修改如下:
 > const tab = reactive<Com[]>([{
 >     name: "A组件",
@@ -2642,30 +2697,30 @@ export default defineComponent({
 > 	<div v-for="item in data" :key="item.comName" @click="switchCom"></div>
 > 	<component :is="current.comName" />
 > </template>
-> 
+>
 > <script setup lang="ts">
 > import { reactive, ref, markRaw, toRaw } from 'vue'
 > 	import A from './A.vue'
 > import B from './B.vue'
 > import C from './C.vue'
-> 
+>
 > type Tabs = {
 >  name: string,
 >  comName: any
 > }
 > type Com = Pick<Tabs, 'comName'>
-> 
+>
 > // 使用 markRaw 跳过Proxy代理的过程
 > const data = reactive<Tabs[]>([
 >  { name: "我是A组件", comName: markRaw(A), },
 >  { name: "我是B组件", comName: markRaw(B), },
 >  { name: "我是C组件", comName: markRaw(C), },
-> ]) 
-> 
+> ])
+>
 > let current = reactive<Com>({
 >  comName: data[0].comName
 > })
-> 
+>
 > const switchCom = (item:Tabs) => {
 >  current.comName = item.comName;
 > }
@@ -2680,7 +2735,7 @@ export default defineComponent({
 > ```vue
 > <!-- is -->
 > <component is="comp"></component>
-> 
+>
 > <!--  v-is -->
 > <table>
 >   <tr v-is="'row'" v-for="item in list" :data="item"></tr>
@@ -2716,9 +2771,9 @@ export default defineComponent({
 >     import { defineAsyncComponent } from 'vue'
 >     import ErrorComponent from './ErrorComponent.vue'
 >     import LoadingComponent from './LoadingComponent.vue'
-> 
+>
 >     const post = await fetch(`/api/post/1`).then(r => r.json())
-> 
+>
 >     const asyncPageWithOptions = defineAsyncComponent({
 >         // 要加载的组件
 >         loader: () => import('./NextPage.vue'),
@@ -2737,7 +2792,7 @@ export default defineComponent({
 > ```vue
 > <!-- vue2 -->
 > <AsyncComp />
-> 
+>
 > components: {
 > 	AsyncComp: defineAsyncComponent(() => import('./NextPage.vue'))
 > }
@@ -2749,7 +2804,7 @@ export default defineComponent({
 >
 > - 作用：当所加载的组件的数据渲染比较缓慢时，可以让页面不出现内容缺失(该组件未完成加载，需要白屏优化)
 >
-> - 使用步骤： 
+> - 使用步骤：
 >
 >   - 异步引入组件（页面会先加载渲染父组件再渲染子组件，因为父组件在import前就请求了)
 >     若是同步(直接import导入组件)，则会等所有组件请求完再渲染页面
@@ -2774,7 +2829,7 @@ export default defineComponent({
 >         </template>
 >       </Suspense>
 >     </template>
->     
+>
 >     <script setup>
 >       import { defineAsyncComponent } from 'vue'
 >       const Child = defineAsyncComponent(() => import('@/components/Child.vue'))
@@ -2802,12 +2857,12 @@ export default defineComponent({
 >   	</div>
 >   </teleport>
 > </template>
-> 
+>
 > <script setup>
 > 	import {ref} from 'vue'
 > 	const isShow = ref(false)
 > </script>
-> 
+>
 > <style lang="scss" scoped>
 > 	.modal {
 > 		position: absolute;
@@ -2831,20 +2886,20 @@ export default defineComponent({
 
 > ```css
 > # keep-alive组件作用：缓存组件并维持当前状态，避免多次重复渲染组件以提高性能。
-> 
+>
 > # 开启keep-alive 声明周期的变化
 >   1. 初次进入时：onMounted -> onActivated
 >   2. 退出后触发 deactivated
 >   3. 再次进入只会触发onActivated
 >   4. 事件挂载的方法等只执行一次的放在 onMounted 中，组件每次进去执行的方法放在 onActivated 中
-> 
+>
 > # include 和 exclude 属性
 > 	- include属性：只有名称匹配的组件会被缓存
 > 	- exclude属性： 任何名称匹配的组件都不会被缓存
 > 	- 二者都可以用逗号分隔字符串、正则表达式或一个数组来表示
 > 	- 注意：include查找的name属性找寻的是 **组件的名称**，而不是路由实例中配置的命名
 > 			<script>export defalt { name: 'App' }</script>
-> 
+>
 > # max
 > 	- 只能存活组件的最大数量
 > ```
@@ -2854,23 +2909,23 @@ export default defineComponent({
 > <keep-alive>
 >   <component :is="view"></component>
 > </keep-alive>
-> 
+>
 > <!-- 多个条件判断的子组件 -->
 > <keep-alive>
 >   <comp-a v-if="a > 1"></comp-a>
 >   <comp-b v-else></comp-b>
 > </keep-alive>
-> 
+>
 > <!-- 和 `<transition>` 一起使用 -->
 > <transition>
 >   <keep-alive>
 >     <component :is="view"></component>
 >   </keep-alive>
 > </transition>
-> 
+>
 > <!-- include和exclude -->
 > <keep-alive :include="" :exclude="" :max="10"></keep-alive>
-> 
+>
 > <!-- max -->
 > <keep-alive :max="10">
 >   <component :is="view"></component>
@@ -2885,11 +2940,11 @@ export default defineComponent({
 >   2. 条件展示 (使用 v-show)
 >   3. 动态组件
 >   4. 组件根节点
-> 
+>
 > # 自定义 transition 过度效果，你需要对transition组件的name属性自定义。并在css中写入对应的样式
 > # 使用 duration 属性来指定过渡时间，:duration="{ enter: 500, leave: 800 }"  :duration="1000"
-> 
-> 
+>
+>
 > # 通过自定义class 结合css动画库animate css（https://animate.style/）
 > 		- 安装库 npm install animate.css
 > 		- 引入 import 'animate.css'
@@ -2899,8 +2954,8 @@ export default defineComponent({
 >         >
 >             <div v-if="flag" class="box"></div>
 >         </transition>
-> 
-> 
+>
+>
 > # 过渡 class：在进入/离开的过渡中，会有 6 个 class 切换。
 >     1. v-enter-from：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。
 >     2. v-enter-active：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
@@ -2908,8 +2963,8 @@ export default defineComponent({
 >     4. v-leave-from：定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。
 >     5. v-leave-active：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
 >     6. v-leave-to：离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave-from 被移除)，在过渡/动画完成之后移除。
-> 
-> 
+>
+>
 > # transition 生命周期
 > 	  @before-enter="beforeEnter" 				//对应enter-from
 >     @enter="enter"										 //对应enter-active
@@ -2928,7 +2983,7 @@ export default defineComponent({
 >     <div v-if='flag' class="box"></div>
 >   </transition>
 > </template>
-> 
+>
 > <style>
 > // 开始过度
 > .fade-enter-from{
@@ -2937,31 +2992,31 @@ export default defineComponent({
 > 	height: 0;
 > 	transform: rotate(360deg)
 > }
-> 
+>
 > // 开始过度了
 > .fade-enter-active{
 > 	transition: all 2.5s linear;
 > }
-> 
+>
 > // 过度完成
 > .fade-enter-to{
 > 	background: yellow;
 > 	width: 200px;
 > 	height: 200px;
 > }
-> 
+>
 > // 离开的过度
 > .fade-leave-from{
 > 	width: 200px;
 > 	height: 200px;
 > 	transform: rotate(360deg)
 > }
-> 
+>
 > // 离开中过度
 > .fade-leave-active{
 > 	transition: all 1s linear;
 > }
-> 
+>
 > // 离开完成
 > .fade-leave-to{
 > 	width: 0;
@@ -2982,14 +3037,14 @@ export default defineComponent({
 > .v-enter-to {
 >   opacity: 1;
 > }
-> 
-> 
+>
+>
 > /* Vue3.0写法 */
 > .v-enter-from,
 > .v-leave-to {
 >   opacity: 0;
 > }
-> 
+>
 > .v-leave-from,
 > .v-enter-to {
 >   opacity: 1;
@@ -3000,18 +3055,18 @@ export default defineComponent({
 
 > ```css
 > # 在同时渲染整个列表时，使用 <transition-group> 组件，多个节点，每次只渲染一个节点
-> 
+>
 > # transition-grop过渡列表特点
 > 	- 默认情况下，它不会渲染一个包裹元素，但是可以通过 tag attribute 指定渲染一个元素。
 > 	- 过渡模式不可用，因为我们不再相互切换特有的元素。
 > 	- 内部元素总是需要提供唯一的 key attribute 值。
 > 	- CSS 过渡的类将会应用在内部的元素中，而不是这个组/容器本身。
-> 
+>
 > # 列表的移动过渡
 >   <transition-group> 组件还有一个特殊之处。除了进入和离开，它还可以为定位的改变添加动画。
 >   只需了解新增的 v-move 类就可以使用这个新功能，它会应用在元素改变定位的过程中。
 >   像之前的类名一样，它的前缀可以通过 name attribute 来自定义，也可以通过 move-class attribute 手动设置
-> 
+>
 > ```
 >
 > ```vue
@@ -3020,7 +3075,7 @@ export default defineComponent({
 >     <div :key="item.id" v-for="item in list">{{ item.number }}</div>
 > 	</transition-group>
 > </template>
-> 
+>
 > <script setup lang="ts">
 > import { ref } from 'vue'
 > let list = ref(Array.apply(null, { length: 81 } as number[]).map((_, index) => {
@@ -3041,7 +3096,7 @@ export default defineComponent({
 >         </transition-group>
 >     </div>
 > </template>
-> 
+>
 > <script setup  lang='ts'>
 > import _ from 'lodash'
 > import { ref } from 'vue'
@@ -3055,7 +3110,7 @@ export default defineComponent({
 >     items.value = _.shuffle(items.value)
 > }
 > </script>
-> 
+>
 > <style scoped lang="less">
 > .wraps {
 >     display: flex;
@@ -3071,7 +3126,7 @@ export default defineComponent({
 >         align-items: center;
 >     }
 > }
-> 
+>
 > .mmm-move {
 >     transition: transform 0.8s ease;
 > }
@@ -3087,7 +3142,7 @@ export default defineComponent({
 >         <div>{{ num.tweenedNumber.toFixed(0) }}</div>
 >     </div>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { reactive, watch } from 'vue'
 > import gsap from 'gsap'
@@ -3095,14 +3150,14 @@ export default defineComponent({
 >     tweenedNumber: 0,
 >     current:0
 > })
-> 
+>
 > watch(()=>num.current, (newVal) => {
 >     gsap.to(num, {
 >         duration: 1,
 >         tweenedNumber: newVal
 >     })
 > })
-> 
+>
 > </script>
 > ```
 
@@ -3161,7 +3216,7 @@ export default defineComponent({
 - jsx 语法中需注意 ref、v-models、slots 的定义和使用，其中 v-model 和 v-models 都只是语法糖
 		- 单个 v-model: 例 `v-model={[items.value, 'items']}`
 		- 多个 v-model: 例 `v-models={[[items.value, 'items'], [state.value, 'state']]}`
-		
+
 ```
 
 #### TodoList 案例（VUE文件）
@@ -3436,23 +3491,23 @@ export default defineComponent({
 >
 > ```tsx
 > import { ref } from 'vue'
-> 
+>
 > type Props = {
 >   title: string
 > }
-> 
+>
 > let str = ref<string>('')
 > let flag = ref<boolean>(false);
 > let arr = ref<Array[number]>([1,2,3,4]);
-> 
+>
 > const clickTap = () => {
 >   flag.value = !flag.value;
 > }
-> 
+>
 > const onEmit = (ctx: any) => {
 >   ctx.emit('on-click', 'emit -> willy')
 > }
-> 
+>
 > const renderDom = (props: Props, content: any) => {
 >   return (
 >   	<>
@@ -3460,16 +3515,16 @@ export default defineComponent({
 >     	<div v-show={flag.value} onClick={clickTap}>props接收值：{ props.title }</div>
 >     	<div v-show={!flag.value} onClick={onEmit.bind(this, content)}>Emit派发：</div>
 >    		{
->         flag.value 
->         	? 
->         		<div>willy</div> 
->         	: 
+>         flag.value
+>         	?
+>         		<div>willy</div>
+>         	:
 >         		arr.map((val, index) => <div key={index}> v-bind绑定key值，map替换v-for： ${ val } </div>)
->       } 
+>       }
 >     </>
 >   )
 > }
-> 
+>
 > export default renderDom;
 > ```
 
@@ -3485,9 +3540,9 @@ export default defineComponent({
 >
 > ```tsx
 > // Child.tsx
-> 
+>
 > import { CSSProperties, defineComponent, PropType } from "vue";
-> 
+>
 > interface Props {
 >   count: number;
 >   style: CSSProperties;
@@ -3509,11 +3564,11 @@ export default defineComponent({
 >     return () => (
 >       <div style={props.style}>
 >         <h1>This is Child</h1>
-> 
+>
 >         {slots?.header && slots.header()}
 >         <button onClick={() => emit("childClick")}>Child Count++</button>
 >         <p>Child count is: {props.count}</p>
-> 
+>
 >         {slots?.default && slots.default()}
 >         <p>Props' keys are: {Object.keys(props).join(", ")}</p>
 >       </div>
@@ -3531,7 +3586,7 @@ export default defineComponent({
 > ```tsx
 > // vue3模板语法
 > <span>{{ a + b }}</span>
-> 
+>
 > // jsx/tsx
 > <span>{ a + b }</span>
 > ```
@@ -3546,7 +3601,7 @@ export default defineComponent({
 > // 模板字符串
 > <div className={`header ${ isBg ? 'headerBg' : '' }`}>header</div>
 > <div className={'header headerBg'}>header</div>
-> 
+>
 > //数组
 > <div class={ [ 'header', isBg && 'headerBg' ] } >header</div>
 > ```
@@ -3555,7 +3610,7 @@ export default defineComponent({
 >
 > ```tsx
 > const color = 'red'
-> 
+>
 > const element = <sapn style={{ color, fontSize: '16px' }}>style</sapn>
 > ```
 
@@ -3599,7 +3654,7 @@ export default defineComponent({
 >     {name: 'Jim', age: 20},
 >     {name: 'Lucy', age: 16}
 >   ]
->   
+>
 >   return () => (
 >     <div>
 >       <div class={'box'}>
@@ -3630,7 +3685,7 @@ export default defineComponent({
 >   const clickBox = val => {
 >     console.log(val)
 >   }
->   
+>
 >   return () => (
 >     <div class={'box1'} onClick={() => clickBox('box1')}>
 >       <span>我是box1</span>
@@ -3651,11 +3706,11 @@ export default defineComponent({
 > // 正常写法
 > <input v-model="value" /> // vue
 > <input v-model={value} /> // jsx
-> 
+>
 > // 指定绑定值写法
 > <input v-model:modelValue="value" /> // vue
 > <input v-model={[value,'modelValue']} /> // jsx
-> 
+>
 > // 修饰符写法
 > <input v-model:modelValue.trim="value" /> // vue
 > <input v-model={[value,'modelValue',['trim']]} /> // jsx
@@ -3716,7 +3771,7 @@ export default defineComponent({
 > <script setup lang="ts">
 > import Child from './Child.vue'
 > </script>
-> 
+>
 > <template>
 >  <Child>
 >   <template #search="{search}">
@@ -3732,7 +3787,7 @@ export default defineComponent({
 > <script setup lang="ts">
 > import Grandson from './Grandson.vue'
 > </script>
-> 
+>
 > <template>
 >   <Grandson>
 >     <template #search_item="{ search }">
@@ -3758,11 +3813,11 @@ export default defineComponent({
 >
 > ```tsx
 > // index.tsx
-> 
+>
 > import { routes } from '@/router/index'
 > import MenuItem from './menuItem'
 > import './index.scss'
-> 
+>
 > export default defineComponent({
 >   setup() {
 >     const isShowRoutes = computed(() => {
@@ -3771,7 +3826,7 @@ export default defineComponent({
 >     const currentPath = computed(() => {
 >       return useRoute().path
 >     })
-> 
+>
 >     return () => (
 >       <el-scrollbar class={`menuContent`}>
 >         <el-menu
@@ -3793,11 +3848,11 @@ export default defineComponent({
 >
 > ```tsx
 > // menuItem.tsx
-> 
+>
 > import { defineComponent, PropType } from 'vue'
 > import { RouteRecordRaw } from 'vue-router'
 > import './index.scss'
-> 
+>
 > const MenuItem = defineComponent({
 >   name: 'MenuItem',
 >   props: {
@@ -3832,7 +3887,7 @@ export default defineComponent({
 >     }
 >   }
 > })
-> 
+>
 > export default MenuItem
 > ```
 
@@ -3842,9 +3897,9 @@ export default defineComponent({
 
 > ```tsx
 > // Child.tsx
-> 
+>
 > import { CSSProperties, FunctionalComponent } from "vue";
-> 
+>
 > interface Props {
 >   count: number;
 >   style: CSSProperties;
@@ -3852,11 +3907,11 @@ export default defineComponent({
 > type Emit = {
 >   childClick: () => void;
 > };
-> 
+>
 > const Child: FunctionalComponent<Props, Emit> = (props, ctx) => {
 >   const { count, ...rest } = props;
 >   const { slots, emit } = ctx;
-> 
+>
 >   return (
 >     <div {...rest}>
 >       <h1>This is Child</h1>
@@ -3873,10 +3928,10 @@ export default defineComponent({
 >
 > ```tsx
 > // Parent.tsx
-> 
+>
 > import { defineComponent, ref } from "vue";
 > import Child from "./Child";
-> 
+>
 > export default defineComponent({
 >   components: {
 >     Child,
@@ -3886,7 +3941,7 @@ export default defineComponent({
 >     const handleIncrease = () => {
 >       count.value++;
 >     };
-> 
+>
 >     return () => (
 >       <div
 >         style={{ padding: 10, backgroundColor: "#cef", textAlign: "center" }}
@@ -3914,10 +3969,10 @@ export default defineComponent({
 
 > ```tsx
 > <!-- Child.vue -->
-> 
+>
 > <script setup lang="ts">
 > import { defineProps, defineEmits, CSSProperties } from "vue";
-> 
+>
 > interface Props {
 >   count: number;
 >   style: CSSProperties;
@@ -3925,11 +3980,11 @@ export default defineComponent({
 > interface Emit {
 >   (e: "childClick"): void;
 > }
-> 
+>
 > defineProps<Props>();
 > const emit = defineEmits<Emit>();
 > </script>
-> 
+>
 > <template>
 >   <div :style="style">
 >     <h1>This is Child</h1>
@@ -3944,17 +3999,17 @@ export default defineComponent({
 >
 > ```tsx
 > <!-- Parent.vue -->
-> 
+>
 > <script setup lang="ts">
 > import { ref } from "vue";
 > import Child from "./Child1.vue";
-> 
+>
 > const count = ref(0);
 > const handleIncrease = () => {
 >   count.value++;
 > };
 > </script>
-> 
+>
 > <template>
 >   <div :style="{ padding: 10, backgroundColor: '#cef', textAlign: 'center' }">
 >     <h1>This is Parent</h1>
@@ -4023,7 +4078,7 @@ export default defineComponent({
 > 	<h3>祖组件通过provide向后代注入依赖，进行信息传递</h3>
 > 	<Child />
 > </template>
-> 
+>
 > <script setup lang='ts'>
 >   import { provide, ref } from 'vue'
 >   import A from './Child.vue'
@@ -4038,12 +4093,12 @@ export default defineComponent({
 >   <button @click="change">change falg</button>
 >   <div>{{ flag }}</div>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 >   import { inject, Ref, ref } from 'vue'
-> 
+>
 >   const flag = inject<Ref<number>>('flag', ref(1))
-> 
+>
 >   const change = () => {
 >       flag.value = 2
 >   }
@@ -4064,7 +4119,7 @@ export default defineComponent({
 > import { ref } from "vue"
 > const count = ref(100);
 > </script>
-> 
+>
 > <!-- 子组件 -->
 > <template>
 >   <div>{{count}}</div>
@@ -4091,18 +4146,18 @@ export default defineComponent({
 >   <A @on-click="getFalg" />
 >   <B :flag="Flag" />
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import A from './A.vue'
 > import B from './B.vue'
 > import { ref } from 'vue'
-> 
+>
 > let Flag = ref<boolean>(false)
 > const getFalg = (flag: boolean) => {
 >    Flag.value = flag;
 > }
 > </script>
-> 
+>
 > <style>
 > </style>
 > ```
@@ -4116,18 +4171,18 @@ export default defineComponent({
 > import { createApp } from 'vue'
 > import App from './App.vue'
 > import mitt from 'mitt'
-> 
+>
 > const Mit = mitt()
 > const app = createApp()
-> 
+>
 > declare module 'vue' {
 > 	export interface ComponentCustomProperties {
 >     $Bus: typeof Mit
 >   }
 > }
-> 
+>
 > app.config.globalProperties.$bus = Mit
-> 
+>
 > app.mount('#app');
 > ```
 >
@@ -4135,11 +4190,11 @@ export default defineComponent({
 > <template>
 > 	<button @click="emit">emit</button>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { getCurrentInstance } from 'vue'
 > const instance = getCurrentInstance()
-> 
+>
 > const emit = () => {
 >   instance?.proxy?.$Bus.emit('on-willy', 'mitt');
 > }
@@ -4150,11 +4205,11 @@ export default defineComponent({
 > <template>
 > 	<button @click="on">on</button>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 > import { getCurrentInstance } from 'vue'
 > const instance = getCurrentInstance()
-> 
+>
 > const on = () => {
 >   instance?.proxy?.$Bus.on('on-willy', (str) => {
 >     	console.log(str);
@@ -4172,11 +4227,11 @@ export default defineComponent({
 >  emit: (name: T) => void
 >  on: (name: T, callback: Function) => void
 > }
-> type BusParams = string | number | symbol 
+> type BusParams = string | number | symbol
 > type List = {
 >  [key: BusParams]: Array<Function>
 > }
-> 
+>
 > class Bus<T extends BusParams> implements BusClass<T> {
 >  list: List
 >  constructor() {
@@ -4194,7 +4249,7 @@ export default defineComponent({
 >      this.list[name] = fn
 >  }
 > }
-> 
+>
 > export default new Bus<number>()
 > ```
 >
@@ -4206,14 +4261,14 @@ export default defineComponent({
 >      this.name = "Listener"
 >      this.store = {}
 >  }
-> 
+>
 >  static getInstance() {
 >      if (!Listener.instance) {
 >          Listener.instance = new Listener()
 >      }
 >      return Listener.instance
 >  }
-> 
+>
 >  /**
 >      * 同一个事件可多次注册，可能触发时执行多次
 >      * @param evtName
@@ -4230,7 +4285,7 @@ export default defineComponent({
 >         this.store[evtName].push(cb)
 >         console.log(`[${this.name}] listen on event:${evtName}, cb: ${cb.name}`)
 >     }
-> 
+>
 >     $emit(evtName, ...data) {
 >         if (evtName in this.store) {
 >             this.store[evtName].forEach(cb => {
@@ -4240,7 +4295,7 @@ export default defineComponent({
 >             console.error(`[${this.name}] could not found event:${evtName}`)
 >         }
 >     }
-> 
+>
 >     /**
 >      * 卸载一个事件，如果没有传入cb会被所有cb都清除
 >      * @param evtName
@@ -4263,13 +4318,13 @@ export default defineComponent({
 >         console.warn(`[${this.name}] event:${evtName} not exist`)
 >     }
 > }
-> 
+>
 > export const VueListener = {
 >     install: (Vue) => {
 >         Vue.prototype.$listener = Listener.getInstance()
 >     }
 > }
-> 
+>
 > export const MyListener = Listener.getInstance()
 > ```
 
@@ -4281,8 +4336,8 @@ export default defineComponent({
 > - 然后通过impor再组件中引入。通过mixins注册进来，这样我们就可以使用mixin中共同的业务逻辑。
 > - 我们通常会在src下创建一个文件夹mixins，然后在创建mixins/index.js文件
 > 注意：在混合mixin中，各个数据彼此是互相独立的。不会互相影响。
-> 
-> 
+>
+>
 > ## hooks
 > - hook本质是封装好的函数，把setup函数中使用的Composition API进行了封装。
 > - 类似于vue2.x中的mixin，但比mixin优化了可能会覆盖组件中相同变量或函数的缺点
@@ -4292,13 +4347,13 @@ export default defineComponent({
 > ```js
 > /* hooks/addHooks.js */
 > import { ref } from 'vue'
-> export default function () { 
+> export default function () {
 >   const num = ref(0);
 >   const like = ref(false)
->   const favBtn = () => { 
+>   const favBtn = () => {
 >     num.value += 1;
 >     like.value = false;
->     setTimeout(() => { 
+>     setTimeout(() => {
 >       like.value=true;
 >     })
 >   }
@@ -4317,10 +4372,10 @@ export default defineComponent({
 > <p>数量{{num }}</p>
 > <el-button @click="favBtn"> {{like ? '收藏过' :'未收藏'}} </el-button>
 > </template>
-> 
+>
 > <script setup lang="ts">
 >   import addHooks from '@/hooks/addHooks.js'
->   let { num, like, favBtn }=mixins()
+>   let { num, like, favBtn } = mixins()
 > </script>
 > ```
 >
@@ -4333,13 +4388,13 @@ export default defineComponent({
 >     x: 0,
 >     y: 0,
 >   })
-> 
+>
 >   // 实现鼠标“打点“相关方法
 >   function savePoint(event) {
 >     point.x = event.pageX
 >     point.y = event.pageY
 >   }
-> 
+>
 >   // 实现鼠标“打点”相关的生命周期钩子	（此为使用了组合式API的函数进行封装）
 >   onMounted(() => {
 >     window.addEventListener('click', savePoint)
@@ -4347,7 +4402,7 @@ export default defineComponent({
 >   onBeforeUnmount(() => {
 >     window.removeEventListener('click', savePoint)
 >   })
-> 
+>
 >   return point
 > }
 > ```
@@ -4356,18 +4411,11 @@ export default defineComponent({
 > <template>
 > 	<div>{{ point.x }}{{ point.y }}</div>
 > </template>
-> 
-> <script lang='ts'>
+>
+> <script lang='ts' setup>
 > // 使用封装的功能
 > import usePoint from 'src/hooks/clickPonit.ts'
-> export default {
->   setup() {
->     const { point } = usePoint();
->     return {
->       point,
->     }
->   }
-> }
+> const { point } = usePoint();
 > </script>
 > ```
 
@@ -4378,8 +4426,8 @@ export default defineComponent({
 > ```bash
 > # 安装Router
 > 	npm i vue-router -S
-> 
-> 
+>
+>
 > # 实例创建方式： history选项替代了 mode 选项
 >   - history: createWebHistory()
 >   		- 通过 location.hash() 来进行控制路由的跳转
@@ -4394,23 +4442,23 @@ export default defineComponent({
 >             console.log(e);	// state.current为新路由， state.back和state.forward为老路由
 >           })
 >   - 服务端渲染-抽象模式：abstract: createMemoryHistory()
-> 
-> 
+>
+>
 > # <router-link> 进行跳转
 >     - 通过 path 属性进行跳转：<router-link to="/login">Login</router-link>
 >     - 通过 name 属性进行跳转：<router-link :to="{ name: 'Login' }">Login</router-link>
 > # <a> 标签进行跳转
 > 		-  <a href="/login">通过a标签进行页面跳转</a>
 > 		- 注意：直接通过a href也可以跳转但是会刷新页面
-> 
+>
 > # 通过方法记录路由历史记录
 >     - 创建router实例：import {useRouter} from 'vue-router'; const router = useRouter();
 >     1. 路由替换 router.replace('routeName')，会覆盖当前路由
 >     2. 路由前进 router.push('routeName')，会插入新的路由地址
 >     3. 路由前进或后退 router.go(n)，根据路由的历史记录进行前进或回退，n为负数时回退，n为正数时前进
 >     4. 路由后退 router.back()，根据路由记录进行回退
-> 
-> 
+>
+>
 > # 编程式导航
 >     - 除了使用 <router-link> 创建 a 标签来定义导航链接，我们还可以借助 router 的实例方法
 >     - 使用编程式导航的前提（定义实例方法）
@@ -4419,64 +4467,64 @@ export default defineComponent({
 >     1. 字符串模式：router.push('/reg')
 >     2. 对象模式：router.push({ path: '/reg' })
 >     3. 命名式路由模式：router.push({ name: 'Reg' })
-> 
-> 
+>
+>
 > # 路由传参
 > - 创建route实例：
->     import { useRoute, useRouter } from 'vue-router';	
+>     import { useRoute, useRouter } from 'vue-router';
 >     const router = useRouter()
 >     const route = useRoute()
-> 
+>
 > - 路由携带参数跳转
 > 		1. query方式传参（注意：参数会展现在url上）
 >       - 实例中定义：router.push({ path: 'details', query: { name: 'willy', id: 1 } })
 >       - 获取路由参数：<div>{{ route.query.name }}{{ route.query.id }}</div>
-> 
+>
 >     2. params方式传参（注意：params传参无法使用 path 属性，需要使用 name 属性。且参数不会展示在url上）
 >       - 实例中定义：router.push({ name: 'Details', query: { name: 'willy', id: 1 } })
 >       - 获取路由参数：<div>{{ route.params.name }}{{ route.params.id }}</div>
-> 
+>
 >     3. 动态路由方式
 >       - 注意：其页面中所定义动态属性携带的值会通过后缀的方式加入到url中，并且刷新页面该数据值不会消失，但不再其属性字段的数据会丢失
 >       - 路由中定义：{ path: '/details:id', name: 'Details', compoment: () => import('@/pages/Details.vue') }
 >       - 实例中定义：router.push({ path: 'details', query: { name: 'willy', id: 1 } })
 >       - 获取路由参数：<div>{{ route.query.name }}{{ route.query.id }}</div>
-> 
-> 
+>
+>
 > # 嵌套路由
 >   - 一些应用程序的 UI 由多层嵌套的组件组成。在这种情况下，URL 的片段通常对应于特定的嵌套组件结构，
 >   - 命名子路由如果path为空时不再追加/，（修复可以找到同一层级的路由，无需定义上级路由来进行重定向）
 >         [{
->           path: '/test', 
+>           path: '/test',
 >           children: [
 >             // {path: '', redirect: '/test/home'}, // 以前的。
 >             // {path: 'home', component: ()=>import('@/pages/test/test1.vue')}, // 以前的
 >             {path: '', redirect: 'home'},	// 现在
 >             {path: 'home', component: ()=>import('@/pages/test/test1.vue')},
->           ] 
+>           ]
 >         }]
 >       以前生成url为：/test/，其会给设置了重定向redirect选项的子路由带来副作用，如上会变为/home
 >       现在生成url为：/test，现在设定无需写上父级的路由
-> 
-> 
+>
+>
 > # 命名视图
->     - 概念：命名视图可以在同一级（同一个组件）中展示更多的路由视图，而不是嵌套显示。 
->     - 作用：命名视图可以让一个组件中具有多个路由渲染出口，这对于一些特定的布局组件非常有用。 
+>     - 概念：命名视图可以在同一级（同一个组件）中展示更多的路由视图，而不是嵌套显示。
+>     - 作用：命名视图可以让一个组件中具有多个路由渲染出口，这对于一些特定的布局组件非常有用。
 >     - 类似：命名视图的概念非常类似于“具名插槽”，并且视图的默认名称也是 default
 >     - 使用：
 >       1. 在路由设定中的components属性中使用自定义的命名
->           { 
+>           {
 >             path: "/",
 >             components: {
->               default: () => import('@/pages/menu.vue'),  
+>               default: () => import('@/pages/menu.vue'),
 >               willys: () => import('@/pages/content.vue'),
 >             }
 >           },
 >       2. 对应Router-view 通过name 对应组件：
 >           <router-view name="willys"></router-view>
-> 
-> 
-> 
+>
+>
+>
 > # 重定向（redirect）
 >     1. 字符串形式配置，访问/ 重定向到 /user （地址栏显示/,内容为/user路由的内容）
 >         const routes: Array<RouteRecordRaw> = [{
@@ -4487,7 +4535,7 @@ export default defineComponent({
 >             {path:'/user1', components:{ default:()=> import('../components/A.vue') },
 >           ],
 >         }]
-> 
+>
 >     2. 对象形式配置
 >         const routes: Array<RouteRecordRaw> = [{
 >           path:'/',
@@ -4497,7 +4545,7 @@ export default defineComponent({
 >             {path:'/user1', components:{ default:()=> import('../components/A.vue') },
 >           ],
 >         }]
-> 
+>
 >     3. 函数模式（可以进行传参）
 >         const routes: Array<RouteRecordRaw> = [{
 >           path:'/',
@@ -4509,8 +4557,8 @@ export default defineComponent({
 >             {path:'/user1', components:{ default:()=> import('../components/A.vue') },
 >           ],
 >         }]
-> 
-> 
+>
+>
 > # 别名（alias）
 > 		- 将`/`别名为`/root`，意味着当用户访问`/root`时，URL 仍然是`/user`，但会被匹配为用户正在访问 `/`
 >         const routes: Array<RouteRecordRaw> = [{
@@ -4522,9 +4570,9 @@ export default defineComponent({
 >             {path:'/user1', components:{ default:()=> import('../components/A.vue') },
 >           ],
 >         }]
-> 
-> 
-> 
+>
+>
+>
 > # 导航守卫（又叫中间件）
 > - 每个守卫都接收三个参数
 >   - to: Route， 即将要进入的目标 路由对象；
@@ -4533,7 +4581,7 @@ export default defineComponent({
 >     - next(false): 中断当前的导航。如果浏览器的 URL 改变(可能是用户手动或者浏览器后退按钮)，则 URL 地址会重置到 from 路由对应的地址。
 >     - next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。
 >   - 注意：next() 必须要调用，否则会该守卫一直存在而导致内存泄漏
-> 
+>
 > 1. 全局前置守卫：router.beforeEach
 > 		/* 案例：权限判断 */
 >     const whileList = ['/']	// 路由白名单
@@ -4543,15 +4591,15 @@ export default defineComponent({
 >       (whileList.includes(to.path) || token) ?
 >         next() : next({ path:'/' })
 >     })
-> 
+>
 > 2. 全局后置守卫：router.afterEach
 >     - 使用场景：常用作 loadingBar（加载路由页面未完成时的加载条）
 >     - 注册全局后置钩子 与 守卫的区别是：这些钩子不会接收 next() 函数，也不会改变导航本身
 >         router.afterEach((to,from)=>{
 >             Vnode.component?.exposed?.endLoading()
 >         })
-> 
-> 
+>
+>
 > # 路由元信息
 >     - 通过路由记录的 meta 属性可以定义路由的元信息。使用路由元信息可以在路由中附加自定义的数据
 >         - 权限校验标识。
@@ -4559,59 +4607,59 @@ export default defineComponent({
 >         - 路由组件持久化缓存 (keep-alive) 的相关配置。
 >         - 标题名称。
 >     - 一般在导航守卫或者是路由对象中访问路由的元信息数据
-> 
-> 
+>
+>
 > # 路由过渡效果
->     - 若想要在路径组件上使用转场，并对导航进行动画处理，需要使用 v-slot 
+>     - 若想要在路径组件上使用转场，并对导航进行动画处理，需要使用 v-slot
 >     		// 在js中判断是否在设定了 transition 属性样式
->     		const animate_transition = route.meta?.transition || "animate__bounceIn" 
+>     		const animate_transition = route.meta?.transition || "animate__bounceIn"
 >         <router-view #default="{route,Component}">
 >           <transition  :enter-active-class="`animate__animated ${animate_transition}`">
 >             <component :is="Component"></component>
 >           </transition>
 >         </router-view>
-> 
-> 
+>
+>
 > # 滚动行为
 >     - vue-router 可以自定义路由切换时页面如何滚动，当切换到新路由时，想要页面滚到顶部，或保持原先的滚动位置，就像重新加载页面一样。
 >     - scrollBehavior 方法接收 to 和 from 路由对象。
 >     		- 第三个参数 savedPosition 当且仅当 popstate 导航 (通过浏览器的 前进/后退 按钮触发) 时才可用
->         - scrollBehavior 改动： 
->             - vue2之前： { x: 10, y: 10 } 	 
+>         - scrollBehavior 改动：
+>             - vue2之前： { x: 10, y: 10 }
 >             - vue3现在：{ left: 10, top: 10 }
 >         scrollBehavior(to, from, savedPosition) {
 >          if(savedPosition) { return savedPosition }
 >          else { return { top: 20 } }
 >         });
-> 
-> 
-> 
+>
+>
+>
 > # 动态路由
 >     - 一般使用动态路由都是后台会返回一个路由表前端通过调接口拿到后处理(后端处理路由)
 >     - 动态路由主要通过两个函数实现：router.addRoute() 和 router.removeRoute()
->     - 它们只注册一个新的路由，若新增加的路由与当前位置相匹配，就需要使用 router.push() 或 router.replace() 来手动导航，才能显示该新路由	
+>     - 它们只注册一个新的路由，若新增加的路由与当前位置相匹配，就需要使用 router.push() 或 router.replace() 来手动导航，才能显示该新路由
 >     - 注意：当路由被删除时，所有的别名和子路由也会被同时删除
 >     - 注意：当在vite启动中，在使用动态路由的时候无法使用别名`@`，必须使用相对路径
-> 
+>
 >     1. 添加路由：
 >         - router.addRoute({ path: '/about', component: About })
-> 
+>
 >     2. 删除路由：
 >         -1. 通过添加一个名称冲突的路由。如果添加与现有途径名称相同的途径，会先删除路由，再添加路由：
 >             router.addRoute({ path: '/about', name: 'about', component: About })
 >             // 这将会删除之前已经添加的路由，因为他们具有相同的名字且名字必须是唯一的
 >             router.addRoute({ path: '/other', name: 'about', component: Other })
-> 
+>
 >         -2. 通过调用 router.addRoute() 返回的回调：（当路由没有名称时，这很有用）
 >             const removeRoute = router.addRoute(routeRecord)
 >             removeRoute() // 删除路由如果存在的话
-> 
+>
 >         -3. 通过使用 router.removeRoute() 按名称删除路由：
 >         	 // 注意：如果你想使用这个功能，但又想避免名字的冲突，可以在路由中使用 Symbol 作为名字
 >             router.addRoute({ path: '/about', name: 'about', component: About })
 >             // 删除路由
 >             router.removeRoute('about')
-> 
+>
 >     3. 查看现有路由：
 >         - router.hasRoute()：检查路由是否存在。
 >         - router.getRoutes()：获取一个包含所有路由记录的数组。
@@ -4624,19 +4672,19 @@ export default defineComponent({
 >   - history: createWebHistory()
 >   - hash: creteWebHashHistory()
 >   - 服务端渲染-抽象模式：abstract: createMemoryHistory()
-> 
+>
 > # base选项移至createWebHistory等方法中
-> 
+>
 > # 通配符 * 被移除，通过路径参数的形式放入
-> 
+>
 > # isReady() 替代 onReady()   常用于底层的服务渲染
 > 	- 如 router.push()，其返回的所有信息都是异步的，所以常用 router.onReady(onSuccess, onError) 来接收
 > 	- 先如今使用 router.isReady().then(onSuccess).catch(onError) 的方式
-> 
+>
 > # scrollBehavior 变化 ， 其常用于记录导航滚动的位置
 > 	- 以前使用{ x: 10, y: 10 }
 > 	- 如今使用{ left:10, top: 10 }
-> 
+>
 > # 现在使用 keep-alive 和 transition 必须用在 router-view 内部
 > 	- 以前：<keep-alive><router-view></router-view></keep-alive>
 > 	- 现在（还可使用插槽，解构出所需）：
@@ -4645,40 +4693,40 @@ export default defineComponent({
 > 					<component :is="Component" />
 > 				</keep-alive>
 > 			</router-view>
-> 
-> 
+>
+>
 > # router-link 移除了一票属性
 > 	- append：路由追加
 > 		以前：<router-link to="child-route" append>
 > 		现在：<router-link :to="append($route.path, 'child-route')">
 > 			需在main.js中配置 app.config.globalProperties.append = (path, pathToAppend) => path + pathToAppend
-> 
+>
 > 	- tag/event：路由链接触发事件提示
 > 		以前：<router-link to="/xx" tag="span" event="dblclick"></router-link>
 > 		现在：
 >       <router-link to="/xx" custom v-slot="{navigate}">
 > 				<span @dblClick="navigate">xxx</span>
 >       </router-link>
-> 
+>
 > 	- exact：完全匹配逻辑简化
-> 
-> 
+>
+>
 > # mixins 中的路由守卫将被忽略
 > # match 方法移除，使用resolve 替代
 > # 移除 router.getMatchedComponents()，使用 router.currentRoute.value.matched 替代
-> 
+>
 > # 包括首屏导航在内的所有导航均为异步
 > 	app.use(router)
 > 	router.isReady().then(() => app.mount('#app'))
 > 	注意：如果首屏存在路由守卫，则可以不等待就绪直接挂载，产生结果将和vue2相同
-> 
+>
 > # route 的 parent 属性被移除（因为parent和children属性会产生不必要的循环冗余）
 > 	以前：const parent = this.$route.matched[this.$route.matched.length - 2]，（-1为当前，-2位当前的父级）
 > 	现在：
-> 
+>
 > # 路径解析
 > 	以前解析路径会引入path-to-regxp库
-> 
+>
 > # pathToRegexpOptions 选项被移除
 > 	- pathToRegexpOptions 被 strict 取代
 > 	- caseSensitive 被 sensitive 取代
@@ -4686,29 +4734,29 @@ export default defineComponent({
 >         strict: boolean,
 >         sensitive: boolean
 >       })
-> 
+>
 > # 使用 history.state
-> 	- history.pushState(myState, '', url) 替换成 router.push(url) 
+> 	- history.pushState(myState, '', url) 替换成 router.push(url)
 > 											或 history.replaceState({ ...history.state, ...myState }, '')
 > 	- history.replaceState({}, '', url) 替换成 history.replaceState(history.state, '', url)
-> 
+>
 > # routes 选项是必填项：createRouter({ routes: [] })
 > # 跳转不存在命名的路由会报错：router.push({ name: 'dashboad' })
 > # 缺少必填参数会抛出异常
-> 
+>
 > # 命名子路由如果path为空时不再追加/，（修复可以找到同一层级的路由，无需定义上级路由来进行重定向）
 >     [{
->       path: '/test', 
+>       path: '/test',
 >       children: [
 >         // {path: '', redirect: '/test/home'}, // 以前的。
 >       	// {path: 'home', component: ()=>import('@/pages/test/test1.vue')}, // 以前的
 >       	{path: '', redirect: 'home'},	// 现在
 >         {path: 'home', component: ()=>import('@/pages/test/test1.vue')},
->       ] 
+>       ]
 >     }]
 > 	以前生成url为：/test/，其会给设置了重定向redirect选项的子路由带来副作用，如上会变为/home
 > 	现在生成url为：/test，现在设定无需写上父级的路由
-> 
+>
 > # $route 属性编码行为
 > 	params/query/hash
 > 		- Path/fullpath 不再解码
@@ -4753,35 +4801,45 @@ export default defineComponent({
 
 > ```bash
 > ## 缓存路由组件 keep-alive
+> `<keep-alive>` 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 `<transition>` 相似，`<keep-alive>` 是一个抽象组件：它自身不会渲染一个 `DOM` 元素，也不会出现在组件的父组件链中。
+> 当组件在 `<keep-alive>` 内被切换，它的 `activated` 和 `deactivated` 这两个生命周期钩子函数将会被对应执行。
+>
+>
+>
 > ### keep-alive 缓存原理：
 > 进入页面时，页面组件渲染完成，keep-alive 会缓存页面组件的实例；
 > 离开页面后，组件实例由于已经缓存就不会进行销毁；
 > 当再次进入页面时，就会将缓存的组件实例拿出来渲染。
 > 因为组件实例保存着原来页面的数据和Dom的状态，那么直接渲染组件实例就能得到原来的页面。
-> 
+>
 > - keep-alive 的原理，是否还会触发 create 和 mounted，是否 render 重新渲染页面
 > 		- 第二次加载不会触发 create 和 mounted 钩子函数。
 > 		- 第二次进入缓存的页面，仍然会触发 render 重新渲染页面。因为缓存的知识组件实例以及实例中的数据，其是缓存在 Map 中存储起来，再次进入该页面只是把 Map 中相应的组件实例取出，所以仍然会触发 render 渲染。
-> 
-> 
+>
+>
 > ### keep-alive 属性
 > - include - string | RegExp | Array。只有名称匹配的组件会被缓存。
 > - exclude - string | RegExp | Array。任何名称匹配的组件都不会被缓存。
 > - max - number | string。最多可以缓存多少组件实例。
-> 
-> 
-> 
-> ### keep-aliave 清理缓存
+>
+>
+>
+> ### keep-alive 清理缓存
 > include是可以用来清除缓存，做法是：将组件名称添加到include里，组件会被缓存；移除组件名称，组件缓存会被清除。
-> 
-> 
-> 
+>
+>
+> ### keep-alive 的使用场景
+> `keep-alive`一般与动态组件相结合用，众所周知动态组件是根据不同条件而动态切换组件，当组件由渲染到被销毁，再由销毁变为渲染状态，其内部的数据都要初始化并且所有生命周期都会重新调用。
+> 如果内部的组件存在一些异步调用或资源申请，会造成不小的性能浪费，如果使用`keep-alive`的话，由于其包含的组件都会被缓存到内存中，那么他就会避免被多次销毁和初始化。
+>
+>
+>
 > ### 页面弹窗实现缓存
 > 将详情页做成全屏弹窗，那么从列表页进入详情页，就只是简单地打开详情页弹窗，将列表页覆盖，从而达到列表页 “缓存”的效果，而非真正的缓存。
 > 这里还有一个问题，打开详情页之后，如果点后退，会返回到首页，实际上我们希望是返回列表页，这就需要给详情弹窗加个历史记录，如列表页地址为 '/list'，打开详情页变为 '/list?id=1'。
-> 
-> 
-> 
+>
+>
+>
 > ### 父子路由实现缓存
 > 该方案原理就是页面弹窗，列表页为父路由，详情页为子路由，从列表页跳转到详情页时，显示详情页子路由，且详情页全屏显示，覆盖住列表页。
 > ```
@@ -4790,22 +4848,26 @@ export default defineComponent({
 
 > ```bash
 > ## keep-alive 实现原理
+> 在Vue中，`keep-alive`是单独的组件，内部有自己的render函数，内部对于自身的slot中的所有组件实例做了缓存处理。
+>
+>
+> ### 参考
 > - LRU算法：[leetcode146.LRU缓存](https://leetcode.cn/problems/lru-cache/)
 > - KeepAlive 的核心逻辑在于它的 render 函数，它用 Map 去记录要缓存的组件，就是 `[key, vnode]` 的形式。它的核心思想就是 'LRU'，当我们限制有 maxSize 时，超过 maxSize 时会删除最久没有使用的 `[key, vnode]` 。
 > - 源码位于：core/package/runtime-core/src/components/KeepAlive.ts
-> 
-> 
+>
+>
 > ### setup 核心代码
 > - 主要是使用 Map 缓存下来组件，并使用 Set 作为队列记录下缓存下来的组件名
-> 
-> 
+>
+>
 > ### render 核心代码
 > - 根据组件名与 Set 中判定该组件是否缓存下来，
 > 		- 如果是，则把存储下来的 key 值删除并添加到 Set 最后一位，然后取出 Map 中相应的组件返回。
 > 		- 如果不存在，则把 key 值添加到 Set 最后一位，然后把该组件缓存到 Map 中，并返回该组件。
 > - 若设置最大缓存的值，则把 Set 前面溢出部分 key 削减。
-> 
-> 
+>
+>
 > ### onActivated 和 onDeactived调用
 > 这两块逻辑是在 diff 中，只要注意一个点就是被缓存的组件节点有一个标识
 > ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE，我们在挂载组件的时候和卸载组件的时候判断一下是否有这个标识，有就去调用 onActiveated 或 onDeactived
@@ -4837,21 +4899,21 @@ export default defineComponent({
 > const key = vnode.key == null ? comp : vnode.key
 > pendingCacheKey = key
 > const cachedVNode = cache.get(key)
-> 
+>
 > // tips： keys 仅仅是用于收集组件的 key 组件实际收集在cache中
 > if (cachedVNode) { // 节点存在缓存中
 >   // copy over mounted state（复制过去的状态）
 >   vnode.el = cachedVNode.el
 >   vnode.component = cachedVNode.component
-> 
+>
 >   // 将节点放到队尾
->   keys.delete(key) 
+>   keys.delete(key)
 >   keys.add(key)
 > } else { // 不存在
 >   keys.add(key) // 加入缓存队列
 >   // prune oldest entry
 >   // 超过最大值了，将最久没有使用的组件删除，也就是队头组件
->   if (max && keys.size > parseInt(max as string, 10)) { 
+>   if (max && keys.size > parseInt(max as string, 10)) {
 >     pruneCacheEntry(keys.values().next().value)
 >   }
 > }
@@ -4860,13 +4922,13 @@ export default defineComponent({
 > #### onActivated 和 onDeactived调用
 >
 > ```ts
-> // core/package/runtime-core/src/renderer 
-> 
+> // core/package/runtime-core/src/renderer
+>
 > if (shapeFlag & ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE) {
 >   ;(parentComponent!.ctx as KeepAliveContext).deactivate(vnode)
 >   return
 > }
-> 
+>
 > if (
 >   initialVNode.shapeFlag & ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE ||
 >   (parent &&
@@ -4895,12 +4957,12 @@ export default defineComponent({
 >      <slot v-if="dialogVisible"></slot>
 >   </div>
 > </template>
-> 
+>
 > <script setup lang="ts">
 >   import { useLockscreen } from 'element-plus'
 >   import { computed, defineProps, defineEmits } from 'vue'
 >   import useHistoryPopup from './useHistoryPopup'
-> 
+>
 >   const props = defineProps({
 >       modelValue: {
 >          type: Boolean,
@@ -4927,7 +4989,7 @@ export default defineComponent({
 >   const emit = defineEmits(
 >       ['update:modelValue', 'autoOpen', 'autoClose']
 >   )
-> 
+>
 >   const dialogVisible = computed<boolean>({ // 控制弹窗显示
 >       get () {
 >          return props.modelValue
@@ -4936,9 +4998,9 @@ export default defineComponent({
 >          emit('update:modelValue', val)
 >       }
 >   })
-> 
+>
 >   useLockscreen(dialogVisible)
-> 
+>
 >   useHistoryPopup({
 >       history: computed(() => props.history),
 >       auto: props.auto,
@@ -4947,7 +5009,7 @@ export default defineComponent({
 >       onAutoClose: () => emit('autoClose')
 >   })
 > </script>
-> 
+>
 > <style lang='less'>
 >   .popup-page {
 >       position: fixed;
@@ -4959,18 +5021,18 @@ export default defineComponent({
 >       overflow: auto;
 >       padding: 10px;
 >       background: #fff;
->   
+>
 >       &.hidden {
 >          display: none;
 >       }
 >   }
 > </style>
 > ```
-> 
+>
 > ```vue
 > <!-- 弹窗组件调用 -->
-> <popup-page 
->     v-model="visible" 
+> <popup-page
+>     v-model="visible"
 >     full
 >     :history="{ id }">
 >   	<Detail />
@@ -4994,7 +5056,7 @@ export default defineComponent({
 >     ]
 > }
 > ```
-> 
+>
 > ```vue
 > <template>
 >   <el-table v-loading="loading" :data="tableData" border style="width: 100%; margin-top: 30px;">
@@ -5013,11 +5075,11 @@ export default defineComponent({
 >       layout="total, prev, pager, next"
 >       :total="list.length"
 >   />
->   
+>
 >   <!-- 详情页 -->
 >   <router-view class="popyp-page"></router-view>
 > </template>
-> 
+>
 > <style lang='less' scoped>
 > .popyp-page {
 >     position: fixed;
@@ -5031,7 +5093,7 @@ export default defineComponent({
 > }
 > </style>
 > ```
-> 
+>
 
 ### 全局后置守卫：loadingBar组件（加载路由页面未完成时的加载条）
 
@@ -5042,7 +5104,7 @@ export default defineComponent({
 >      <div ref="bar" class="bar"></div>
 >      </div>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 >     import { ref, onMounted } from 'vue'
 >     let speed = ref<number>(1)
@@ -5056,14 +5118,14 @@ export default defineComponent({
 >            speed.value += 1;
 >            dom.style.width = speed.value + '%'
 >            // 如果不命名函数为fn，则函数只走一次，而命名函数后，可以对其进行递归使用
->            timer.value = window.requestAnimationFrame(fn) 
+>            timer.value = window.requestAnimationFrame(fn)
 >          } else {
 >            speed.value = 1;
 >            window.cancelAnimationFrame(timer.value) // 清除动画
 >          }
 >        })
 >     }
-> 
+>
 >     const endLoading = () => {
 >        let dom = bar.value as HTMLElement;
 >        setTimeout(() => {
@@ -5073,13 +5135,13 @@ export default defineComponent({
 >          })
 >        }, 500);
 >     };
-> 
+>
 >     defineExpose({
 >        startLoading,
 >        endLoading,
 >     })
 > </script>
-> 
+>
 > <style scoped lang="less">
 >     .wraps {
 >        position: fixed;
@@ -5103,11 +5165,11 @@ export default defineComponent({
 > const Vnode = createVNode(loadingBar) // 因为无法直接使用该组件，所以需要调用createVNode()函数
 > render(Vnode, document.body)
 > console.log(Vnode);
-> 
+>
 > router.beforeEach((to, from, next) => {
 >      Vnode.component?.exposed?.startLoading()
 > })
-> 
+>
 > router.afterEach((to, from) => {
 >      Vnode.component?.exposed?.endLoading()
 > })
@@ -5118,7 +5180,7 @@ export default defineComponent({
 > ```ts
 > /* router/index.ts */
 > import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-> 
+>
 > // 如果不使用TS扩展 将会是unknow 类型
 > declare module 'vue-router' {
 >     interface RouteMeta {
@@ -5126,11 +5188,11 @@ export default defineComponent({
 >          transition?:string,
 > 	};
 > };
-> 
+>
 > const routes: Array<RouteRecordRaw> = [
->     { 
->        path: '/', 
->        name: '/', 
+>     {
+>        path: '/',
+>        name: '/',
 >        compoment: () => import('@/pages/index/index.vue'),
 >        transition:"animate__bounceIn",
 >     },
@@ -5143,17 +5205,17 @@ export default defineComponent({
 >      }
 >     },
 > ]
-> 
+>
 > const router = createRouter({
 >     history: createWebHistory(import.meta.env.BASE_URL),
 >     routes,
 > })
-> 
+>
 > router.beforeEach((to, from, next) => {
 >     document.title = to.meta.title; // 不使用TS扩展，这里将会得到 unkonw 类型
 >     next();
 > })
-> 
+>
 > export default router;
 > ```
 
@@ -5170,13 +5232,13 @@ export default defineComponent({
 >   ],
 >   // 在页面回退后，回调所设定的页面位置（如回到原先的最底部，不设置的话，一般会回退到上一层页面的顶部）
 >   scrollBehavior(to, from, savedPosition) {
->     // 以前 { x: 10, y: 10 }     
+>     // 以前 { x: 10, y: 10 }
 >     // 现在 { left: 10, top: 10  }
 >     if(savedPosition) { return savedPosition }
 >     else { return { top: 0 } }
 >   },
 > });
-> 
+>
 > // 使用命令导航至404页面
 > router.resolve({
 >   name: 'not-found',
@@ -5184,13 +5246,13 @@ export default defineComponent({
 >     pathMatch: ['not', 'found']
 >   }
 > }).href // notFound
-> 
+>
 > router.addRoute({
 >   path: '/about',
 >   name: 'about',
 >   component: () => import('@/pages/about/index.vue')
 > })
-> 
+>
 > /* 动态添加子路由 */
 > router.addRoute('about', {
 >   path: '/about/info',
@@ -5199,7 +5261,7 @@ export default defineComponent({
 >     render() { return h('div', 'info page') }
 >   },
 > })
-> 
+>
 > export default router;
 > ```
 >
@@ -5208,7 +5270,7 @@ export default defineComponent({
 >   import { useRouter, useRoute } from 'vue-router';
 >   const router = useRouter();
 >   const route = useRoute();
-> 
+>
 >   // 监听路由的变化
 >   watch(
 >     () => route.query,
@@ -5216,7 +5278,7 @@ export default defineComponent({
 >       console.log(query);
 >     }
 >   )
-> 
+>
 >   // 路由守卫
 >   onBeforeRouteLeave((to, from) => {
 >     const answer = window.comfirm('你确定要离开当前页面吗')
@@ -5242,7 +5304,7 @@ export default defineComponent({
 >     setup(props) {
 >       // 获取RouterLink内部属性和方法
 >       const { route, href, isActive, isExactActive, navigate } = useLink(props);
-> 
+>
 >       return { route, isActive, navigate }
 >     }
 >   }
@@ -5287,10 +5349,10 @@ export default defineComponent({
 >        initRouter();
 >    } else {
 >        ElMessage.error('请输入完整');
->    }	
+>    }
 > })
-> }  
-> 
+> }
+>
 > const initRouter = async () => {
 >    const result = await axios.get('http://localhost:9999/login', { params: formInline });
 >    result.data.route.forEach((v: any) => {
@@ -5311,9 +5373,9 @@ export default defineComponent({
 > ```ts
 > /* 后端代码 Node express */
 > import express, { Express, Request, Response } from 'express'
-> 
+>
 > const app: Express = express()
-> 
+>
 > app.get('/login', (req: Request, res: Response) => {
 >   res.header("Access-Control-Allow-Origin", "*");
 >   if (req.query.user == 'admin' && req.query.password == '123456') {
@@ -5338,7 +5400,7 @@ export default defineComponent({
 >      res.json({ code:400, mesage:"账号密码错误" })
 >   }
 >  })
-> 
+>
 > app.listen(9999, () => { console.log('http://localhost:9999'); })
 > ```
 
@@ -5348,13 +5410,13 @@ export default defineComponent({
 > <template>
 > <p @click="add">{{ store.state.count }}</p>
 > </template>
-> 
+>
 >   <script setup>
 >     import { useStore } from 'vuex'
-> 
+>
 >     const store = useStore();
->   const add = () => { 
->       store.commit('add') 
+>   const add = () => {
+>       store.commit('add')
 >      }
 >    </script>
 > ```
@@ -5364,7 +5426,7 @@ export default defineComponent({
 > ```css
 > # 命名空间：避免命名重复问题
 > 在模块中添加 namespaced: true 属性，防止该命名的空间被重复
-> 
+>
 > # 调用方式
 >   - state：			const userInfo = store.state.user.userInfo
 >   - mutations：	store.commit('user/setUser', 'user的code')
@@ -5377,7 +5439,7 @@ export default defineComponent({
 > import { createApp } from 'vue'
 > import App from './App.vue'
 > import store from "@/store";
-> 
+>
 > const app=createApp(App)
 > app.use(store)
 > app.mount('#app')
@@ -5388,7 +5450,7 @@ export default defineComponent({
 > import {createStore} from 'vuex' // 引入Vuex
 > import school from './modules/school'
 > import student from './modules/student'
-> 
+>
 > export default createStore({
 >   modules:{
 >     school,
@@ -5396,7 +5458,7 @@ export default defineComponent({
 >   }
 > })
 > ```
-> 
+>
 >```js
 > // store/modules/student.js
 > const student = {
@@ -5424,7 +5486,7 @@ export default defineComponent({
 > }
 > export default student
 > ```
-> 
+>
 >```js
 > // store/modules/school.js
 > const school = {
@@ -5447,17 +5509,17 @@ export default defineComponent({
 > }
 > export default school
 > ```
-> 
+>
 > ```vue
 > <template>
 >   <button @click="changeStudent">修改学生信息</button>
 >  <button @click="changeStudentAsyn">异步修改学生信息</button>
 > </template>
-> 
+>
 > <script setup>
 >   import {reactive} from "vue";
 >   import { useStore } from "vuex";
-> 
+>
 >   const store = useStore()
 >   const student  =reactive({
 >     name:'张三',
@@ -5478,19 +5540,19 @@ export default defineComponent({
 >   }
 > </script>
 > ```
-> 
+>
 > ```vue
 > <template>
 >   <button @click="changeSchool">修改学校信息</button>
 >   <button @click="changeSchoolAsyn">异步修改学校信息</button>
 > </template>
-> 
+>
 > <script setup>
 >   import {reactive} from "vue";
 >   import {useStore} from "vuex";
-> 
+>
 >   const store=useStore()
-> 
+>
 >   const school=reactive({
 >     schoolName:'学校',
 >     level:'一级'
@@ -5510,7 +5572,7 @@ export default defineComponent({
 >   }
 > </script>
 > ```
-> 
+>
 > ```vue
 > <template>
 >   <h1>学生信息</h1>
@@ -5520,11 +5582,11 @@ export default defineComponent({
 >   <h1>学校信息</h1>
 >   <h2>{{school.schoolName}}===={{school.level}}</h2>
 > </template>
-> 
+>
 > <script setup>
 >   import {useStore} from "vuex";
 >   import {computed} from "vue";
-> 
+>
 >   const store=useStore()
 >   const school=computed(()=>store.state.school.school)
 >   const student=computed(()=>store.state.student.student)
@@ -5543,22 +5605,22 @@ export default defineComponent({
 >   - 代码扁平化没有模块嵌套，只有 store 的概念，store 之间可以自由使用，每一个store都是独立的
 >   - 无需手动添加 store，store 一旦创建便会自动添加；
 >   - 支持Vue3 和 Vue2
-> 
-> 
+>
+>
 > # 安装 Pinia
 > yarn add pinia   # 或 npm install pinia
-> 
-> 
+>
+>
 > # 引入注册 Vue3
 >     import { createApp } from 'vue'
 >     import App from './App.vue'
 >     import {createPinia} from 'pinia'
-> 
+>
 >     const store = createPinia()
 >     const app = createApp(App)
 >     app.use(store).mount('#app')
-> 
-> 
+>
+>
 > # 引入注册 Vue2
 >     import { createPinia, PiniaVuePlugin } from 'pinia'
 >     Vue.use(PiniaVuePlugin)
@@ -5567,23 +5629,23 @@ export default defineComponent({
 >       el: '#app',
 >       pinia,
 >     })
-> 
-> 
-> 
+>
+>
+>
 > # Pinia 属性介绍
 > 1. state：是一个函数，返回一个对象
 > 	- State 是允许直接修改值的 例如current++
 > 	- 在他的实例上有$patch方法可以批量修改多个值
 > 	- 推荐使用函数形式$patch(state => {}) 可以自定义修改逻辑
 > 	- $state您可以通过将store的属性设置为新对象来替换store的整个状态（缺点是必须修改整个对象的所有属性）
-> 
+>
 > 2. actions：可以操作异步 和 同步提交state
 > 	- 在actions 中直接使用this就可以指到state里面的值
-> 
+>
 > 3. getters：主要作用类似于computed 数据修饰并且有缓存
 > 	- 使用箭头函数不能使用this this指向已经改变指向undefined 修改值请用state
 > 	- 普通函数形式可以使用this
-> 
+>
 > # 解构 store
 > - 在 Pinia 是不允许直接解构，否则会失去响应式
 > - 解决方案可以使用 storeToRefs
@@ -5593,11 +5655,11 @@ export default defineComponent({
 >     import { storeToRefs } from 'pinia'
 >     const Test = useTestStore()
 >     const { current, name } = storeToRefs(Test)
-> 
-> 
+>
+>
 > # $reset：重置store到他的初始状态
 > 	Test.$reset();
-> 
+>
 > # $subscribe：订阅state的改变
 > 	- 类似于Vuex 的abscribe  只要有state 的变化就会走这个函数
 > 	- 如果你的组件卸载之后还想继续调用请设置第二个参数
@@ -5605,11 +5667,11 @@ export default defineComponent({
 >       Test.$subscribe((args,state)=>{
 >          console.log(args,state);
 >       },{ detached:true })
-> 
+>
 > # $onAction：订阅Actions的调用（只要有actions被调用就会走这个函数）
 > 		Test.$onAction((args)=>{ console.log(args); })
-> 
-> 
+>
+>
 > # Pinia 插件
 > 	- pinia 和 vuex 都有一个通病 页面刷新状态会丢失， 可以写一个pinia 插件缓存他的值
 > ```
@@ -5623,32 +5685,32 @@ export default defineComponent({
 > import { createApp, toRaw } from 'vue'
 > import App from './App'
 > import { createPinia, PiniaPluginContext } from 'pinia'
-> 
+>
 > //定义兜底变量
 > const __piniaKey = '__PINIAKEY__'
-> 
+>
 > //定义入参类型
 > type Options = {
 >   	key?:string
 > }
-> 
+>
 > //将数据存在本地
 > const setStorage = (key: string, value: any): void => {
 >   	localStorage.setItem(key, JSON.stringify(value))
 > }
-> 
+>
 > //存缓存中读取
-> const getStorage = (key: string) => 
+> const getStorage = (key: string) =>
 > 	(localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key) as string) : {})
-> 
-> 
+>
+>
 > //利用函数柯里化接受用户入参
 > const piniaPlugin = (options: Options) => {
 >   	//将函数返回给pinia  让pinia  调用 注入 context
 >     return (context: PiniaPluginContext) => {
 >        const { store } = context;
 >        const data = getStorage(`${options?.key ?? __piniaKey}-${store.$id}`);
-> 
+>
 >        store.$subscribe(() => {
 >            setStorage(`${options?.key ?? __piniaKey}-${store.$id}`, toRaw(store.$state));
 >        })
@@ -5656,10 +5718,10 @@ export default defineComponent({
 >        return { ...data }
 > 	}
 > }
-> 
+>
 > //初始化pinia
 > const pinia = createPinia()
-> 
+>
 > //注册pinia 插件
 > pinia.use(piniaPlugin({
 > 	key: "pinia"
@@ -5675,12 +5737,12 @@ export default defineComponent({
 >const enum Names {
 >    Test = 'TEST',
 >}
->  
+>
 >  type Result = {
 >      name: string
 >      isChu: boolean
 >}
->  
+>
 >    const Login = (): Promise<Result> => {
 >       return new Promise((resolve) => {
 >         setTimeout(() => {
@@ -5730,15 +5792,15 @@ export default defineComponent({
 ><script setup lang='ts'>
 >import { useTestStore } from './store'
 >    const Test = useTestStore()
->    
+>
 >// 单个修改
->    const Add = () => { Test.current++ }  
->    
+>    const Add = () => { Test.current++ }
+>
 >// 批量修改
 >    const update = () => {
 >       Test.$patch({ current:200, name:300 })
 >     }
->    
+>
 >// 批量修改（函数形式：推荐使用）
 >    const updateFn = () => {
 >       Test.$patch((state)=>{
@@ -5746,10 +5808,10 @@ export default defineComponent({
 >           state.age = 40
 >        })
 >     }
->    
+>
 >// $store 修改所有属性
 >     const updateAll = () => {
->        Test.$state = { current:10, age:30 }    
+>        Test.$state = { current:10, age:30 }
 >     }
 >    </script>
 >```
@@ -5765,9 +5827,9 @@ export default defineComponent({
 ><script setup lang='ts'>
 >import {useTestStore} from './store'
 >   const Test = useTestStore()
->   
->const Add = () => { Test.setCurrent() }  
->  const AddUser = () => { Test.getLoginInfo() } 
+>
+>const Add = () => { Test.setCurrent() }
+>  const AddUser = () => { Test.getLoginInfo() }
 >  const resetUser = () => { Test.$reset() }
 >  </script>
 >```
@@ -5780,14 +5842,14 @@ export default defineComponent({
 > 	- 服务端渲染 SSR
 > 	- 首屏渲染时间长
 > 	- 预渲染 Prerendering。适用于静态页面站点：如 html 格式页面
-> 
-> 
+>
+>
 > # Nuxt 优点
 > 	- 静态站点
 > 	- 动态渲染
 > 	- 简化配置
-> 
-> 
+>
+>
 > # 项目安装依赖 && 初运行
 >   npm i -g nodemon
 >   npm init -y
@@ -5795,14 +5857,14 @@ export default defineComponent({
 >   npm i express
 >   修改package.json文件的scripts属性的dev为："scripts": { "dev": "nodemon ./server.js" },
 >   通过 npm run dev 来运行项目
-> 
-> 
+>
+>
 > # Nuxt 框架安装
 > npx create-nuxt-app projectName      # 或 vue init nuxt-conmuunity/starter-template projctName
-> 
+>
 > # 开发
 > npm run dev   npm run build    npm run start
-> 
+>
 > # 生命周期
 > nuxtServerInit
 > ````
@@ -5821,7 +5883,7 @@ export default defineComponent({
 > 	*/
 > const Vue = require('vue');
 > const server = require('express')();
-> 
+>
 > /* express 响应 */
 > server.get('/', (req, res) => {
 >   /* 创建一个 Vue 实例 */
@@ -5833,10 +5895,10 @@ export default defineComponent({
 >       </div>
 >     `
 >   })
-> 
+>
 >   /* 创建一个 renderer */
 >   const renderer = require('vue-server-renderer').createRenderer();
-> 
+>
 >   /* 将 Vue 实例渲染为 HTML */
 >   renderer.renderToString(app).then(html => {
 >     res.send(`
@@ -5857,7 +5919,7 @@ export default defineComponent({
 >     console.log(err);
 >   })
 > })
-> 
+>
 > server.listen(3008)
 > ```
 >
@@ -5891,7 +5953,7 @@ export default defineComponent({
     - xAxis：直角坐标系 grid 中的 x 轴
       	- boundaryGap: 坐标轴两边留白策略。当值未 true 时刻度只是作为分隔线，标签和数据点都会在两个刻度之间的带(band)中间。
     - yAxis：直角坐标系 grid 中的 y 轴
-    - grid：直角坐标系内绘图网格。 
+    - grid：直角坐标系内绘图网格。
     - title：标题组件
     - tooltip：提示框组件，用于配置鼠标滑过或点击图标时的显示框
     - legend：图例组件(通用配置），用于筛选系列，需和series配合使用
@@ -6147,7 +6209,7 @@ window.onresize = function () {
 - 说明文档：https://godb-js.github.io/li97cu.html
 - 项目GitHub：https://github.com/chenstarx/GoDB.js
 - 安装：`pnpm i godb`
-- 是对 IndexedDB 的封装库 
+- 是对 IndexedDB 的封装库
 
 
 ## 方法
@@ -6191,7 +6253,7 @@ window.onresize = function () {
 		使用上更灵活，因为判断函数由用户决定
 - `get()` 使用数据库索引进行搜索
 		性能更高，尤其是在大量数据中进行搜索的时候
-		
+
 ## Table.put(data) 用来更新数据
 - data 是一个对象，里面必须有 id 这个 key
 - 如果没有 id，那么表现会和 Table.add(data) 一致
@@ -6265,7 +6327,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 
 > ```bash
 > # 查看接口软件： apifox
-> 
+>
 > # 接口 API
 > npm install ts-node -g
 > npm init -y
@@ -6273,10 +6335,10 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > npm install express -S
 > npm install @types/express -D
 > npm install axios -S
-> 
-> 
-> # 使用api 
-> 
+>
+>
+> # 使用api
+>
 > ```
 >
 > #### 后台接口
@@ -6286,13 +6348,13 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > import express, { Express, Router, Request, Response } from 'express'
 > const app:Express = express();
 > const router:Router = express.Router();
-> 
+>
 > app.use('/api', router);
-> 
+>
 > router.get('/list', async (req:Request, res:Response) => {
 > const result = await axios.post('http://api.inews.qq.com/newsqa/v1/query');
 > })
-> 
+>
 > app.listen(3000, () => {
 > console.log('success server 3000');
 > })
@@ -6312,14 +6374,14 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > ````js
 > import Vue from 'vue'
 > import axios from 'axios'
-> 
+>
 > const service = axios.create({
 >   // baseURL: 'http://172.31.132.8:8011/api',
 >   baseURL: '',
 >   timeout: 6000,
 >   crossDomain: true //允许跨域
 > })
-> 
+>
 > // request拦截器,在请求之前做一些处理
 > service.interceptors.request.use(
 >   config => {
@@ -6335,7 +6397,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >     return Promise.reject(error);
 >   }
 > );
-> 
+>
 > //配置成功后的拦截器
 > service.interceptors.response.use(res => {
 >   console.log(res, '相应拦截了')
@@ -6370,7 +6432,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >   }
 >   return Promise.reject(error)
 > })
-> 
+>
 > // 在main.js中放入这段自定义适配器的代码，就可以实现uniapp的app和小程序开发中能使用axios进行跨域网络请求，并支持携带cookie
 > /* axios.defaults.adapter = function(config) {
 > 	return new Promise((resolve, reject) => {
@@ -6395,18 +6457,18 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > 					header: response.header,
 > 					config: config
 > 				};
-> 
+>
 > 				settle(resolve, reject, response);
 > 			}
 > 		})
 > 	})
 > } */
-> 
+>
 > export default service
-> 
+>
 > /***
 >  * npm i axios
-> 
+>
 >   const res = await this.$axios({
 >     method: 'GET',
 >     url: '/nav',
@@ -6427,16 +6489,16 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > ```bash
 > # 创建vite：
 > yarn create vite   # 或 npm init vite@latest
-> 
+>
 > # 使用vite安装项目：
 > npm init vite-app project-name
-> 
+>
 > # 安装依赖包：
 > yarn
-> 
+>
 > # 启动：
 > npm run dev
-> 
+>
 > # 安装mockjs：
 > npm i mockjs -S
 > npm i vite-plugin-mock cross-env -D
@@ -6450,13 +6512,13 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > PostCSS 配置文件 postcss.config.js，新增 tailwindcss 插件。
 > TaiWindCss插件需要一份配置文件，比如:tailwind.config.js。
 > PostCSS - 是一个用 JavaScript 工具和插件来转换 CSS 代码的工具 | PostCSS 中文网
-> 
+>
 > postCss 功能介绍
 > 1.增强代码的可读性 （利用从 Can I Use 网站获取的数据为 CSS 规则添加特定厂商的前缀。 Autoprefixer 自动获取浏览器的流行度和能够支持的属性，并根据这些数据帮你自动为 CSS 规则添加前缀。）
 > 2.将未来的 CSS 特性带到今天！（PostCSS Preset Env 帮你将最新的 CSS 语法转换成大多数浏览器都能理解的语法，并根据你的目标浏览器或运行时环境来确定你需要的 polyfills，此功能基于 cssdb 实现。）
 > 3.终结全局 CSS（CSS 模块 能让你你永远不用担心命名太大众化而造成冲突，只要用最有意义的名字就行了。）
 > .  4.避免 CSS 代码中的错误（通过使用 stylelint 强化一致性约束并避免样式表中的错误。stylelint 是一个现代化 CSS 代码检查工具。它支持最新的 CSS 语法，也包括类似 CSS 的语法，例如 SCSS 。）
-> 
+>
 > postCss 处理 tailWind Css 大致流程
 > 将CSS解析成抽象语法树(AST树)
 > 读取插件配置，根据配置文件，生成新的抽象语法树
@@ -6468,17 +6530,17 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > ```css
 > # 安装使用
 > 1. 官网：https://www.tailwindcss.cn/docs/responsive-design
-> 
+>
 > 2. 初始化项目
 > 		npm init vue@latest
-> 
+>
 > 3. 安装 Tailwind 以及其它依赖项
 > 		npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
-> 
+>
 >  4. 生成配置文件
 >  		npx tailwindcss init -p
-> 
->  5. 修改配置文件 tailwind.config.js   
+>
+>  5. 修改配置文件 tailwind.config.js
 >     module.exports = {
 >       purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'], // 2.6版本
 >       content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'], // 3.0版本
@@ -6487,17 +6549,17 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >       },
 >       plugins: [],
 >     }
-> 
-> 
+>
+>
 > 6. 创建一个index.css
 >       @tailwind base;
 >       @tailwind components;
 >       @tailwind utilities;
-> 
-> 
+>
+>
 > 7.  在main.ts 引入
 > 		import './index.css'
-> 
+>
 > 8. npm run dev运行项目即可
 > ```
 
@@ -6507,39 +6569,39 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > # 什么是 CSS 原子化
 > 	https://zhuanlan.zhihu.com/p/425814828
 > 	相对于 TailWind CSS 更快速
-> 
+>
 > # CSS原子化的优缺点
 > 1.减少了css体积，提高了css复用
 > 2.减少起名的复杂度
 > 3.增加了记忆成本：将css拆分为原子后，势必要记住一些class才能书写，哪怕tailwindcss提供了完善的工具链， background，也要记住开头是bg
-> 
+>
 > # 装入 unocss 依赖
 > 	npm i -D unocss
-> 
+>
 > # presetIcons Icon图标预设
 > 图标集合安装：npm i -D @iconify-json/ic
-> 
+>
 > 首先我们去icones官网[https://icones.js.org/]（方便浏览和使用iconify）浏览我们需要的icon，比如这里我用到了Google Material Icons图标集里面的baseline-add-circle图标
 > <div  class="i-ic-baseline-backspace text-3xl bg-green-500" />
-> 
+>
 > 2.presetAttributify 属性化模式支持
 > 属性语义化 无须class
 > <div font="black">
 >     btn
 > </div>
-> 
-> 
+>
+>
 > 3.presetUno 工具类预设
-> 
+>
 > 默认的 @unocss/preset-uno 预设（实验阶段）是一系列流行的原子化框架的 通用超集，包括了 Tailwind CSS，Windi CSS，Bootstrap，Tachyons 等。
-> 
+>
 > 例如，ml-3（Tailwind），ms-2（Bootstrap），ma4（Tachyons），mt-10px（Windi CSS）均会生效。
 > ```
 >
 > ```ts
 > // vite.config.ts
 > import unocss from 'unocss/vite'
-> 
+>
 > plugins: [vue(), vueJsx(), unocss({
 >   rules: [	// 转换规则
 >      [/^m-(\d+)$/, ([, d]) => ({ margin: `${Number(d) * 10}px` })],
@@ -6564,7 +6626,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > ```css
 > # 安装依赖
 > 	npm install postcss-px-to-viewport -D
-> 
+>
 > # 配置postcss（vite中已经内联了postcss，所以并不需要额外的创建 postcss.config.js文件）
 > ```
 >
@@ -6575,7 +6637,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > import vue from '@vitejs/plugin-vue'
 > import vueJsx from '@vitejs/plugin-vue-jsx'
 > import postcsspxtoviewport from "postcss-px-to-viewport" //插件
-> 
+>
 > export default defineConfig({
 >   plugins: [vue(), vueJsx()],
 >   css: {
@@ -6608,7 +6670,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > ```ts
 > // postcss-px-to-viewport.d.ts （与vite.ts同级别）
 > declare module 'postcss-px-to-viewport' {
-> 
+>
 >    type Options = {
 >        unitToConvert: 'px' | 'rem' | 'cm' | 'em',
 >        viewportWidth: number,
@@ -6625,7 +6687,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >        landscapeUnit: string,
 >        landscapeWidth: number
 >    }
-> 
+>
 >    export default function(options: Partial<Options>):any
 > }
 > ```
@@ -6668,7 +6730,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >
 > 2.安卓编辑器下载地址：https://developer.android.com/
 >
-> 一直next 就行了 然后磁盘选一下 安装就可以了 
+> 一直next 就行了 然后磁盘选一下 安装就可以了
 >
 > 装完启动需要还需要安装sdk 然后就可以打开了
 >
@@ -6680,7 +6742,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >
 > ![img](./image/d261bade1d2f4ebebc63d1f6d9e6bef5.png)
 >
-> 等待加载完成后，打开之后可以创建一个虚拟机 
+> 等待加载完成后，打开之后可以创建一个虚拟机
 >
 > ![img](./image/3dd87412d79041ab8516ecbd104396ab.png)
 >
@@ -6709,7 +6771,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >  android:layout_width="match_parent"
 >  android:orientation="vertical"
 >  android:layout_height="match_parent">
-> 
+>
 >  <WebView
 >      android:id="@+id/web_view"
 >      android:layout_width="match_parent"
@@ -6717,7 +6779,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > </LinearLayout  >
 > ```
 >
-> 其实就是类似于我们前端的display felx  
+> 其实就是类似于我们前端的display felx
 >
 > ![img](./image/c91b046eb9c34db9ad5c32dd2326e6ea.png)
 >
@@ -6731,31 +6793,31 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >
 > ```java
 > package com.example.myapplication;
-> 
+>
 > import androidx.appcompat.app.AppCompatActivity;
-> 
+>
 > import android.os.Bundle;
-> 
+>
 > import android.webkit.WebView;
-> 
+>
 > import android.app.Activity;
-> 
+>
 > import android.webkit.WebViewClient;
-> 
+>
 > public class MainActivity extends Activity {
-> 
+>
 >  @Override
 >  protected void onCreate(Bundle savedInstanceState) {
 >      super.onCreate(savedInstanceState);
 >      //设置一个Activity的显示界面，
 >      setContentView(R.layout.activity_main);
-> 
+>
 >      WebView view = (WebView)findViewById(R.id.web_view);
 >      //设置 WebView 属性，能够执行 Javascript 脚本
 >      view.getSettings().setJavaScriptEnabled(true);
 >      //加载需要显示的网页 不能使用局域网地址 只能虚拟机专属地址 http://10.0.2.2 端口是我们vue 项目端口
 >      view.loadUrl("http://10.0.2.2:3000");
-> 
+>
 >      view.setWebViewClient(new WebViewClient());
 >  }
 > }
@@ -6776,7 +6838,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 >  xmlns:tools="http://schemas.android.com/tools"
 >  package="com.example.myapplication">
-> 
+>
 >  <application
 >      android:allowBackup="true"
 >      android:dataExtractionRules="@xml/data_extraction_rules"
@@ -6793,7 +6855,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >          android:exported="true">
 >          <intent-filter>
 >              <action android:name="android.intent.action.MAIN" />
-> 
+>
 >              <category android:name="android.intent.category.LAUNCHER" />
 >          </intent-filter>
 >      </activity>
@@ -6804,7 +6866,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > </manifest>
 > ```
 >
-> ![img](./image/5901aa08c9d04ca488ecb21a68674ad9.png) 
+> ![img](./image/5901aa08c9d04ca488ecb21a68674ad9.png)
 >
 > 你就可以看到我们的项目了
 >
@@ -6820,68 +6882,68 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > # 使用 vite 构建 electron 项目
 >   1. 创建vite项目
 >    npm init vite@latest
-> 
+>
 >   2. 安装electron
 >     npm install electron -D
 >     npm install vite-plugin-electron -D
-> 
+>
 >   3.  根目录新建 electron / index.ts
 >   4. 修改vite.config.ts 配置文件；引入electron插件配置 main 的 entry 对应electron的文件
 >   5. 配置package json：增加main 字段 type 去掉
-> 
+>
 > # 打包 Electron
 >   1. 安装 electron-builder
 >     npm install electron-builder -D
-> 
+>
 >   2. package json 配置 build 修改npm run build命令
 >     "build": "vue-tsc --noEmit && vite build  &&  electron-builder",
-> 
->   3. 执行打包命令 
+>
+>   3. 执行打包命令
 >     npm run build
-> 
-> 
+>
+>
 > # Electron Vscode 输出乱码解决方案
 > 	dev 的时候 加上chcp 65001 输出中文
 > 		 "dev": "chcp 65001 && vite",
-> 
-> 
+>
+>
 > # 渲染进程和主进程通信
 > 	vite.config.ts 需要修改 不然会报一个错Error: Module "path" has been externalized for browser compatibility. Cannot
 > 	只要安装了  vite-plugin-electron 就会带上 vite-plugin-electron-renderer 直接引入用就行
-> 
-> 
+>
+>
 >    1. 渲染进程使用ipcRenderer 发送
 >      import { ipcRenderer } from 'electron'
 >      const open = () => {
 >         ipcRenderer.send('openFlyCar')
 >      }
-> 
+>
 >    2. 主进程使用 ipcMain 接受
 >      ipcMain.on('openFlyCar',()=>{
 >         console.log('收到')
 >     })
-> 
+>
 >   3. 主进程通知渲染进程
 >     const  win = new BrowserWindow(xxxxx)
 >     win!.webContents.send('load', { message: "electron初始化了" })
-> 
+>
 >   4. 渲染进程接受
 >     ipcRenderer.on('load',(_,data)=>{
 >       console.log(data)
 >     })
 > ```
 >
-> #### 配置electron/index.ts 
+> #### 配置electron/index.ts
 >
 > ```ts
 > import { app, BrowserWindow } from 'electron'
 > import path from 'path'
 > //app 控制应用程序的事件生命周期。
 > //BrowserWindow 创建并控制浏览器窗口。
-> 
+>
 > let win: BrowserWindow | null;
 > //定义全局变量获取 窗口实例
-> 
+>
 > const createWindow = () => {
 >     win = new BrowserWindow({
 >         //
@@ -6910,7 +6972,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > import electron from 'vite-plugin-electron'
 > import electronRender from 'vite-plugin-electron-renderer' // 用作渲染进行通信
 > // https://vitejs.dev/config/
-> 
+>
 > export default defineConfig({
 >   plugins: [vue(), electron({
 >     main: {
@@ -7128,7 +7190,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > module.exports = {
 >   presets: [
 >      [
->          "@babel/preset-env", 
+>          "@babel/preset-env",
 >          {
 >            targets: {
 >              node: "current",
@@ -7172,7 +7234,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > "compilerOptions": {
 >   "incremental": true, // TS编译器在第一次编译之后会生成一个存储编译信息的文件，第二次编译会在第一次的基础上进行增量编译，可以提高编译的速度
 >   "tsBuildInfoFile": "./buildFile", // 增量编译文件的存储位置
->   "diagnostics": true, // 打印诊断信息 
+>   "diagnostics": true, // 打印诊断信息
 >   "target": "ES5", // 目标语言的版本
 >   "module": "CommonJS", // 生成代码的模板标准
 >   "outFile": "./app.js", // 将多个相互依赖的文件生成一个文件，可以用在AMD模块中，即开启时应设置"module": "AMD",
@@ -7189,7 +7251,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >   "declarationMap": true, // 为声明文件生成sourceMap
 >   "typeRoots": [], // 声明文件目录，默认时node_modules/@types
 >   "types": [], // 加载的声明文件包
->   "removeComments":true, // 删除注释 
+>   "removeComments":true, // 删除注释
 >   "noEmit": true, // 不输出文件,即编译后不会生成任何js文件
 >   "noEmitOnError": true, // 发送错误时不输出任何文件
 >   "noEmitHelpers": true, // 不生成helper函数，减小体积，需要额外安装，常配合importHelpers一起使用
@@ -7227,7 +7289,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > ```js
 > const path = require("path");
 > const { createMockServer } = require("vite-plugin-mock");
-> 
+>
 > module.exports = {
 >      alias: {
 >        "comps/": path.resolve(__dirname, "src/components"),
@@ -7236,10 +7298,10 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >        "/api": {
 >          target: "http://localhost:3000",
 >          changeOrigin: true,
->          rewrite； path => path.replace(/^\/api/, ""), 
+>          rewrite； path => path.replace(/^\/api/, ""),
 >      },
 > },
-> 
+>
 >      // 数据mock（需要在package.json中修改scripts.dev为 "cross-env NODE_ENV=development vite"）
 >      plugins: [
 >        createMockServe({
@@ -7275,12 +7337,12 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 >
 > ```yml
 > name: 打包应用并上传阿里云
-> 
+>
 > on:
 > 	push:
 > 		branches:
 > 			- master
-> 
+>
 > jobs:
 > 	build:
 > 		# runs-on 指定job任务运行所需要的虚拟环境（必填）
@@ -7290,22 +7352,22 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > 			- name: 迁出代码
 > 				# 使用action库 action/checkout 获取源码
 > 				uses: actions/checkout@master
-> 
+>
 > 			# 安装node10
 > 			- name: 安装node.js
 > 				# 使用action库 actions/setup-node 安装node
 > 				uses: actions/setup-node@v1
 > 				with:
 > 					node-version: 14.0.0
-> 
+>
 > 			# 安装依赖
 > 			- name: 安装依赖
 > 				run: npm install
-> 
+>
 > 			# 打包
 > 			- name: 打包
 > 				run: npm run build
-> 
+>
 > 			# 上传阿里云
 > 			- name: 发布到阿里云
 > 				uses: easingthems/ssh-deploy@v2.1.1
@@ -7333,11 +7395,11 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > ```bash
 > # 登录服务器
 > ssh root@47.98.252.43 # ip换成自己的
-> 
+>
 > # 配置nginx
 > cd /etc/nginx/sites-enabled/
 > vi vue-in-action
-> 
+>
 > 添加如下配置
 > server {
 > 	listen 8080;
@@ -7347,7 +7409,7 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > 		index index.html index.htm;
 > 	}
 > }
-> 
+>
 > # 重启nginx
 > nginx -s reload
 > ```
