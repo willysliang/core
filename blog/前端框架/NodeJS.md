@@ -801,10 +801,11 @@ app.listen(80, () => {
 </html>
 ```
 
-## mongoDB
+
+
+## mongoDB 数据库
 
 ```bash
-## MongoDB 数据库
 Mongoose 是一个对象文档模型（ODM）库，它对 Node 原生 的 MongoDB 模块做了进一步封装，并提供了更多功能。在大多数情况下，它被用来把结构化的模式应用到一个MongoDB集合，并提供了验证和类型转换等好处。
 
 mongoose 中的对象：
@@ -845,7 +846,6 @@ mongoose.model(modelName, schemaObj, collection, skipInit, connection)
   - collection（字符串，可选）：可选的集合名称，如果未提供，则Mongoose将使用模型名称的小写版本。
   - skipInit（布尔值，可选）：如果为true，则不会自动初始化模型，否则会自动初始化。默认为false。
   - connection（Mongoose连接对象，可选）：可选的连接对象，用于指定用于模型的数据库连接。如果未提供，则将使用默认连接。
-
 ```
 
 
@@ -890,56 +890,44 @@ module.exports = function (success = null, error = null) {
 
 ### 删除数据库
 
-```bash
-### 删除库
 在 MongoDB 中，您可以通过切换到该数据库并运行 `db.dropDatabase()` 方法或 `dropDatabase` 命令来删除数据库。
-
-```
 
 #### `db.dropDatabase()` 方法
 
-首先，让我们检查一下我们的数据库列表：
-
 ```bash
+## 首先，检查一下我们的数据库列表
 $ show databases
 # or
 $ show dbs
 # local  0.000GB
 # user   0.000GB
 # test   0.005GB
-```
 
-切换到 `user` 数据库，使用 `db.dropDatabase()` 方法删除当前数据库。
 
-```bash
+
+## 切换到 `user` 数据库，使用 `db.dropDatabase()` 方法删除当前数据库。
 $ use user
 $ db.dropDatabase()
 # { "dropped" : "user", "ok" : 1 }
-```
 
-再次查看数据库列表：
 
-```bash
+
+## 再次查看数据库列表
 $ show databases
 # local  0.000GB
 # test   0.005GB
 ```
 
-可以看到，`user` 数据库已删除
-
 #### `dropDatabase` 命令
 
-您也可以使用 `dropDatabase` 命令来做同样的事情。
+也可以使用 `dropDatabase` 命令来做同样的事情。
 
 ```bash
 $ use test
 $ db.runCommand( { dropDatabase: 1 } )
 # { "dropped" : "test", "ok" : 1 }
-```
 
-我们的数据库列表再次减少：
 
-```bash
 $ show databases
 # local  0.000GB
 ```
@@ -949,6 +937,30 @@ $ show databases
 ### 删除集合
 
 在 MongoDB 中，可以使用 `db.collection.drop()` 方法从数据库中删除集合。如果集合存在，它将返回 `true`，如果它不存在，它将返回 `false`。
+
+```shell
+## 查看数据库有哪些集合
+$ show collections
+# users
+# articles
+# subscribes
+
+
+## 删除 `articles` 集合
+$ db.article.drop()
+# true
+
+
+## 再次查看数据库现在拥有哪些集合
+$ show collections
+# users
+# subscribes
+
+
+## 尝试删除不存在的集合
+$ db.articles.drop()
+# false
+```
 
 
 
@@ -1090,7 +1102,6 @@ doc.testId // 313263686172313263686172
 ### 文档新增
 
 ```bash
-### 文档新增
 - save()：操作的是文档
 
 - create()：操作的是模型
@@ -1098,8 +1109,46 @@ doc.testId // 313263686172313263686172
 - createMany()：创建多个对象
 
 - insertMany()：插入一个对象
-
 ```
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String
+  })
+)
+
+const doc = await User.create({ name: 'O.O' })
+
+console.log(doc instanceof User) // true
+console.log(doc.name) // 'O.O'
+```
+
+`create()` 方法是 `save()` 方法的封装。上述 `create()` 调用相当于： 
+
+```js
+const doc = new User({ name: 'O.O' })
+await doc.save()
+```
+
+使用 `create()` 最常见的原因是，通过传递一个对象数组，您可以通过单个方法调用方便地 `save()` 多个文档
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String
+  })
+)
+
+const docs = await User.create([{ name: 'O.O' }, { name: 'K.O' }])
+console.log(docs[0] instanceof User) // true
+console.log(docs[0].name) // 'O.O'
+console.log(docs[1].name) // 'K.O'
+```
+
+
 
 ### 文档查询
 
@@ -1109,7 +1158,37 @@ doc.testId // 313263686172313263686172
 - findById()：根据id来进行查询
 - findOne()：返回查询到的第一条数据
 
+`Model.find()` 的默认行为是返回模型中的所有文档，因此如果传递的属性都不存在，它将所有文档
+但需要注意的是，不要直接查询字符串 `req.query` 直接传递给 `find` 方法
+```
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String,
+    age: String
+  })
+)
+
+await User.create([
+  { name: 'D.O', age: 20 },
+  { name: 'O.O', age: 19 },
+  { name: 'K.O', age: 18 },
+  { name: 'O.K', age: 17 },
+  { name: 'O.O', age: 22 }
+])
+
+// 空的 filter 表示匹配所有文档
+const filter = {}
+const all = await User.find(filter)
+```
+
+
+
 #### 复杂查询
+
+```bash
 - $where：复杂查询 $where 可以使用任意的 js 作为查询的一部分，包含 JavaScript 表达式的字符串或者函数。
 
 常用的查询条件
@@ -1155,13 +1234,13 @@ stuModel.find({ $where: 'this.grades == this.test' || 'obj.grages == obj.test' }
 stuModel.find({
   $where: () => { return this.grades == this.test || obj.grades === obj.test }
 })
-
 ```
 
-### 文档更新
+
+
+### 文档插入/更新
 
 ```bash
-### 文档更新
 - update()
 		- `Model.update(conditions, doc, [options], [callback])`
 			- conditions：查询条件
@@ -1187,8 +1266,65 @@ stuModel.find({
 
 - fingOneAndUpdate()
 - findByIdAndUpdate()
-
 ```
+
+**插入文档**
+
+```js
+const res = await Character.updateOne(
+  { name: 'O.O' },
+  { $set: { age: 18 } },
+  { upsert: true } // 将此更新设置为 upsert
+)
+
+// 如果 MongoDB 修改了现有文档，则为 1；如果 MongoDB 插入了新文档，则为 0。
+console.log(res.nModified)
+// 包含插入文档的描述数组，包括所有插入文档的 _id。
+console.log(res.upserted)
+```
+
+**获取更新插入的文档**
+
+```js
+const doc = await Character.findOneAndUpdate(
+  { name: 'O.O' },
+  { $set: { age: 18 } },
+  { upsert: true, new: true }
+)
+
+console.log(doc.name) // O.O
+console.log(doc.age) // 18
+```
+
+**批量插入多个文档**
+
+```js
+const res = await Character.bulkWrite([
+  {
+    updateOne: {
+      filter: { name: 'D.O' },
+      update: { age: 20 },
+      upsert: true
+    }
+  },
+  {
+    updateOne: {
+      filter: { name: 'KAI' },
+      update: { age: 20 },
+      upsert: true
+    }
+  }
+])
+
+// 包含由于 upsert 而插入的文档数
+console.log(res.upsertedCount)
+// 包含已更新的现有文档数。
+console.log(res.modifiedCount)
+```
+
+
+
+
 
 ### 文档删除
 
