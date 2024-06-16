@@ -236,7 +236,7 @@ img {
 #### alt 和 title 的区别
 
 ```bash
-### ait 和 title 的区别
+### alt 和 title 的区别
 - `alt` 属性是当元素不能正常呈现时用作元素内容的替代文本。img 标签是使用 `alt` 属性的最常用标签。当无法加载图像时，浏览器将在其位置显示 `alt` 文本，以便用户了解包含图像的含义。
 - `title` 属性是将鼠标悬停在元素上时看到的工具提示文本，是对图片的描述和进一步的说明。
 
@@ -258,6 +258,38 @@ img:not([alt]), img[alt=''] { outline: 8px solid red; }
 ```
 
 
+
+#### 图片跨域解决方案
+
+方法一：后端传递 base64 字符串
+
+方法二：前端设置 跨域` img.crossOrigin = 'anonymous'` 或者是 `image.setAttribute('crossOrigin', 'anonymous')`
+
+```js
+ let image = new Image()
+  image.setAttribute('crossOrigin', 'anonymous')
+  image.src = url + '?time=' + new Date().valueOf();
+  image.onload = () => {
+    // ... do something
+  }
+  image.onerror = (err) => {
+    console.log(err)
+  };
+```
+
+方法三：Nginx 设置允许跨域
+
+```yml
+location ~* .*\.(gif|jpg|jpeg|png) {
+  add_header Access-Control-Allow-Origin *;
+  add_header Access-Control-Allow-Headers X-Requested-With;
+  add_header Access-Control-Allow-Methods GET,POST,PUT,DELETE,OPTIONS;
+  if ($request_method = 'OPTIONS') {
+  	return 204;
+  }
+  expires 30d;
+}
+```
 
 
 
