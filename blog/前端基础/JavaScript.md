@@ -76,6 +76,8 @@ Description: JavaScript
 - 浏览器缓存：浏览器在用户磁盘上，对最新请求过的文档进行了存储
 - 服务器缓存：将需要频繁访问的Web页面和对象保存在离用户更近的系统中，当再次访问这些对象时加快访问速度。
 
+
+
 ## JS在浏览器的运行机制
 
 ### 进程与线程
@@ -252,24 +254,34 @@ Description: JavaScript
 > 4. '执行所有微任务'(`process.nextTick、promise、MutationObserver`)
 > 5. 当执行完所有微任务后，如有必要，会'渲染页面'
 > 6. 然后开始下一轮`Event Loop`，'执行宏任务的异步代码'，即`setTimeout、setInterval`中的回调事件。
->
->
+> 
+> 
 > #### 宏任务（macrotask）
-> - 在 ECMAScript 中，macrotask 也被称为 task。
+> - 在 ECMAScript 中，macrotask 也被称为 task，发起者为宿主（Node、浏览器）。
 > - 我们可以将每次执行栈执行的代码当做是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行），每一个宏任务会从头到尾执行完毕，不会执行其他。
 > - 由于 'JS引擎线程' 和 'GUI渲染线程' 是互斥关系，浏览器为了能够使 '宏任务' 和 'DOM任务' 有序进行，会在一个 '宏任务' 执行结果后，在下一个 '宏任务' 执行前，'GUI渲染线程' 开始工作，对页面进行渲染。
 > - 执行顺序：'宏任务 -> GUI渲染 -> 宏任务 -> ...'
-> - 常见的宏任务：'主代码块、setTimeout、setInterval、Node的setImmediate()、浏览器的requestAnimationFrame'。
->
->
+> - 常见的宏任务：
+> 		1. script 标签的代码(可以理解为外层同步代码 / 主代码块) 
+> 		2. setTimeout、setInterval
+> 		3. UI rendering/UI事件
+> 		4.  postMessage，MessageChannel
+> 		5. Node的setImmediate，I/O
+> 		6. 浏览器的requestAnimationFrame
+> 
+> 
 > #### 微任务（maicrotask）
-> - ES6新引入Promise标准，同时浏览器实现上多了一个`maicrotask`微任务概念，在ECMAScript中，`maicrotask` 也称为 `jobs`。
+> - 在ECMAScript中，`maicrotask` 也称为 `jobs`，发起者为JS自身发起（JS引擎）。
 > - 当'宏任务'结束后，会执行渲染，然后执行下一个'宏任务'，而'微任务'可以理解成在当前'宏任务'执行后立即执行的任务。
 > - 当一个'宏任务'执行完，会在渲染前，将执行期间所产生的所有'微任务'都执行完。
 > - 执行顺序：'宏任务 -> 微任务 -> GUI渲染 -> 宏任务 -> ...'
-> - 常见微任务：'Promise.then()、catch、Promise.finally、Object.observe、MutationObserver、Node的process.nextTick()'
->
->
+> - 常见微任务：
+> 		1. Promise.then()、Promise.catch、Promise.finally
+> 		2. MutaionObserver
+> 		3. Object.observe（已废弃；Proxy 对象替代）
+> 		4. Node的process.nextTick()
+> 
+> 
 > #### 宏任务微任务注意点
 > - 浏览器会先执行一个宏任务，紧接着执行当前执行栈产生的微任务，再进行渲染，然后再执行下一个宏任务。
 > - 微任务和宏任务不在一个任务队列。
@@ -302,37 +314,52 @@ Description: JavaScript
 >   console.log('promise2')
 > })
 > console.log('script end')
->
+> 
 > /*
 > script start
 > async2 end
 > Promise
 > script end
+> async1 end
 > promise1
 > promise2
-> async1 end
 > setTimeout */
 > ```
 
 ### 完整的事件循环 Event Loop
 
 > ```bash
-> ## 完整的事件循环 Event Loop
+> ### 完整的事件循环 Event Loop
+> 先执行同步代码，遇到异步宏任务则将异步宏任务放入宏任务队列中，遇到异步微任务则将异步微任务放入微任务队列中。
+> 当所有同步代码执行完毕后，再将异步微任务从队列中调入主线程执行，微任务执行完毕后，再将异步宏任务从队列中调入主线程执行，一直循环直至所有任务执行完毕。
+> 
+> 
+> #### 事件循环的简洁版
+> 1. 先执行宏任务的同步代码
+> 2. 再执行所有的微任务
+> 3. 如果可能会渲染页面
+> 4. 再执行宏任务的异步代码
+> 5. 进入下一轮 Tick
+> 
+> 
+> #### EventLoop 详细版
 > 1. 首先，整体的 script 作为第一个宏任务开始执行时，会把所有代码分为 '同步任务、异步任务' 两部分。
 > 2. 同步任务会直接进入主线程依次执行。
-> 3. 异步任务会再分为宏任务和微任务。
-> 	3.1. 宏任务进入到 EventTable 中，并在里面注册回调函数，每当指定的事件完成时，Event Table 会将整个函数移到 Event Queue 中。
-> 	3.2 微任务会进入到另一个 EventTable 中，并在里面注册回调函数，每当指定事件完成时，EventTable 会将整个函数移交到 Event Queue 中。
-> 4. 当主线程内的任务执行完毕，主线程为空时，会检查微任务的 Event Queue，如果有任务，就全部执行，如果没有就执行下一个宏任务。
-> 5. 上述事件过程会不断重复（例如进入下一个 script 标签执行），这就是 Event Loop。
->
->
->
-> ### 关于 Promise
+> 3. 异步任务会再分为异步宏任务和异步微任务。
+> 	3.1 异步宏任务进入到 EventTable 中，并在里面注册回调函数，每当指定的事件完成时，Event Table 会将整个函数移到 Event Queue 中。
+> 	3.2 异步微任务会进入到另一个 EventTable 中，并在里面注册回调函数，每当指定事件完成时，EventTable 会将整个函数移交到 Event Queue 中。
+> 4. 当主线程内的任务执行完毕，主线程为空时，会检查微任务的 Event Queue 是否有任务，有则会执行至微任务队列为空。
+> 5. 如果宿主为浏览器，可能会渲染页面
+> 6. 开始下一轮tick，执行宏任务中的异步代码（setTimeout等回调）
+> 7. 上述事件过程会不断重复（例如进入下一个 script 标签执行），这就是 Event Loop。
+> 
+> 
+> 
+> #### 关于 Promise
 > - 如 `new Promise(() => ()).then()`
 > 		- 前面的 `new Promise()` 这一部分是一个构造函数，这是一个同步任务。
 > 		- 后面的 `.then()` 才是一个异步任务。
->
+> 
 >       new Promise((resolve) => {
 >         console.log(1)
 >         resolve()
@@ -341,14 +368,14 @@ Description: JavaScript
 >       })
 >       console.log(3)
 >       // 会输出：1 3 2
->
->
->
-> ### 关于 async/await 函数
+> 
+> 
+> 
+> #### 关于 async/await 函数
 > - async/await 本质上是基于 Promise 的一些封装，而 Promise 是属于微任务的一种。
 > 		所以在使用 await 关键字与 Promise.then() 效果类似。
 > 		await 关键字之前的代码，相当于 new Promise() 的同步代码，await 以后的代码相当于 Promise.then() 的异步。
->
+> 
 >     setTimeout(() => console.log(1))
 >     async function test() {
 >       console.log(2)
@@ -495,6 +522,8 @@ Description: JavaScript
 > 3. 使用 `fragment`。
 > 4. 对于多次重排的元素，如动画，使用绝对定位脱离文档流，让他的改变不影响到其他元素。
 > ```
+
+
 
 ## 脚本标签 script
 
@@ -1270,20 +1299,20 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 > ```js
 > // 浏览器兼容性写法
 > var EventUtil = {
->   addHandler: function (element, type, handler) {
->     if (element.addEventListener) {
->       element.addEventListener(type, handler, false);
->     } else if (element.attachEvent) {
->       element.attachEvent("on" + type, handler);
->     } else {
->       element["on" + type] = handler;
+>     addHandler: function (element, type, handler) {
+>        if (element.addEventListener) {
+>          element.addEventListener(type, handler, false);
+>        } else if (element.attachEvent) {
+>          element.attachEvent("on" + type, handler);
+>        } else {
+>          element["on" + type] = handler;
+>        }
 >     }
->   }
 > };
 >
 > // 当浏览器窗口被调整到一个新的高度或宽度时，就会触发resize事件
 > EventUtil.addHandler(window, "resize", function () {
->   console.log("Resized");
+>     console.log("Resized");
 > });
 > ```
 >
@@ -1389,8 +1418,6 @@ const handleClick = () => {
   ele.dispatchEvent(MyEvent)
 }
 ```
-
-
 
 
 
@@ -2205,10 +2232,6 @@ scroll-behavior: smooth;
 
 
 
-
-
-
-
 ## BOM
 
 DOM (Browser Object Model) 浏览器对象模型，允许 JavaScript 操作浏览器窗口。
@@ -2460,7 +2483,7 @@ function del() {
 > ```js
 > //设置定时器：
 > var timer = setTimeout(function () {
->    location.href = 'http://www.baidu.com'//location：跳转网页
+>      location.href = 'http://www.baidu.com'//location：跳转网页
 >   }, 5000); 	// 5秒以后跳转
 >
 > //清除定时器：
@@ -2472,8 +2495,8 @@ function del() {
 > ```js
 > // 间隔时间内做
 > var timerId = setInterval(function () {
->   var date = new Date();
->   console.log(date);
+>     var date = new Date();
+>     console.log(date);
 > }, 1000);		//隔1秒做这个实践
 > clearInterval(timerId);
 > ```
@@ -3141,7 +3164,7 @@ startMove(
   document.getElementById('div1'),
   { 'height': 400, "width": 101, "opacity": 30, "left": 100, "top": 200 },
   () => { console.log('链式函数执行完成！')
-});
+        });
 startMove(
   document.getElementById('div4'),
   { "top": 0, "height": 0 },
