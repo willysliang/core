@@ -27,6 +27,8 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年6月17日
+  - feat(vite): [plugin] vitePluginSummary 按文件后缀名对文件分类记录，并统计代码行数
 
 ## 2024年6月6日
   - refactor(base): 重构页面框架布局、自动引入组件
