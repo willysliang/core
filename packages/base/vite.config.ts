@@ -15,6 +15,7 @@ import { mdPlugins } from './config/vite/plugin/mdPlugin'
 import { eslintPlugins } from './config/vite/plugin/eslintPlugins'
 import { buildPlugins } from './config/vite/plugin/buildPlugin'
 import { elementUiPlugins } from './config/vite/plugin/elementUiPlugin'
+import { demoPlugins } from './config/vite/plugin/demoPlugin'
 import { getAllBuildHtml } from './config/vite/utils'
 import { cssConfig } from './config/vite/css'
 import { serverConfig } from './config/vite/server'
@@ -100,6 +101,7 @@ export default defineConfig(({ mode }) => {
       ...eslintPlugins(),
       ...buildPlugins(),
       ...elementUiPlugins(),
+      ...demoPlugins,
       /* 配置 mockjs */
       viteMockServe({
         mockPath: './mock',
