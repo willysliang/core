@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年6月18日
+  - fix(layout): 修复在不显示音乐模块时仍然显示出定义基础地址的页面
+
 ## 2024年6月17日
   - feat(vite): [plugin] vitePluginSummary 按文件后缀名对文件分类记录，并统计代码行数
 
