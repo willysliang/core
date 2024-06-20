@@ -49,7 +49,7 @@ Description: NodeJS
 
 ```cmd
 #下载cnpm	(i是英文install的缩写，-g代表全局安装，-D代表本地安装。全局安装意味着安装后在任何文件夹下都能使用，而本地安装则把东西安装到指定的文件夹，当然使用也只能在这个文件夹下使用)
-npm i cnpm -g	
+npm i cnpm -g
 
 #全局安装webpack（指定版本3.6.0，因为vue cli2依赖该版本）
 npm install webpack@3.6.0 -g
@@ -198,7 +198,7 @@ vi /etc/hosts
 ### NVM
 
 ```bash
-## NVM 
+## NVM
 在开发的工程中，我们可能需要经常切换node版本来应对不同的开发环境，所以需要经常使用不同版本的node
 
 
@@ -225,7 +225,7 @@ brew install nvm
 
 - 安装指定版本
 	nvm install 8.16.0
-	
+
 3、查看所有版本
 nvm ls
 
@@ -295,8 +295,8 @@ nrm test
 保存为index.js
 
 ```js
-exports.sayHello = function(){ 
-  return 'Hello World'; 
+exports.sayHello = function(){
+  return 'Hello World';
 }
 ```
 
@@ -305,27 +305,27 @@ exports.sayHello = function(){
 $ npm init package.json
 
 ```json
-{ 
-    "name": "gp19-npm", 
-    "version": "1.0.1", 
-    "description": "gp19 self module", 
+{
+    "name": "gp19-npm",
+    "version": "1.0.1",
+    "description": "gp19 self module",
     "main": "index.js",
-    "scripts": { 
-        "test": "make test" 
-    }, 
-    "repository": { 
-        "type": "Git", 
-        "url": "git+https://github.com/lurongtao/gp19-npm.git" 
-    }, 
-    "keywords": [ 
-        "demo" 
-    ], 
-    "author": "Felixlu", 
-    "license": "ISC", 
-    "bugs": { 
-        "url": "https://github.com/lurongtao/gp19-npm/issues" 
-    }, 
-    "homepage": "https://github.com/lurongtao/gp19-npm#readme", 
+    "scripts": {
+        "test": "make test"
+    },
+    "repository": {
+        "type": "Git",
+        "url": "git+https://github.com/lurongtao/gp19-npm.git"
+    },
+    "keywords": [
+        "demo"
+    ],
+    "author": "Felixlu",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lurongtao/gp19-npm/issues"
+    },
+    "homepage": "https://github.com/lurongtao/gp19-npm#readme",
 }
 ```
 
@@ -415,7 +415,7 @@ npm install git+ssh://git@github.com:lurongtao/gp-project.git
 // 以下为 pageage.json 文件内容
 
 {
-  "name": "foo", 
+  "name": "foo",
   "version": "1.2.5",
   "scripts": {
     "view": "node view.js"
@@ -489,7 +489,7 @@ console.log(process.env.npm_package_version); // 1.2.5
 `-p`参数用于指定 npx 所要安装的模块。
 
 > ```bash
-> $ npx -p node@0.12.8 node -v 
+> $ npx -p node@0.12.8 node -v
 > v0.12.8
 > ```
 
@@ -539,7 +539,7 @@ npx 还可以执行 GitHub 上面的模块源码。
 > ```bash
 > # 执行 Gist 代码
 > $ npx https://gist.github.com/zkat/4bc19503fe9e9309e2bfaa2c58074d32
-> 
+>
 > # 执行仓库代码
 > $ npx github:piuccio/cowsay hello
 > ```
@@ -549,11 +549,6 @@ npx 还可以执行 GitHub 上面的模块源码。
 
 
 ### FNM
-
-```bash
-## FNM
-
-```
 
 ### FNM的安装
 
@@ -608,7 +603,7 @@ corepack enable
   "args": ["-NoProfile"]
   },
   "Git-Bash": {
-  "path": "D:\\Git\\Git\\bin\\bash.exe",
+  "path": "D:\\Git\\bin\\bash.exe",
   "args": []
   }
 },
@@ -631,16 +626,16 @@ corepack enable
 
 ```bash
 # 在Windows中
-    #node中常用的到的环境变量是NODE_ENV，首先查看是否存在 
-    set NODE_ENV 
+    #node中常用的到的环境变量是NODE_ENV，首先查看是否存在
+    set NODE_ENV
 
-    #如果不存在则添加环境变量 
-    set NODE_ENV=production 
+    #如果不存在则添加环境变量
+    set NODE_ENV=production
 
-    #环境变量追加值 set 变量名=%变量名%;变量内容 
-    set path=%path%;C:\web;C:\Tools 
+    #环境变量追加值 set 变量名=%变量名%;变量内容
+    set path=%path%;C:\web;C:\Tools
 
-    #某些时候需要删除环境变量 
+    #某些时候需要删除环境变量
     set NODE_ENV=
 
 
@@ -718,7 +713,7 @@ CommonJS 规范规定：每个模块内部，module 变量代表当前模块。�
     - 内置模块：require 的是包名。
     - 下载的第三方模块：require 的是包名（会自动在 node_modules 中寻找相应的模块）
     - 自定义模块：require 的是文件路径。文件路径既可以用绝对路径，也可以用相对路径。后缀名 `.js` 可以省略。
-    
+
 - require() 函数的两个作用：
 		- 执行导入的模块中的对象。
 		- 返回导入模块中的接口对象。
@@ -876,14 +871,14 @@ console.log(path.parse(pathStr))
 console.log(path.basename(pathStr)) // index.js
 
 /** 文件的所在目录名称：dirname */
-console.log(path.dirname(pathStr)) // C:\Users\OP0213\Desktop\core 
+console.log(path.dirname(pathStr)) // C:\Users\OP0213\Desktop\core
 
 /** 路径的扩展名：extname */
 console.log(path.extname(pathStr)) // .js
 
 ```
 
-##  文件操作 fs 
+##  文件操作 fs
 
 ```bash
 ## 文件操作 fs
@@ -1641,7 +1636,7 @@ const server = http.createServer((request, response) => {
         const resourcePath = __dirname + pathname
         if (fs.existsSync(resourcePath)) {
             const resource = fs.readFileSync(resourcePath)
-        
+
             // 获取文件的后缀名
             const ext = path.extname(pathname).slice(1)
 
@@ -1707,7 +1702,7 @@ const errorResponse = (response, code) => {
             response.statusCode = 500
             response.end('<h1>500 Internet Server Error</h1>')
     }
-    
+
     return response
 }
 
@@ -2336,7 +2331,7 @@ const doPyt = async () => {
         btn && btn.click()
 
         /* 等待指定的选择器匹配的元素出现在页面中，如果调用此方法时已经有匹配的元素，
-  那么此方法立即返回。如果指定的选择器在超时时间后扔不出现，此方法会报错。 
+  那么此方法立即返回。如果指定的选择器在超时时间后扔不出现，此方法会报错。
   返回: <Promise<ElementHandle>>*/
         await page.waitForSelector(
             "div#content_left > div.result-op.c-container.xpath-log"
