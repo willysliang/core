@@ -1,8 +1,16 @@
 # Changelog
 
-## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-06-07)
+## [v2.0.0](https://github.com/willysliang/core/tree/v2.0.0) (2024-06-20)
 
-[Full Changelog](https://github.com/willysliang/core/compare/v1.1.0...v2.0.0)
+[Full Changelog](https://github.com/willysliang/core/compare/v1.1.1...v2.0.0)
+
+**Merged pull requests:**
+
+- fix\(layout\): 修复在不显示音乐模块时仍然显示出定义基础地址的页面 [\#11](https://github.com/willysliang/core/pull/11) ([willysliang](https://github.com/willysliang))
+
+## [v1.1.1](https://github.com/willysliang/core/tree/v1.1.1) (2024-06-07)
+
+[Full Changelog](https://github.com/willysliang/core/compare/v1.1.0...v1.1.1)
 
 **Merged pull requests:**
 
