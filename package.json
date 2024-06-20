@@ -19,6 +19,7 @@
   "scripts": {
     "dev": "pnpm -F \"@willy/base\" dev",
     "build": "pnpm -F \"@willy/base\" build",
+    "build:preview": "pnpm -F \"@willy/base\" build:staging",
     "server": "pnpm -F \"@willy/server\" start",
     "server:pm2": "pnpm -F \"@willy/server\" pm2",
     "blog:dev": "pnpm -F \"@willy/blog\" dev",
