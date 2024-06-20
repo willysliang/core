@@ -2308,81 +2308,129 @@ generator.next(4); // --> 将结果传递到 generator 中
 
 ## 代理对象 Proxy
 
-> ```bash
-> ## 代理对象 Proxy
-> - `Proxy`用于修改某些操作的默认行为，等同于在语言层里面做出修改，所以属于一种“元编程”，即对编程语言进行编程。
-> - Proxy给目标对象设置一层“拦截”，外界对该对象的访问必须通过这层拦截，可对外界的访问进行过滤和改写等自定义操作（代理完成对数据的处理、对构造函数的处理，对数据的验证）
->
->
-> ## 反射 Reflect
->   - `Reflect`是一个内置对象，它提供拦截`JavaScript`操作的方法。这些方法与`Proxy handlers`的方法相同
->   - `Reflect`不是一个函数对象，因此它是不可构造的，所以不能通过`new`来对其进行调用，或作为一个函数来调用。
->   - `Reflect`的所有属性和方法都是静态的
->
->
->
->  let p = new Proxy(target, handler);
-> 	- 代理实例中没有指定的`handler`，实际就是操作原对象`target`。
-> 	- `target`：需要使用`Proxy`包装的目标对象（可以是任何类型的对象，包括原生数组、函数、甚至是另一个代理）
-> 	- `handler`：一个对象，其属性是当执行一个操作时定义代理的行为函数（可理解为某种触发器）
-> ```
->
-> ```js
-> /**
-> 	* 同一拦截函数，设置拦截多个操作
-> */
-> var handler = {
->   get: function(target, propKey) {
->     if (propKey === 'prototype')  return Object.prototype;
->     if (propKey in target) return target[propKey];
->     throw new ReferenceError("Prop name \"" + propKey + "\" does not exist.");
->   },
->
->   apply: function(target, thisBinding, args) {
->     return args[0];
->   },
->
->   construct: function(target, args) {
->     return {value: args[1]};
->   }
-> };
->
-> var fproxy = new Proxy(function(x, y) {
->   return x + y;
-> }, handler);
->
-> fproxy(1, 2) // 1
-> new fproxy(1, 2) // {value: 2}
-> fproxy.prototype === Object.prototype // true
-> froxy.foo === "foo" // true
-> ```
->
-> #### 拦截方法
->
-> - **get(target, propKey, receiver)**：拦截对象属性的读取，比如`proxy.foo`和`proxy['foo']`。
-> - **set(target, propKey, value, receiver)**：拦截对象属性的设置，比如`proxy.foo = v`或`proxy['foo'] = v`，返回一个布尔值。
-> - **has(target, propKey)**：拦截`propKey in proxy`的操作，返回一个布尔值。
-> - **deleteProperty(target, propKey)**：拦截`delete proxy[propKey]`的操作，返回一个布尔值。
-> - **ownKeys(target)**：拦截`Object.getOwnPropertyNames(proxy)`、`Object.getOwnPropertySymbols(proxy)`、`Object.keys(proxy)`、`for...in`循环，返回一个数组。该方法返回目标对象所有自身的属性的属性名，而`Object.keys()`的返回结果仅包括目标对象自身的可遍历属性。
-> - **getOwnPropertyDescriptor(target, propKey)**：拦截`Object.getOwnPropertyDescriptor(proxy, propKey)`，返回属性的描述对象。
-> - **defineProperty(target, propKey, propDesc)**：拦截`Object.defineProperty(proxy, propKey, propDesc）`、`Object.defineProperties(proxy, propDescs)`，返回一个布尔值。
-> - **preventExtensions(target)**：拦截`Object.preventExtensions(proxy)`，返回一个布尔值。
-> - **getPrototypeOf(target)**：拦截`Object.getPrototypeOf(proxy)`，返回一个对象。
-> - **isExtensible(target)**：拦截`Object.isExtensible(proxy)`，返回一个布尔值。
-> - **setPrototypeOf(target, proto)**：拦截`Object.setPrototypeOf(proxy, proto)`，返回一个布尔值。如果目标对象是函数，那么还有两种额外操作可以拦截。
-> - **apply(target, object, args)**：拦截 Proxy 实例作为函数调用的操作，比如`proxy(...args)`、`proxy.call(object, ...args)`、`proxy.apply(...)`。
-> - **construct(target, args)**：拦截 Proxy 实例作为构造函数调用的操作，比如`new proxy(...args)`。
+```bash
+### 代理对象 Proxy
+- `Proxy`用于修改某些操作的默认行为，等同于对编程语言进行编程做出修改，所以属于一种“元编程”。
+- Proxy给目标对象设置一层“拦截”，外界对该对象的访问必须通过这层拦截，可对外界的访问进行过滤和改写等自定义操作（代理完成对数据的处理、对构造函数的处理，对数据的验证）
 
-### get()
+
+### 反射 Reflect
+  - `Reflect`是一个内置对象，它提供拦截`JavaScript`操作的方法。这些方法与`Proxy handlers`的方法相同
+  - `Reflect`不是一个函数对象，因此它是不可构造的，所以不能通过`new`来对其进行调用，或作为一个函数来调用。
+  - `Reflect`的所有属性和方法都是静态的
+
+
+
+ let p = new Proxy(target, handler);
+	- 代理实例中没有指定的`handler`，实际就是操作原对象`target`。
+	- `target`：需要使用`Proxy`包装的目标对象（可以是任何类型的对象，包括原生数组、函数、甚至是另一个代理）
+	- `handler`：代理配置：带有“捕捉器”（“traps”，即拦截操作的方法）的对象。其属性是当执行一个操作时定义代理的行为函数（可理解为某种触发器）
+```
+
+```js
+/**
+	* 同一拦截函数，设置拦截多个操作
+*/
+var handler = {
+  get: function(target, propKey) {
+    if (propKey === 'prototype')  return Object.prototype;
+    if (propKey in target) return target[propKey];
+    throw new ReferenceError("Prop name \"" + propKey + "\" does not exist.");
+  },
+
+  apply: function(target, thisBinding, args) {
+    return args[0];
+  },
+
+  construct: function(target, args) {
+    return {value: args[1]};
+  }
+};
+
+var fproxy = new Proxy(function(x, y) {
+  return x + y;
+}, handler);
+
+fproxy(1, 2) // 1
+new fproxy(1, 2) // {value: 2}
+fproxy.prototype === Object.prototype // true
+froxy.foo === "foo" // true
+```
+
+
+
+#### 拦截方法
+
+| 内部方法                | Handler 方法               | 何时触发                                                     |
+| :---------------------- | :------------------------- | :----------------------------------------------------------- |
+| `[[Get]]`               | `get`                      | 读取属性                                                     |
+| `[[Set]]`               | `set`                      | 写入属性                                                     |
+| `[[HasProperty]]`       | `has`                      | `in` 操作符                                                  |
+| `[[Delete]]`            | `deleteProperty`           | `delete` 操作符                                              |
+| `[[Call]]`              | `apply`                    | 函数调用                                                     |
+| `[[Construct]]`         | `construct`                | `new` 操作符                                                 |
+| `[[GetPrototypeOf]]`    | `getPrototypeOf`           | [Object.getPrototypeOf](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf) |
+| `[[SetPrototypeOf]]`    | `setPrototypeOf`           | [Object.setPrototypeOf](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf) |
+| `[[IsExtensible]]`      | `isExtensible`             | [Object.isExtensible](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible) |
+| `[[PreventExtensions]]` | `preventExtensions`        | [Object.preventExtensions](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions) |
+| `[[DefineOwnProperty]]` | `defineProperty`           | [Object.defineProperty](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty), [Object.defineProperties](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties) |
+| `[[GetOwnProperty]]`    | `getOwnPropertyDescriptor` | [Object.getOwnPropertyDescriptor](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor), `for..in`, `Object.keys/values/entries` |
+| `[[OwnPropertyKeys]]`   | `ownKeys`                  | [Object.getOwnPropertyNames](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames), [Object.getOwnPropertySymbols](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols), `for..in`, `Object.keys/values/entries` |
+
+其中大多数用于返回值：
+
+- `[[Set]]` 如果值已成功写入，则必须返回 `true`，否则返回 `false`。
+- `[[Delete]]` 如果已成功删除该值，则必须返回 `true`，否则返回 `false`。
+- ……
+
+#### get 方法
 
 > - `get(目标对象, 属性名, proxy实例本身[可选])`方法用于拦截某个属性的读取操作
 >
 > ```js
-> const proxy = new Proxy({}, {
->   get: function(target, propKey) {}
-> })
+> let numbers = [0, 1, 2];
+> 
+> numbers = new Proxy(numbers, {
+>   get(target, prop) {
+>     if (prop in target) {
+>       return target[prop];
+>     } else {
+>       return 0; // 默认值
+>     }
+>   }
+> });
+> 
+> alert( numbers[1] ); // 1
+> alert( numbers[123] ); // 0（没有这个数组项）
 > ```
 >
+
+#### 可撤销 Proxy
+
+一个 **可撤销** 的代理是可以被禁用的代理。
+
+假设有一个资源，并且想随时关闭对该资源的访问。可以做的是将它包装成可一个撤销的代理，没有任何捕捉器。这样的代理会将操作转发给对象，并且我们可以随时将其禁用。
+
+语法为：`let` `{`proxy`,` revoke`}` `=` Proxy`.``revocable``(`target`,` handler`)`
+
+```js
+let object = {
+  data: "Valuable data"
+};
+
+let {proxy, revoke} = Proxy.revocable(object, {});
+
+// 将 proxy 传递到其他某处，而不是对象...
+alert(proxy.data); // Valuable data
+
+// 稍后，在我们的代码中
+revoke();
+
+// proxy 不再工作（revoked）
+alert(proxy.data); // Error
+```
+
+
 
 ## 承诺对象 Promise
 
