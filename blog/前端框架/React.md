@@ -1435,7 +1435,7 @@ str.split('\\n').map((item, index) => {
 一种简单的方法是将整个 App 组件包装在 `main.js` 文件中的 `<React.StrictMode></React.StrictMode>` 中。
 ```
 
-```js
+```jsx
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -1445,20 +1445,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 )
-​```
-
-您也可以通过包装应用程序的一个或多个组件来使用它：
-
-​```js
-import React from 'react'
-
-function Hello() {
-  return (
-    <>
-      <React.StrictMode>{/* ... */}</React.StrictMode>
-    </>
-  )
-}
 ```
 
 
@@ -1559,7 +1545,7 @@ function Hello() {
 设置 `path` 为 `*` 将作为任何未定义 URL 的回退。这对于 404 错误页面是很好的。
 ```
 
-```js
+```jsx
 // main.js
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -1597,7 +1583,7 @@ ReactDOM.render(<App />, document.getElementById('root'))
 `Layout` 路由是一个共享组件，可以在所有页面上插入公共内容，例如导航菜单。
 ```
 
-```js
+```jsx
 // Layout.js
 import { Outlet, Link } from 'react-router-dom'
 
@@ -1767,12 +1753,12 @@ export default NotFoundPage
 > import {withRouter} from 'react-router-dom'
 > 
 > class Header extends Component {
->   back = () => {
->     this.props.history.goBack()
->   }
->   render() {
->     return (<button onClick={this.back}>回退</button>)
->   }
+>     back = () => {
+>        this.props.history.goBack()
+>     }
+>     render() {
+>        return (<button onClick={this.back}>回退</button>)
+>     }
 > }
 > 
 > // 把一般组件封装为路由组件，使得可以使用路由组件api

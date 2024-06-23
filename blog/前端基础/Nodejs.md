@@ -610,7 +610,9 @@ corepack enable
 "terminal.integrated.defaultProfile.windows": "Git-Bash"
 ```
 
+配置fnm安装地址关联的环境变量
 
+在 Powershell 中输入：`fnm env --use-on-cd | Out-String | Invoke-Expression`
 
 ## cross-env
 
