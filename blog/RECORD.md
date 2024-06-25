@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年6月25日
+  - docs(前端基础): [JavaScript] 脚本标签 script、DOMContentLoaded
+
 ## 2024年6月20日
   - docs(前端基础): [ES6+语法II] 代理对象 Proxy
 

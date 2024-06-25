@@ -527,64 +527,82 @@ Description: JavaScript
 
 ## 脚本标签 script
 
-> ```bash
-> ## 脚本 script
-> 		`<script type="text/javascript" src="" async></script>`
->    // async:异步		defer：
->    // 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
->
-> 当浏览器看到普通脚本标签声明时，它执行以下步骤：
->     - 暂停 HTML 文档解析器
->     - 创建新请求以下载脚本
->     - 在脚本完全下载后立即执行脚本
->     - 执行结束后，继续解析 HTML 文档
->
->
-> ### async 和 defer
-> async 与 defer 的作用是让浏览器知道脚本可以与文档解析器过程并行下载，从而不阻塞页面的渲染。
-> async 与 defer 的区别是脚本会在不同的时刻执行。
->
-> 1. async 异步执行
->     下载 async 脚本后，浏览器将暂停文档解析器，执行脚本并继续解析文档。
->         1. 解析文档
->         2. 下载脚本
->         3. 暂停解析
->         4. 执行脚本
->         5. 恢复解析
->      async 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），
->      但它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说非常适合。
->
-> 2. defer 延时执行
->     只有当解析器完成其工作时，才会执行 defer 脚本。
->         1. 解析脚本
->         2. 下载脚本
->         3. 执行脚本
->     注意：这个过程中，文档是不会停止解析的。
->
->
-> ### aync 与 defer 的区别
-> async 脚本在完全下载后立即执行，加载和渲染后续文档元素的过程将和 JS 脚本的加载与执行并行进行（异步），因此它们的执行顺序可能与页面中显示的顺序不同（即不管声明顺序如何，只要它加载完成该脚本就会立刻执行）。
-> defer 脚本保证执行顺序。它是等到页面渲染完毕，所有脚本下载完成，在 `DOMContentLoaded` 事件前按照脚本在文档中的顺序执行。
-> ```
+```bash
+## 脚本 script
+		`<script type="text/javascript" src="" async></script>`
+// async:异步		defer：
+// 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
+
+当浏览器看到普通脚本标签声明时，它执行以下步骤：
+    - 暂停 HTML 文档解析器
+    - 创建新请求以下载脚本
+    - 在脚本完全下载后立即执行脚本
+    - 执行结束后，继续解析 HTML 文档
+
+
+### async 和 defer
+async 与 defer 的作用是让浏览器知道脚本可以与文档解析器过程并行下载，从而不阻塞页面的渲染。
+async 与 defer 的区别是脚本会在不同的时刻执行。
+
+1. async 异步执行
+    下载 async 脚本后，浏览器将暂停文档解析器，执行脚本并继续解析文档。
+        1. 解析文档
+        2. 下载脚本
+        3. 暂停解析
+        4. 执行脚本
+        5. 恢复解析
+     async 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），
+     但它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说非常适合。
+
+2. defer 延时执行
+    只有当解析器完成其工作时，才会执行 defer 脚本。
+        1. 解析脚本
+        2. 下载脚本
+        3. 执行脚本
+    注意：这个过程中，文档是不会停止解析的。
+
+
+### aync 与 defer 的区别
+async 脚本在完全下载后立即执行，加载和渲染后续文档元素的过程将和 JS 脚本的加载与执行并行进行（异步），因此它们的执行顺序可能与页面中显示的顺序不同（即不管声明顺序如何，只要它加载完成该脚本就会立刻执行）。
+defer 脚本保证执行顺序。它是等到页面渲染完毕，所有脚本下载完成，在 `DOMContentLoaded` 事件前按照脚本在文档中的顺序执行。
+```
+
+
+
+### 页面的生命周期
+
+```bash
+- DOMContentLoaded：浏览器已经完全加载 HTML，并构建完 DOM 树，但像 `<img>` 标签中引用的图片和样式表之类的外部资源可能尚未加载完成。
+		- DOM 已经就绪，因此处理程序可以查找 DOM 节点，并初始化接口。
+
+- load：浏览器加载完成 HTML 以及所有的外部资源（图片和样式）
+		- 外部资源已加载完成，样式已被应用，图片大小已知。
+		
+- beforeload/upload：当用户离开页面时。
+		- beforeunload：用户正在离开。此时可以检查用户是否保存了更改，并询问是否真的要离开。
+		- unload：用户几乎已经离开，但现阶段仍然可以启动一些操作，如发送统计数据。
+```
+
+
 
 ### DOMContentLoaded 事件
 
 > ```bash
 > ## DOMContentLoaded 事件
 > 当初始HTML文档已完全加载和解析时，将触发DOMContentLoaded事件，而不需要等待样式表，图像和子框架页面加载（事件可以用来检测HTML页面是否完全加载完毕(fully-loaded)）。
->
->
+> 
+> 
 > ### DOMContentLoaded 执行时机
 > #### 1. 普通脚本/sync（等待脚本执行完后再执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到普通脚本 -> 加载&执行脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
->
->
+> 
+> 
 > #### 2. 异步加载脚本/async（衡量HTML加载解析的速度来执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到async脚本 -> (HTML&async脚本)并行加载解析 ->
 > 		- 若HTML解析完后async脚本也已加载完毕 -> 停止HTML解析 -> 执行async脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
 > 		- 若HTML解析完后async脚本还未加载完成 -> DOMContentLoaded事件
->
->
+> 
+> 
 > #### 3. 延时加载脚本/defer（等待脚本执行完后再执行DOMContentLoaded）
 > 	HTML加载解析&defer脚本加载
 > 			- 若HTML解析完后defer脚本也已加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
@@ -593,58 +611,123 @@ Description: JavaScript
 >
 > ![image-20230329111340256](./image/image-20230329111340256.png)
 >
-> #### 对于不同声明的脚本，DOMContentLoaded 的触发时机
+> ```html
+> <script>
+>   document.addEventListener("DOMContentLoaded", () => {
+>    alert("DOM ready!");
+>   });
+> </script>
+> 
+> <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.3.0/lodash.js"></script>
+> 
+> <script>
+>   alert("Library loaded, inline script executed");
+> </script>
+> 
+> <!-- 
+> 先输出 'Library loaded, inline script executed'，
+> 再输出 DOM ready!
+> -->
+> ```
 >
-> ##### sync / 普通 js
->
-> - 文档解析的过程中，如果遇到 script 脚本，就会停止页面的解析进行下载，当脚本都执行完毕后，才会继续解析页面。
->
-> ![image-20230329112327704](./image/image-20230329112327704.png)
->
-> ##### async / 异步加载脚本
->
-> - async 脚本会在加载完毕后执行。
-> - async 脚本的加载不计入 `DOMContentLoaded` 事件统计，就存在下面两种情况会发生。
->
-> 1. HTML 还没有被解析完的时候，async 脚本已经加载完毕，那么 HTML 就会停止解析，去执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329112729627](./image/image-20230329112729627.png)
->
-> 2. HTML 解析完之后，async 脚本还未加载完成，那么在HTML解析完毕后就触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329112749177](./image/image-20230329112749177.png)
->
-> ##### defer / 延时加载脚本
->
-> - 文档解析时，遇到设置了 defer 的脚本，就会在后台进行下载，但是并不会阻止文档的渲染，当页面解析和渲染完毕后，会等到所有的 defer 脚本加载完毕并按照顺序执行完毕才会触发 `DOMContentLoaded` 事件。此时就存在两种情况会发生：
->
-> 1. HTML还没被解析完的时候，defer 脚本已经加载完毕，此时会等待 HTML 解析完成后执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329113352649](./image/image-20230329113352649.png)
->
-> 2. HTML 解析完之后，defer 脚本才加载完，此时会先等待 defer 脚本执行完毕后，才会触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329113418206](./image/image-20230329113418206.png)
 
 ### DOMContentLoaded和load的区别
 
-> ```bash
-> ## DOMContentLoaded 和 load 的区别
-> DOMContentLoaded：在 interactive 触发
-> 	当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完成加载。
+```bash
+## DOMContentLoaded 和 load 的区别
+DOMContentLoaded：在 interactive 触发
+	当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完成加载。
+
+load：在 complete 触发
+	当一个资源及其依赖资源已完成加载时，将触发load事件。
+```
+
+![20190128102028682](./image/20190128102028682.gif)
+
+
+
+### `document.readyState`
+
+```bash
+在文档加载完成之后再设置 DOMContentLoaded，它将不会执行。
+
+而 document.readyState 属性可以提供 DOM 文档当前加载状态的信息。
+一个文档的 readyState 可以是以下值之一：
+  - loading：加载，文档正在被加载。
+  - interactive：互动，此时文档已经完成加载，文档已被解析，但是诸如图像、样式表和iframe之类的子资源仍在加载。
+  - complete：完成，文档被全部读取，并且所有所有子资源（如图片等）都已完成加载。状态表示 load 事件即将被触发。
+
+readystatechange 事件可以监听状态的改变。
+```
+
+```html
+<script>
+  log('initial readyState:' + document.readyState);
+
+  document.addEventListener('readystatechange', () => log('readyState:' + document.readyState));
+  document.addEventListener('DOMContentLoaded', () => log('DOMContentLoaded'));
+
+  window.onload = () => log('window onload');
+</script>
+
+<iframe src="iframe.html" onload="log('iframe onload')"></iframe>
+
+<img src="http://en.js.cx/clipart/train.gif" id="img">
+<script>
+  img.onload = () => log('img onload');
+</script>
+
+<!-- 
+[1] initial readyState:loading
+[2] readyState:interactive
+[2] DOMContentLoaded
+[3] iframe onload
+[4] img onload
+[4] readyState:complete
+[4] window onload
+-->
+```
+
+
+
+### 对于不同声明的脚本，`DOMContentLoaded` 的触发时机
+
+> ##### sync / 普通 JS
 >
-> load：在 complete 触发
-> 	当一个资源及其依赖资源已完成加载时，将触发load事件。
+> - 文档解析的过程中，如果遇到 script 脚本，就会停止页面的解析进行下载，当脚本都下载并执行完毕后，才会继续解析页面。
+>     - 脚本不能访问到位于它们下面的 DOM 元素，因此，脚本无法给它们添加处理程序等
+>     - 如果页面顶部有一个笨重的脚本，它会“阻塞页面”。在该脚本下载并执行结束前，用户都不能看到页面内容（解决方案：把脚本放在页面底部）
 >
+> ![image-20230329112327704](./image/image-20230329112327704.png)
 >
-> ### document.readyState
-> document.readyState 属性描述了文档的加载状态。一个文档的 readyState 可以是以下值之一：
-> 	- loading：加载，此时 document 仍在加载
-> 	- interactive：互动，此时文档已经完成加载，文档已被解析，但是诸如图像、样式表和iframe之类的子资源仍在加载。
-> 	- complete：完成，此时 T 文档和所有子资源已完成加载。状态表示 load 事件即将被触发。
-> ```
+> ##### `async` / 异步加载脚本
 >
-> ![20190128102028682](./image/20190128102028682.gif)
+> - `async` 脚本会在加载完毕后执行。
+> - `async` 脚本的加载不计入 `DOMContentLoaded` 事件统计，就存在下面两种情况会发生。
+>
+> 1. HTML 还没有被解析完的时候，`async` 脚本已经加载完毕，那么 HTML 就会停止解析，去执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329112729627](./image/image-20230329112729627.png)
+>
+> 2. HTML 解析完之后，`async` 脚本还未加载完成，那么在HTML解析完毕后就触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329112749177](./image/image-20230329112749177.png)
+>
+> 注意：`DOMContentLoaded` 可能在 `async` 之前或之后触发，不能保证谁先谁后。
+>
+> ##### defer / 延时加载脚本
+>
+> - 文档解析时，遇到设置 defer 属性的脚本，就会在后台进行下载，但是并不会阻止文档的渲染，当页面解析和渲染完毕后，会等到所有的 defer 脚本加载完毕并按照顺序执行完毕才会触发 `DOMContentLoaded` 事件。此时就存在两种情况会发生：
+>
+> 1. HTML还没被解析完的时候，defer 脚本已经加载完毕，此时会等待 HTML 解析完成后执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
+>
+> ![image-20230329113352649](./image/image-20230329113352649.png)
+>
+> 2. HTML 解析完之后，defer 脚本才加载完，此时会先等待 defer 脚本执行完毕后，才会触发 `DOMContentLoaded` 事件。
+>
+> ![image-20230329113418206](./image/image-20230329113418206.png)
+>
+> 注意：defer 特性仅适用于外部脚本，如果 `<script>` 脚本没有 `src`，则会忽略 `defer` 特性。
 
 
 
@@ -654,7 +737,7 @@ Description: JavaScript
 
 - 创建 `script` 元素
 - 将 `script` 元素的 `src` 属性设置为指向要加载的文件
-- 将 `script` 元素添加到 DOM
+- 将 `script` 元素附加（append）到文档（document）中
 
 ```js
 let myScript = document.createElement('script')
@@ -679,23 +762,12 @@ head.insertBefore(myScript, head.firstElementChild)
 
 代码中有两个新特性，可以确保在渲染页面上的任何其他内容之前加载并运行外部脚本文件：
 
-- 首先将 `script` 元素的 `async` 属性设置为 `false`。为什么呢？这是因为默认情况下，。
+- 因为动态脚本默认情况下是异步的，先加载完成的脚先执行。所以需要先将 `script` 元素的 `async` 属性设置为 `false`，将脚本按照脚本在文档中的顺序执行。
 - 接下来确保在加载页面其余部分之前加载脚本。在 `head` 元素的顶部添加 `script` 元素是确保它在页面可能达到的任何其他内容之前运行的最佳位置。
 
 #### 脚本文件加载后运行相关代码
 
-加载一个外部脚本文件，然后立即调用一个函数（或者依赖于加载的脚本中的某些内容）是很常见的。例如：
-
-```html
-<script src="./api.js"></script>
-<script>
-  getArticleDetail({ id: '1' })
-</script>
-```
-
-第一个 `script` 元素加载 **api.js** 。第二个 `script` 元素调用依赖于前面的 `script` 元素加载的 **api.js** 的内容。所有这些都能正常工作，因为浏览器能很自然地处理了这个场景。
-
-对于动态加载的脚本文件，如果想要类似行为，需要额外添加 `load` 事件来监听我们的 `script`，一旦监听到，就调用相关的代码：
+对于动态加载的脚本文件，如果想要加载一个外部脚本文件，然后立即调用一个函数，需要额外添加 `load` 事件来监听我们的 `script`，一旦监听到就调用相关的代码：
 
 ```js
 let myScript = document.createElement('script')
@@ -738,23 +810,30 @@ function scriptLoaded() {
 
 
 ### DOM节点属性
-1. nodeName	--> nodeName 属性规定节点的名称，仅只读
+1. nodeName 属性规定节点的名称，仅只读
     - 文档节点（文档）：整个 HTML 文档就是一个文档节点；nodeName 始终是 `#document`
     - 元素节点（标签）：HTML标签；nodeName 与标签名相同
     - 属性节点（属性）：元素的属性；nodeName 与属性名相同
     - 文本节点（文本）：HTML标签中的文本内容(包括标签之间的空格、换行)；nodeName始终是 `#text`
 
-2. nodeValue 	-->  nodeValue 属性规定节点的值
+2. nodeValue 属性规定节点的值
     - 元素节点的 nodeValue 是 undefined 或 null
     - 文本节点的 nodeValue 是文本本身
     - 属性节点的 nodeValue 是属性值
 
-3. NodeType
+3. nodeType 属性获取 DOM 节点类型
     - 元素：1
     - 属性：2
     - 文本：3
     - 注释：8
     - 文档：9
+
+4. tagNme 属性读取标签名
+	- tabNme 属性仅适用于 Element 节点。
+	- nodeName 是为任意 Node 定义的。
+			- 对于元素，它的意义与 tagName 相同
+			- 对于其他节点类型（text，comment 等），它拥有一个对应节点类型的字符串
+		
 ```
 
 ![JS_DOM节点关系表](./image/JS_DOM_node.png)
@@ -816,26 +895,75 @@ element.className = 'new-class'; // className is a DOMString that you can set
 
 
 
+### 遍历 DOM
+
+```bash
+对 DOM 的所有操作都是以 document 对象开始的，它是 DOM 的访问入口，从它可以访问任何节点。
+
+顶层：documentElement 和 body
+- `<html>` = document.documentElement
+- `<body>` = document.body
+- `<head>` = document.head
+
+- 最顶层的树节点可以直接作为 document 的属性来使用。
+- 在 DOM 中，null 值以为着 '不存在' 或 '没有这个节点'。
+```
+
+![image-20240624211959823](./image/image-20240624211959823.png)
+
+#### document.body为null
+
+```bash
+注意：脚本在运行时无法访问不存在的元素，所以 document.body 的值可能是null（如一个脚本在 `<head>` 中使用同步方式引入时，脚本是无法访问到 document.body 元素，因为浏览器还没解析到 body 标签）
+```
+
+```html
+<html>
+<head>
+  <script>
+    alert( "From HEAD: " + document.body ); // null，这里目前还没有 <body>
+  </script>
+</head>
+
+<body>
+  <script>
+    alert( "From BODY: " + document.body ); // HTMLBodyElement，现在存在了
+  </script>
+</body>
+</html>
+```
+
+
+
 ### DOM属性
 
 ```bash
-### DOM 属性
 - innerHTML - 节点（元素）的文本值
 - parentNode - 节点（元素）的父节点
 - childNodes - 节点（元素）的子节点
 - attributes - 节点（元素）的属性节点
 
+
+#### parentElement 和 parentNode 的区别
+- parentElement 属性返回 '元素类型' 的父节点。
+- parentNode 属性返回 '任何类型' 的父节点。
+
+document.documentElement.parentNode === document
+document.documentElement.parentElement === null
+
+因为根节点 document.documentElement 的父节点是 document。但 document 不是一个元素节点，所以 parentNode 返回 document，但 parentElement 返回 null。
+
+当想从任意节点 ele 到 `<html>` 而不是 document 时，可使用如下：
+while (ele = ele.parentElement) { console.lg(ele) } // 递归向上，直到 <html>
 ```
 
 #### 自定义属性
 
 ```bash
-### 自定义属性
 DOM 中的自定义属性不能直接访问，但可以通过以下方法来进行操作：
 	- 获取标签对应的属性：`getAttribute('属性名')`（注意：属性可以是自定义，也可以是 DOM 自身已有的）
 	- 设置标签属性的值：`setAttribute('属性名', '属性值')`
 	- 移除标签属性值：`removeAttribute('属性名')`
-
 ```
 
 ```js
