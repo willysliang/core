@@ -2523,47 +2523,350 @@ function del() {
 
 
 
-#### 窗口
-
-> ```bash
-> ## 窗口
-> ### 打开窗口：`window.open(url,target,param)`
->     - url：要打开的地址。
->     - target：新窗口的位置。可以是：`_blank` 、`_self`、 `_parent` 父框架
->     - 返回值：新窗口的句柄
->     - param：新窗口的一些设置(多个参数用逗号隔开)
->         - name：新窗口的名称，可以为空
->         - features：属性控制字符串，在此控制窗口的各种属性，属性之间以逗号隔开。
->         - fullscreen= { yes/no/1/0 } 是否全屏，默认no
->         - channelmode= { yes/no/1/0 } 是否显示频道栏，默认no
->         - toolbar= { yes/no/1/0 } 是否显示工具条，默认no
->         - location= { yes/no/1/0 } 是否显示地址栏，默认no。（有的浏览器不一定支持）
->         - directories = { yes/no/1/0 } 是否显示转向按钮，默认no
->         - status= { yes/no/1/0 } 是否显示窗口状态条，默认no
->         - menubar= { yes/no/1/0 } 是否显示菜单，默认no
->         - scrollbars= { yes/no/1/0 } 是否显示滚动条，默认yes
->         - resizable= { yes/no/1/0 } 是否窗口可调整大小，默认no
->         - width=number 窗口宽度（像素单位）
->         - height=number 窗口高度（像素单位）
->         - top=number 窗口离屏幕顶部距离（像素单位）
->         - left=number 窗口离屏幕左边距离（像素单位）
->
->
-> ### 关闭窗口：window.close()
->
->
-> ### 新窗口
->     - 新窗口.moveTo(5,5)
->     - 新窗口.moveBy()
->     - 新窗口.resizeTo()
->     - window.resizeBy()
-> ```
-
-### 错误捕获
+### 窗口
 
 ```bash
-## 页面错误捕获
+### 打开窗口：`window.open(url, target, param)`
+    - url：要打开的地址。
+    - target：新窗口的位置。可以是：`_blank` 、`_self`、 `_parent` 父框架
+    - 返回值：新窗口的句柄
+    - param：新窗口的一些设置(多个参数用逗号隔开)
+        - name：新窗口的名称，可以为空
+        - features：属性控制字符串，在此控制窗口的各种属性，属性之间以逗号隔开。
+        - `fullscreen= { yes/no/1/0 }` 是否全屏，默认no
+        - `channelmode= { yes/no/1/0 }` 是否显示频道栏，默认no
+        - `toolbar= { yes/no/1/0 }` 是否显示工具条，默认no
+        - `location= { yes/no/1/0 }` 是否显示地址栏，默认no（有的浏览器不一定支持）
+        - `directories = { yes/no/1/0 }` 是否显示转向按钮，默认no
+        - `status = { yes/no/1/0 }` 是否显示窗口状态条，默认no
+        - `menubar = { yes/no/1/0 }` 是否显示菜单，默认no
+        - `scrollbars = { yes/no/1/0 }` 是否显示滚动条，默认yes
+        - `resizable = { yes/no/1/0 }` 是否窗口可调整大小，默认no
+        - `width = number` 窗口宽度（像素单位）
+        - `height = number` 窗口高度（像素单位）
+        - `top = number` 窗口离屏幕顶部距离（像素单位）
+        - `left = number` 窗口离屏幕左边距离（像素单位）
+        
 
+    
+### 同源策略限制
+只有在窗口是同源的时，窗口才能自由访问彼此的内容（相同的协议://domain:port）。
+否则，例如，如果主窗口来自于 site.com，弹窗来自于 gmail.com，则处于安全性考虑，这两个窗口不能访问彼此的内容。
+
+
+### 阻止弹窗
+在过去很多网站滥用弹窗，所有大多数浏览器都会阻止弹窗打开来保护用户。
+如果弹窗是在用户触发的事件（如 onclick 事件）之外的地方调用，大多数浏览器都会阻止此类弹窗。
+如果在 setTimeout 中打开，有可能也会被阻止打开（Firefox 可以接受 2000ms 或更短的延迟，但是超过这个时间则移除“信任”，限制打开）
+	- 被阻止打开：`setTimeout(() => window.open('http://google.com'), 3000)` 
+	- 允许打开：`setTimeout(() => window.open('http://google.com'), 1000)`
+
+
+### 关闭窗口
+- 关闭一个窗口：`newWin.close()`
+- 检查一个窗口是否被关闭：`newWin.closed`
+
+
+
+### 新窗口移动和调整大小的方法
+- 新窗口.moveBy(x, y)
+		将窗口相对于当前位置向右移动 x 像素，并向下移动 y 像素。允许负值（向上/向左移动）
+		
+- 新窗口.moveTo(x,y)
+		将窗口移动到屏幕上的坐标 (x,y) 处
+
+- 新窗口.resizeBy(width,height)
+		根据给定的相对于当前大小的 width/height 调整窗口大小。允许负值。
+
+- window.resizeTo(width,height)
+		将窗口调整为给定的大小。
+```
+
+```js
+const handleOpenWin = () => {
+  const params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+width=600,height=300,left=100,top=100`;
+  const newWin = window.open('/', 'test', params);
+
+  newWin && newWin.focus();
+
+  const handleClose = () => {
+    if (newWin && !newWin.closed) newWin.close();
+  };
+  return handleClose;
+};
+
+// 获取到相应的关闭
+const newWinClose = handleOpenWin();
+
+// 5s 后关闭弹窗
+setTimeout(newWinClose, 5000);
+```
+
+
+
+### `iframe`
+
+```bash
+### 跨窗口的同源策略
+如果我们有对另外一个窗口（如一个使用 window.open 创建的弹窗，或者一个窗口中的 iframe）的引用，并且该窗口是同源的，那么我们就具有对该窗口的全部访问权限。
+否则，如果该窗口不是同源的，则无法访问该窗口中的内容（变量，文档，任何东西），但可以修改其 location（注意：只能写入，不能读取）。
+
+
+
+### iframe
+一个 `<iframe>` 标签承载了一个单独的嵌入的窗口，它具有自己的 document 和 window。
+    - iframe.contentWindow：获取 `<iframe>` 中的 window
+    - iframe.contentDocument：获取 `<iframe>` 中的 document，是 iframe.contentWindow.document 的简写。
+
+当我们访问嵌入的窗口中的内容时，浏览器会检查 iframe 是否具有相同的源。
+如果非同源，只能进行以下操作：
+	- 更改另一个窗口的 location （只能写入(进而重定向用户)，无法读取(防止泄露而保证安全性)）
+
+
+
+#### 子域上的window：`documen.domain`
+根据定义，两个具有不同域的 URL 具有不同的源。但是如果窗口的二级域相同，如 `john.site.com 、 peter.site.com 、 site.com`（它们共同的二级域是 site.com），我们可以给每个窗口添加相同的 domain 使浏览器忽略该差异（`document.domain = 'site.com';`），使得它们可以被作为“同源”，以便进行跨窗口通信。
+
+
+
+### iframe 的 sandbox 特性（attribute）
+如果一个 iframe 具有 sandbox 特性（attribute），则它会被强制处于“非同源”状态，除非在其特性值中指定了 allow-same-origin。这可用于在同一网站的 iframe 中运行不受信任的代码。
+`<iframe sandbox="allow-same-origin allow-forms allow-popups">`
+
+- allow-same-origin：默认情况下，"sandbox" 会为 iframe 强制实施“不同来源”的策略。即是说它使浏览器将 iframe 视为来自另一个源，即使其 src 指向的是同一个网站也是如此。具有所有隐含的脚本限制。此选项会移除这些限制。
+- allow-top-navigation：允许 iframe 更改 parent.location。
+- allow-forms：允许在 iframe 中提交表单。
+- allow-scripts：允许在 iframe 中运行脚本。
+- allow-popups：允许在 iframe 中使用 window.open 打开弹窗。
+```
+
+```html
+<iframe src="https://example.com" id="iframe"></iframe>
+
+<script>
+  iframe.onload = function() {
+    // 我们可以获取对内部 window 的引用
+    let iframeWindow = iframe.contentWindow; // OK
+    try {
+      // ...但是无法获取其中的文档
+      let doc = iframe.contentDocument; // ERROR
+    } catch(e) {
+      alert(e); // Security Error（另一个源）
+    }
+
+    // 并且，我们也无法读取 iframe 中页面的 URL
+    try {
+      // 无法从 location 对象中读取 URL
+      let href = iframe.contentWindow.location.href; // ERROR
+    } catch(e) {
+      alert(e); // Security Error
+    }
+
+    // ...可以写入 location（所以在 iframe 中加载了其他内容）
+    iframe.contentWindow.location = '/'; // OK
+
+    iframe.onload = null; // 清空处理程序，在 location 更改后不要再运行它
+  };
+</script>
+```
+
+```html
+<!-- 来自同一个网站的 iframe -->
+<iframe src="/" id="iframe"></iframe>
+
+<script>
+  iframe.onload = function() {
+    // doSomething
+    iframe.contentDocument.body.prepend("Hello, world!");
+  };
+</script>
+```
+
+
+
+#### 页面所有的`iframe`集合：`window.frames`
+
+```bash
+获取 <iframe> 的window 对象另一种方式是从命名集合 window.frames 中获取：
+	- 通过索引获取：`window.frames[0]` —— 文档中的第一个 iframe 的 window 对象。
+	- 通过名称获取：`window.frames.iframeName` —— 获取 `name="iframeName"` 的 iframe 的 window 对象。
+	
+	
+	
+#### iframe 内嵌
+一个 iframe 内可能嵌套了其他的 iframe。我们可以使用以下方式访问父/子窗口。
+    - window.frames —— “子”窗口的集合（用于嵌套的 iframe）。
+    - window.parent —— 对“父”（外部）窗口的引用。
+    - window.top —— 对最顶级父窗口的引用。
+    - iframe.contentWindow 是 <iframe> 标签内的 window 对象
+
+```
+
+```html
+<iframe src="/" style="height:80px" name="win" id="iframe"></iframe>
+
+<script>
+  console.log(iframe.contentWindow == frames[0]); // true
+  console.log(iframe.contentWindow == frames.win); // true
+
+  console.log(window.frames[0].parent === window); // true
+
+  // 使用 top 属性来检查当前的文档是否是在 iframe 内打开的
+  if (window == window.top) { // 当前 window == window.top?
+    alert('The script is in the topmost window, not in a frame');
+  } else {
+    alert('The script runs in a frame!');
+  }
+</script>
+```
+
+
+
+#### 两个窗口的通信：`postMessage`
+
+```bash
+postMessage 接口允许两个具有任何源的窗口之间进行通信：
+1. 发送方调用 targetWin.postMessage(data, targetOrigin)。
+		- 如果 targetOrigin 不是 '*'，浏览器会检查窗口 targetWin 是否具有源 targetOrigin。
+	- 如果它具有，targetWin 会触发具有特殊的属性的 message 事件：
+			- origin —— 发送方窗口的源（比如 http://my.site.com）。
+			- source —— 对发送方窗口的引用。
+			- data —— 数据，可以是任何对象。但 IE 浏览器只支持字符串，因此需要对对象数据调用 JSON.stringify 方法进行兼容处理。
+			
+2. 使用 addEventListener 来在目标窗口中设置 message 事件的处理程序。
+```
+
+```html
+<h1>Parent Page</h1>
+<iframe name="example" src="child.html"></iframe>
+<button id="sendMessageBtn">Send Message to iframe</button>
+
+<script>
+  const iframe = document.getElementById('myIframe');
+  const btn = document.getElementById('sendMessageBtn');
+
+  btn.addEventListener('click', () => {
+    const message = { type: 'greeting', text: 'Hello from parent page' };
+    iframe.contentWindow.postMessage(message, 'http://example.com');
+  });
+
+  window.addEventListener('message', (event) => {
+    // 忽略不可信任的来源
+    if (event.origin !== 'http://example.com') return;
+    console.log('Received message from iframe:', event.data);
+  });
+</script>
+```
+
+```html
+<h1>Child Page</h1>
+<div id="message"></div>
+<button id="replyBtn">Reply to Parent</button>
+
+<script>
+  // 监听父页面发送的消息
+  window.addEventListener('message', (event) => {
+    // 忽略不可信任的来源
+    if (event.origin !== 'http://example.com') return;
+    console.log('Received message from parent:', event.data);
+  });
+
+  // 向父页面发送消息
+  document.getElementById('replyBtn').addEventListener('click', () => {
+    const message = { type: 'response', text: 'Hello from iframe' };
+    window.parent.postMessage(message, 'http://your-parent-origin.com');
+  });
+</script>
+```
+
+
+
+#### `iframe` 的劫持攻击
+
+```bash
+iframe 劫持攻击（Iframe Hijacking）是一种通过在 iframe 中加载恶意内容或劫持用户交互的安全威胁。常见的 iframe 攻击包括 Clickjacking 和 XSS（跨站脚本攻击）。
+```
+
+```bash
+1. Clickjacking
+Clickjacking 是一种通过透明或不可见的 iframe 覆盖用户界面元素进行用户交互劫持的攻击方式。攻击者通常在 iframe 中加载目标网站，并诱导用户点击看似无害的页面元素，实际点击的是透明 iframe 上的内容。
+
+
+防御 Clickjacking
+  为了防御 Clickjacking 攻击，可以使用 X-Frame-Options 头:
+  通过设置 HTTP 响应头 X-Frame-Options 来防止你的网页被嵌入到 iframe 中。
+    - DENY：完全禁止页面被嵌入 iframe。
+    - SAMEORIGIN：允许同源页面嵌入 iframe。
+    - ALLOW-FROM uri：允许特定 URI 的页面嵌入 iframe。
+```
+
+```js
+const express = require('express');
+const app = express();
+
+// 设置 X-Frame-Options 头
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
+
+// 设置 Content Security Policy 头
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self'");
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+```
+
+```bash
+2. 跨站脚本攻击（XSS）
+XSS 攻击是指攻击者向受信任的网站注入恶意脚本。这些脚本通常通过 iframe 进行加载，从而执行恶意操作。
+
+
+防御 XSS
+  输出编码：在输出用户生成的内容时进行编码，以防止脚本注入。
+  内容安全策略（CSP）：使用 CSP 可以防止加载未经授权的脚本。
+  输入验证和清理：对用户输入进行验证和清理，防止注入恶意代码。
+```
+
+```bash
+3. 内容安全策略（CSP）
+CSP 是一种强大的安全机制，用于防止多种类型的攻击，包括 XSS 和数据注入攻击。通过定义哪些资源可以加载，CSP 可以大大减少攻击面。
+```
+
+```js
+const express = require('express');
+const app = express();
+
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'");
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+```
+
+
+
+
+
+### 页面错误捕获
+
+```bash
 ### 即时错误
 - `window.onerror = function(msg, url, row, col, error) { ... }`
 		- msg 为异常基本信息

@@ -268,20 +268,20 @@ document.mozFullScreen
 > - 本地存储`window.localStorage`：保存在浏览器内存或硬盘中
 > - 永久生效，除非手动删除
 > - 可以多窗口共享数据
-> 
-> 
+>
+>
 > ## 会话存储
 > - 会话存储`window.sessionStorage`：保存在内存中
 > - 当窗口关闭时销毁数据
 > - 在同一个窗口下可共享数据
-> 
-> 
+>
+>
 > ## Web存储特性
 > - 设置、读取方便。
 > - 容量较大，sessionStorage 约5M、localStorage 约20M（`document.cookie`只有4k）
 > - 只能存储字符串，可以将对象 JSON.stringify() 编码后存储。
-> 
-> 
+>
+>
 > ## 存储方式
 > 1. 设置存储内容(若存在该则替换内容)：`setItem(key, value);`
 > 2. 读取存储内容：`getItem(key);`
@@ -344,17 +344,17 @@ document.mozFullScreen
 >
 > ```appcache
 > CACHE MANIFEST
-> 
+>
 > #要缓存的文件
 > CACHE:
 >     images/img1.jpg
 >     images/img2.jpg
-> 
+>
 > #指定必须联网才能访问的文件
 > NETWORK:
 >      images/img3.jpg
 >      images/img4.jpg
-> 
+>
 > #当前页面无法访问是回退的页面
 > FALLBACK:
 >     404.html
@@ -727,7 +727,7 @@ Web组件允许添加自己的 HTML 自定义元素，元素名称必须要包�
 
   <template id="userCardTemplate">
     <style>
-      /* :host伪类，指代自定义元素本身 */
+      /* :host 伪类选择器允许选择 shadow 宿主（包含 shadow 树的元素），指代自定义元素本身 */
       :host {
         display: flex;
         align-items: center;
@@ -1716,22 +1716,22 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 > ```js
 > /** 主线程 */
 > const worker = new Worker("./worker.js")
-> 
+>
 > // 发送数据给 Worker 线程
 > worker.postMessage('Hello World！')
 > worker.postMessage({ method: 'echo', args: ['Work'] })
-> 
+>
 > // 接收 Worker 线程发送过来的数据
 > worker.onmessage = function (event) {
 > console.log('Received message' + event.data)
 > doSomething()
 > }
-> 
+>
 > function doSomething () {
 > // 执行任务
 > worker.postMessage('Worker done!')
 > }
-> 
+>
 > // 在 Worker 完成任务后，主线程可以把它关掉
 > worker.terminate()
 > ```
@@ -1744,20 +1744,20 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 > self.addEventListener('message', function(event) {
 > self.postMessage('Your said：' + event.data)
 > }, false)
-> 
+>
 > /**
 > // 与 self 等同的写法一：
 > this.addEventListener('message', function(event) {
 > this.postMessage('Your said：' + event.data)
 > }, false)
-> 
+>
 > // 与 self 等同的写法二：
 > addEventListener('message', function(event) {
 > postMessage('Your said：' + event.data)
 > }, false)
 > */
-> 
-> 
+>
+>
 > // 根据主线程发来的消息，Worker 可调用不同方法
 > self.addEventListener('message', function (event) {
 > const data = event.data
@@ -1773,12 +1773,12 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 >    self.postMessage('Worker command: ' + data.msg)
 > }
 > }, false)
-> 
-> 
+>
+>
 > // worker加载脚本（可加载多个脚本）
 > self.importScripts('script1.js', 'script2.js')
-> 
-> 
+>
+>
 > // 主线程可以监听 Worker 是否发生错误，如果发生错误，Worker 会触发主线程的 error 事件
 > self.onerror(event => {
 > console.log(['Error: Line', e.lineno, 'in ', e.filename, ': ', e.message].join(''))
@@ -1803,8 +1803,8 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 >   uInt8Array[i] = i * 2 // [0, 2, 4, 6, ...]
 > }
 > worker.postMessage(uInt8Array)
-> 
-> 
+>
+>
 > // Worker 线程（接收主线程发送的数据，并进行返回）
 > self.onmessage = function (e) {
 >   const uInt8Array = e.data
@@ -1820,8 +1820,8 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 > ```js
 > // 直接转移数据的控制权（Transferable Object格式）
 >   worker.postMessage(arrayBuffer, [arrayBuffer])
-> 
-> 
+>
+>
 > // 例子
 > const ab = new ArrayBuffer(1)
 > worker.postMessage(ab, [ab])
@@ -1874,7 +1874,7 @@ addEventListener('message', (event) => {
 > const blob = new Blob([document.querySelector('#worker').textContent]);
 > const url = window.URL.createObjectURL(blob);
 > const worker = new Worker(url);
-> 
+>
 > worker.onmessage = function (e) {
 >   // e.data === 'some message'
 > };
@@ -1895,16 +1895,16 @@ addEventListener('message', (event) => {
 > var worker = new Worker(url);
 > return worker;
 > }
-> 
+>
 > var pollingWorker = createWorker(function (e) {
 > var cache;
-> 
+>
 > function compare(new, old) { ... };
-> 
+>
 > setInterval(function () {
 >  fetch('/my-api-endpoint').then(function (res) {
 >    var data = res.json();
-> 
+>
 >    if (!compare(data, cache)) {
 >      cache = data;
 >      self.postMessage(data);
@@ -1912,11 +1912,11 @@ addEventListener('message', (event) => {
 >  })
 > }, 1000)
 > });
-> 
+>
 > pollingWorker.onmessage = function () {
 > // render data
 > }
-> 
+>
 > pollingWorker.postMessage('init');
 > ```
 
@@ -1930,8 +1930,8 @@ addEventListener('message', (event) => {
 > 在以前和现在常用的本地存储方式一般都是 localStorage、sessionStorage 和 cookie。
 > 但它们都不能存放大量数据，在现在的业务情况下，很容易出现存放数据过大，导致超出浏览器对于 localStorage、sessionStorage 和 cookie 的存储大小（cookies 不能超过4KB，localStorage、sessionStorage一般不超过4MB），所以这些技术不太适合存放大量数据，此时就可以使用 HTML5 提供的新 API：IndexedDB。
 > 是属于 NoSQL 的一种。
-> 
-> 
+>
+>
 > ### IndexedDB 的特点
 > 1. key/value 的存储方式：
 > IndexedDB 和 localStorage 的存储方式类似，都是通过一个 key 对应一个 value，而且 key 是唯一的方式进行存储的，但是 IndexedDB 和 localStorage 有很不一样的一点就是可以直接存储对象数组等，不需要像  localSotrage 那样必须转为字符串。
@@ -1945,14 +1945,14 @@ addEventListener('message', (event) => {
 > IndexedDB 存储空间相比 localStorage 要大得多，一般不少于 250 MB。
 > 6. 支持二进制
 > IndexedDB 不但可以存储对象、字符串等，还可以存储二进制数据。
-> 
-> 
+>
+>
 > ### 应用场景
 > 比如在对商品列表的数据进行缓存，因为在浏览器中实现后退上一个页面，不刷新页面，一般只有用单页面应用才能实现，但因为种种原因而没有使用单页面框架，所以必须要将数据缓存到本地，下次打开列表后，发现如果 url 中的 id 和缓存数据的 id 一致，那么久直接使用缓存数据，不再进行请求。
 > 如果使用 localStorage 来解决会发现在一些特定情况下，数据有可能达到接近 5MB 的数据，在 PC 端的 Chorme 中是可以存到 localStorage 中，但在 IOS 中可能会报出空间不足，导致无法放入 localStorage 中，此时可以使用 indexedDB。
 > 因为 IndexedDB 的空间足够大，可以无需去考虑数据数据大小，而且还能直接以对象的形式存入，无需转为 JSON 字符串，大大减少了转换的运算。但使用 IndexedDB 基本上都是一步操作且要考虑一些低版本的手机可能不支持的情况，所以需要封装中间件，同样的调用，根据设备对 IndexedDB 的兼容情况，自动决定使用 IndexedDB 还是 localStorage。最终完成需求，并且优化前后达到超过 70% 的优化率，页面的渲染基本是秒开。
-> 
-> 
+>
+>
 > ### localStorage 和 IndexedDB 区别
 > - 相同点：两者都是在客户端永久性存储数据，都通过键值对存储数据。
 > - 不同点：
@@ -1977,7 +1977,7 @@ addEventListener('message', (event) => {
 >   /** 版本更新时是否需要删除原来的仓库 */
 >   isClear: boolean
 > }
-> 
+>
 > interface IndexedDBConfig {
 >   /** 数据库名 */
 >   dbName: string
@@ -1988,9 +1988,9 @@ addEventListener('message', (event) => {
 >   /** 初始化回调 */
 >   initCb?: () => void
 > }
-> 
+>
 > type TransactionMode = 'readonly' | 'readwrite' | 'versionchange'
-> 
+>
 > declare global {
 >   interface Window {
 >     webkitIndexedDB?: IDBFactory
@@ -1998,7 +1998,7 @@ addEventListener('message', (event) => {
 >     msIndexedDB?: IDBFactory
 >   }
 > }
-> 
+>
 > /** 跳出错误函数 */
 > export function throwError (
 >   name: string,
@@ -2010,7 +2010,7 @@ addEventListener('message', (event) => {
 >   }
 >   throw new Error(`${content}, name: ${name}`)
 > }
-> 
+>
 > /** IndexedDB 数据库操作帮手 */
 > export class IndexedDBHelper {
 >   /** 单例模式实例 */
@@ -2023,12 +2023,12 @@ addEventListener('message', (event) => {
 >   private readonly dbInfo?: IndexedDBConfig
 >   /** 数据库请求对象 */
 >   private readonly dbReq?: IDBOpenDBRequest
-> 
+>
 >   constructor (config: IndexedDBConfig) {
 >     if (IndexedDBHelper.dbInstance) {
 >       return IndexedDBHelper.dbInstance
 >     }
-> 
+>
 >     const indexedDb =
 >       window.indexedDB ||
 >       window.webkitIndexedDB ||
@@ -2037,24 +2037,24 @@ addEventListener('message', (event) => {
 >     if (!indexedDb) {
 >       throwError(IndexedDBHelper.name, '您的浏览器不支持IndexedDB')
 >     }
-> 
+>
 >     this.indexedDb = indexedDb
 >     this.dbInfo = config
 >     this.dbReq = this.open()
 >     this.initRequestHandler()
 >     IndexedDBHelper.dbInstance = this
 >   }
-> 
+>
 >   /** 去除 proxy（主要针对 vue3 中响应式数据内置的 proxy 对象） */
 >   private removeProxy (data) {
 >     return JSON.parse(JSON.stringify(data))
 >   }
-> 
+>
 >   /** 添加单条数据 */
 >   public add (storeName: string, data: any): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).add(this.removeProxy(data))
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息添加成功', ...arguments)
 >         resolve(event)
@@ -2068,12 +2068,12 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 获取单条数据 */
 >   public get (storeName: string, primaryKey: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).get(primaryKey)
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息获取成功', ...arguments)
 >         resolve(event)
@@ -2087,7 +2087,7 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 获取所有数据 */
 >   public getAll (storeName: string): Promise<any[]> {
 >     return new Promise((resolve, reject) => {
@@ -2112,7 +2112,7 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 通过索引获取相应数据 */
 >   public getByIndex (storeName: string, indexName: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
@@ -2137,7 +2137,7 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 更新数据 */
 >   public update (
 >     storeName: string,
@@ -2146,7 +2146,7 @@ addEventListener('message', (event) => {
 >   ): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).put(data, primaryKey)
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息设置成功', ...arguments)
 >         resolve(event)
@@ -2160,12 +2160,12 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 删除数据 */
 >   public delete (storeName: string, primaryKey: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).delete(primaryKey)
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息删除成功', ...arguments)
 >         resolve(event)
@@ -2179,11 +2179,11 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   public count (storeName: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName, 'readonly').count()
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库条数获取成功', ...arguments)
 >         resolve(event)
@@ -2197,13 +2197,13 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 打开数据库 */
 >   private open (): IDBOpenDBRequest {
 >     const { dbName, version } = this.dbInfo as IndexedDBConfig
 >     return this.indexedDb!.open(dbName, version)
 >   }
-> 
+>
 >   /** 初始化助手 */
 >   private initRequestHandler (): void {
 >     const dbReq = this.dbReq
@@ -2211,19 +2211,19 @@ addEventListener('message', (event) => {
 >     dbReq!.onerror = (event) => {
 >       throwError(IndexedDBHelper.name, 'IndexedDB数据库连接失败', event)
 >     }
-> 
+>
 >     /** 连接被阻止 */
 >     dbReq!.onblocked = (event) => {
 >       throwError(IndexedDBHelper.name, 'IndexedDB数据库连接被阻止', event)
 >     }
-> 
+>
 >     /** 成功打开数据库 */
 >     dbReq!.onsuccess = (event) => {
 >       console.log('数据库连接成功')
 >       this.db = dbReq!.result
 >       this.dbInfo!.initCb?.()
 >     }
-> 
+>
 >     /** 如果指定的版本号，大于数据库的实际版本号，就会发生数据库升级事件 */
 >     dbReq!.onupgradeneeded = (event) => {
 >       const db: IDBDatabase = (event as any).target?.result
@@ -2241,7 +2241,7 @@ addEventListener('message', (event) => {
 >       })
 >     }
 >   }
-> 
+>
 >   /** 建表 */
 >   private createStore (store: IndexedDBStore, db: IDBDatabase = this.db!): void {
 >     const { name, primaryKey, indexList } = store
@@ -2255,20 +2255,20 @@ addEventListener('message', (event) => {
 >       newStore.createIndex(name, name, { unique })
 >     })
 >   }
-> 
+>
 >   private beginTransaction (
 >     storeName: string,
 >     mode: TransactionMode = 'readwrite',
 >   ): IDBObjectStore {
 >     const transaction = this.db?.transaction(storeName, mode)
-> 
+>
 >     transaction!.onerror = (event) => {
 >       throwError(IndexedDBHelper.name, '事务创建失败!', event)
 >     }
 >     transaction!.oncomplete = (event) => {
 >       console.log('数据库修改结束，事务完成')
 >     }
-> 
+>
 >     return transaction!.objectStore(storeName)
 >   }
 > }
@@ -2300,8 +2300,8 @@ addEventListener('message', (event) => {
 Cache API 通过 `caches` 对象公开。要检测 API 是否在浏览器中实现，只需使用以下命令检查其是否存在：
 
 ```js
-if ('caches' in window) { 
-  console.log('支持 Cache API') 
+if ('caches' in window) {
+  console.log('支持 Cache API')
 }
 ```
 
