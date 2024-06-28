@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年6月28日
+  - docs(计算机网络): [HTTP] fetch下载进度 & 浏览器如何判断一个http请求结束
+
 ## 2024年6月26日
   - docs(前端基础): [JavaScript] 窗口、iframe与window
   - docs(计算机网络): [HTTP] Fetch、FormData
