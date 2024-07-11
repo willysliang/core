@@ -48,26 +48,7 @@ Description: JavaScript
 > - 1个特殊：`eval()`
 > ```
 
-### 抽象语法树`AST`
 
-- 抽象语法和抽象语法树就是**源代码的抽象语法结构的树状表现形式**
-- 浏览器通过`javascript Parser`解析器将js代码转化为抽象语法树来进行下一步的分析等其他操作。所以将js转化为抽象语法树更利于程序的分析。
-- 常用的`javascript Parser`：esprima、traceur、acorn、shift。
-
-**抽象语法树的作用**
-
-- 代码语法的检查，代码风格的检查，代码的格式化，代码的高亮，代码错误提示，代码自动补全等等
-
-  > 如：JSLint、JSHint 对代码错误或风格的检查，发现一些潜在的错误
-  > IDE的错误提示，格式化，高亮，自动补全等等
-  > 代码的混淆压缩
-  > 如：UglifyJS2等
-
-- 优化变更代码，改变代码结构达到想要的结构
-
-  > 代码打包工具webpack，rollup等等
-  > CommonJS、AMD、CMD、UMD等代码规范之间的转化
-  > CoffeeScript、TypeScript、JSX等转化为原生Javascript
 
 ### 一次js请求的缓存处理
 
@@ -77,6 +58,77 @@ Description: JavaScript
 - 服务器缓存：将需要频繁访问的Web页面和对象保存在离用户更近的系统中，当再次访问这些对象时加快访问速度。
 
 
+
+## V8 引擎
+
+```bash
+### V8 引擎是什么
+ V8是由Google开发的JavaScript和WebAssembly引擎，他是用C++开发的。目前他主要应用于Chrome浏览器和NodeJS上。
+ 他是参照ECMAScript和WebAssembly规范进行实现，并支持跨平台使用。他可以独立运行，也可以嵌入其他由C++实现的应用中。
+
+
+### 抽象语法树`AST`
+- 抽象语法和抽象语法树就是源代码的抽象语法结构的树状表现形式
+- 浏览器通过`javascript Parser`解析器将js代码转化为抽象语法树来进行下一步的分析等其他操作。所以将js转化为抽象语法树更利于程序的分析。
+- 常用的`javascript Parser`：esprima、traceur、acorn、shift。
+
+抽象语法树的作用
+- 代码语法的检查，代码风格的检查，代码的格式化，代码的高亮，代码错误提示，代码自动补全等等
+    如：JSLint、JSHint 对代码错误或风格的检查，发现一些潜在的错误
+    IDE的错误提示，格式化，高亮，自动补全等
+    代码的混淆压缩，如：UglifyJS2等
+
+- 优化变更代码，改变代码结构达到想要的结构
+    代码打包工具webpack，rollup等
+    CommonJS、AMD、CMD、UMD等代码规范之间的转化
+    CoffeeScript、TypeScript、JSX等转化为原生Javascript
+ 
+ 
+ ### V8 引擎如何执行 JS 代码
+ 1. 将JavaScript代码解析为AST（抽象语法树）
+		1.1 词法分析：将 JS 代码解析成一个个 token，token 就是代码中不能再拆分的小单元。
+		1.2 语法分析：将解析好的 token 根据语法解析成 AST。
+2. 生成字节码：字节码是介于AST与机器码之间的一种产物。他诞生的目的是为了解决内存占用问题。
+
+
+### 参考
+[知乎——认识 V8 引擎](https://zhuanlan.zhihu.com/p/27628685)
+[v8.dev](https://v8.dev/)
+```
+
+#### V8 如何提升代码执行效率
+
+```bash
+JS是动态类型的。对象的结构也是可以动态变更的。所以翻译成机器码的过程很复杂
+所以使用JIT编译（及时编译）：在代码执行的同时将代码翻译成机器码，而不是AOT(Ahead of Time)
+
+Re-compiler 和 De-optimise
+代码编译过程
+1. Parse JavaScript代码解析成AST
+2. AST再经过基础编译器（Baseline Compiler， Ignition）编译成机器码
+3. 在执行过程，机器码的执行过程会被收集和标记，如果多次被执行，则会被编译成hot
+4. 被标记为Hot之后，会走增强编译器（Optimizing Compiler， TurboFan）再编程成更加高效的机器码
+
+例子：
+    function load(obj) {
+      return obj.x
+    }
+    load({x: 4, y: 7});
+    load({x: 6, y: 3});
+    load({x: 8, y: 7});
+    load({x: 1, y: 5});
+    load({x: 2, y: 4});
+
+多次执行load后，load被标记为hot => 由于load的obj参数多次执行后类型都是一致的
+下次执行后，会直接通过内存偏移的方式直接取出对应的obj.x，大大的提高了代码执行的性能
+
+ES6的优化
+    function foo() {
+        return {[x]: 1}
+    }
+```
+
+![image-20240711172648211](./images/image-20240711172648211.png)
 
 ## JS在浏览器的运行机制
 

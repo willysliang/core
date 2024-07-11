@@ -2278,12 +2278,6 @@ addEventListener('message', (event) => {
 
 ## Service Worker
 
-```bash
-## Service Worker
-
-
-```
-
 
 
 ### Cache API
@@ -2292,8 +2286,6 @@ addEventListener('message', (event) => {
 
 - 它允许您缓存 URL 可寻址资源，这意味着资源、网页、HTTP API 响应。
 - 它并不意味着缓存单个数据块，这是 IndexedDB API 的任务。
-
-
 
 #### 检测 Cache API 是否可用
 
@@ -2305,8 +2297,6 @@ if ('caches' in window) {
 }
 ```
 
-
-
 #### 初始化缓存
 
 - 使用 `caches.open('key-name')` API，它返回一个带有缓存对象的 Promise 以供使用。
@@ -2317,8 +2307,6 @@ caches.open('my-cache').then((cache) => {
   // 您可以开始使用缓存
 })
 ```
-
-
 
 #### 将项目添加到缓存
 
@@ -2354,8 +2342,6 @@ caches.open('my-cache').then((cache) => {
 })
 ```
 
-
-
 #### 手动获取和添加
 
 `cache.add()` 自动获取资源并将其缓存。
@@ -2370,8 +2356,6 @@ fetch(url).then((res) => {
 })
 ```
 
-
-
 #### 从缓存中检索项目
 
 `cache.match()` 返回一个 Response 对象，其中包含有关请求的所有信息和网络请求的响应
@@ -2383,8 +2367,6 @@ caches.open('my-cache').then((cache) => {
   })
 })
 ```
-
-
 
 #### 获取缓存中的所有项目
 
@@ -2398,8 +2380,6 @@ caches.open('my-cache').then((cache) => {
 })
 ```
 
-
-
 #### 获取所有可用的缓存
 
 `caches.keys()` 方法列出了每个可用缓存的键。
@@ -2411,8 +2391,6 @@ caches.keys().then((keys) => {
 })
 ```
 
-
-
 #### 从缓存中删除项目
 
 给定一个 `cache` 对象，其 `delete()` 方法将从中删除缓存的资源。
@@ -2422,8 +2400,6 @@ caches.open('my-cache').then((cache) => {
   cache.delete('/api/todos')
 })
 ```
-
-
 
 #### 删除缓存
 
@@ -2528,15 +2504,12 @@ Push 是工作在 serviceWorker 线程下的，所以不关系浏览器窗口是
 - PushMessageData
 - PushSubscription
 - PushSubscriptionOptions
-
 ```
 
 ##### PushManager
 
 ```bash
-### PushManager
-通过 ServiceWorkerRegistration.PushManager 获取。
-PushManager 接口用于操作推送订阅。
+PushManager 接口用于操作推送订阅，通过 ServiceWorkerRegistration.PushManager 获取
 
 
 #### `PushManager.subscribe()`：用于订阅推送服务。
@@ -2568,20 +2541,16 @@ options 参数:
 ##### PushEvent
 
 ```bash
-### PushEvent
 Push API 接收消息时的事件。此事件在 ServiceWorkerGlobalScope 下响应。
 
 属性
 	- data：返回对 PushMessageData 类型，包含发送到的数据的对象。
-
 ```
 
 ##### PushMessageData
 
 ```bash
-### PushMessageData
-此接口为 PushEvent.data 中的类型。
-与 Fetch 中 Body 的方法相似，不同处再于可以重复调用。
+PushMessageData 接口为 PushEvent.data 中的类型。与 Fetch 中 Body 的方法相似，不同处再于可以重复调用。
 
 方法
 	- arrayBuffer()
@@ -2593,7 +2562,6 @@ Push API 接收消息时的事件。此事件在 ServiceWorkerGlobalScope 下响
 ##### PushSubscription
 
 ````bash
-### PushSubscription
 PushSubscription 为 PushManager.subscribe() 的订阅信息类型。
 
 #### 属性
@@ -2648,7 +2616,6 @@ name 参数：
 #### Push 相关事件
 
 ```bash
-### Push 相关事件
 Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅更改事件。
 
 
@@ -2667,7 +2634,6 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 语法：
 	- `ServiceWorkerGlobalScope.onpushsubscriptionchange = function() { ... }`
 	- `self.addEventListener('pushsubscriptionchange', function() { ... })`
-
 ```
 
 
@@ -2681,7 +2647,6 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 ##### 浏览器端订阅
 
 ```bash
-### 浏览器端订阅
 浏览器端在订阅 Push Server 时，必须 Notification 是授权的，否则会出现授权窗口，这里的授权交互和 Notification 的授权是一样的。
 
 注意：Notificatino 的授权状态手动调整改变后，订阅体将失效，需要重新订阅。
@@ -2691,7 +2656,6 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 关于推送请求问题，需要使用 VAPID 协议。
 
 订阅时applicationServerKey 使用 VAPID 公钥作为识别标示，规范中要求公钥需要 UInt8 类型，所以订阅前要进行类型转换。
-
 ```
 
 ![image-20240228204948313](./image/image-20240228204948313.png)
@@ -2720,21 +2684,14 @@ navigator.serviceWorker.ready.then(swReg => {
 
 ##### 应用服务器端发送
 
-```bash
-### 应用服务器端发送
 应用服务器从数据库里取出你的订阅信息，然后根据 Web Push 协议要求，对要发送的消息进行拼装和加密，然后发送给相应的 Push 服务器，然后 Push 服务器再根据订阅信息中的标志发送给相应的终端。
-
-```
 
 ![image-20240228205239484](./image/image-20240228205239484.png)
 
 ##### 设备端接收
 
-```bash
-### 设备端接收
 浏览器端收到推送消息后，会激活相应的 ServiceWorker 线程，并触发 Push 事件。
 例如收到消息后，展示一个 Notification，或者做任何其他的事。
-```
 
 ![image-20240228205720647](./image/image-20240228205720647.png)
 
@@ -2761,11 +2718,9 @@ self.addEventListener("push", function(event) {
 ##### 浏览器订阅
 
 ```bash
-### 浏览器订阅
 在 `subscribe()` 方法中的 `applicationServerKey` 选项用于推送服务器鉴别订阅用户的应用服务，并用确保推送消息发送给哪个订阅用户。
 
 `applicationServerKey` 是一对公私钥。私钥应用服务器保存，公钥交给浏览器，浏览器订阅时将这个公钥传给推送服务器，这样推送服务器可以将你的公钥和用户的 `PushSubscription` 绑定。
-
 ```
 
 
@@ -2773,7 +2728,6 @@ self.addEventListener("push", function(event) {
 ##### 你的服务器发送
 
 ```bash
-### 你的服务器发送
 当你的服务器要发送推送消息时，需要创建一个 `Authorization` 的 header 头，`Authorization` 由规范要求的加密算法进行私钥加密。推送消息收到消息时，首先取消息请求中 `endpoint` 对应的公钥，解码消息请求中签名过的 `Authorization` header 头，验证签名是否合法，防止它人伪造身份。通过后，推送服务器把消息发送到相应的设备浏览器。
 
 注：这里说的 applicationServerKey 就是 VAPID key。
@@ -2785,13 +2739,11 @@ Authorization 对 JWT 签名的格式要求：`Authorization: 'WebPush <JWT Info
 在签名的前面加上 WebPush 作为 Authorization 头的值发送给推送服务器。
 推送协议同时要求Crypto-Key header 头，用来发送公钥，并需要p256ecdsa=前缀，格式：`Crypto-Key: p256ecdsa=<URL Safe Base64 Public Application Server Key>
 `
-
 ```
 
 ##### 关于消息部分的加密
 
 ```bash
-### 关于消息部分的加密
 发送的消息部分（即 payload）为了保证安全性，协议里同样要求需要加密，且推送服务器无法解密，只有浏览器才能解密消息数据。
 
 在浏览器向推送服务器进行订阅后产生的订阅体，在这里就用的上了，再看下结构：
@@ -2807,7 +2759,6 @@ Authorization 对 JWT 签名的格式要求：`Authorization: 'WebPush <JWT Info
 
 结构中的 keys 字段就是浏览器端的密钥信息，由浏览器生成。
 加密需要 auth、p256dh和payload 三个值做为输入进行加密，加密过程比较复杂。
-
 ```
 
 **FCM的请求DEMO**
@@ -2919,7 +2870,6 @@ function uint8ArrayToBase64Url(uint8Array, start, end) {
     .replace(/\+/g, '-')
     .replace(/\//g, '_');
 }
-
 ```
 
 ###### 应用服务器端实现
@@ -2952,7 +2902,4 @@ webpush
   .catch(err => {
     // err.statusCode
   });
-
-
 ```
-

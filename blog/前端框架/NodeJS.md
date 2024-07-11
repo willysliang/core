@@ -10,9 +10,39 @@ Description: NodeJS 进阶
 
 ```bash
 ## NodeJS 进阶
+1. Node与工程化开发
+阻塞非阻塞
+触发器events与path模块
+Buffer对象
 
 
+2. Node框架
+数据脚本
+CORS配置
+错误处理
+校验封装
+nodemoon管理
+MORGAN日志处理
+查询正则捕获
+文件流上传下载
 
+
+3. 前后端数据交互
+报文流
+测试监听抓包
+TCP/IP握手机制
+网络业务模型
+代理
+网关
+隧道等概念
+代理服务器跨域处理
+拦截
+合并
+通信加密策略
+数据对称加密
+数据非对称加密
+RSA加密实践
+MD5加密实践
 ```
 
 
@@ -20,12 +50,8 @@ Description: NodeJS 进阶
 ## 原生路由
 
 ```ts
-/**
- * @ Author: willy
- * @ Create Time: 2023-08-15 14:31:38
- * @ Modifier by: willy
- * @ Modifier time: 2023-08-24 17:39:53
- * @ Description: main.ts 入口文件
+/** 
+ * @file main.ts 入口文件
  */
 
 // 启动服务
@@ -40,16 +66,11 @@ const apiRouter = require("./router/api")
 server.use(route)
 server.use(apiRouter)
 server.start()
-
 ```
 
 ```js
-/**
- * @ Author: willy
- * @ Create Time: 2023-08-24 16:45:14
- * @ Modifier by: willy
- * @ Modifier time: 2023-08-24 16:53:27
- * @ Description: server.ts 服务开关
+/** 
+ * @file server.ts 服务开关 
  */
 
 const http = require("http")
@@ -78,20 +99,12 @@ const start = () => {
     })
 }
 
-module.exports = {
-    use,
-    start,
-}
-
+module.exports = { use, start }
 ```
 
 ```ts
 /**
- * @ Author: willy
- * @ Create Time: 2023-08-24 17:09:05
- * @ Modifier by: willy
- * @ Modifier time: 2023-08-24 17:09:56
- * @ Description: utils.ts 工具类
+ * @file utils.ts 工具类
  */
 
 /** 接口调用中转处理 */
@@ -103,19 +116,12 @@ const render = (res, path, type = "", code = 200) => {
     res.end()
 }
 
-module.exports = {
-    render,
-}
-
+module.exports = { render }
 ```
 
 ```ts
 /**
- * @ Author: willy
- * @ Create Time: 2023-08-24 16:52:37
- * @ Modifier by: willy
- * @ Modifier time: 2023-08-24 17:58:55
- * @ Description: route.ts 路由表
+ * @file route.ts 路由表
  */
 
 const fs = require("fs")
@@ -139,24 +145,17 @@ const routes = {
          这里将项目文件夹F://项目+static+/css/index.css合并成文件路径，如果存在就读取该文件返回
          */
         let pathname = path.join(__dirname, "static", url.pathname)
-        if (fs.readStaticFile(res, pathname)) {
-            return
-        }
+        if (fs.readStaticFile(res, pathname)) return
         routeRender(res, "./static/404.html")
     },
 }
 
 module.exports = routes
-
 ```
 
 ```ts
 /**
- * @ Author: willy
- * @ Create Time: 2023-08-24 17:03:51
- * @ Modifier by: willy
- * @ Modifier time: 2023-08-24 17:49:56
- * @ Description: api.ts 接口
+ * @file api.ts 接口
  */
 
 const { render: apiRender } = require("./utils")
@@ -196,35 +195,27 @@ const api = {
 }
 
 module.exports = api
-
 ```
 
 ```ts
 /**
- * @ Author: willy
- * @ Create Time: 2023-08-15 14:31:38
- * @ Modifier by: willy
- * @ Modifier time: 2023-08-24 17:52:57
- * @ Description: demo.ts 客户端发起请求
+ * @file demo.ts 客户端发起请求
  */
 
 const username = 'willys'
 const password = 123456
 
-//get请求
+// get请求
 fetch(`/api/login?username=${username}&password=${password}`)
     .then((res) => res.text())
     .then((res) => {
         console.log(res)
     })
 
-//post请求
+// post请求
 fetch(`/api/loginpost`, {
     method: "POST",
-    body: JSON.stringify({
-        username: username,
-        password: password,
-    }),
+    body: JSON.stringify({ username, password }),
     headers: {
         "Content-Type": "application/json",
     },
@@ -233,13 +224,13 @@ fetch(`/api/loginpost`, {
     .then((res) => {
         console.log(res)
     })
-
 ```
+
+
 
 ## 中间件
 
 ```bash
-## 中间件
 中间件（Middleware）是一种软件模式，用于将不同的软件系统或组件连接起来，使其能够相互通信和交互。它最大的特点是一个中间件处理完可以再传递给下一个中间件。
 
 App 实例再运行过程中，会调用一系列的中间件。每个中间件可以从 APP 实例中接收三个参数，依次为request对象（访问请求对象）、response对象（响应对象），next回调函数（代表 web 应用处于请求-响应循环流程中的下一个中间件）。每个中间件都可以对访问请求对象（request对象）进行加工，并且决定是否调用 next 方法将 request 对象再传给下一个中间件。
@@ -253,7 +244,6 @@ App 实例再运行过程中，会调用一系列的中间件。每个中间件�
 3. 处理响应：可以在应用程序处理请求之后对请求响应 response 进行处理。例如，中间件可以设置响应信息、压缩响应体、处理错误等。
 4. 执行共享逻辑：可以执行一些通用逻辑，这些逻辑可以在多个路由处理程序中共享。例如身份验证、请求日志记录、性能监控等。
 5. 处理错误：可以捕获和处理应用程序中的错误。例如未处理的异常、HTTP 错误响应等。
-
 ```
 
 ````js
@@ -266,13 +256,11 @@ const uselessMiddleware = (req, res, next) => {
 const uselessMiddlewareError = (req, res, next) => {
     next("出错啦~")
 }
-
 ````
 
 ## 洋葱模型
 
 ```bash
-## 洋葱模型
 洋葱模型是 Koa 框架中常用的一种中间件处理方式，它的核心思想是将请求和响应的处理过程看作是一层层的中间件函数，每个中间件函数都可以对请求和响应进行处理，并将处理结果传递给下一个中间件，最终得到最终的响应结果。
 
 洋葱模型执行示意图：
@@ -280,13 +268,11 @@ const uselessMiddlewareError = (req, res, next) => {
 
 
 在洋葱模型中，请求从外层开始，依次经过每个中间件函数的前置处理，然后进入业务处理结果，最后依次经过每个中间件函数的后置处理，最终得到响应结果。
-
 ```
 
 ```ts
 /**
- * Koa.ts
- * 实现 Koa 的洋葱模型
+ * @file Koa.ts 实现 Koa 的洋葱模型
  */
 class Koa {
   middlewares: Array<any> = []
@@ -323,7 +309,6 @@ class Koa {
     })
   }
 }
-
 ```
 
 ```js
@@ -363,7 +348,6 @@ koa.listen(3000)
     { name: 'willy', age: 25 }
     2
  */
-
 ```
 
 
@@ -376,10 +360,9 @@ koa.listen(3000)
 
 
 ### lowdb
-Lowdb是一种轻量级的本地JSON数据库，可以用于存储和操作JSON数据。它的作用是在Node.js和浏览器中提供一种简单的方法来创建和管理本地数据库，这些数据库通常用于小型应用程序和原型开发。Lowdb提供了一组简单易用的API，可以用于读取、写入、更新和删除JSON数据。它还支持链式操作，使得数据操作更加简单和直观。
-
+`lowdb` 是一种轻量级的本地JSON数据库，可以用于读取、写入、更新和删除JSON数据，还支持链式操作。
+它的作用是在Node.js和浏览器中提供一种简单的方法来创建和管理本地数据库，这些数据库通常用于小型应用程序和原型开发。
 安装：$ npm i lowdb
-
 ```
 
 ### all方法和http动词方法
@@ -414,7 +397,6 @@ app.get("*", (req, res) => {
 })
 
 http.createServer(app).listen(300)
-
 ```
 
 ### 路径匹配
@@ -461,7 +443,6 @@ app.get(/.*fly$/, function (req, res) {
 })
 
 http.createServer(app).listen(300)
-
 ```
 
 ### 多回调处理
@@ -492,7 +473,6 @@ const cb2 = (req, res) => {
     res.send("Hello from C!")
 }
 app.get("/example/c", [cb0, cb1, cb2])
-
 ```
 
 ### request对象
@@ -511,13 +491,11 @@ app.get("/example/c", [cb0, cb1, cb2])
 	- request.ip		获取 IP 地址
 
 	- request.get('请求头中某个属性名') 	获取请求头
-
 ```
 
 ### response 对象
 
 ```bash
-### response 对象
 res.end()	结束响应过程。
 res.json()	发送JSON响应。
 res.jsonp()	发送带有JSONP支持的JSON响应。
@@ -529,7 +507,6 @@ res.download('需要被下载文件的所在路径')	提示要下载的文件。
 res.redirect()	重定向请求（允许网址的重定向）。
 res.sendFile()	将文件作为八位字节流发送（用于发送文件）。
 res.render()	渲染视图模板（用于渲染网页模板）。
-
 ```
 
 ```js
@@ -545,20 +522,17 @@ response.sendFile("/path/to/willy.mp4")
 app.get("/", (request, response) => {
     response.render("index", { message: "Hello World!" })
 })
-
 ```
 
 ### Express 中间件
 
 ```bash
-### Express 中间件
 Express 应用可使用如下几种中间件：
 	- 应用级中间件
 	- 路由级中间件
 	- 错误处理中间件
 
 使用可选则挂载路径，可在应用级别或路由级别装载中间件。此外还可以同时装在一系列中间件函数，从而在一个挂载点上创建一个子中间件栈。
-
 
 
 ### 应用级中间件
@@ -590,7 +564,6 @@ express.static 是 Express 唯一内置的中间件。它基于 serve-static，�
          //send的状态码默认是200
       res.status(500).send('error')
     })
-
 ```
 
 ```js
@@ -655,10 +628,9 @@ app.use(indexRouter)
 app.use("/login", checkCodeMiddleware, LoginRouter)
 
 http.createServer(app).listen(3000)
-
 ```
 
-## Express 服务端渲染
+## 模板引擎 ejs
 
 ```bash
 ## Express 服务端渲染
@@ -667,13 +639,11 @@ $ cnpm i -g express-generator
 
 2. 使用 ejs 模板引擎创建应用：
 $ express --view=ejs myapp
-
 ```
 
-### ejs 标签含义
+#### ejs 标签含义
 
 ```bash
-### ejs 标签含义
 <% '脚本' 标签，用于流程控制，无输出。
 <%_ 删除其前面的空格符
 <%= 输出数据到模板（输出是转义 HTML 标签）
@@ -683,7 +653,6 @@ $ express --view=ejs myapp
 %> 一般结束标签
 -%> 删除紧随其后的换行符
 _%> 将结束标签后面的空格符删除
-
 ```
 
 ```ejs
@@ -698,10 +667,9 @@ _%> 将结束标签后面的空格符删除
 
 
 <%- include("./header.ejs",{ isShowSchool:true }) %> index <%# 我的注释 %>
-
 ```
 
-### ejs 列表渲染
+#### ejs 列表渲染
 
 ```js
 const ejs = require("ejs")
@@ -727,10 +695,9 @@ console.log(result)
     <li>c</li>
     <li>d</li>
 </ul> */
-
 ```
 
-### ejs 条件渲染
+#### ejs 条件渲染
 
 ```js
 const ejs = require("ejs")
@@ -754,10 +721,9 @@ console.log(result)
 <!-- 输出 result 转化为以下内容 -->
 <button>登录</button>
 */
-
 ```
 
-### express 中使用 ejs
+#### express 中使用 ejs
 
 ```js
 const express = require("express")
@@ -782,7 +748,6 @@ app.get("/home", (req, res) => {
 app.listen(80, () => {
     console.log("server is running at port 5000")
 })
-
 ```
 
 ```ejs
@@ -791,8 +756,6 @@ app.listen(80, () => {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
 </head>
 <body>
@@ -823,8 +786,7 @@ mongoose 的好处
 	3. 数据可以通过类型转换来转换成对象模型
 	4. 可使用中间件来与应用业务逻辑挂钩
 
-安装：
-$ npm i -S mongoose
+安装：$ npm i -S mongoose
 
 
 ### 字段类型
@@ -883,7 +845,6 @@ module.exports = function (success = null, error = null) {
     // 断开数据库连接
     // mongoose.disconnect()
 }
-
 ```
 
 
@@ -1661,11 +1622,8 @@ var router = express.Router()
 const userController = require('../controllers/userController')
 
 router.get('/', userController.getUser)
-
 router.post('/', userController.addUser)
-
 router.put('/:id', userController.updateUser)
-
 router.delete('/:id', userController.deleteUser)
 
 module.exports = router
@@ -1707,34 +1665,13 @@ const userService = {
   getUser(page, limit) {
     return userModel
       .find({}, { _id: 0 })
-      .sort({
-        age: -1,
-      })
+      .sort({ age: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
   },
-  addUser({ username, password, age }) {
-    return userModel.create({
-      username,
-      password,
-      age,
-    })
-  },
-  updateUser(_id) {
-    return userModel.updateOne(
-      {
-        _id,
-      },
-      {
-        username: '更新',
-      },
-    )
-  },
-  deleteUser(_id) {
-    return userModel.deleteOne({
-      _id,
-    })
-  },
+  addUser: ({ username, password, age }) => userModel.create({ username, password age }),
+  updateUser: (_id) => userModel.updateOne({ _id }, { username: '更新' }),
+  deleteUser: (_id) => userModel.deleteOne({ _id }),
 }
 
 module.exports = userService
@@ -1742,11 +1679,12 @@ module.exports = userService
 
 
 
-## PM2
+## PM2 管理
 
 ```bash
 ##  PM2 - Node 应用进程管理器
-- pm2 是 node 进程管理工具，可以利用它来简化很多 node 应用管理的繁琐任务，如性能监控、自动重启、负载均衡等。因为在工作中遇到服务器重启后，正常情况是需要一个个去重新启动每个服务（如`node index.js`的方式启动），这样不仅繁琐、效率低，而且若是服务器端口过多，容易遗忘开启一些服务。
+pm2 是 node 进程管理工具，可以利用它来简化很多 node 应用管理的繁琐任务，如性能监控、自动重启、负载均衡等。
+因为在工作中遇到服务器重启后，正常情况是需要一个个去重新启动每个服务（如`node index.js`的方式启动），这样不仅繁琐、效率低，而且若是服务器端口过多，容易遗忘开启一些服务。
 
 对于 node 的项目，如果报错可能会直接停止导致整个服务器崩溃，一般监控 node 的方案有:
 	- supervisor: 一般用于开发环境的使用。
@@ -1775,7 +1713,6 @@ module.exports = userService
   - 查看所在目录是否成功创建目录：`dir`
   - 初始化生成package.json文件：`$ npm init -y`
   - 启动服务命令：`$ pm2 start 文件名.js`
-
 ```
 
 
