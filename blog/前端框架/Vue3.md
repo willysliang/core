@@ -24,6 +24,10 @@ Description: Vue3
 这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作时非常重要的。
 然后，在下一个的事件循环 'Tick' 中，vue 刷新队列并执行实际（已去重的）工作。
 vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObserver` 和 `setImmediate`，如果执行环境不支持，则采用 `setTimeout(fn, 0)` 代替。
+
+
+三、vue渲染是异步的，为什么还使用 NextTick
+渲染队列跟nexttick处理时机不同的，nextTick 是在渲染队列清空之后执行，因此能获取到新的 Dom 节点内容。
 ```
 
 

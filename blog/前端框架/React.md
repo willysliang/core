@@ -188,32 +188,136 @@ redux的reducer纯函数应用（redux的reducer必须是一个纯函数，不�
 
 ### 概念
 
-- react是将数据渲染成页面视图的js库，还可在React Native中使用react语法进行移动端开发
-- 特点：采用**组件化**模式、**声明式编码**，提高开发效率及组件复用率。
-- react高效：使用虚拟DOM(不直接操作页面真实DOM)和Diffing算法(最小化页面重绘)，尽量减少与真实DOM的交互
-- 创建虚拟DOM
-    - js：**React.createElement(component, props, ...children)**
-    - JSX：**` const VDOM = <h1>Hello,React</h1>`**
-- 渲染虚拟DOM到页面： **ReactDOM.render(虚拟DOM’virtualDOM’, 容器‘containerDOM’)**
-- 使用React开发者工具调试：`React Developer Tools`
-- `shift + F5`会刷新整个浏览器
+```bash
+- react 是将数据渲染成页面视图的 JS 库。
+- 特点：采用组件化模式、声明式编码，提高组件复用率及开发效率。
+- react 渲染高效的原因：使用虚拟 DOM（不直接操作页面真实DOM）和Diffing算法（最小化页面重绘），尽量减少与真实 DOM 的交互。
+
+- 创建虚拟 DOM
+    - js：`React.createElement(component, props, ...children)`
+    - JSX：` const VDOM = <h1>Hello,React</h1>`
+
+- 渲染虚拟 DOM 到页面：`ReactDOM.render(虚拟DOM’virtualDOM’, 容器‘containerDOM’)`
+
+
+
+#### React 的设计思想
+1. 组件化
+每个组件都符合开放-封闭原则，封闭是针对渲染工作流来说的，指的是组件内部的状态都由自身维护，只处理内部的渲染逻辑。开放是针对组件通信来说的，指的是不同组件可以通过props（单项数据流）进行数据交互
+
+2. 数据驱动视图
+`UI=f(data)`，通过这个公式得出，如果要渲染界面，不应该直接操作DOM，而是通过修改数据(state或prop)，数据驱动视图更新
+
+3. 虚拟DOM
+由浏览器的渲染流水线可知，DOM操作是一个昂贵的操作，很耗性能，因此产生了虚拟DOM。虚拟DOM是对真实DOM的映射，React通过新旧虚拟DOM对比，得到需要更新的部分，实现数据的增量更新
+
+
+#### 常用的性能优化方案
+```
 
 
 
 ### JSX
 
+```bash
 - JSX：JS+XML，XML早期用于存储和传输数据（后来因JSON格式简便且可跟字符串相互转换被JSON替代）
 - 使用JSX的原因：因为用纯js写生成的html代码，当为多层标签嵌套时，会产生很多嵌套循环语句，代码相对不简便
+- JSX是react的语法糖，它允许在html中写JS，它不能被浏览器直接识别，需要通过webpack、babel之类的编译工具转换为JS执行
+
 - jsx语法规则
-    1. 虚拟DOM元素**只能有一个根元素**
-    2. DOM元素标签必须闭合
-    3. 定义虚拟DOM时，不能用引号
-    4. 标签中混入JS**表达式**要用`{}`(注意：只能混入表达式，不能混入语句)
-    5. 样式的类名指定用`className`，而不是class
-    6. 内联样式要用`style={key:value}`的形式写，且样式要用驼峰法
-    7. 标签首字母大小写
-        1. 若小写字母开头，则将该标签转为html中同名标签元素，若html中无该标签对应的同名元素，会导致因该标签不存在Html定义中而报错
-        2. 若大写字母开头，react就会渲染对应的组件，若该组件名没有定义，则报错
+  1. 虚拟DOM元素**只能有一个根元素**
+  2. DOM元素标签必须闭合
+  3. 定义虚拟DOM时，不能用引号
+  4. 标签中混入JS**表达式**要用`{}`(注意：只能混入表达式，不能混入语句)
+  5. 样式的类名指定用`className`，而不是class
+  6. 内联样式要用`style={key:value}`的形式写，且样式要用驼峰法
+  7. 标签首字母大小写（自定义组件需要大写）
+     - 若小写字母开头，则将该标签转为html中同名标签元素，若html中无该标签对应的同名元素，会导致因该标签不存在Html定义中而报错
+     - 若大写字母开头，它会当成一个变量进行传递，react就会渲染对应的组件，若该组件名没有定义，则报错
+     - `<app>lyllovelemon</app>` 转义后 `React.createElement("app", null, "lyllovelemon")`
+		 - `<App>lyllovelemon</App>` 转义后 `React.createElement(App, null, lyllovelemon)`
+     
+
+#### JSX 与 JS 的区别
+JS可以被打包工具直接编译，不需要额外转换，jsx需要通过babel编译，它是React.createElement的语法糖，使用jsx等价于React.createElement
+jsx是js的语法扩展，允许在html中写JS；JS是原生写法，需要通过script标签引入
+
+
+#### 为什么在文件中没有使用react，也要在文件顶部import React from “react”
+只要使用了jsx，就需要引用react，因为jsx本质就是React.createElement
+
+注意，在React 17RC 版本后，jsx不一定会被转换为React.createElement了
+		function App(){ return <h1>hello,lyllovelemon</h1> }    
+react17 将会通过编译器babel/typescript转换为
+		import {jsx as _jsx} from 'react/jsx-runtime';
+		function App() { return _jsx('h1', { children: 'hello,lyllovelemon' }); }
+此时就不需要通过import React就能使用jsx了（用react hooks还是需要导入React）
+```
+
+
+
+#### React组件为什么只能有一个根元素
+
+```bash
+React组件为什么不能返回多个元素？
+- React组件最后会编译为render函数，函数的返回值只能是1个，如果不用单独的根节点包裹，就会并列返回多个值，这在js中是不允许的
+- react的虚拟DOM是一个树状结构，树的根节点只能是1个，如果有多个根节点，无法确认是在哪棵树上进行更新
+
+React组件怎样可以返回多个组件？
+- 使用HOC（高阶函数）
+- 使用React.Fragment，可以让你将元素列表加到一个分组中，而且不会创建额外的节点（类似vue的template)
+```
+
+```jsx
+class App extends React.Component {
+  render() { 
+    return(
+    <div>
+     <h1 className="title">lyllovelemon</h1>
+      <span>内容</span>	
+    </div>	
+  )
+}
+
+//编译后
+class App extends React.Component {
+  render() {
+    return React.createElement('div', null, [
+      React.createElement('h1', {className:'title'}, 'lyllovelemon'),
+      React.createElement('span'), null, '内容',
+    ])
+  }
+}
+```
+
+```jsx
+renderList(){
+  this.state.list.map((item,key)=>{
+    return (
+      <React.Fragment>
+        <tr key={item.id}>
+          <td>{item.name}</td>
+          <td>{item.age}</td>
+          <td>{item.address}</td>
+        </tr>	
+      </React.Fragment>
+    )
+  })
+}
+
+
+renderList(){
+  this.state.list.map((item,key)=>{
+    return [
+      <tr key={item.id}>
+        <td>{item.name}</td>
+        <td>{item.age}</td>
+        <td>{item.address}</td>
+      </tr>
+    ]
+  })
+}
+```
 
 
 
@@ -260,6 +364,9 @@ ReactDOM.render(VDOM, document.getElementById('test'))
 >   - 组件化：当应用是以多组件的方式实现, 这个应用就是一个组件化的应用
 
 ### 组件类型
+
+- react组件有类组件、函数组件
+- react元素是通过jsx创建的，`const element = <div className="element">我是元素</div>	`
 
 #### 类式组件
 
@@ -320,22 +427,6 @@ function Person() {
 }
 
 ReactDOM.render(<Person />, document.getElementById('root'))
-```
-
-
-
-#### 文件中的组件
-
-React 就是重用代码，建议将组件拆分为单独的 js 文件中
-
-***\*注意\****：文件名必须以大写字符开头。
-
-```js
-function SayHello() {
-  return <h2>Hello React!</h2>
-}
-
-export default SayHello
 ```
 
 
@@ -495,15 +586,48 @@ export default SayHello
 >1. 当方法没有参数时调用：`<button onClick={getFunc}>按钮</button>`
 >2. 当方法有参数时调用：`<button onClick={() => getFunc("参数值")}>按钮</button>`
 
+
+
 #### refs
 
-> - 组件内的标签通过定义`ref`属性来标识自己（类似于给标签添加id属性），然后通过`this.refs.ref定义的属性名`来访问DOM节点获取其标签（注意：该种定义获取ref的方式已过时，因为string类型的ref存在一些问题）
-> - 字符串形式的ref：`<input ref="input1" />`（不建议使用）
-> - 绑定class形式的ref：`<input ref={this.input1}>`
-> - **回调函数形式的ref**：`<p ref={ currentNode => this.input1 = currentNode} />`（意思是把当前ref的节点挂载到实例自身上并取名为input1）
-> - **createRef创建ref容器**，然后绑定函数
->   - `myRef = React.createRef() `
->   - `<input ref={ this.myRef }/>`
+```bash
+Refs 是 React 中引用的简写。它是一个有助于存储对特定的 React 元素或组件的引用的属性，它将由组件渲染配置函数返回。用于对 render() 返回的特定元素或组件的引用。
+
+- 组件内的标签通过定义 `ref` 属性来标识自己（类似于给标签添加id属性），然后通过`this.refs.ref定义的属性名`来访问DOM节点获取其标签（注意：该种定义获取ref的方式已过时，因为string类型的ref存在一些问题）
+
+- 字符串形式的ref：`<input ref="input1" />`（不建议使用）
+- 绑定class形式的ref：`<input ref={this.input1}>`
+- 回调函数形式的ref：`<p ref={ currentNode => this.input1 = currentNode} />`（即把当前ref的节点挂载到实例自身上并取名为input1）
+- createRef创建ref容器，然后绑定函数
+    - `myRef = React.createRef() `
+    - `<input ref={ this.myRef }/>`
+
+
+#### refs 的应用场景
+当需要进行 DOM 测量或向组件添加方法时，可以使用 refs：
+	- 需要管理焦点、选择文本或媒体播放时
+	- 触发式动画
+	- 与第三方 DOM 库集成
+```
+
+```jsx
+class ReferenceDemo extends React.Component{
+  display() {
+    const name = this.inputDemo.value;
+    document.getElementById('disp').innerHTML = name;
+  }
+  
+  render() {
+    return(        
+      <div>
+        Name: <input type="text" ref={input => this.inputDemo = input} />
+        <button name="Click" onClick={this.display}>Click</button>            
+        <h2>Hello <span id="disp"></span> !!!</h2>
+      </div>
+    );
+  }
+}
+```
 
 
 
@@ -587,8 +711,6 @@ export default SayHello
 
 
 
-
-
 ### 合成事件
 
 > ```bash
@@ -598,8 +720,19 @@ export default SayHello
 > 另外冒泡到 Document 上的事件也不是原生浏览器事件，而是 React 自己实现的合成事件(SyntheticEvent)。它是浏览器原生事件的跨浏览器包装器，它还是拥有和浏览器原生事件相同的接口，包括阻止事件传递的 `stopPropagation()` 和 `preventDefault()` 等接口。
 > 
 > 
-> ## React 实现合成事件的目的
-> 1. 赋予了 React 跨浏览器开发的能力。合成事件是一个跨浏览器原生事件包装器，抹平了浏览器之间的兼容问题。
+> ### 什么是合成事件
+> React基于浏览器的事件机制实现了一套自身的事件机制，它符合W3C规范，包括事件触发、事件冒泡、事件捕获、事件合成和事件派发等
+> React事件机制和原生DOM事件流区别：虽然合成事件不是原生DOM事件，但它包含了原生DOM事件的引用，可以通过e.nativeEvent访问
+> 
+> React事件的设计动机(作用)：
+> 1. 在底层磨平不同浏览器的差异，React实现了统一的事件机制，我们不再需要处理浏览器事件机制方面的兼容问题，在上层面向开发者暴露稳定、统一的、与原生事件相同的事件接口
+> 2. React把握了事件机制的主动权，实现了对所有事件的中心化管控
+> 3. React引入事件池避免垃圾回收，在事件池中获取或释放事件对象，避免频繁的创建和销毁
+> 
+> 
+> 
+> ### React 实现合成事件的目的
+> 1. 赋予 React 跨浏览器开发的能力。合成事件是一个跨浏览器原生事件包装器（将不同浏览器的行为合并为一个 API），抹平了浏览器之间的兼容问题。
 > 2. 不仅减少了内存，还能在组件挂载销毁时统一订阅和移除事件（事件委托）：
 > 		- 对于原生浏览器事件来说，浏览器会给每个监听器创建一个事件对象，如果有很多事件需要监听，那么就需要分配很多的事件对象，造成高额的内存分配问题。
 > 		- 但对于合成事件来说，有一个事件池专门来管理它们的创建和销毁，当事件需要被使用时，就会从事件池中复用对象，事件回调结束后，就会销毁事件对象上的属性，从而便于下次复用事件对象（简化了事件处理和回收机制）。
@@ -618,7 +751,7 @@ export default SayHello
 > ```jsx
 > myRef = React.createRef()
 > //展示左侧输入框的数据
-> showData = (event)=>{
+> showData = (event) => {
 >   console.log(event.target);
 >   alert(this.myRef.current.value);
 > }
@@ -634,6 +767,14 @@ export default SayHello
 > ```
 
 ### 受控/非受控组件
+
+| **受控组件**                                   | **非受控组件**           |
+| ---------------------------------------------- | ------------------------ |
+| 1. 没有维持自己的状态                          | 1. 保持着自己的状态      |
+| 2. 数据由父组件控制                            | 2.数据由 DOM 控制        |
+| 3. 通过 props 获取当前值，然后通过回调通知更改 | 3. Refs 用于获取其当前值 |
+
+
 
 #### 非受控组件
 
@@ -1039,7 +1180,7 @@ ReactDOM.render(<Header />, document.getElementById('root'))
 > 
 > 
 > ### JavaScript 链表的作用：React 16 引入的 Fiber 架构的更新算法
-> Fiber英文意思为纤维化，即将任务进行细化，它把一个耗时长的任务分成很多小片，每一个小片的运行时间很短，虽然总时间依然很长，但是在每个小片执行完之后，都给其他任务一个执行的机会，这样唯一的线程就不会被独占，其他任务依然有运行的机会，React 中的 Fiber 就把整个 VDOM 的更新过程碎片化。
+> Fiber 英文意思为纤维化，即将任务进行细化，它把一个耗时长的任务分成很多小片，每一个小片的运行时间很短，虽然总时间依然很长，但是在每个小片执行完之后，都给其他任务一个执行的机会，这样唯一的线程就不会被独占，其他任务依然有运行的机会，React 中的 Fiber 就把整个 VDOM 的更新过程碎片化。
 > 
 > 在之前 React 的 render() 方法会接收一个 虚拟DOM 对象和一个真实的 容器DOM 作为 虚拟DOM 渲染完成后的挂载节点，其主要作用是将 虚拟DOM 渲染为 真实DOM 并挂载到容器下，这个方法在更新时是进行递归操作的，如果在更新的过程中有大量的节点需要更新，就会出现长时间占用 JS 主线程的情况，并且整个递归过程是无法被打断的，由于 JS 线程和 GUI 线程是互斥的，所以大量更新的情况下会看到界面有些卡顿。
 > 
@@ -1129,24 +1270,56 @@ ReactDOM.render(<Header />, document.getElementById('root'))
 > ReactDOM.render(<Person/>,document.getElementById('test'))
 > ```
 
-## React CLI
 
-**创建项目**
 
-> 1. 全局安装：`npm i -g create-react-app`
-> 2. 创建项目文件夹
->    1. `create-react-app 项目名`
->    2. yarn方式：`yarn create react-app react-ts --template=typescript`
->    3. npx方式：`npx crate-react-app react-ts --template=typescript`
-> 3. 启动项目：`npm start`
-> 4. 使用脚手架开发项目特点：模块化、组件化、工程化
-> 5. 项目整体技术架构为：`react + webpack + es6 eslint`
-> 6. 清空命令行`cls`
-> 7. 在vscode中下载jsx插件，会有react语法提示
-> 8. 在vscode安装插件`ES7+ React/Redux/React-Native snippets`，输入`rcc`或`rfc`会快捷生成初始内容
-> 9. 生成唯一id标识符的库：`nanoid`和`uuid`库
+### setState两种方式
 
-**脚手架项目结构**
+> ```js
+> state状态的更新是异步的，即this.setState引起后面的动作是异步的，所以不要放在for循环里面同步更新，可把`this.setState`当做函数来进行数据更新
+> 
+> 1. 对象式的setState：setState(stateChange, [callback])
+> 		-- stateChange为状态改变对象，给对象可以体现出状态的更改
+>     -- callback 是可选的回调函数，它在状态更新完毕、界面也更新后(render调用后)才被调用
+> 
+> 2. 函数式的setState：setState(updater, [callback])
+> 		-- updater为返回stateChange对象的函数，可以接收到props和state
+>     -- callback 是可选的回调函数，它在状态更新完毕、界面也更新后(render调用后)才被调用
+> 
+> 总结：对象式的setState是函数式setState的简写语法糖，使用原则如下：
+>     1. 如果新状态不依赖于原状态 --- 使用对象式
+>     2. 如果新状态依赖于原状态	---	 使用函数式
+>     3. 如果需要在setState()执行后获取最新状态数据，需要在callback函数中读取
+> 
+> 
+> for(let i = 0; i < 100; i++) {
+>   console.log(this.state.counter)
+>   // this.setState({counter: this.state.counter + 1}) // 错误写法
+>   // state的更新是异步的，所以把更新放入函数中，这样才会正常更新而不出错
+>   this.setState((state, props) => ({
+>   	counter: state.counter + 1
+>   }))
+> }
+> 
+> 
+> /**
+> 	* - setState当前情况下是异步操作
+> 	* - setState会合并所有的异步执行，然后异步执行完毕后，才会执行异步回调函数
+> */
+> this.setState({
+>   count: this.state.count + 1
+> },() => {
+>   console.log(this.state.count);	// 4
+> })
+> this.setState((prevState, props) => ({ count: prevState.count + 1 }))
+> this.setState((prevState, props) => ({ count: prevState.count + 1 }))
+> this.setState((prevState, props) => ({ count: prevState.count + 1 }))
+> ```
+
+
+
+### React CLI
+
+#### 脚手架项目结构
 
 > ```js
 > public ---静态资源文件夹
@@ -1157,7 +1330,7 @@ ReactDOM.render(<Header />, document.getElementById('root'))
 > 	- setupTests.js				---
 > ```
 
-### Json Server(模拟接口数据)
+#### Json Server(模拟接口数据)
 
 > - JsonServer主要作用是搭建本地的数据接口，创建json文件，便于调试调用
 > - 如果只是get数据，需借助`jsonplaceholder`，如果是post请求数据，则可使用json server对数据进行增删改查
@@ -1167,7 +1340,7 @@ ReactDOM.render(<Header />, document.getElementById('root'))
 > - 运行：`npm run json:server`
 > - 不需要package.json就能运行：`json-server --watch 文件名.json`
 
-### 跨域setupProxy.js
+#### 跨域setupProxy.js
 
 > - 安装插件：`npm i http-proxy-middleware --save`
 > - 在react CLI项目的src文件夹下创建`setupProxy.js`文件进行跨域访问端口设置，其内部会把该文件添加到webpack配置下，webpack里边用的都是node语法，所以这个文件里要写commonjs语法
@@ -1218,172 +1391,6 @@ ReactDOM.render(<Header />, document.getElementById('root'))
 > })
 > ```
 
-### fetch发送请求（关注分离的设计思想）
-
-> - fetch是基于promise设计的，因为XMLHttpRequest是一个设计粗糙的API，不符合关注分离的原则，配置和调用方式非常混乱，而且基于事件的异步模型写起来也没现代的`promise、generator/yield、async/await`友好，Fetch的出现就是为了解决XHR的问题
-> - Fetch的优点
->   - 语法简洁更加语义化，关注分离的设计思想
->   - 基于Promise实现，支持async/await；
->   - 同构方便，使用`isomorphic-fetch`
-> - Fetch的缺点
->   - Fetch请求默认不携带cookie，需要设置`fetch(url, { credentials: "include" })`
->   - 服务器返回400、500错误码并不会reject，只有网络错误这些导致请求不能完成时，fetch才会被reject
->
-> ```js
-> // XHR 进行请求
-> var xhr = new XMLHttpRequest()
-> xhr.open('GET', url)
-> xhr.responseType = 'json'
-> xhr.onload = function() {
->   console.log(xhr.response)
-> }
-> xhr.onerror = function() {
->   console.log("error")
-> }
-> xhr.send()
-> 
-> // Fetch 进行请求
-> fetch(url).then(res => res.json())
->   .then(data => console.log(data))
->   .catch(err => console.log(err))
-> 
-> // async/await函数+Fetch 进行请求
-> async function reqs() {
->   try {
->     let response = await fetch(url)
->     let data = response.json()
->     console.log(data)
->   } catch(err) {
->     console.log(err)
->   }
-> }
-> reqs()
-> ```
->
-> #### 请求封装
->
-> ````js
-> /* utils/http.js */
-> import qs from 'querystring'
-> export function httpGet(url) {
->   return fetch(url)
-> }
-> export function httpPost(url, params) {
->   const result = fetch(url, {
->     method: "POST",
->     headers: {
->       "Content-Type": "application/x-www-form-urlencoded",
->       "Accept": "application/json,text-plain,*/*"
->     },
->     body: qs.string(params)
->   })
->   return result
-> }
-> ````
->
-> ```js
-> /* api/base.js */
-> const base = {
->   baseURL: "http://127.0.0.1:3000",
->   addAPI: "/api/add/getList.php",
->   login: '/api/login.php'
-> }
-> ```
->
-> ```js
-> /* api/index.js */
-> import {httpGet} from '../utils/http'
-> import base from './base'
-> 
-> const api = {
->   getList = () => httpGet(base.baseURL + addAPI),
-> 	login = (params) => httpPost(base.baseURL+login,params)
-> }
-> export default api
-> ```
->
-> ```jsx
-> import React from "react"
-> import api from '/api/index'
-> export default function Demo() {
->   api.getList().then(res => res.json()).then(data => {console.log(data)})
->   api.login({"account":"willy","pwd":"123456"})
->     .then(res => res.json()).then(data => {console.log(data)})
->   
->   render() {
->     return (<div>Demo...</div>)
->   }
-> }
-> ```
-
-### Fragment
-
-> - 传统的jsx生成的界面标签，最外层是通过div标签包裹的，所以生成真实DOM会包含外层div（类似vue2最外层必须使用根元素标签包裹）
-> - 通过Fragment包裹的外层的标签，是会把jsx的最外层`Fragment`标签去除，导致在真实DOM中只有里层的标签元素内容（类似vue3没有根元素标签）
-> - **最外层使用Fragment标签跟空标签的区别是Fragment标签可使用key值标识该便签元素，使得其唯一存在，更有利与虚拟DOM的渲染**
->
-> ```jsx
-> import React, { Component, Fragment } from 'react'
-> export defalut class Deom extends Component {
->   render() {
->     return (
->     	<Fragment key={1}>
->         <p>使用Fragment标签包裹后生成的真实DOM不会把Fragment这层标签渲染上去</p>
->       </Fragment>
->     )
->   }
-> }
-> ```
-
-### 项目打包运行
-
-> - 执行`npm run build`后，项目会进行打包生成一个build文件夹，里面的页面无法打开运行，需要服务器来做运行
-> - 安装服务器：`npm i serve -g`
-> - 在build文件夹下执行命令`serve`或在主项目文件夹下执行`serve build`
-
-### setState两种方式
-
-> ```js
-> state状态的更新是异步的，即this.setState引起后面的动作是异步的，所以不要放在for循环里面同步更新，可把`this.setState`当做函数来进行数据更新
-> 
-> 1. 对象式的setState：setState(stateChange, [callback])
-> 		-- stateChange为状态改变对象，给对象可以体现出状态的更改
->     -- callback 是可选的回调函数，它在状态更新完毕、界面也更新后(render调用后)才被调用
-> 
-> 2. 函数式的setState：setState(updater, [callback])
-> 		-- updater为返回stateChange对象的函数，可以接收到props和state
->     -- callback 是可选的回调函数，它在状态更新完毕、界面也更新后(render调用后)才被调用
-> 
-> 总结：对象式的setState是函数式setState的简写语法糖，使用原则如下：
->     1. 如果新状态不依赖于原状态 --- 使用对象式
->     2. 如果新状态依赖于原状态	---	 使用函数式
->     3. 如果需要在setState()执行后获取最新状态数据，需要在callback函数中读取
-> 
-> 
-> for(let i = 0; i < 100; i++) {
->   console.log(this.state.counter)
->   // this.setState({counter: this.state.counter + 1}) // 错误写法
->   // state的更新是异步的，所以把更新放入函数中，这样才会正常更新而不出错
->   this.setState((state, props) => ({
->   	counter: state.counter + 1
->   }))
-> }
-> 
-> 
-> /**
-> 	* - setState当前情况下是异步操作
-> 	* - setState会合并所有的异步执行，然后异步执行完毕后，才会执行异步回调函数
-> */
-> this.setState({
->   count: this.state.count + 1
-> },() => {
->   console.log(this.state.count);	// 4
-> })
-> this.setState((prevState, props) => ({ count: prevState.count + 1 }))
-> this.setState((prevState, props) => ({ count: prevState.count + 1 }))
-> this.setState((prevState, props) => ({ count: prevState.count + 1 }))
-> ```
-
 
 
 ## React 内置组件
@@ -1391,10 +1398,15 @@ ReactDOM.render(<Header />, document.getElementById('root'))
 ### `<>` 和 `React.Fragment`
 
 ```bash
+- 传统的jsx生成的界面标签，最外层是通过div标签包裹的，所以生成真实DOM会包含外层div（类似vue2最外层必须使用根元素标签包裹）
+- 通过Fragment包裹的外层的标签，是会把jsx的最外层`Fragment`标签去除，导致在真实DOM中只有里层的标签元素内容（类似vue3没有根元素标签）
+- 最外层使用Fragment标签跟空标签的区别：Fragment标签可使用key值标识该便签元素，使得其唯一存在，更有利与虚拟DOM的渲染（简写版本不支持 `key` 属性）
+
+
+
 `<>` 是 `React.Fragment` 的简写标签。它允许我们对元素列表进行分组，而无需将它们包装到新节点中。
 基本上，我们应该在任何时候使用 `React.Fragment` 或 `<>`，它可以避免不必要的 `div` 包装器，得到一个更加清晰的标签结构。
 
-它们之间唯一的区别是简写版本不支持 `key` 属性。以下是在多行字符串中插入新行（`br`）标签的常见示例：
 ```
 
 ```jsx
@@ -1417,6 +1429,19 @@ str.split('\\n').map((item, index) => {
     </Fragment>
   )
 })
+```
+
+```jsx
+import React, { Component, Fragment } from 'react'
+export defalut class Deom extends Component {
+  render() {
+    return (
+    	<Fragment key={1}>
+        <p>使用Fragment标签包裹后生成的真实DOM不会把Fragment这层标签渲染上去</p>
+      </Fragment>
+    )
+  }
+}
 ```
 
 
@@ -1998,6 +2023,7 @@ export default NotFoundPage
 
 > - 错误边界(Error boundary)：用来捕获后代组件的错误，渲染出备用UI界面，防止后代子组件的错误导致整个页面崩溃（即限制错误往不相关的组件外扩展）
 > - 特点：只能捕获后代组件生命周期产生的错误，不能捕获组件自身产生的错误和其他组件在合成事件、定时器中产生的错误
+> - getDerviedStateFromError和componentDidCatch的区别是前者展示降级UI，后者记录具体的错误信息，它只能用于class组件
 > - 使用方式：`getDeriveStateFromError`配合`componentDidCatch`
 >   - 注意：`getDerivedStateFromError`返回的报错信息是在开发环境是不稳定的(只会一闪而过的出现)，需要在打包后生成的build中才稳定运行显示
 >
@@ -2064,8 +2090,12 @@ export default NotFoundPage
 
 ### 高阶组件 HOC
 
+> ```bash
+> 高阶组件是重用组件逻辑的高级方法，是一种源于 React 的组件模式。 HOC 是自定义组件，在它之内包含另一个组件。它们可以接受子组件提供的任何动态，但不会修改或复制其输入组件中的任何行为。你可以认为 HOC 是“纯（Pure）”组件。
+> 
 > - 高阶组件定义为：参数是组件，返回值也是一个组件
 > - 应用：封装组件复用（有些组件是除了传递的数据，都是重复性的）
+> ```
 >
 > ```jsx
 > import React from 'react'
@@ -2442,7 +2472,6 @@ import ReactDOM from 'react-dom'
 
 function App() {
   const inputElement = useRef()
-
   const focusInput = () => inputElement.current.focus()
 
   return (
@@ -2775,9 +2804,8 @@ ReactDOM.render(<Timer />, document.getElementById('root'))
 
 ```bash
 ### `useMemo` Hooks
-- `useMemo` 钩子返回一个已记忆的值，它仅在其中一个依赖项更新时运行，提高性能。
-- `useMemo` 钩子可以用来防止昂贵的、资源密集型的函数不必要地运行。
-- `useMemo` 和 `useCallback` 钩子类似。
+- `useMemo` 钩子返回一个已记忆的值，它仅在其中一个依赖项更新时运行，提高性能。可以用来防止昂贵的、资源密集型的函数不必要的运行。
+- `useMemo` 和 `useCallback` 区别：
 		- `useMemo` 返回一个已记忆的值，
 	  - `useCallback` 返回一个已记忆的函数。
 
@@ -2816,7 +2844,7 @@ ReactDOM.render(<Timer />, document.getElementById('root'))
     }
 ```
 
-```js
+```jsx
 import { useState, useMemo } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -2871,7 +2899,6 @@ ReactDOM.render(<App />, document.getElementById('root'))
 ```bash
 ### `useCallback` Hooks
 React `useCallback` Hook 返回一个已记忆的回调函数。这使我们能够隔离资源密集型函数，以便它们不会在每次渲染时自动运行。
-
   - 存在缓存的行为，函数的第二个参数决定是否允许第一个参数执行
   - 作用：使用 `useCallback` 钩子可以防止组件被重新创建并渲染，除非其 `props` 已更改
 
