@@ -161,8 +161,8 @@ Description: CSS
 >   5. 伪类　　	 	 					    a:hover, li:nth-child
 >   6. 伪元素　　					     ::first-line, div::before, div::after
 >   7. 通配符选择器（派生）		    *
->   8. 子选择器(关系选择器)	 		 div > a
->   9. 相邻同胞选择器(关系选择器)	 div + p
+>   8. 子代选择器(关系选择器)	 		 div > a
+>   9. 相邻兄弟选择器(关系选择器)	 div + p
 >   10.后代选择器(关系选择器)	     li a
 >
 >
@@ -177,7 +177,7 @@ Description: CSS
 >   - 内联样式的权重：1000
 >   - ID选择器的权重：0100
 >   - 类选择器、伪类选择器和属性选择器的权重： 0010
->   - 标签选择器和伪元素选择器的权重：0001
+>   - 标签元素选择器和伪元素选择器的权重：0001
 >   - 通配符选择器、关系选择器（子、相邻、后代）的权重：0000
 >   - 继承的样式没有权值
 >   - !important 的作用是提升优先级，加了这句的样式的优先级是最高的等级
@@ -228,27 +228,26 @@ Description: CSS
 
 > ```bash
 > ## 选择器分类
-> 1、CSS并集选择器
->
-> 2、CSS交集选择器
->
-> 3、CSS派生选择器
-> 		子代：p>em {}
-> 		兄弟：p+em {}
-> 		后代：p em {}
-> 		元素1~元素2：
->
-> 4、CSS伪类选择器
+> 1、并集选择器
+> 
+> 2、交集选择器
+> 
+> 3、组合选择器
+> 		子代（>）：p>em {}
+> 		后代（空格）：p em {}
+> 		相邻兄弟（+）：p+em {}
+> 		通用兄弟（~）：元素1~元素2
+> 				第1 个元素之后所有的元素2都会被选择，且这些元素和第一个元素拥有同一个父元素（两个元素之间不一定要相邻）
+> 
+> 
+> 4、伪类选择器（`:` 伪选择器是添加到选择器的关键字，指定要选择的元素的特殊状态）
 > 	-->必须按顺序写：a:link，	a:visited，	a:hover，	a:active
 > 		link:链接被访问前选中;		visited:链接被访问之后选中
 > 		hover:鼠标悬停在链接上;		active:链接被按下后
 > 	还有其他伪类：li:first-child       input:focus
->
-> 5、伪元素选择器
+> 
+> 5、伪元素选择器（`::` 伪元素选择器用于表示无法使用 HTML 语义表达的实体）
 > 	-->h1::before，h2::after， p::first-line
->
-> 6、兄弟选择器：
-> -->元素1~元素2：第1 个元素之后所有的元素2 都会被选择，且这些元素和第一个元素拥有同一个父元素（两个元素之间不一定要相邻）
 > ```
 
 #### 结构伪类选择器
@@ -280,7 +279,59 @@ Description: CSS
 >   - :first-line和:first-letter可以用来修饰文字。
 >   - 上面提到的.clearfix方法中，使用clear: both来添加不占空间的元素。
 >   - 使用:before和after展示提示中的三角箭头。鼓励关注点分离，因为三角被视为样式的一部分，而不是真正的 DOM。如果不使用额外的 HTML 元素，只用 CSS 样式绘制三角形是不太可能的。
+>   
+>   
+> p::selection 	选择用户选择的元素部分。
+> p::before    在每个 p 元素之前插入内容
+> p::after 	在每个 p 元素之后插入内容
+> p::first-line   选择每个 p 元素的第一行
+> p::sfirst-letter 选择每个 p 元素的第一个字母
 > ```
+
+#### 伪类
+
+```css
+p:lang(language) 为 <p> 元素的 lang 属性选择一个开始值
+
+input:focus 选择元素输入后具有焦点
+a:link 	选择所有未访问链接
+a:visited 选择所有访问过的链接
+a:active   选择正在活动链接
+a:hover 	把鼠标放在链接上的状态
+input:valid  选择所有有效值的属性
+#line:target 	选择当前活动 #line 元素(点击 URL 包含锚的名字)
+input:required 选择有 "required" 属性指定的元素属性
+input:read-write 选择没有只读属性的元素属性
+input:read-only 选择只读属性的元素属性
+input:out-of-range 	选择指定范围以外的值的元素属性
+input:optional 	选择没有"required"的元素属性
+
+/* CSS3 新增选择器 */
+input[type="text"] 属性选择器
+:root 选择文档的根元素，等同于 html 元素
+:empty 选择没有子元素的元素
+:target 选取当前活动的目标元素
+:not(selector) 选择除 selector 元素意外的元素
+
+/* 表单 */
+input:enabled 选择可用的表单元素
+input:disabled 选择禁用的表单元素
+input:checked 选择被选中的表单控件元素(单选框或复选框)
+
+p:nth-child(n) 匹配父元素下指定子元素，在所有子元素中排序第 n。还有 add、oven
+p:nth-last-child(n) 选择所有 p 元素倒数的第二个子元素
+p:nth-of-type(n) 选择所有 p 元素第二个为 p 的子元素
+p:nth-last-of-type(n) 选择所有 p 元素倒数的第二个为 p 的子元素
+
+p:first-child  选择器匹配属于任意元素的第一个子元素的 p 元素
+p:last-child   	选择所有 p 元素的最后一个子元素
+p:only-child   	选择所有仅有一个子元素的 p 元素
+p:only-of-type  选择属于其父元素唯一的 p 元素的每个 p 元素
+p:first-of-type 选择的每个 p 元素是其父元素的第一个 p 元素
+p:last-of-type 选择属于其父元素的最后 p 元素的每个 p 元素
+```
+
+
 
 ### 颜色的表示方式
 
@@ -1524,7 +1575,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 怪异盒模型：content 为 width 和 height、border 及 padding
 >
 > 标准盒模型：一个块的总宽度 = width + margin(左右) + padding(左右) + border(左右)
-> 怪异盒模型：一个块的总宽度 = width + margin(左右)	（即是 width 已经包含了 paddin 和 border 的值）
+> 怪异盒模型：一个块的总宽度 = width + margin(左右)	（即是 width 已经包含了 padding 和 border 的值）
 >
 >
 > - box-sizing 规定两个并排的带边框的框，语法为 `box-sizing: content-box / border-box / inherit`。
@@ -1542,26 +1593,26 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 
 ### 格式化上下文
 
-#### BFC（Block formatting contexts）：块级格式上下文
+#### 块级格式上下文 BFC
 
 > ```bash
 > ## BFC（Block Formatting Contexts）块级格式上下文
 > BFC 是一个独立隔离的渲染区域，只有'块元素'参与，它规定内部的块元素如何布局，并且与这个区域外部互不影响。
 > - 块级元素才会产生 BFC，且 BFC 仍属于文档中的普通流。
->
+> 
 > 注意：
 > 	- 每一个 BFC 区域只包括其子元素，不包括其子元素的子元素。
 > 	- 每一个 BFC 区域都是独立个体，互不影响。可利用这一特性让不同 BFC 区域之间的布局不产生影响。
->
->
->
+> 
+> 
+> 
 > ### BFC 特性
 > - BFC 在 Web 页面上是一个独立的容器，容器内外的元素互不影响
 > - 和标准文档流一样，BFC 内的两个相邻块级元素垂直方向的边距会发生重叠
 > - BFC 不会与浮动元素的盒子重叠
 > - BFC 在计算高度时会把浮动元素计算进去
->
->
+> 
+> 
 > ### 形成 BFC 的条件（一般是让盒子脱离标准文档流）
 > 只要元素满足下面任一条件即可触发 BFC 特性：
 >   - 根元素 (html/body 标签)
@@ -1572,8 +1623,8 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   		- 表格单元格 table-cell、table-caption、
 >   		- 行内块显示模式 inline-block/inline-flex
 >   - overflow 值不为 visible （hidden、auto、scroll）
->
->
+> 
+> 
 > ### BFC 的原理
 >   1. 内部的 Box 会在垂直方向，一个接一个地放置。
 >   2. Box 垂直方向的距离由 margin 决定。属于同一个 BFC 的两个相邻 Box 的 margin 会发生重叠。
@@ -1582,15 +1633,15 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >   4. BFC 的区域不会与 float box 重叠。
 >   5. BFC 就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。
 >   6. 计算 BFC 的高度时，浮动元素也参与计算。
->
->
+> 
+> 
 > ### BFC 的作用
 > 1. 解决外边距重叠（垂直坍塌）
 >     - 当父元素和子元素发生 margin 重叠时，解决办法：给子元素或父元素创建 BFC。
 >     - BFC 导致属于同一个 BFC 的子元素的 margin 重叠。
 >       （Box 垂直方向的距离由 margin 决定，属于同一个 BFC 的两个相邻 Box 的 margin 会发生重叠）
 >       解决：可在 div 外包裹一层容器，并触发该容器生成一个 BFC。则两个 div 便不属于同一个 BFC，也就不会产生 margin 重叠。
->
+> 
 > 2. 清除浮动的影响
 > 		- 当父元素没有设置高度，且子元素为浮动元素的情况下，父元素会发生高度坍塌，上下边界重合，即浮动元素无法撑开父元素。
 > 		- 原因：子元素触发触动后，均开启 BFC，父元素不会被子元素撑开。
@@ -1599,28 +1650,30 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 > 			所以只要将父容器设置为 BFC 就可以把子元素包含进去：
 > 				这个容器将包含浮动的子元素，它的高度将扩展到可以包含它的子元素。
 > 				在这个 BFC 中，这些元素将会回到页面的常规文档流。
->
+> 
 > 3. 解决高度坍塌问题
 > 	- 当父子管理的盒子，给子元素添加 `margin-top`，有可能会把父元素一起带跑。
->
+> 
 > 4. 防止文字环绕
->
->
->
+> 
+> 
+> 
 > ### 关于div外边距重叠的发生条件
-> 情况一：两个div垂直边界相邻，margin 会等于二者中 margin 较大的值
+> 在标准文档流中，毗邻的两个或多个块级元素之间垂直方向的 `margin` 会合并成一个 `margin`，会取两个元素 `margin` 最大的那一个，这就是外边距重叠。
+> 
+> 情况一（同一层相邻元素之间）：两个div垂直边界相邻，margin 会等于二者中 margin 较大的值
 >     解决方案  1. position：absolute
 >     				2. float：left
->
-> 情况二：子元素在父元素内，子元素的 margin-top 会与父元素的 margin-top 重叠，值等于二者中较大的；如果只有子元素设置 margin-top，则显示为父元素的 margin-top。
+> 
+> 情况二（没有内容将父元素和后代元素分开）：子元素在父元素内，子元素的 margin-top 会与父元素的 margin-top 重叠，值等于二者中较大的；如果只有子元素设置 margin-top，则显示为父元素的 margin-top。
 >     解决方案 1. 给父元素设置border（给子元素设置边框没有用）
 >             2. 给父元素设置padding值
 >             3. 给父元素或子元素添加float：left
 >             4. 给父元素或子元素添加position：absolute
 >             5. 给父元素添加overflow：hidden
 >             6. 给子元素添加display：inline-block
->
-> 情况三：一个空白元素自身的margin-top和margin-bottom会重叠，值为而这种较大的
+> 
+> 情况三（空的块级元素）：一个空白元素自身的margin-top和margin-bottom会重叠，值为而这种较大的
 >      解决方案 1. 设置透明border
 > ```
 >
@@ -1637,7 +1690,7 @@ SMACSS 把 CSS 样式规则分成若干个不同的类别：
 >
 > #### 清除浮动带来的影响
 >
-> 当所有的子元素都浮动了，这个时候，父盒子失去了原有的高度，这就是浮动的影响。这个时候，同样也可用BFC的机制，来清除浮动带来的影响。使用BFC，将所有的浮动元素包裹起来。
+> 当设置子元素浮动，因为浮动的影响，此时父盒子会失去原有的高度。这时同样也可用BFC的机制，来清除浮动带来的影响。将父元素设置成BFC环境来清除浮动。
 >
 > ![4d1a40cd92e744adacea676ef7b14daa](./image/4d1a40cd92e744adacea676ef7b14daa.gif)
 >

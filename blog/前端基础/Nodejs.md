@@ -288,6 +288,8 @@ nrm test
 
 ```
 
+
+
 ### 对 npm package 进行发包
 
 ###### 1 编写模块
@@ -339,7 +341,13 @@ $ npm adduser
 
 ###### 4 上传包
 
-```
+```bash
+$ npm login
+# 账号
+# 密码
+# 邮箱
+# 一次性密码验证
+
 $ npm publish
 ```
 
@@ -373,6 +381,46 @@ $ npm unpublish --force
 var hello = require('gp19-npm')
 hello.sayHello()
 ```
+
+###### 8 更新包
+
+如果我们更新了该包，需要再次发包，可以使用 `npm version` 命令，控制该版本进行升级，注意需要遵循 [Semver 规范](https://github.com/semver/semver/blob/master/semver.md)。
+
+```bash
+# 增加一个修复版本号
+$ npm version patch
+
+# 增加一个小的版本号
+$ npm version minor
+
+# 将更新后的包发布到 npm 中
+$ npm publish
+```
+
+在发布 npm 包时，我们一般都只发布构建后的资源，这时我们可以使用 `package.json` 的 `files` 字段。
+
+```json
+{
+  "files": ["dist"]
+}
+```
+
+它描述了在使用 `npm publish` 时推送到 npm 服务器的文件列表，支持目录和通配符，我们也可以在 `.gitignore` 或者 `.npmignore` 文件内排除不需要上传的文件。
+
+但有一点需要注意，无论我们怎么设置，有些文件会始终被包含发包内，比如：
+
+- `package.json`
+- `README`
+- `LICENSE / LICENCE`
+- `package.json` 内 `main` 字段的文件
+
+有一些文件则会始终被排除在发包内，比如：
+
+- `.git`
+- `.DS_Store`
+- etc
+
+
 
 ### npm安装git上发布的包
 
@@ -673,7 +721,6 @@ $ npm cache clean --force
 
 3. 重新执行安装步骤
 $ npm i
-
 ```
 
 
@@ -806,6 +853,49 @@ const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面
 
 ```
 
+
+
+## OS 模块
+
+[OS 模块](https://nodejs.org/api/os.html)提供有关计算机操作系统的信息。
+
+获取有关计算机操作系统的信息：
+
+```js
+const os = require('os')
+
+console.log('Platform: ' + os.platform()) // Platform: win32
+console.log('Architecture: ' + os.arch()) // Architecture: x64
+console.log('total memory : ' + os.totalmem() + ' bytes.') // total memory : 31194900400 bytes.
+console.log('free memory : ' + os.freemem() + ' bytes.') // free memory : 30666943900 bytes.
+```
+
+`os` 提供的主要方法：
+
+- `os.platform()` 操作系统名，例如：`darwin`、`freebsd`、`linux`、`openbsd`、`win32` 等
+- `os.arch()` 操作系统 CPU 架构
+- `os.totalmem()` 返回操作系统中可用总内存的字节数
+- `os.freemem()` 返回操作系统中可用空闲内存的字节数
+- `os.arch()` 返回标识底层架构的字符串，如 `arm`、`x64` 和 `arm64`
+- `os.cpus()` 返回有关系统上可用 CPU 的信息
+- `os.userInfo()` 返回有关当前用户的信息
+- `os.uptime()` 返回计算机自上次重新启动以来已运行的秒数
+- `os.type()` 识别操作系统：Linux、macOS、Windows
+- `os.tmpdir()` 返回分配的临时文件夹的路径
+- `os.release()` 返回一个标识操作系统版本号的字符串
+- `os.networkInterfaces()` 返回系统上可用网络接口的详细信息
+- `os.hostname()` 返回主机名
+- `os.homedir()` 返回当前用户主目录的路径
+
+另外，
+
+- `os.constants.signals` 告诉我们所有与处理进程信号相关的常量，如 `SIGHUP`、`SIGKILL` 等。
+- `os.constants.errno` 设置错误报告的常量，如 `EADDRINUSE`、`EOVERFLOW` 等。
+
+有关这些操作系统常量的内容，可以查阅 [OS constants](https://nodejs.org/api/os.html#os-constants)。
+
+
+
 ## 操作路径 path
 
 ```bash
@@ -849,7 +939,6 @@ __dirname 变量通常用于构建文件路径，比如读取文件、写入文�
     - `js/index.js`：跳转 `http://test.com/demo1/js/index.js`。
     - `../img/logo.jpg`: 跳转 `http://test.com/img/logo.jpg`。
     - `../../img/logo.jpg`: 跳转 `http://test.com/img/logo.jpg`。
-
 ```
 
 ```js
@@ -877,8 +966,9 @@ console.log(path.dirname(pathStr)) // C:\Users\OP0213\Desktop\core
 
 /** 路径的扩展名：extname */
 console.log(path.extname(pathStr)) // .js
-
 ```
+
+
 
 ##  文件操作 fs
 
@@ -1365,7 +1455,41 @@ deleteFolderRecursive('temp')
 
 ### fs.extra
 
+```bash
+`fs.extra` 是原生 fs 的替代品，该模块继承了 `fs-extra` 中所有方法，添加了原生 `fs` 模块中不包含的文件系统方法，并向 `fs` 方法添加了 promise 支持。
 
+fs.extra 分为同步和异步版本。
+
+`$ npm i fs-extra`
+```
+
+```js
+const { copy, copySync, emptyDirSync } = require('fs-extra')
+
+// 同步
+try {
+  copySync('/tmp/myFile', '/tmp/myNewFile')
+  console.log('success!')
+} catch (err) {
+  console.error(err)
+}
+
+// 异步 promise
+copy('/tmp/myFile', '/tmp/myNewFile')
+  .then(() => console.log('success!'))
+  .catch((err) => console.error(err))
+
+// 异步回调
+copy('/tmp/myFile', '/tmp/myNewFile', (err) => {
+  if (err) return console.error(err)
+  console.log('success!')
+})
+
+
+// 清空文件夹
+const folder = './node_modules'
+emptyDirSync(folder)
+```
 
 
 
@@ -1434,8 +1558,6 @@ const newURL = {
 }
 
 ```
-
-
 
 
 
@@ -2081,6 +2203,8 @@ console.log(buf1, buf2, str1)
 
 
 ```
+
+
 
 ## 事件机制模块 events
 

@@ -980,9 +980,9 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > var object = {
 >     uname: "object",
 >     fun:function() {
->        console.log(this.uname);
+>        console.log(this.uname); // object
 >        return function() {
->          console.log(this.uname);
+>          console.log(this.uname); // window
 >        }
 >     }
 > }
