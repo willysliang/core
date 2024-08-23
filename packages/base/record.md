@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年8月23日
+  - feat(hooks): [handler] computedWithControl 响应式实现computed的非响应式数据变化
+
 ## 2024年6月18日
   - fix(layout): 修复在不显示音乐模块时仍然显示出定义基础地址的页面
 
