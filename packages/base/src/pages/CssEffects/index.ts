@@ -7,10 +7,12 @@
  */
 import Lantern from './Lantern.vue'
 import HeartSwitch from './HeartSwitch.vue'
+import DestructionStyleClock from './destruction-style-clock.vue'
 import TextReflection from './TextReflection.vue'
 
 export const list = [
   { title: '灯笼动画', components: Lantern },
   { title: '心形开关', components: HeartSwitch },
+  { title: '破坏风时钟', components: DestructionStyleClock },
   { title: '文字倒影', components: TextReflection },
 ]
