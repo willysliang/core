@@ -970,16 +970,48 @@ console.log(path.extname(pathStr)) // .js
 
 
 
+`process.cwd()` 跟 `__dirname` 的区别
+
+```bash
+一. process.cwd()
+- process.cwd() 是一个方法，用于获取 Nodejs 进程启动时所在的工作目录的绝对路径。
+- 这个路径通常是在启动 Nodejs 应用程序时指定的，或者是在命令行中运行 Node.js 时的当前目录。
+
+
+二. __dirname
+- __dirname 是一个特殊的全局变量，用于获取当前模块的目录名的绝对路径。
+- 这个路径是相对于当前模块文件的位置，所以它的值再不同模块中可能不同。
+
+
+三. 两者区别
+__dirname 是相对于当前模块的目录，而 process.cwd() 是整个应用程序的当前工作目录，因此它们的值可能在不同上下文和不同模块中有所不同。
+如果需要模块特定的路径信息，使用 __dirname；如果需要整个应用程序的当前工作目录，使用 process.cwd()。
+```
+
+
+
+
+
 ##  文件操作 fs
 
 ```bash
-## 文件操作 fs
-`const fs = require(fs)`
+fs 模块可以执行以下操作：
+  - 创建文件和目录
+  - 修改文件和目录
+  - 删除文件和目录
+  - 读取文件和目录的内容
 
 
 ### 同步与异步的取舍
 - 由于 Node 环境执行的JS代码一般作为服务端的代码运行，且其绝大部分需要在服务器运行期反复执行业务逻辑的代码，所以必须使用异步代码，否则，同步代码在执行时期，服务器将会因为同步错误而停止响应（因为JavaScript只有一个执行线程，产生同步错误会跳出异常并停止运行）。
 - 服务器启动时，如果需要读取配置文件，或者结束时需要写入到状态文件时，可以使用同步代码，因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。
+
+
+同步方法有两个缺点：
+	1. 同步方法同步的执行代码，因此它们阻塞了主线程。例如：我使用 `fs.readdirSync` 同步读取目录下的所有文件，它将阻塞后面代码的运行，直到读取目录完成。阻塞 Node.js 中的主线程被认为是不好的做法，我们不应该这么做
+	2. 同步代码需要使用 `try...catch` 捕获错误
+
+因此，以下都使用文件系统模块中的异步方法。
 ```
 
 ### 文件读取
@@ -992,7 +1024,7 @@ console.log(path.extname(pathStr)) // .js
 
 
 ### 文件读取方法
-1. 异步读取：readFile
+1. 异步读取：`fs.readFile(path[, options], callback)`
 2. 同步读取：readFileSync
 3. 流式读取：createReadStream
 
@@ -1006,10 +1038,6 @@ console.log(path.extname(pathStr)) // .js
 - 上传文件
 - 查看 Git 提交记录
 
-
-
-### 异步读取 readFile
-- `fs.readFile(path[, options], callback)`
 ```
 
 ```js
@@ -1038,7 +1066,7 @@ try {
 
 ```bash
 ## 文件写入
-将数据写入文件是通过`fs.writeFile()`函数实现；同步写文件则是`writeFileSync()`函数。
+将数据写入文件是通过 `fs.writeFile()` 函数实现；同步写文件则是`writeFileSync()`函数。
 `writeFile()`的参数依次为文件名、数据和回调函数。如果传入的数据是String，默认按UTF-8编码写入文本文件，如果传入的参数是`Buffer`，则写入的是二进制文件。回调函数由于只关心成功与否，因此只需要一个`err`参数。
 
 
@@ -1644,6 +1672,12 @@ server.listen(3000, () => {
 
 ```bash
 ## 网络协议 http
+http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传输数据的方法。而 https 模块通过 HTTP TLS/SSL 协议传输数据的方法，该协议是安全的 HTTP 协议。
+	- 各种 Node HTTP 服务框架的底层原理都是离不开该模块。
+使用内置的 `http` 模块，我们可以快速的搭建一个简单的 HTTP 服务器。该服务器允许我们监听任意端口并提供一个回调函数，该函数将在每个传入请求时调用。
+回调将接收两个参数：一个 Request 对象和一个 Response 对象。Request 对象将填充有关请求的有用属性，而 Response 对象将用于向客户端发送响应。
+
+
 
 ### 配置本地 host
 1. 打开hosts文件。该文件通常位于以下位置：C:\Windows\System32\drivers\etc\hosts（对于Windows）或/etc/hosts（对于Mac和Linux）
@@ -1691,45 +1725,47 @@ server.listen(3000, () => {
 ```js
 const http = require("node:http")
 
-const server = http.createServer((request, response) => {
-    // 获取请求的方法
-    const { method } = request
+const router = (request, response) => {
+  // 获取请求的方法
+  const { method } = request
 
-    // 获取请求的 url 路径
-    const { pathname } = new URL(request.url, "http://127.0.0.1")
+  // 获取请求的 url 路径
+  const { pathname } = new URL(request.url, "http://127.0.0.1")
 
-    console.log(method, pathname)
+  console.log(method, pathname)
 
-    /** 响应状态码 */
-    response.statusCode = 203
-    response.statusMessage = "willysliang"
-    /** 响应头 */
-    response.setHeader("willy", ["L", "O", "V", "E"])
+  /** 响应状态码 */
+  response.statusCode = 203
+  response.statusMessage = "willysliang"
+  /** 响应头 */
+  response.setHeader("willy", ["L", "O", "V", "E"])
 
-    /** 响应体设置 */
-    response.write("I ")
-    response.write("LOVE ")
-    response.write("U! ")
-    response.end("willysliang")
+  /** 响应体设置 */
+  response.write("I ")
+  response.write("LOVE ")
+  response.write("U! ")
+  response.end("willysliang")
 
-    /** 请求超时处理 */
-    const timeout = 5000 // 设置超时时间为5秒
-    request.setTimeout(timeout, () => {
-        response.statusCode = 408 // 请求超时状态码
-        response.end("Request Timeout") // 响应超时信息
-    })
-})
+  /** 请求超时处理 */
+  const timeout = 5000 // 设置超时时间为5秒
+  request.setTimeout(timeout, () => {
+    response.statusCode = 408 // 请求超时状态码
+    response.end("Request Timeout") // 响应超时信息
+  })
+}
+
+const server = http.createServer(router)
 
 /** socket 连接超时处理 */
 server.on("connection", (socket) => {
-    // 如果连接超时，则socket会触发timeout事件，可以在该事件的回调函数中调用socket.destroy()方法来关闭连接
-    socket.setTimeout(5000) // 设置超时时间为5秒
+  // 如果连接超时，则socket会触发timeout事件，可以在该事件的回调函数中调用socket.destroy()方法来关闭连接
+  socket.setTimeout(5000) // 设置超时时间为5秒
 })
 
-server.listen(80, () => {
-    console.log("listener 80....")
+const PORT = 80
+server.listen(PORT, () => {
+  console.log("listener 80....")
 })
-
 ```
 
 ### 加载完整项目

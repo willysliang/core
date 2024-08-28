@@ -367,8 +367,12 @@ document.mozFullScreen
 ### IntersectionObserver 相交节点观察器
 
 ```bash
-## IntersectionObserver API
-IntersectionObserver API 是异步的，不随着目标元素的滚动同步触发。 即只有线程空闲下来，才会执行观察器。这意味着，这个观察器的优先级非常低，只在其他任务执行完，浏览器有了空闲才会执行。
+IntersectionObserver API 检测元素何时完全或部分出现在屏幕上。
+IntersectionObserver API 是异步的，不随着目标元素的滚动同步触发。这意味着这个观察器的优先级非常低，只在其他任务执行完，浏览器线程空闲才会执行观察器。
+
+`IntersectionObserver` 是浏览器原生提供的构造函数，接受两个参数，返回一个观察器实例：
+    - `callback` 是可见性变化时的回调函数
+    - `option` 是配置对象（可选）
 
 
 ## IntersectionObserverEntry对象提供目标元素的信息，一共有六个属性。
@@ -387,21 +391,43 @@ rootMagin：'' // "100px 0" 与margin类型写法，指定与跟元素相交时�
 
 
 ## 实例方法
+ `let io = new IntersectionObserver(callback, option)`
 - observe()
-	- 观察某个目标元素，一个观察者实例可以观察任意多个目标元素。
-	- 注意：这不是事件，没有冒泡。所以不能只调用一次 observe 方法就能观察一个页面里的所有 img 元素
+    - 观察某个目标元素（DOM 节点），一个观察者实例可以观察任意多个目标元素（需要观察多个节点，就要调用多次该方法）
+    - 注意：这不是事件，没有冒泡。所以不能只调用一次 observe 方法就能观察一个页面里的所有 img 元素
+    - `io.observe(el)`
 - unobserve()
-	- 取消对某个目标元素的观察，延迟加载通常都是一次性的，observe 的回调里应该直接调用 unobserve() 那个元素.
+    - 取消对某个目标元素的观察，延迟加载通常都是一次性的，observe 的回调里应该直接调用 unobserve() 那个元素
+    - `io.unobserve()`
 - disconnect()
-	- 取消观察所有已观察的目标元素
+    - 取消观察所有已观察的目标元素（关闭观察）
+    - `io.disconnect()`
 - takeRecords()
-    在浏览器内部，当一个观察者实例在某一时刻观察到了若干个相交动作时，它不会立即执行回调，它会调用 window.requestIdleCallback() （目前只有 Chrome 支持）来异步的执行我们指定的回调函数，而且还规定了最大的延迟时间是 100 毫秒，相当于浏览器会执行：
-    requestIdleCallback(() => {
-      if (entries.length > 0) {
-        callback(entries, observer)
-      }
-    }, { timeout: 100 })
+    在浏览器内部，当一个观察者实例在某一时刻观察到了若干个相交动作时，它不会立即执行回调，它会调用 window.requestIdleCallback() 来异步的执行指定的回调函数，而且还规定了最大的延迟时间是 100 毫秒，相当于浏览器会执行：
+      requestIdleCallback(() => {
+        if (entries.length > 0) {
+          callback(entries, observer)
+        }
+      }, { timeout: 100 })
+```
 
+```js
+const block = document.querySelector('.block')
+const header = document.querySelector('.header')
+const otherHeader = document.querySelector('.other-header')
+
+// 当头部 `header` 滚动到一定区域时，会切换为另一个 `header`
+const observer = new IntersectionObserver((entries) => {
+  if (entries[0].intersectionRatio > 0) {
+    header.classList.remove('switch-header')
+    otherHeader.classList.remove('switch-other-header')
+  } else {
+    header.classList.add('switch-header')
+    otherHeader.classList.add('switch-other-header')
+  }
+})
+
+observer.observe(block)
 ```
 
 
@@ -410,58 +436,61 @@ rootMagin：'' // "100px 0" 与margin类型写法，指定与跟元素相交时�
 
 ```vue
 <template>
-  <img
-    v-for="(item, index) in imgUrl"
-    :key="index"
-    ref="imgRef"
-    :src="systemNotfound"
-    :data-src="imgUrl[index]"
-    class="h-96"
-  />
+<img
+     v-for="(item, index) in imgUrl"
+     :key="index"
+     ref="imgRef"
+     :src="systemNotfound"
+     :data-src="imgUrl[index]"
+     class="h-96"
+     />
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { systemNotfound } from '@/assets/images'
+  import { onMounted, ref } from 'vue'
+  import { systemNotfound } from '@/assets/images'
 
-const imgRef = ref([])
-const imgUrl = ref([
-  'https://img2.baidu.com/it/u=617579813,2960860841&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-  'https://img2.baidu.com/it/u=1003272215,1878948666&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-  'https://img1.baidu.com/it/u=2995157981,91041597&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=750',
-  'https://img2.baidu.com/it/u=1395980100,2999837177&fm=253&fmt=auto&app=120&f=JPEG?w=1200&h=675',
-  'https://img0.baidu.com/it/u=925843206,3288141497&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=769',
-  'https://img1.baidu.com/it/u=1300668939,1504410366&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=858',
-  'https://img0.baidu.com/it/u=4008146120,512111027&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
-  'https://img1.baidu.com/it/u=3622442929,3246643478&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
-  'http://t13.baidu.com/it/u=230088816,2918366315&fm=224&app=112&f=JPEG?w=250&h=500',
-  'https://img2.baidu.com/it/u=3038223445,2416689412&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-])
+  const imgRef = ref([])
+  const imgUrl = ref([
+    'https://img2.baidu.com/it/u=617579813,2960860841&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+    'https://img2.baidu.com/it/u=1003272215,1878948666&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+    'https://img1.baidu.com/it/u=2995157981,91041597&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=750',
+    'https://img2.baidu.com/it/u=1395980100,2999837177&fm=253&fmt=auto&app=120&f=JPEG?w=1200&h=675',
+    'https://img0.baidu.com/it/u=925843206,3288141497&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=769',
+    'https://img1.baidu.com/it/u=1300668939,1504410366&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=858',
+    'https://img0.baidu.com/it/u=4008146120,512111027&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
+    'https://img1.baidu.com/it/u=3622442929,3246643478&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
+    'http://t13.baidu.com/it/u=230088816,2918366315&fm=224&app=112&f=JPEG?w=250&h=500',
+    'https://img2.baidu.com/it/u=3038223445,2416689412&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+  ])
 
-onMounted(() => {
-  const options = {
-    root: null,
-    // 这里是一个数组可以指定多个比例类似[0.25, 0.5, 0.75, 1]
-    threshold: [0], // 交会处
-    rootMargin: '0px', // 对视口进行收缩和扩张
-  }
-  const lazyIntersection = new IntersectionObserver((entires) => {
-    // entires为监听的节点数组对象
-    entires.forEach((item: any) => {
-      // isIntersecting是当前监听元素交叉区域是否在可视区域指定的阈值内返回的是一个布尔值
-      if (item.isIntersecting) {
-        item.target.src = item.target?.getAttribute('data-src')
-        // 这里资源加载后就停止进行观察
-        lazyIntersection.unobserve(item.target)
-      }
+  const initObserver = () => {
+    const options = {
+      root: null,
+      // 这里是一个数组可以指定多个比例类似[0.25, 0.5, 0.75, 1]
+      threshold: [0], // 交会处
+      rootMargin: '0px', // 对视口进行收缩和扩张
+    }
+    const lazyIntersection = new IntersectionObserver((entires) => {
+      // entires为监听的节点数组对象
+      entires.forEach((item: any) => {
+        // isIntersecting是当前监听元素交叉区域是否在可视区域指定的阈值内返回的是一个布尔值
+        if (item.isIntersecting) {
+          item.target.src = item.target?.getAttribute('data-src')
+          // 这里资源加载后就停止进行观察
+          lazyIntersection.unobserve(item.target)
+        }
+      })
+    }, options)
+
+    /** observe用来观察指定的DOM节点 */
+    imgRef.value.forEach((item) => {
+      lazyIntersection.observe(item)
     })
-  }, options)
-
-  /** observe用来观察指定的DOM节点 */
-  imgRef.value.forEach((item) => {
-    lazyIntersection.observe(item)
+  }
+  onMounted(() => {
+    initObserver()
   })
-})
 </script>
 ```
 
@@ -587,6 +616,32 @@ console.log(notice)
 ```
 
 ![恢复删除的水印](./image/recover_deleted_watermark.webp)
+
+
+
+### ResizeObserver 元素大小监听器
+
+```bash
+响应迅速的 Web 应用程序会根据视口大小调整其内容。这通常是通过 CSS 和媒体查询来实现的。当 CSS 能力不够时，我们会使用 JavaScript。Javascript DOM 操作通过侦听 `window.resize` 事件与视口大小保持同步。
+现代的 Web 应用程序通过一系列组件构成，这些组件也需要响应。以往的方法（CSS 媒体查询，JS `window.resize`，以及其他 Hack）无法跟踪组件的大小。
+随着响应式 Web 应用的普及，对响应式组件的需求也会随之增长。ResizeObserver 的出现正是为组件提供响应大小变化的方式。
+```
+
+```js
+const img = document.getElementById('img')
+
+function init() {
+  const hasSupport = window.ResizeObserver ? true : false
+  if (!hasSupport) return '不支持 Resize Observer API'
+
+  const resizeObserver = new ResizeObserver(() => {
+    console.log('bbb')
+  })
+  resizeObserver.observe(img)
+}
+
+init()
+```
 
 
 
@@ -2278,8 +2333,6 @@ addEventListener('message', (event) => {
 
 ## Service Worker
 
-
-
 ### Cache API
 
 [Cache API](https://developer.mozilla.org/zh-CN/docs/Web/API/Cache) 是 Service Worker 规范的一部分，是一种增强资源缓存能力的好方法。
@@ -2903,3 +2956,135 @@ webpush
     // err.statusCode
   });
 ```
+
+## 扩展 API
+
+### Speech Synthesis API
+
+`SpeechSynthesisUtterance` 代表语音请求
+
+获得语音对象后，可以执行一些调整来编辑语音属性：
+
+```js
+const utterance = new SpeechSynthesisUtterance('你好')
+```
+
+`SpeechSynthesis` 接口在 `window` 对象上可用。它的方法有 `speak()`、`pause()`、`cancel()`、`resume()` 和 `getVoices()`：
+
+- `speak()` —— 添加一个 utterance 到语音谈话队列；它将会在其他语音谈话播放完之后播放。
+- `pause()` —— 把 SpeechSynthesis 对象置为暂停状态。
+- `cancel()` —— 移除所有语音谈话队列中的谈话。
+- `resume()` —— 把 SpeechSynthesis 对象置为一个非暂停状态：如果已经暂停了则继续。
+- `getVoices()` —— 返回当前设备所有可用声音的 SpeechSynthesisVoice 列表。
+
+`SpeechSynthesisUtterance` 的实例属性有：
+
+- `utterance.rate` — 设置速度，接受 [0.1 - 10] 之间，默认为 1
+- `utterance.pitch` — 设置音高，接受 [0 - 2] 之间，默认为 1
+- `utterance.volume` — 设置音量，接受 [0 - 1] 之间，默认为 1
+- `utterance.lang` — 设置语言（值使用 BCP 47 语言标记，比如 en-US 或 it-IT）
+- `utterance.text` — 您可以将其作为属性传递，而不是在构造函数中进行设置。文本最多可包含 32767 个字符
+- `utterance.voice` — 设置语音
+
+```js
+const utterance = new SpeechSynthesisUtterance('你好')
+utterance.pitch = 1.5
+utterance.volume = 0.5
+utterance.rate = 8
+speechSynthesis.speak(utterance)
+```
+
+#### 设置声音
+
+浏览器有不同数量的可用语音。要查看列表，请使用以下代码：
+
+```js
+console.log(`Voices #: ${speechSynthesis.getVoices().length}`)
+
+speechSynthesis.getVoices().forEach((voice) => {
+  console.log(voice.name, voice.lang)
+})
+```
+
+#### 跨浏览器实现以获取语言
+
+由于我们有这种差异，我们需要一种方法来抽象它，以使用 API。本例进行了以下抽象：
+
+```js
+const getVoices = () => {
+  return new Promise((resolve) => {
+    let voices = speechSynthesis.getVoices()
+    if (voices.length) {
+      resolve(voices)
+      return
+    }
+
+    speechSynthesis.addEventListener('voiceschanged', () => {
+      voices = speechSynthesis.getVoices()
+      resolve(voices)
+    })
+  })
+}
+
+const printVoicesList = async () => {
+  ;(await getVoices()).forEach((voice) => {
+    console.log(voice.name, voice.lang)
+  })
+}
+
+printVoicesList()
+```
+
+#### 使用自定义语言
+
+默认语音说英语。通过设置 `lang` 属性，您可以使用任何想要的语言：
+
+```js
+let utterance = new SpeechSynthesisUtterance('中国')
+utterance.lang = 'zh-CN'
+speechSynthesis.speak(utterance)
+```
+
+#### 使用另一个声音
+
+可以有多个可用的声音选择：
+
+```js
+const lang = 'zh-CN'
+const voiceIndex = 1
+
+const speak = async (text) => {
+  if (!speechSynthesis) return
+  const message = new SpeechSynthesisUtterance(text)
+  message.voice = await chooseVoice()
+  speechSynthesis.speak(message)
+}
+
+const getVoices = () => {
+  return new Promise((resolve) => {
+    let voices = speechSynthesis.getVoices()
+    if (voices.length) {
+      resolve(voices)
+      return
+    }
+    speechSynthesis.addEventListener('voiceschanged', () => {
+      voices = speechSynthesis.getVoices()
+      resolve(voices)
+    })
+  })
+}
+
+const chooseVoice = async () => {
+  const voices = (await getVoices()).filter((voice) => voice.lang == lang)
+
+  return new Promise((resolve) => {
+    resolve(voices[voiceIndex])
+  })
+}
+
+speak('点个关注不迷路')
+```
+
+
+
+## 结语

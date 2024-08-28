@@ -4450,6 +4450,8 @@ export default defineComponent({
 > </script>
 > ```
 
+
+
 ## 	Router 4
 
 ### Router 4概念
@@ -6354,187 +6356,6 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 
 ## Vue扩展
 
-### 接口可视化
-
-> ```bash
-> # 查看接口软件： apifox
->
-> # 接口 API
-> npm install ts-node -g
-> npm init -y
-> npm install @types/node -D
-> npm install express -S
-> npm install @types/express -D
-> npm install axios -S
->
->
-> # 使用api
->
-> ```
->
-> #### 后台接口
->
-> ````ts
-> // index.ts
-> import express, { Express, Router, Request, Response } from 'express'
-> const app:Express = express();
-> const router:Router = express.Router();
->
-> app.use('/api', router);
->
-> router.get('/list', async (req:Request, res:Response) => {
-> const result = await axios.post('http://api.inews.qq.com/newsqa/v1/query');
-> })
->
-> app.listen(3000, () => {
-> console.log('success server 3000');
-> })
-> ````
->
-> ```json
-> // package.json
-> {
->   "scripts": {
->     "dev": "ts-node index.ts",
->   }
-> }
-> ```
-
-### axios封装
-
-> ````js
-> import Vue from 'vue'
-> import axios from 'axios'
->
-> const service = axios.create({
->   // baseURL: 'http://172.31.132.8:8011/api',
->   baseURL: '',
->   timeout: 6000,
->   crossDomain: true //允许跨域
-> })
->
-> // request拦截器,在请求之前做一些处理
-> service.interceptors.request.use(
->   config => {
->     if (uni.getStorageSync('login_token')) {
->       // 给请求头添加user-token 这块看你使用什么方式存储，需要确定是否有其他关键字
->       config.headers["Authorization"] = `Bearer ${uni.getStorageSync('login_token')}`;
->     }
->     console.log('此时请求拦截成功')
->     return config;
->   },
->   error => {
->     console.log(error); // for debug
->     return Promise.reject(error);
->   }
-> );
->
-> //配置成功后的拦截器
-> service.interceptors.response.use(res => {
->   console.log(res, '相应拦截了')
->   return res.data
-> }, error => {
->   console.log('相应拦截了直接错误')
->   const { response } = error;
->   if (response.status) {
->     switch (response.status) {
->       case 400:
->         console.log('请求无效')
->         break
->       case 401:
->         console.log('尚未登录请重新登录')
->         break
->       case 403:
->         console.log('您没有权限这样做，请联系管理员')
->         break
->       case 404:
->         console.log('请求未找到')
->         break
->       case 500:
->         console.log('系统异常')
->         break
->       case 504:
->         console.log('请求超时，请稍后再试')
->         break
->       default:
->         console.log('系统异常')
->         break
->     }
->   }
->   return Promise.reject(error)
-> })
->
-> // 在main.js中放入这段自定义适配器的代码，就可以实现uniapp的app和小程序开发中能使用axios进行跨域网络请求，并支持携带cookie
-> /* axios.defaults.adapter = function(config) {
-> 	return new Promise((resolve, reject) => {
-> 		console.log(config)
-> 		var settle = require('axios/lib/core/settle');
-> 		var buildURL = require('axios/lib/helpers/buildURL');
-> 		uni.request({
-> 			method: config.method.toUpperCase(),
-> 			url: config.baseURL + buildURL(config.url,
-> 				config.params, config.paramsSerializer),
-> 			header: config.headers,
-> 			data: config.data,
-> 			dataType: config.dataType,
-> 			responseType: config.responseType,
-> 			sslVerify: config.sslVerify,
-> 			complete: function complete(response) {
-> 				console.log("执行完成：", response)
-> 				response = {
-> 					data: response.data,
-> 					status: response.statusCode,
-> 					errMsg: response.errMsg,
-> 					header: response.header,
-> 					config: config
-> 				};
->
-> 				settle(resolve, reject, response);
-> 			}
-> 		})
-> 	})
-> } */
->
-> export default service
->
-> /***
->  * npm i axios
->
->   const res = await this.$axios({
->     method: 'GET',
->     url: '/nav',
->     params: { key: 'abc' }
->   })
->   const res = await this.$axios({
->     url: 'base/auto/',
->     method: 'POST',
->     data: { username: 'aaa' }
->   })
-> */
-> ````
-
-### vite
-
-> - Vite是开发构建工具，开发期它利用浏览器native ES Module特性导入组织代码，生产中理由rollup作为打包工具，它具有光速启动、热模块替换、按需编译的特点
->
-> ```bash
-> # 创建vite：
-> yarn create vite   # 或 npm init vite@latest
->
-> # 使用vite安装项目：
-> npm init vite-app project-name
->
-> # 安装依赖包：
-> yarn
->
-> # 启动：
-> npm run dev
->
-> # 安装mockjs：
-> npm i mockjs -S
-> npm i vite-plugin-mock cross-env -D
-> ```
-
 ### 集成Tailwind CSS
 
 > ```css
@@ -6600,51 +6421,55 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > # 什么是 CSS 原子化
 > 	https://zhuanlan.zhihu.com/p/425814828
 > 	相对于 TailWind CSS 更快速
->
+> 
 > # CSS原子化的优缺点
 > 1.减少了css体积，提高了css复用
 > 2.减少起名的复杂度
 > 3.增加了记忆成本：将css拆分为原子后，势必要记住一些class才能书写，哪怕tailwindcss提供了完善的工具链， background，也要记住开头是bg
->
+> 
 > # 装入 unocss 依赖
 > 	npm i -D unocss
->
+> 
 > # presetIcons Icon图标预设
 > 图标集合安装：npm i -D @iconify-json/ic
->
+> 
 > 首先我们去icones官网[https://icones.js.org/]（方便浏览和使用iconify）浏览我们需要的icon，比如这里我用到了Google Material Icons图标集里面的baseline-add-circle图标
 > <div  class="i-ic-baseline-backspace text-3xl bg-green-500" />
->
+> 
 > 2.presetAttributify 属性化模式支持
 > 属性语义化 无须class
 > <div font="black">
->     btn
+>  btn
 > </div>
->
->
+> 
+> 
 > 3.presetUno 工具类预设
->
+> 
 > 默认的 @unocss/preset-uno 预设（实验阶段）是一系列流行的原子化框架的 通用超集，包括了 Tailwind CSS，Windi CSS，Bootstrap，Tachyons 等。
->
+> 
 > 例如，ml-3（Tailwind），ms-2（Bootstrap），ma4（Tachyons），mt-10px（Windi CSS）均会生效。
 > ```
 >
 > ```ts
 > // vite.config.ts
 > import unocss from 'unocss/vite'
->
-> plugins: [vue(), vueJsx(), unocss({
->   rules: [	// 转换规则
->      [/^m-(\d+)$/, ([, d]) => ({ margin: `${Number(d) * 10}px` })],
->      ['flex', { display: "flex" }],
->      ['pink', { color: 'pink' }]
->   ],
->   shortcuts: {	// 原子化
->      btn: "pink flex",
->      cike: ['flex', 'red'],
->   },
->   presets:[presetIcons(),presetAttributify(),presetUno()], // 预设
-> })],
+> 
+> plugins: [
+>   vue(), 
+>   vueJsx(), 
+>   unocss({
+>     rules: [	// 转换规则
+>       [/^m-(\d+)$/, ([, d]) => ({ margin: `${Number(d) * 10}px` })],
+>       ['flex', { display: "flex" }],
+>       ['pink', { color: 'pink' }]
+>     ],
+>     shortcuts: {	// 原子化
+>       btn: "pink flex",
+>       cike: ['flex', 'red'],
+>     },
+>     presets:[presetIcons(),presetAttributify(),presetUno()], // 预设
+>   }),
+> ],
 > ```
 >
 > ```ts
