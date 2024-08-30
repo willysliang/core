@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年8月30日
+  - docs(前端框架): [移动开发] JSBridge
+
 ## r2024年8月28日
   - docs(前端基础): [JavaScript] WebAssembly
 
