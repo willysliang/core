@@ -138,11 +138,11 @@ ES6的优化
 
 ```bash
 #### WebAssembly 是什么？
-- WebAssembly 是一种可以使用非 JavaScript 编程语言编写代码，并且能在 Web 浏览器上运行的技术方案，提供一些新特性并主要专注于高性能。
-- 主要不是用于写，而是 `C/C++、C#、Rust` 等语言编译的目标，所以你即使不知道如何编写 WebAssembly 代码也能利用它的优势。
-- 其他语言编写的代码也能以近似于原生速度运行，客户端 App 也能在 Web 上运行。
-- 在浏览器或 Node.js 中可以导入 WebAssembly 模块，JS 框架能够使用 WebAssembly 来获得巨大的性能优势和新的特性的同时在功能上易于使用。
-
+- WebAssembly 是能让非 JavaScript 语言编写的代码在 Web 浏览器运行的技术，专注高性能。
+		- 是一个可移植、体积小、加载快并且兼容 Web 的全新格式。它与JavaScript是同一层的开发模式。
+		- 主要不是用于写，而是 `C/C++、C#、Rust` 等语言编译后生成，所以即使不知道如何编写 WebAssembly 代码也能利用它的优势。
+		- 其他语言编译的代码能以近似原生速度运行，客户端 App 能在 Web 运行。
+		- 在浏览器或 Node.js 中可以导入 WebAssembly 模块，JS 框架用它获性能优势和新特性且易用。
 
 
 #### WebAssembly 的目标
@@ -152,26 +152,34 @@ ES6的优化
 4. 不破坏现有的 Web：WebAssembly 被设计与其他 Web 技术兼容运行，并且保持向后兼容性。
 
 
+#### WebAssembly 的优势
+1. 体积小：WebAssembly 在网络中传输的是二进制文件，所以与JS相比，同样逻辑的实现，WebAssembly 的 WASM 文件体积更小。
+2. 解析速度块：V8 引擎对于 JS 的运行效率非常高，但仍然是即时编译（JIT）
+3. 编译优化： 
+	- JS 在加载后首先会被解释器转化为 AST 语法树，然后再被进一步编译成字节码；而 Assembly 自身已经是字节码，所以省略了转化和编译步骤。
+	- 此外，WebAssembly 是有数据类型，所以不会产生不同的类型值，因此不会触发浏览器的重新优化。
+4. 执行优化：WebAssembly 面向编译前设计，执行效率更高。
+5. 手动管理内存：JS 通过 V8 中的垃圾回收器实现垃圾回收处理，但 WebAssembly 是手动管理内存，省去了 GC 的性能消耗。
+
 
 #### WebAssembly 如何与 Web 兼容的？
-Web 平台可以看做有两个部分：
-	1. 一个虚拟机（VM）用于运行 Web 应用代码，例如 JS 引擎运行 JS 代码
-	2. 一系列 Web API，Web 应用可以调用这些 API 来控制 Web 浏览器/设备 的功能，来做某些事情（DOM、CSSOM、WebGL、IndexedDB、Web Audio API 等）
+Web 平台包含两部分：
+	1. 用于运行 Web 应用代码的虚拟机（VM），如 JS 引擎运行 JS 代码
+	2. 一系列 Web API，Web 应用能调用以控制 Web 浏览器/设备功能（如 DOM、CSSOM、WebGL、IndexedDB、Web Audio API 等）
 
 JS 脚本的缺陷：
 	- 性能问题，如 3D 游戏、VR/AR、计算机视觉、图片/视频编辑、以及其他需要原生性能的领域。
-	- 下载、解析和编译大体积的 JS 应用是很困难的，在一些资源更加受限的平台上，如移动设备等会更加放大这种性能瓶颈。
+	- 下载、解析和编译大体积的 JS 应用困难，在一些资源更加受限的平台上，如移动设备等会更加放大这种性能瓶颈。
 
-WebAssembly 不是为了替代 JS 而生，而是为了能与 JS 互补并协作，使得 Web 开发者能重复利用两种语言优点：
-	1. JS 是高层次语言，灵活且极具表现力，动态类型、不需要编译步骤，易于编写 Web 应用。
-	2. WebAssembly 是低层次、类汇编的二级制格式语言，能够以近乎原生的性能运行，并提供了低层次的内存模型，是 C++、Rust 等语言的编译目标，使得这类语言编写的代码能够在 Web 上运行（注意：WebAssembly 将在未来提供垃圾回收的内存模型等高层次的目标）
+WebAssembly 并非替代 JS，而是与 JS 互补并协作，让 Web 开发者能重复利用两种语言优点：
+	1. JS 是高层次、灵活且具表现力的语言，动态类型、无需编译步骤，易于编写 Web 应用。
+	2. WebAssembly 是低层次、类汇编的二级制格式语言，能以近乎原生的性能运行，并提供低层次的内存模型，是 `C++、Rust` 等语言的编译目标，使得这类语言编写的代码能够在 Web 上运行（注意：WebAssembly 将在未来提供垃圾回收的内存模型等高层次的目标）
 
 随着 WebAssembly 的出现，VM 现在可以加载两种类型的代码执行：JavaScript 和 WebAssembly。
-JavaScript 和 WebAssembly 可以互操作，实际上，一份 WebAssembly 代码被称为一个模块，而 WebAssembly 的模块与 ES2015 的模块具有很多共同的特性。
-
+JavaScript 和 WebAssembly 能互相操作，实际上一份 WebAssembly 代码被称为一个模块，是因为其模块与 ES2015 的模块具有很多共同的特性。
 ```
 
-#### JIT
+#### 即时编译 JIT
 
 ```bash
 机器的解析，理解与交流
