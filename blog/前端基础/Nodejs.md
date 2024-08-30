@@ -845,6 +845,387 @@ const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面
 
 
 
+## `package.json`
+
+当创建一个 Node 项目时， 需要创建一个 package.json 文件，描述这个项目所需要的各种模块，以及项目的配置信息（比如名称、版本、许可证等元数据）。
+
+可以在命令行使用 `npm help package.json` 命令，将跳转到页面，查看这些字段如何使用。
+
+#### 基础信息
+
+`name` 项目名
+
+```json
+{
+  "name": "node"
+}
+```
+
+`version` 描述项目的当前版本号
+
+```json
+{
+  "version": "0.1.0"
+}
+```
+
+`description` 项目的描述
+
+```json
+{
+  "description": "My package"
+}
+```
+
+`main` 指定项目的主入口文件
+
+```json
+{
+  "main": "index.js"
+}
+```
+
+`author` 项目作者信息，贡献者。它可以有两种写法。`email` 和 `url` 是可选的。
+
+```json
+// 方式一：
+{
+  "name" : "willysliang",
+  "email" : "willysliang@qq.com",
+  "url" : "https://github.com/willysliang/core"
+}
+
+// 方式二：
+{
+  "author": "willysliang <willysliang@qq.com> (https://github.com/willysliang/core)"
+}
+```
+
+`keywords` 使用相关关键字描述项目
+
+```json
+{
+  "keywords": ["admin", "node", "node"]
+}
+```
+
+`license` 许可证（告诉用户可以做什么和不能做什么，常见：MIT、BSD-3-Clause）
+
+```json
+{
+  "keywords": "MIT"
+}
+```
+
+`scripts` 指定运行脚本命令的 npm 命令行缩写，比如 start 指定了运行 `npm run start` 时，所要执行的命令。
+
+```json
+{
+  "scripts": {
+    "start": "node ./bin/xxx"
+  }
+}
+```
+
+`repository` 字段用于指定代码存放的位置。
+
+```json
+{
+  "repository": {
+    "type": "git",
+    "url": "这里写上项目在 github 上的地址"
+  }
+}
+```
+
+也可以添加 `-y` 标志来生成默认的 `package.json` 文件：
+使用 `npm init -y` 默认生成的 `package.json` 文件会少一个 `repository` 字段，需要的话可以手动添加上去。
+
+```json
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+#### 依赖
+
+[`dependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#dependencies) 字段指定了生产环境项目的依赖。当你添加生产环境依赖时，他会自动生成，如：`npm i express`
+
+```json
+{
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
+```
+
+[`devDependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#devdependencies) 字段指定了开发环境项目的依赖。当你添加生产环境依赖时，他会自动生成，如：`npm i eslint -D`
+
+```json
+{
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  }
+}
+```
+
+[`peerDependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#peerdependencies) 兼容性依赖。如果你的包是插件，适合这种方式。
+
+```json
+{
+  "peerDependencies": {
+    "tea": "2.x"
+  }
+}
+```
+
+[`optionalDependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#optionaldependencies) 如果你想在某些依赖即使没有找到，或则安装失败的情况下，npm 都继续执行。那么这些依赖适合放在这里。
+
+```json
+{
+  "optionalDependencies": {}
+}
+```
+
+`bundledDependencies` 发布包时捆绑的包名数组
+
+```json
+{
+  "bundledDependencies": ["renderized", "super-streams"]
+}
+```
+
+#### 配置
+
+`config` 字段中的键作为 `env` 环境变量公开给脚本。
+
+```json
+{
+  "name": "node",
+  "config": {
+    "foo": "hello"
+  }
+}
+```
+
+你可以在应用程序中使用 `config` 字段，当用户执行 `npm run start` 命令时，这个脚本就可以得到值。
+
+```js
+console.log(process.env.npm_package_config_foo)
+```
+
+你可以使用下面命令改变这个值。
+
+```bash
+npm config set node:foo hi
+```
+
+#### lint-staged
+
+在代码提交之前，进行代码规则检查能够确保进入 git 库的代码都是符合代码规则的。但是整个项目上运行 lint 速度会很慢，lint-staged 能够让 lint 只检测暂存区的文件，所以速度很快。
+
+**安装与配置**：`husky` 和 `lint-staged`
+
+```bash
+npm i husky lint-staged -D
+```
+
+`package.json` 中配置：
+
+```json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix"
+  }
+}
+```
+
+`git commit` 时触发 `pre-commit` 钩子，运行 `lint-staged` 命令，对 `*.js` 执行 `eslint` 命令。`eslint` 要提前配置好。
+
+#### 其他
+
+`homepage` 项目首页的网址。
+
+```json
+{
+  "homepage": "https://github.com/willysliang/core"
+}
+```
+
+`bugs` 项目的问题追踪系统的 URL 或邮箱地址，这些对遇到软件包问题的人很有帮助。
+
+```json
+{
+  "bugs": {
+    "url": "http://github.com/owner/project/issues",
+    "email": "project@hostname.com"
+  }
+}
+```
+
+`bin` 很多的包都会有执行文件需要安装到 PATH 中去。这个字段对应的是一个 Map，每个元素对应一个**{ 命令名：文件名 }**。这些可执行文件的头部需要加上 `#!/usr/bin/env node`。
+
+```json
+{
+  "bin": {
+    "npm": "./cli.js",
+    "command": "./bin/command"
+  }
+}
+```
+
+`private` 是一个布尔值。如果 private 为 true，可以保证包不会被发布到 npm。这可以防止私有 repositories 不小心被发布出去。
+
+`preferGlobal` 是一个布尔值。如果你的包是个命令行应用程序，需要全局安装，就可以设为 true。
+
+```json
+{
+  "private": true,
+  "preferGlobal": true
+}
+```
+
+`browserslist` 指定项目所支持的浏览器版本。
+
+```json
+{
+  "browserslist": [
+    "last 3 Chrome versions",
+    "last 3 Firefox versions",
+    "Safari >= 10",
+    "Explorer >= 11"
+  ]
+}
+```
+
+`engines` 字段指明了该项目运行的平台，比如 Node 的某个版本或者浏览器，也可以指定适用的 `npm` 版本。
+
+```json
+{
+  "engines": {
+    "node": ">= 12.16.2",
+    "npm": ">= 6.14.8"
+  }
+}
+```
+
+`man` 用来指定当前项目的 man 文档的位置。
+
+```json
+{
+  "man": ["./doc/calc.1"]
+}
+```
+
+`style` 指定供浏览器使用时，样式文件所在的位置。样式文件打包工具 parcelify，通过它知道样式文件的打包位置。
+
+```json
+{
+  "style": ["./node_modules/tipso/src/tipso.css"]
+}
+```
+
+`cpu` 指定 CPU 型号。
+
+```json
+{
+  "cpu": ["x64", "ia32"],
+  "cpu": ["!arm", "!mips"]
+}
+```
+
+`os` 指定项目可以在什么操作系统上运行。
+
+```json
+{
+  "os": ["darwin", "linux"]
+}
+```
+
+`files` 当你发布项目时，具体哪些文件会发布上去。如果需要把某些文件不包含在项目中，添加一个 `.npmignore` 文件。这个文件和 `gitignore` 类似。
+
+```json
+{
+  "files": ["src", "dist/*.js", "types/*.d.ts"]
+}
+```
+
+`publishConfig` 是一个布尔值。如果你的包是个命令行应用程序，需要全局安装，就可以设为 true。
+
+`engineStrick` 是一个布尔值。如果你肯定你的程序只能在制定的 engine 上运行，设置为 true。
+
+还有一些特殊的字段，比如 `prettier`、`unpkg`、`babel`、`jest` 等，他们配合工具使用。
+
+#### 根据 package.json 内容自动生成 README.md 文件
+
+对于任何开源项目来说，最重要的文档就是 README。
+
+这里介绍一个好用的工具 [`readme-md-generator`](https://github.com/lio-zero/readme-md-generator)，它将根据 `package.json` 文件内容自动生成漂亮 README 文件
+
+`readme-md-generator` 能够读取您的环境（`package.json`，git 配置等），创建项目的 README 文件。
+
+以下是该模式提供的一个示例演示：
+
+![使用示例](./images/18281896-f3c63011175001bf-1725004135089.gif)
+
+##### 基本配置
+
+确保已安装 [npx](https://www.npmjs.com/package/npx)（自 npm 以来默认 `npx` `5.2.0`)
+
+只需在项目根部运行以下命令并回答问题：
+
+```bash
+npx readme-md-generator
+```
+
+或使用 `-y` 标志默认生成：
+
+```bash
+npx readme-md-generator -y
+```
+
+假设我们有如下配置：
+
+```json
+{
+  "name": "vue3",
+  "version": "0.1.0",
+  "private": true,
+  "description": "vue3-demo",
+  "author": "willysliang <willysliang@qq.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 12.16.2",
+    "npm": ">= 6.14.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willysliang/core.git"
+  },
+  "homepage": "https://github.com/willysliang/core.git#readme",
+  "keywords": ["vue3", "cli"],
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {}
+}
+```
+
+
+
 ## 全局对象 global
 
 ```bash
@@ -1014,7 +1395,7 @@ fs 模块可以执行以下操作：
 因此，以下都使用文件系统模块中的异步方法。
 ```
 
-### 文件读取
+### 文件读取 readFile
 
 ```bash
 ## 文件读取
@@ -1037,7 +1418,6 @@ fs 模块可以执行以下操作：
 - 播放视频、音乐
 - 上传文件
 - 查看 Git 提交记录
-
 ```
 
 ```js
@@ -1062,7 +1442,7 @@ try {
 }
 ```
 
-### 文件写入
+### 文件写入 writeFile
 
 ```bash
 ## 文件写入
@@ -1133,8 +1513,7 @@ fs.writeFileSync('test.txt', data)
 ### 文件信息状态 stat
 
 ```bash
-## 文件信息资源状态 stat
-`fs.stat()` 或 `fs.statSync()` 可以获取文件大小，创建时间等信息，它返回一个`Stat`对象，能告诉我们文件或目录的详细信息。
+`fs.stat()` 或 `fs.statSync()` 可以获取文件大小，创建时间等信息，它返回一个`Stat`对象，里面包含文件或目录的详细信息。
 
 语法：
 	- `fs.stat(path[, options], callback)`
@@ -1146,6 +1525,17 @@ fs.writeFileSync('test.txt', data)
     - 文件体积大小 `size`
     - 创建时间 `birthtime`
     - 最后修改时间 `mtime`
+
+
+文件信息包含在 `stats` 变量中。包括：
+    - 如果文件是目录或文件，则使用 `stats.isFile()` 和 `stats.isDirectory()`
+    - 如果文件是符号链接，则使用 `stats.isSymbolicLink()`
+    - 文件大小（以字节为单位），使用 `stats.size`
+
+
+stat() 与 fstat() 的区别
+    - `fs.stat` 接收的第一个参数是一个文件路径字符串
+    - `fs.fstat` 接收的是一个文件描述符
 ```
 
 ```js
@@ -1175,7 +1565,6 @@ fs.stat('./blog', function (err, stat) {
 ### stream 流
 
 ```bash
-## stream 流
 - stream 是 nodejs 提供的又一个仅在服务区端可用的模块，目的是支持 “流” 这种数据结构。
 - 流的特点是数据有序的，而且必须依次读取，或者依次写入，不能像 Array 那样随机定位。（类似堆栈）
 
@@ -1187,6 +1576,14 @@ fs.stat('./blog', function (err, stat) {
     3. `error`事件表示出错了。
 
 - 注意：`data` 事件可能会有多次，每次传递的 `chunk` 是流的一部分数据。
+
+
+
+#### readFile() 与 createReadStream() 的区别
+- `readFile` 方法异步读取文件的全部内容，并存储在内存中，然后再传递给用户
+- `createReadStream` 使用一个可读的流，逐块读取文件，而不是全部存储在内存中
+
+与 `readFile` 相比，`createReadStream` 使用更少的内存和更快的速度来优化文件读取操作。如果文件相当大，用户不必等待很长时间直到读取整个内容，因为读取时会先向用户发送小块内容。
 ```
 
 ```js
@@ -1211,7 +1608,6 @@ rs.on("open", () => {
     .on("data", (chunk) => {
         console.log("单批数据流入: ", chunk.length, chunk)
     })
-
 ```
 
 ```js
@@ -1246,7 +1642,6 @@ ws.write("helloworld2!", (err) => {
 ws.end(() => {
     console.log("文件写入关闭")
 })
-
 ```
 
 - 要以流的形式写入文件，只需要不断调用`write()`方法，最后以`end()`结束:
@@ -1276,7 +1671,6 @@ ws2.end()
 通过 pipe() 把一个文件流和另一个文件流串联，这样源文件的所有数据就自动写入到目标文件中(实际是复制文件的过程)
 
 默认情况下，当读取流的数据的`end`事件触发后，将自动关闭写入流。而限制写入流的自动关闭，则需要传入参数：`readable.pipe(writable, { end: false })`
-
 ```
 
 ```js
@@ -1353,7 +1747,7 @@ rs.on('end', () => {
 
 
 
-### 文件重命名与移动
+### 文件重命名与移动 rename
 
 ```js
 const fs = require('fs')
@@ -1379,7 +1773,12 @@ fs.rename('./temp/temp2.json', './temp2.json', (err) => {
 
 
 
-### 文件删除
+### 文件删除 unlink
+
+```bash
+文件系统模块有一种方法，允许您删除文件。但是，需要注意的是，它只适用于文件，不适用于目录。
+当以文件路径作为参数调用 `unlink` 方法时，它将删除该文件。
+```
 
 ```js
 const fs = require('fs')
@@ -1406,7 +1805,7 @@ fs.rm('./temp/temp2.json', err => {
 
 
 
-### 文件夹操作
+### 文件夹操作 mkdir
 
 ```bash
 ## 文件夹操作
@@ -1449,7 +1848,6 @@ fs.readdir('./temp', callback('读取', true))
 
 /** 删除文件夹 */
 fs.rm('./temp', { recursive: true }, callback('删除'))
-
 ```
 
 
@@ -1477,6 +1875,87 @@ function deleteFolderRecursive(folderPath) {
 }
 
 deleteFolderRecursive('temp')
+```
+
+
+
+### 文件中添加内容 appendFile
+
+使用文件系统模块，可以使用`appendFile` 方法向现有文件添加新内容。
+
+```js
+const fs = require('fs')
+
+fs.appendFile(filePath, '\nAll work and no play makes Jack a dull boy!', (err) => {
+  if (err) throw err
+
+  console.log('All work and no play makes Jack a dull boy!')
+})
+```
+
+
+
+### 检查文件是否存在 exists
+
+`fs.exists` 已经废弃，建议使用 `fs.access`：
+
+```js
+const { access, constants } = require('fs')
+
+const file = 'package.json'
+
+// 检查当前目录中是否存在该文件
+access(file, constants.F_OK, (err) => {
+  console.log(`${file} ${err ? '不存在' : '存在'}`)
+})
+```
+
+
+
+### 截断文件内容 ftruncate
+
+```bash
+语法：`fs.ftruncate(fd, len, callback)`
+
+`close` 方法接受以下参数：
+    - `fd` — 文件 `fs.open()` 方法返回的文件描述符。
+    - `len` — 文件的长度，在此长度之后文件将被截断。
+    - `callback` — 回调函数，它不获取任何参数，除非给完成回调一个可能的异常。
+```
+
+```js
+const { open, close, ftruncate } = require('node:fs')
+
+function closeFd(fd) {
+  close(fd, (err) => {
+    if (err) throw err
+  })
+}
+
+open('temp.txt', 'r+', (err, fd) => {
+  if (err) throw err
+
+  try {
+    ftruncate(fd, 4, (err) => {
+      closeFd(fd)
+      if (err) throw err
+    })
+  } catch (err) {
+    closeFd(fd)
+    if (err) throw err
+  }
+})
+```
+
+
+
+### 监听文件 watch
+
+```bash
+watch() 与 watchFile() 的区别
+二者主要用来监听文件变动：
+- `fs.watch` 利用操作系统原生机制来监听，可能不适用网络文件系统
+- `fs.watchFile` 则是定期检查文件状态变更，适用于网络文件系统，但是相比 `fs.watch` 有些慢，因为不是实时机制
 ```
 
 
@@ -1589,6 +2068,16 @@ const newURL = {
 
 
 
+## 进程 process
+
+```bash
+
+```
+
+
+
+
+
 ## 资源压缩 zib
 
 ```bash
@@ -1625,7 +2114,9 @@ readStream.pipe(gunzip).pipe(writeStream)
 
 ```
 
-### 服务端gzip压缩
+
+
+#### 服务端gzip压缩
 
 ```js
 const fs = require("fs")
@@ -1664,6 +2155,35 @@ server.listen(3000, () => {
     console.log("server start")
 })
 
+```
+
+
+
+#### 下载和解压 Node 中的 gz 文件
+
+```bash
+- got：适用于 Node.js 的人性化且功能强大的 HTTP 请求库。
+- Node-gzip：只需使用 `promise` 在 Node.js 中使用 `gzip` 和 `ungzip`。
+```
+
+```js
+import got from 'got'
+import pkg from 'node-gzip'
+
+const { ungzip } = pkg
+const SITEMAP_URL = 'https://developer.mozilla.org/sitemaps/en-US/sitemap.xml.gz'
+
+async function main() {
+  // 获取文件
+  const { body } = await got(SITEMAP_URL, { responseType: 'buffer' })
+
+  // 解压缓冲的 gzip 站点地图
+  const sitemap = (await ungzip(body)).toString()
+
+  console.log(sitemap)
+}
+
+main()
 ```
 
 
@@ -2282,10 +2802,22 @@ events.emit("someEvent", "arg1 参数", "arg2 参数")
 ## 爬虫 puppeteer
 
 ```bash
-## 爬虫 puppeteer
+Puppeteer 用来模拟 Chrome 浏览器的运行，它提供了高级 API 来通过 DevTools 协议控制 Chrome 或 Chromium。Puppeteer 默认情况下无头运行，但可以配置为运行完整（无头）的 Chrome 或 Chromium。
+由于它在初始化时启动了一个新的 Chrome 实例，因此它可能不是性能最好的。这是使用 Chrome 自动化测试的最精确方法，因为它使用的是真正的浏览器。
+确切地说，它使用 Chrome 的开源部分 Chromium，这主要意味着它没有 Google 许可且无法开源的专有编解码器（MP3、AAC、H.264..），也没有与崩溃报告、谷歌更新等谷歌服务的集成，但从编程的角度来看，它应该与 Chrome 100% 相似（除了媒体播放）。
 
-$ pnpm i puppeteer-core
 
+安装：`$ pnpm i puppeteer-core`
+
+作用：
+    - 抓取网页
+    - 自动化表单提交
+    - 执行任何类型的浏览器自动化
+    - 跟踪页面加载性能
+    - 创建单页应用的服务器端渲染版本
+    - 制作屏幕截图
+    - 创建自动化测试
+    - 从网页生成 PDF
 ```
 
 ```js
@@ -2303,13 +2835,13 @@ const puppeteer = require("puppeteer-core")
     // 使用 browser.newPage 方法创建一个新页面
     const page = await browser.newPage()
 
-    // 使用 page.goto 方法跳转到指定的网页：
+    // 使用 page.goto 方法跳转到指定的网页并加载：
     await page.goto("https://cc.163.com/")
 
     // 捕获console的输出,通过监听console事件
     page.on("console", (msg) => console.log("PAGE LOG:", ...msg.args))
 
-    // 使用 page.evaluate(pageFunction, ...args) 执行 JavaScript 代码并获取结果
+    // 使用 page.evaluate(pageFunction, ...args) 执行 JavaScript 代码并获取页面内容
     const dimensions = await page.evaluate(() => {
         return {
             width: document.documentElement.clientWidth,
@@ -2330,7 +2862,6 @@ const puppeteer = require("puppeteer-core")
     // 使用 browser.close 方法关闭浏览器
     await browser.close()
 })()
-
 ```
 
 ### 爬虫模拟登录
