@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年9月3日
+  - docs(前端基础): [Nodejs] 缓存区Buffer类
+
 ## 2024年8月30日
   - docs(前端框架): [移动开发] JSBridge
   - docs(前端基础): [Nodejs] package.json，fs

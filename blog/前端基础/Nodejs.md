@@ -840,7 +840,6 @@ function require(file) {
 
 const m1 = require("./tsconfig.json")
 const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面首次执行的内容
-
 ```
 
 
@@ -1229,9 +1228,7 @@ npx readme-md-generator -y
 ## 全局对象 global
 
 ```bash
-## 全局对象 global
-
-
+Node 全局对象有 `process`、`console`、`Buffer`、`global`、EventLoop 相关 API（`setImmediate`、`setInterval` 和 `setTimeout` 等）及为模块包装所使用的全局对象（`exports`、`module`、`require` 等），它们都不需要您使用 `require()` 即可在 Node 环境中使用。
 ```
 
 
@@ -2715,49 +2712,123 @@ if (loginHash === savedHash) {
 
 
 
-## Buffer 类
+## 缓存区 Buffer类
 
 ```bash
-## Buffer 类
-Buffer 是 Node.js 中用于处理二进制数据的类，它是 Node.js 在处理 TCP 流、文件系统操作、加密算法等方面的核心模块之一。
-注意：Buffer对象在创建时需要指定其大小（以字节为单位），且创建后无法改变其大小。在使用Buffer时，需要注意内存泄漏和安全问题，避免出现缓冲区溢出等问题。
-
-
-### Buffer 的作用：
-1. 存储二进制数据：Buffer可以存储二进制数据，包括字节、位、16进制、ASCII等。
-2. 处理网络流数据：Buffer可以用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
-3. 处理文件系统操作：Buffer可以用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
-4. 实现加密算法：Buffer可以用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
-5. 处理数据传输：Buffer可以用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
-6. 支持转换编码：Buffer可以将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
-
-
-### 计算机基本组成
-内存：读写速度较快，断电丢失数据
-硬盘：读写速度较慢，断电不丢失数据
-线程：线程是一个进程的执行流
+#### Buffer 的作用：
+1. 存储二进制数据：可存储二进制数据，包括字节、位、16进制、ASCII等。
+2. 处理网络流数据：可用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
+3. 处理文件系统操作：可用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
+4. 实现加密算法：可用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
+5. 处理数据传输：可用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
+6. 支持转换编码：可将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
 
 
 
-### 类方法：Buffer.from(buffer)
+#### 概念
+1. 二进制代码：
+因为计算机处理器由晶体管组成，靠开（0）和关（1）信号激活。为了让计算机能理解、处理和存储数据，必须将数据转换为二进制代码。
+发送到计算机的每一条数据在处理和输出结果之前，首先由微处理器转换成二进制，因此需要区分不同的数据类型。而计算机通过对不同的数据类型进行不同的编码，以区分不同类型的数据。
+
+2. 缓冲区：
+二进制流是大量二进制数据的集合，由于二进制流庞大，因而不会被一起发送，需要在发送之前分解成更小部分再进行发送。
+当数据处理单元不能接收更多数据流时，多余的数据将存储在缓冲区中，直到数据处理单元准备好接收更多数据。
+
+3. Node.js 中的缓冲区类
+Node.js 中的 Buffer 类用于处理二进制数据，它是 Node.js 在处理 TCP 流、文件系统操作、加密算法等方面的核心模块之一。
+	- 读写文件系统（文件存储在二进制文件中）
+	- 处理 TCP 流，它们在以小块形式发送二进制数据之前保护与接收器的连接。发送到接收器的数据流需要存储在缓冲区，直到接收器准备好接收更多数据块进行处理为止。
+注意：
+	- Buffer 类在 V8 引擎之外处理二进制数据分配存储。
+	- Buffer 对象在创建时需指定其大小（以字节为单位），且创建后无法改变。在使用Buffer时需要注意内存泄漏、安全及避免缓冲区溢出问题。
+	- Buffer 类可以方便地进行二进制数据的拼接、切片等操作，提高对二进制数据的处理效率。
+```
+
+#### 属性和方法
+
+```bash
+- `Buffer.alloc()` 创建指定长度的缓冲区对象。它以字节为单位分配缓冲区的大小。
+- `Buffer.byteLength()` 返回指定对象中的字节数
+- `Buffer.compare()` 比较两个缓冲区对象
+- `Buffer.concat()` 将缓冲区对象数组连接到一个缓冲区对象中
+- `Buffer.fill()` 用指定的值填充缓冲区对象
+- `Buffer.from()` 从对象（字符串/数组/缓冲区）创建缓冲区对象
+- `Buffer.isEncoding()` 检查缓冲区对象是否支持指定的编码
+
+- `buf.entries()` 返回缓冲区对象的 index、byte 对的迭代器
+- `buf.includes()` 检查缓冲区对象是否包含指定的值。如果存在匹配项，则返回`true`，否则返回 `false`
+- `buf.slice()` 将一个缓冲区对象分割成一个新的缓冲区对象，从指定的位置开始和结束。
+- `buf.readInt8()` 从缓冲区对象读取 8 位整数
+- `buf.writeFloatBE()` 使用 big-endian 将指定的字节写入缓冲区对象。字节应为 32 位浮点。
+- `buf.length` 返回缓冲区对象的长度，以字节为单位
+
+
+
+#### 创建 Buffer
+在 Node V6.0 之前，要创建新的 Buffer，只需要使用 `new` 关键字调用构造函数：
+		`const newBuffer = new Buffer('new String')`
+在 Node V6.0 之后，`new Buffer()` 构造函数已被弃用，并被单独的 `Buffer.from()`、`Buffer.alloc()` 和 `Buffer.allocUnsafe()` 方法替换。要创建新的 Buffer 实例：
+		`const newBuffer = Buffer.from('new String')`
+
+const buf = Buffer.alloc(15) // 创建长度为15的空Buffer
+buf // <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
+buf.length // 15
+
+
+
+#### 类方法：Buffer.from(buffer)
 - Buffer.from()方法用于创建包含指定字符串，数组或缓冲区的新缓冲区。
-- `Buffer.from( object, encoding )`
+- `Buffer.from( object, encoding)`
     - object：此参数可以包含字符串，缓冲区，数组或arrayBuffer。
     - encoding：如果对象是字符串，则用于指定其编码。它是可选参数。其默认值为utf8。
 
 
 
-### buffer 与字符串的转换
-- 转换为buffer：Buffer.from()
-- 转换为字符串：Buffer.toString()
+#### buffer 与字符串的转换
+- 转换为buffer：`Buffer.from()`
+- 转换为字符串：`Buffer.toString()`，默认情况下，它会转换为 utf-8 格式字符串。
 注意：一个 buffer 位只能存储最高二进制值为256的数值，超出256的数值会在转换为二进制后进行高位舍弃。
 
 const buf1 = Buffer.from('hi, willy')
-const buf2 = Buffer.from([105, 108, 111, 118, 101,121,111,117])
+const buf2 = Buffer.from([105, 108, 111, 118, 101, 121, 111, 117])
 const str1 = buf2.toString() // iloveyou
 console.log(buf1, buf2, str1)
+```
+
+#### Buffer 转换为 JSON 和 `utf-8` 字符串
+
+```js
+const bufferOne = Buffer.from('iloveyou')
+console.log(bufferOne) // // <Buffer 69 6c 6f 76 65 79 6f 75>
 
 
+/** 将 Buffer 转换为 JSON */
+const json = JSON.stringify(bufferOne, null, 2)
+console.log(json)
+/**
+ {
+  "type": "Buffer",
+  "data": [
+    105,
+    108,
+    111,
+    118,
+    101,
+    121,
+    111,
+    117
+  ]
+}
+ */
+
+
+/** 将 JSON 转换为 Buffer */
+const bufferOriginal = Buffer.from(JSON.parse(json).data)
+console.log(bufferOriginal) // <Buffer 69 6c 6f 76 65 79 6f 75>
+
+
+/** 将 Buffer 转换为 UTF-8 字符串 */
+console.log(bufferOriginal.toString('utf8')) // iloveyou
 ```
 
 
@@ -2796,7 +2867,6 @@ events.emit("someEvent", "arg1 参数", "arg2 参数")
  * listener1 arg1 参数 arg2 参数
     listener2 arg1 参数 arg2 参数
  */
-
 ```
 
 ## 爬虫 puppeteer
