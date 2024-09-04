@@ -506,6 +506,7 @@ res.sendStatus()	设置响应状态代码，并将其字符串表示形式发送
 res.download('需要被下载文件的所在路径')	提示要下载的文件。
 res.redirect()	重定向请求（允许网址的重定向）。
 res.sendFile()	将文件作为八位字节流发送（用于发送文件）。
+		- 注意：除非指定 `root` 选项，否则路径必须是绝对路径
 res.render()	渲染视图模板（用于渲染网页模板）。
 ```
 
@@ -515,12 +516,18 @@ response.redirect("/hello/anime")
 response.redirect("http://wwww.willy.com")
 response.redirect(301, "http://www.example.com")
 
-/** response.sendFile */
-response.sendFile("/path/to/willy.mp4")
 
 /** response.render */
 app.get("/", (request, response) => {
     response.render("index", { message: "Hello World!" })
+})
+
+/** response.sendFile */
+app.get('/404', (req, res) => {
+  res.sendFile('index.html', { root: __dirname })
+})
+app.get('500', (_, response) => {
+  response.sendFile("/path/to/willy.mp4")
 })
 ```
 

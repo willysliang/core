@@ -96,11 +96,30 @@ Description: JavaScript
 [v8.dev](https://v8.dev/)
 ```
 
+
+
+#### 即时编译 JIT
+
+```bash
+机器的解析，理解与交流
+	- 逻辑思考：算数逻辑单元（ALU）
+	- 短期储存：寄存器（Registers）
+	- 长期储存：随机存储器（RAM）
+	
+
+### 计算机基本组成
+内存：读写速度较快，断电丢失数据
+硬盘：读写速度较慢，断电不丢失数据
+线程：线程是一个进程的执行流
+```
+
+
+
 #### V8 如何提升代码执行效率
 
 ```bash
 JS是动态类型的。对象的结构也是可以动态变更的。所以翻译成机器码的过程很复杂
-所以使用JIT编译（及时编译）：在代码执行的同时将代码翻译成机器码，而不是AOT(Ahead of Time)
+所以使用JIT编译（即时编译）：在代码执行的同时将代码翻译成机器码，而不是AOT(Ahead of Time)
 
 Re-compiler 和 De-optimise
 代码编译过程
@@ -177,15 +196,6 @@ WebAssembly 并非替代 JS，而是与 JS 互补并协作，让 Web 开发者�
 
 随着 WebAssembly 的出现，VM 现在可以加载两种类型的代码执行：JavaScript 和 WebAssembly。
 JavaScript 和 WebAssembly 能互相操作，实际上一份 WebAssembly 代码被称为一个模块，是因为其模块与 ES2015 的模块具有很多共同的特性。
-```
-
-#### 即时编译 JIT
-
-```bash
-机器的解析，理解与交流
-	- 逻辑思考：算数逻辑单元（ALU）
-	- 短期储存：寄存器（Registers）
-	- 长期储存：随机存储器（RAM）
 ```
 
 

@@ -797,7 +797,6 @@ CommonJS 规范规定：每个模块内部，module 变量代表当前模块。�
     Object.keys(require.cache).forEach((key) => {
       delete require.cache[key];
     })
-
 ```
 
 ### 导入模块原理
@@ -840,6 +839,59 @@ function require(file) {
 
 const m1 = require("./tsconfig.json")
 const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面首次执行的内容
+```
+
+
+
+### 在 nodejs 使用 ES6 导入语法
+
+```bash
+ES6 的 模块化（ESM）：一个 JS 文件可以导出一个或多个值，导出的值可以是变量、对象或函数。
+	- 引入模块：import
+	- 导出值：export
+	- 单个文件的默认导出：export default
+NodeJS 应用由模块组成，其模块系统采用 CommonJS 规范，它并不是 JS 语言规范的正式组成部分。
+	- 加载模块：require
+	- 导出模块：module.exports
+
+
+1. 可以用最简单的方式使用 ES 模块。在创建时，以 `.cjs` 和 `.mjs` 扩展区分使用 CommonJS 还是 ES 模块。
+2. 在 NodeJS v14.x.x 以上的版本，在 `package.json` 中设置 `"type": "module"`。
+3. 在低于 Node V14 的版本环境引入 `@babel/core` 来支持 ESM 模块化。
+```
+
+**在 Node.js 版本 `14.x.x` 以上的版本，在 `package.json` 文件中设置 `"type": "module"` 。**
+
+```json
+{
+  "type": "module"
+}
+```
+
+**低于 Node v14 的版本环境需要引入支持 es6 的 babel 库来进行解析。**
+
+安装依赖项：`$ npm i -D @babel/core @babel/preset-env @babel/node`
+
+然后在 Node.js 项目的根目录下创建一个名为 `babel.config.json` 的文件，并添加以下内容：
+
+```json
+module.exports = {
+  "presets": ["@babel/preset-env"]
+}
+```
+
+`@babel/node` 包是一个 CLI 实用程序，它在运行 Node.js 项目之前用 Babel 预设和插件编译 JS 代码。这意味着它将在执行 Node 项目之前读取并应用 `babel.config.json` 中提供的任何配置。
+
+运行命令执行脚本时，使用 `babel-node` 替换 `node`。
+
+为了方便使用，在 `package.json` 中配置一个 npm script 来运行 node。
+
+```json
+{
+  "scripts": {
+    "dev": "node --exec babel-node index.js"
+  }
+}
 ```
 
 
@@ -1233,11 +1285,31 @@ Node 全局对象有 `process`、`console`、`Buffer`、`global`、EventLoop 相
 
 
 
-## OS 模块
+## 操作系统信息 OS
 
-[OS 模块](https://nodejs.org/api/os.html)提供有关计算机操作系统的信息。
+```bash
+OS 模块能获取当前计算机操作系统的信息。
 
-获取有关计算机操作系统的信息：
+os 提供的主要方法：
+    - `os.platform()` 操作系统名，例如：`darwin`、`freebsd`、`linux`、`openbsd`、`win32` 等
+    - `os.arch()` 操作系统 CPU 架构
+    - `os.totalmem()` 返回操作系统中可用总内存的字节数
+    - `os.freemem()` 返回操作系统中可用空闲内存的字节数
+    - `os.arch()` 返回标识底层架构的字符串，如 `arm`、`x64` 和 `arm64`
+    - `os.cpus()` 返回有关系统上可用 CPU 的信息
+    - `os.userInfo()` 返回有关当前用户的信息
+    - `os.uptime()` 返回计算机自上次重新启动以来已运行的秒数
+    - `os.type()` 识别操作系统：Linux、macOS、Windows
+    - `os.tmpdir()` 返回分配的临时文件夹的路径
+    - `os.release()` 返回一个标识操作系统版本号的字符串
+    - `os.networkInterfaces()` 返回系统上可用网络接口的详细信息
+    - `os.hostname()` 返回主机名
+    - `os.homedir()` 返回当前用户主目录的路径
+
+另外，
+    - `os.constants.signals` 告诉我们所有与处理进程信号相关的常量，如 `SIGHUP`、`SIGKILL` 等。
+    - `os.constants.errno` 设置错误报告的常量，如 `EADDRINUSE`、`EOVERFLOW` 等。
+```
 
 ```js
 const os = require('os')
@@ -1248,37 +1320,88 @@ console.log('total memory : ' + os.totalmem() + ' bytes.') // total memory : 311
 console.log('free memory : ' + os.freemem() + ' bytes.') // free memory : 30666943900 bytes.
 ```
 
-`os` 提供的主要方法：
 
-- `os.platform()` 操作系统名，例如：`darwin`、`freebsd`、`linux`、`openbsd`、`win32` 等
-- `os.arch()` 操作系统 CPU 架构
-- `os.totalmem()` 返回操作系统中可用总内存的字节数
-- `os.freemem()` 返回操作系统中可用空闲内存的字节数
-- `os.arch()` 返回标识底层架构的字符串，如 `arm`、`x64` 和 `arm64`
-- `os.cpus()` 返回有关系统上可用 CPU 的信息
-- `os.userInfo()` 返回有关当前用户的信息
-- `os.uptime()` 返回计算机自上次重新启动以来已运行的秒数
-- `os.type()` 识别操作系统：Linux、macOS、Windows
-- `os.tmpdir()` 返回分配的临时文件夹的路径
-- `os.release()` 返回一个标识操作系统版本号的字符串
-- `os.networkInterfaces()` 返回系统上可用网络接口的详细信息
-- `os.hostname()` 返回主机名
-- `os.homedir()` 返回当前用户主目录的路径
 
-另外，
+## URL接口
 
-- `os.constants.signals` 告诉我们所有与处理进程信号相关的常量，如 `SIGHUP`、`SIGKILL` 等。
-- `os.constants.errno` 设置错误报告的常量，如 `EADDRINUSE`、`EOVERFLOW` 等。
+```bash
+## URL 接口（代替内置模块 url）
+浏览器原生提供 `URL()` 接口，它是一个构造函数，用来构造、解析和编码 URL。一般情况下，通过 `window.URL` 可拿到这个构造函数。
 
-有关这些操作系统常量的内容，可以查阅 [OS constants](https://nodejs.org/api/os.html#os-constants)。
+
+
+### URLSearchParams 对象(代替内置模块querystring使用)
+URLSearchParams 对象是浏览器的原生对象，用来构造、解析和处理 URL 的查询字符串（即 URL 问号后面的部分）。
+它本身也是一个构造函数，可以生成实例。参数可以为查询字符串，起首的问号?有没有都行，也可以是对应查询字符串的数组或对象。
+
+  1. nodejs内置模块querystring有些方法要被废弃，我们使用URLSearchParams API 构造代替
+  2. 如果你的nodejs版本大于18，可以使用 `const querystring= require('node:querystring')`。querystring比URLSearchParams性能更高，但不是 标准化的 API。使用URLSearchParams 当性能不重要或 当需要与浏览器代码兼容时。
+  3. 还可以安装qs模块，使用方式和querystring一样
+
+
+### qs 模块
+安装：`$ npm install qs`
+- `qs.parse()` 将URL解析成对象的形式
+- `qs.stringify()` 将对象 序列化成URL的形式，以 `&` 进行拼接
+```
+
+#### url 模块和 URL 接口的对比
+
+```js
+// url模块，url.parse('link')
+const url = {
+    protocol: "https:",
+    slashes: true,
+    auth: null,
+    host: "m.shop.com",
+    port: null,
+    hostname: "m.shop.com",
+    hash: "#detail",
+    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    query: "id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    pathname: "/home/share",
+    path: "/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
+}
+
+// new URL()
+const newURL = {
+    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
+    origin: "https://m.shop.com",
+    protocol: "https:",
+    username: "",
+    password: "",
+    host: "m.shop.com",
+    hostname: "m.shop.com",
+    port: "",
+    pathname: "/home/share",
+    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    // searchParams: URLSearchParams
+    searchParams: {
+        id: "4433",
+        name: "李备",
+        directCompanyId: "",
+        mobile: "18951431099",
+    },
+    hash: "#detail",
+}
+
+```
+
+
+
+## 进程 process
+
+```bash
+
+```
 
 
 
 ## 操作路径 path
 
 ```bash
-## 操作路径：path
-`const path = require(path)`
+`const path = require(node:path)`
 
 常用API
     - 拼接规范的绝对路径：`path.resolve`
@@ -1291,13 +1414,49 @@ console.log('free memory : ' + os.freemem() + ' bytes.') // free memory : 306669
 
 
 ### __dirname
-`__dirname` 是 nodejs 中的一个全局变量，表示当前模块所在的目录的绝对路径。
-例如，如果一个 Node.js 模块位于 `C:\Users\username\projects\myapp\index.js`，那么在该模块中访问 __dirname 变量的值为 `C:\Users\username\projects\myapp`。
-__dirname 变量通常用于构建文件路径，比如读取文件、写入文件、加载模块等。使用 `__dirname` 变量可以确保路径的正确性，避免出现相对路径错误。
-注意：`__dirname` 变量不是全局变量的一部分，而是每个模块独有的局部变量。因此在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
+`__dirname` 表示当前模块所在的目录的绝对路径。
+`__dirname` 是每个模块独有的局部变量（不是一个全局变量），因此在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
+例如，一个 Node.js 模块位于 `C:\myapp\index.js`，那么在该模块中访问 __dirname 变量的值为 `C:\myapp`。
+`__dirname` 变量可以确保路径的正确性，避免出现相对路径错误，常用于构建文件路径，比如读取文件、写入文件、加载模块等。
+```
+
+```js
+const path = require('path')
+
+/** path.resolve() */
+const p1 = path.resolve(__dirname, './index.js')
+const p2 = path.resolve(__dirname, 'index.js')
+const p3 = path.resolve(__dirname, '/index.js') // 这会回到根目录下
+console.log(p1, p2, p3)
+
+/** sep 分隔符 */
+console.log(path.sep)   // window下为 \，Linux下为 /
+
+const pathStr = 'C:\\Users\\OP0213\\Desktop\\core\\index.js'
+
+/** 文件分隔符：parse */
+console.log(path.parse(pathStr))
+
+/** 文件基础名称：basename */
+path.basename(pathStr) // index.js
+path.basename('/path/to/test.txt') // 'test.txt'
 
 
-### 相对路径和绝对路径问题
+/** 文件的所在目录名称：dirname */
+path.dirname(pathStr) // C:\Users\OP0213\Desktop\core
+path.dirname('/path/to/test.txt') // '/path/to'
+
+
+/** 文件的扩展名：extname */
+path.extname('/path/to/test.txt') // '.txt'
+path.extname('/path/to/index.') // '.'
+path.extname('/path/to/README') // ''
+path.extname('/path/to/.gitignore') // ''
+```
+
+#### 相对路径与绝对路径问题
+
+```bash
 - 相对路径参照物：命令执行的工作目录（即在不同目录下执行命令，则会把当前的工作目录下作为参照物，因而会导致路径的不稳定性（特别是会导致生成/读取文件所在目录））。
 - 绝对路径'全局变量'保存的是：所在文件的所在目录的绝对路径。
 
@@ -1319,36 +1478,9 @@ __dirname 变量通常用于构建文件路径，比如读取文件、写入文�
     - `../../img/logo.jpg`: 跳转 `http://test.com/img/logo.jpg`。
 ```
 
-```js
-const path = require('path')
-
-/** path.resolve() */
-const p1 = path.resolve(__dirname, './index.js')
-const p2 = path.resolve(__dirname, 'index.js')
-const p3 = path.resolve(__dirname, '/index.js') // 这会回到根目录下
-console.log(p1, p2, p3)
-
-/** sep 分隔符 */
-console.log(path.sep)   // window下为 \，Linux下为 /
-
-const pathStr = 'C:\\Users\\OP0213\\Desktop\\core\\index.js'
-
-/** 文件分隔符：parse */
-console.log(path.parse(pathStr))
-
-/** 文件基础名称：basename */
-console.log(path.basename(pathStr)) // index.js
-
-/** 文件的所在目录名称：dirname */
-console.log(path.dirname(pathStr)) // C:\Users\OP0213\Desktop\core
-
-/** 路径的扩展名：extname */
-console.log(path.extname(pathStr)) // .js
-```
 
 
-
-`process.cwd()` 跟 `__dirname` 的区别
+#### `process.cwd()` 跟 `__dirname` 的区别
 
 ```bash
 一. process.cwd()
@@ -1364,6 +1496,49 @@ console.log(path.extname(pathStr)) // .js
 三. 两者区别
 __dirname 是相对于当前模块的目录，而 process.cwd() 是整个应用程序的当前工作目录，因此它们的值可能在不同上下文和不同模块中有所不同。
 如果需要模块特定的路径信息，使用 __dirname；如果需要整个应用程序的当前工作目录，使用 process.cwd()。
+```
+
+
+
+#### path.relative
+
+```bash
+`path.relative(from, to)` 方法根据当前工作目录返回从 `from` 到 `to` 的相对路径。
+如果 `from` 和 `to` 都解析为相同的路径（在分别调用 `path.resolve()` 之后），则返回零长度字符串。
+
+如果给定了相对于一个目录的路径，但需要相对于另一个目录的路径，则 `path.relative()` 方法非常有用。
+```
+
+```js
+// 返回相对于第一条路径的第二条路径的路径
+path.relative('/app/views/home.html', '/app/layout/index.html') // '../../layout/index.html'
+
+
+const watcher = chokidar.watch('mydir')
+// 如果用户添加 mydir/path/to/test.txt，则会打印 mydir/path/to/test.txt
+watcher.on('add', (path) => console.log(path))
+```
+
+**Gatsby 库使用 `path.relative()` 方法帮助同步静态文件目录**
+
+假设用户向 `static` 目录添加了一个新文件 `main.js`。Chokidar 调用 `on('add')` 事件处理程序，路径设置为 `static/main.js`。但是，当您将文件复制到 `/public` 时，不需要额外的 `static/`。
+
+调用 `path.relative('static', 'static/main.js')` 返回 `static/main.js` 相对于 `static` 的路径，这正是您想要将 `static` 的内容复制到 `public` 的路径。
+
+```js
+export const syncStaticDir = (): void => {
+  const staticDir = nodePath.join(process.cwd(), `static`)
+  chokidar
+    .watch(staticDir)
+    .on(`add`, (path) => {
+      const relativePath = nodePath.relative(staticDir, path)
+      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+    })
+    .on(`change`, (path) => {
+      const relativePath = nodePath.relative(staticDir, path)
+      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+    })
+}
 ```
 
 
@@ -1994,84 +2169,6 @@ copy('/tmp/myFile', '/tmp/myNewFile', (err) => {
 const folder = './node_modules'
 emptyDirSync(folder)
 ```
-
-
-
-## URL接口
-
-```bash
-## URL 接口（代替内置模块 url）
-浏览器原生提供 `URL()` 接口，它是一个构造函数，用来构造、解析和编码 URL。一般情况下，通过 `window.URL` 可拿到这个构造函数。
-
-
-
-## URLSearchParams 对象(代替内置模块querystring使用)
-URLSearchParams 对象是浏览器的原生对象，用来构造、解析和处理 URL 的查询字符串（即 URL 问号后面的部分）。
-它本身也是一个构造函数，可以生成实例。参数可以为查询字符串，起首的问号?有没有都行，也可以是对应查询字符串的数组或对象。
-
-  1. nodejs内置模块querystring有些方法要被废弃，我们使用URLSearchParams API 构造代替
-  2. 如果你的nodejs版本大于18，可以使用 `const querystring= require('node:querystring')`。querystring比URLSearchParams性能更高，但不是 标准化的 API。使用URLSearchParams 当性能不重要或 当需要与浏览器代码兼容时。
-  3. 还可以安装qs模块，使用方式和querystring一样
-
-
-## qs 模块
-qs是一个npm仓库所管理的包,可通过npm install qs命令进行安装。
-qs.parse()将URL解析成对象的形式
-qs.stringify()将对象 序列化成URL的形式，以&进行拼接
-```
-
-#### url 模块和 URL 接口的对比
-
-```js
-// url模块，url.parse('link')
-const url = {
-    protocol: "https:",
-    slashes: true,
-    auth: null,
-    host: "m.shop.com",
-    port: null,
-    hostname: "m.shop.com",
-    hash: "#detail",
-    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    query: "id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    pathname: "/home/share",
-    path: "/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
-}
-
-// new URL()
-const newURL = {
-    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
-    origin: "https://m.shop.com",
-    protocol: "https:",
-    username: "",
-    password: "",
-    host: "m.shop.com",
-    hostname: "m.shop.com",
-    port: "",
-    pathname: "/home/share",
-    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    // searchParams: URLSearchParams
-    searchParams: {
-        id: "4433",
-        name: "李备",
-        directCompanyId: "",
-        mobile: "18951431099",
-    },
-    hash: "#detail",
-}
-
-```
-
-
-
-## 进程 process
-
-```bash
-
-```
-
-
 
 
 
