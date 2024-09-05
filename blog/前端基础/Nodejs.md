@@ -49,7 +49,7 @@ Description: NodeJS
 
 ```cmd
 #下载cnpm	(i是英文install的缩写，-g代表全局安装，-D代表本地安装。全局安装意味着安装后在任何文件夹下都能使用，而本地安装则把东西安装到指定的文件夹，当然使用也只能在这个文件夹下使用)
-npm i cnpm -g	
+npm i cnpm -g
 
 #全局安装webpack（指定版本3.6.0，因为vue cli2依赖该版本）
 npm install webpack@3.6.0 -g
@@ -198,7 +198,7 @@ vi /etc/hosts
 ### NVM
 
 ```bash
-## NVM 
+## NVM
 在开发的工程中，我们可能需要经常切换node版本来应对不同的开发环境，所以需要经常使用不同版本的node
 
 
@@ -225,7 +225,7 @@ brew install nvm
 
 - 安装指定版本
 	nvm install 8.16.0
-	
+
 3、查看所有版本
 nvm ls
 
@@ -288,6 +288,8 @@ nrm test
 
 ```
 
+
+
 ### 对 npm package 进行发包
 
 ###### 1 编写模块
@@ -295,8 +297,8 @@ nrm test
 保存为index.js
 
 ```js
-exports.sayHello = function(){ 
-  return 'Hello World'; 
+exports.sayHello = function(){
+  return 'Hello World';
 }
 ```
 
@@ -305,27 +307,27 @@ exports.sayHello = function(){
 $ npm init package.json
 
 ```json
-{ 
-    "name": "gp19-npm", 
-    "version": "1.0.1", 
-    "description": "gp19 self module", 
+{
+    "name": "gp19-npm",
+    "version": "1.0.1",
+    "description": "gp19 self module",
     "main": "index.js",
-    "scripts": { 
-        "test": "make test" 
-    }, 
-    "repository": { 
-        "type": "Git", 
-        "url": "git+https://github.com/lurongtao/gp19-npm.git" 
-    }, 
-    "keywords": [ 
-        "demo" 
-    ], 
-    "author": "Felixlu", 
-    "license": "ISC", 
-    "bugs": { 
-        "url": "https://github.com/lurongtao/gp19-npm/issues" 
-    }, 
-    "homepage": "https://github.com/lurongtao/gp19-npm#readme", 
+    "scripts": {
+        "test": "make test"
+    },
+    "repository": {
+        "type": "Git",
+        "url": "git+https://github.com/lurongtao/gp19-npm.git"
+    },
+    "keywords": [
+        "demo"
+    ],
+    "author": "Felixlu",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lurongtao/gp19-npm/issues"
+    },
+    "homepage": "https://github.com/lurongtao/gp19-npm#readme",
 }
 ```
 
@@ -339,7 +341,13 @@ $ npm adduser
 
 ###### 4 上传包
 
-```
+```bash
+$ npm login
+# 账号
+# 密码
+# 邮箱
+# 一次性密码验证
+
 $ npm publish
 ```
 
@@ -373,6 +381,46 @@ $ npm unpublish --force
 var hello = require('gp19-npm')
 hello.sayHello()
 ```
+
+###### 8 更新包
+
+如果我们更新了该包，需要再次发包，可以使用 `npm version` 命令，控制该版本进行升级，注意需要遵循 [Semver 规范](https://github.com/semver/semver/blob/master/semver.md)。
+
+```bash
+# 增加一个修复版本号
+$ npm version patch
+
+# 增加一个小的版本号
+$ npm version minor
+
+# 将更新后的包发布到 npm 中
+$ npm publish
+```
+
+在发布 npm 包时，我们一般都只发布构建后的资源，这时我们可以使用 `package.json` 的 `files` 字段。
+
+```json
+{
+  "files": ["dist"]
+}
+```
+
+它描述了在使用 `npm publish` 时推送到 npm 服务器的文件列表，支持目录和通配符，我们也可以在 `.gitignore` 或者 `.npmignore` 文件内排除不需要上传的文件。
+
+但有一点需要注意，无论我们怎么设置，有些文件会始终被包含发包内，比如：
+
+- `package.json`
+- `README`
+- `LICENSE / LICENCE`
+- `package.json` 内 `main` 字段的文件
+
+有一些文件则会始终被排除在发包内，比如：
+
+- `.git`
+- `.DS_Store`
+- etc
+
+
 
 ### npm安装git上发布的包
 
@@ -415,7 +463,7 @@ npm install git+ssh://git@github.com:lurongtao/gp-project.git
 // 以下为 pageage.json 文件内容
 
 {
-  "name": "foo", 
+  "name": "foo",
   "version": "1.2.5",
   "scripts": {
     "view": "node view.js"
@@ -489,7 +537,7 @@ console.log(process.env.npm_package_version); // 1.2.5
 `-p`参数用于指定 npx 所要安装的模块。
 
 > ```bash
-> $ npx -p node@0.12.8 node -v 
+> $ npx -p node@0.12.8 node -v
 > v0.12.8
 > ```
 
@@ -539,7 +587,7 @@ npx 还可以执行 GitHub 上面的模块源码。
 > ```bash
 > # 执行 Gist 代码
 > $ npx https://gist.github.com/zkat/4bc19503fe9e9309e2bfaa2c58074d32
-> 
+>
 > # 执行仓库代码
 > $ npx github:piuccio/cowsay hello
 > ```
@@ -549,11 +597,6 @@ npx 还可以执行 GitHub 上面的模块源码。
 
 
 ### FNM
-
-```bash
-## FNM
-
-```
 
 ### FNM的安装
 
@@ -608,14 +651,16 @@ corepack enable
   "args": ["-NoProfile"]
   },
   "Git-Bash": {
-  "path": "D:\\Git\\Git\\bin\\bash.exe",
+  "path": "D:\\Git\\bin\\bash.exe",
   "args": []
   }
 },
 "terminal.integrated.defaultProfile.windows": "Git-Bash"
 ```
 
+配置fnm安装地址关联的环境变量
 
+在 Powershell 中输入：`fnm env --use-on-cd | Out-String | Invoke-Expression`
 
 ## cross-env
 
@@ -631,16 +676,16 @@ corepack enable
 
 ```bash
 # 在Windows中
-    #node中常用的到的环境变量是NODE_ENV，首先查看是否存在 
-    set NODE_ENV 
+    #node中常用的到的环境变量是NODE_ENV，首先查看是否存在
+    set NODE_ENV
 
-    #如果不存在则添加环境变量 
-    set NODE_ENV=production 
+    #如果不存在则添加环境变量
+    set NODE_ENV=production
 
-    #环境变量追加值 set 变量名=%变量名%;变量内容 
-    set path=%path%;C:\web;C:\Tools 
+    #环境变量追加值 set 变量名=%变量名%;变量内容
+    set path=%path%;C:\web;C:\Tools
 
-    #某些时候需要删除环境变量 
+    #某些时候需要删除环境变量
     set NODE_ENV=
 
 
@@ -676,7 +721,6 @@ $ npm cache clean --force
 
 3. 重新执行安装步骤
 $ npm i
-
 ```
 
 
@@ -718,7 +762,7 @@ CommonJS 规范规定：每个模块内部，module 变量代表当前模块。�
     - 内置模块：require 的是包名。
     - 下载的第三方模块：require 的是包名（会自动在 node_modules 中寻找相应的模块）
     - 自定义模块：require 的是文件路径。文件路径既可以用绝对路径，也可以用相对路径。后缀名 `.js` 可以省略。
-    
+
 - require() 函数的两个作用：
 		- 执行导入的模块中的对象。
 		- 返回导入模块中的接口对象。
@@ -753,7 +797,6 @@ CommonJS 规范规定：每个模块内部，module 变量代表当前模块。�
     Object.keys(require.cache).forEach((key) => {
       delete require.cache[key];
     })
-
 ```
 
 ### 导入模块原理
@@ -796,7 +839,440 @@ function require(file) {
 
 const m1 = require("./tsconfig.json")
 const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面首次执行的内容
+```
 
+
+
+### 在 nodejs 使用 ES6 导入语法
+
+```bash
+ES6 的 模块化（ESM）：一个 JS 文件可以导出一个或多个值，导出的值可以是变量、对象或函数。
+	- 引入模块：import
+	- 导出值：export
+	- 单个文件的默认导出：export default
+NodeJS 应用由模块组成，其模块系统采用 CommonJS 规范，它并不是 JS 语言规范的正式组成部分。
+	- 加载模块：require
+	- 导出模块：module.exports
+
+
+1. 可以用最简单的方式使用 ES 模块。在创建时，以 `.cjs` 和 `.mjs` 扩展区分使用 CommonJS 还是 ES 模块。
+2. 在 NodeJS v14.x.x 以上的版本，在 `package.json` 中设置 `"type": "module"`。
+3. 在低于 Node V14 的版本环境引入 `@babel/core` 来支持 ESM 模块化。
+```
+
+**在 Node.js 版本 `14.x.x` 以上的版本，在 `package.json` 文件中设置 `"type": "module"` 。**
+
+```json
+{
+  "type": "module"
+}
+```
+
+**低于 Node v14 的版本环境需要引入支持 es6 的 babel 库来进行解析。**
+
+安装依赖项：`$ npm i -D @babel/core @babel/preset-env @babel/node`
+
+然后在 Node.js 项目的根目录下创建一个名为 `babel.config.json` 的文件，并添加以下内容：
+
+```json
+module.exports = {
+  "presets": ["@babel/preset-env"]
+}
+```
+
+`@babel/node` 包是一个 CLI 实用程序，它在运行 Node.js 项目之前用 Babel 预设和插件编译 JS 代码。这意味着它将在执行 Node 项目之前读取并应用 `babel.config.json` 中提供的任何配置。
+
+运行命令执行脚本时，使用 `babel-node` 替换 `node`。
+
+为了方便使用，在 `package.json` 中配置一个 npm script 来运行 node。
+
+```json
+{
+  "scripts": {
+    "dev": "node --exec babel-node index.js"
+  }
+}
+```
+
+
+
+## `package.json`
+
+当创建一个 Node 项目时， 需要创建一个 package.json 文件，描述这个项目所需要的各种模块，以及项目的配置信息（比如名称、版本、许可证等元数据）。
+
+可以在命令行使用 `npm help package.json` 命令，将跳转到页面，查看这些字段如何使用。
+
+#### 基础信息
+
+`name` 项目名
+
+```json
+{
+  "name": "node"
+}
+```
+
+`version` 描述项目的当前版本号
+
+```json
+{
+  "version": "0.1.0"
+}
+```
+
+`description` 项目的描述
+
+```json
+{
+  "description": "My package"
+}
+```
+
+`main` 指定项目的主入口文件
+
+```json
+{
+  "main": "index.js"
+}
+```
+
+`author` 项目作者信息，贡献者。它可以有两种写法。`email` 和 `url` 是可选的。
+
+```json
+// 方式一：
+{
+  "name" : "willysliang",
+  "email" : "willysliang@qq.com",
+  "url" : "https://github.com/willysliang/core"
+}
+
+// 方式二：
+{
+  "author": "willysliang <willysliang@qq.com> (https://github.com/willysliang/core)"
+}
+```
+
+`keywords` 使用相关关键字描述项目
+
+```json
+{
+  "keywords": ["admin", "node", "node"]
+}
+```
+
+`license` 许可证（告诉用户可以做什么和不能做什么，常见：MIT、BSD-3-Clause）
+
+```json
+{
+  "keywords": "MIT"
+}
+```
+
+`scripts` 指定运行脚本命令的 npm 命令行缩写，比如 start 指定了运行 `npm run start` 时，所要执行的命令。
+
+```json
+{
+  "scripts": {
+    "start": "node ./bin/xxx"
+  }
+}
+```
+
+`repository` 字段用于指定代码存放的位置。
+
+```json
+{
+  "repository": {
+    "type": "git",
+    "url": "这里写上项目在 github 上的地址"
+  }
+}
+```
+
+也可以添加 `-y` 标志来生成默认的 `package.json` 文件：
+使用 `npm init -y` 默认生成的 `package.json` 文件会少一个 `repository` 字段，需要的话可以手动添加上去。
+
+```json
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+#### 依赖
+
+[`dependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#dependencies) 字段指定了生产环境项目的依赖。当你添加生产环境依赖时，他会自动生成，如：`npm i express`
+
+```json
+{
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
+```
+
+[`devDependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#devdependencies) 字段指定了开发环境项目的依赖。当你添加生产环境依赖时，他会自动生成，如：`npm i eslint -D`
+
+```json
+{
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  }
+}
+```
+
+[`peerDependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#peerdependencies) 兼容性依赖。如果你的包是插件，适合这种方式。
+
+```json
+{
+  "peerDependencies": {
+    "tea": "2.x"
+  }
+}
+```
+
+[`optionalDependencies`](https://github.com/npm/npm/blob/2e3776bf5676bc24fec6239a3420f377fe98acde/doc/files/package.json.md#optionaldependencies) 如果你想在某些依赖即使没有找到，或则安装失败的情况下，npm 都继续执行。那么这些依赖适合放在这里。
+
+```json
+{
+  "optionalDependencies": {}
+}
+```
+
+`bundledDependencies` 发布包时捆绑的包名数组
+
+```json
+{
+  "bundledDependencies": ["renderized", "super-streams"]
+}
+```
+
+#### 配置
+
+`config` 字段中的键作为 `env` 环境变量公开给脚本。
+
+```json
+{
+  "name": "node",
+  "config": {
+    "foo": "hello"
+  }
+}
+```
+
+你可以在应用程序中使用 `config` 字段，当用户执行 `npm run start` 命令时，这个脚本就可以得到值。
+
+```js
+console.log(process.env.npm_package_config_foo)
+```
+
+你可以使用下面命令改变这个值。
+
+```bash
+npm config set node:foo hi
+```
+
+#### lint-staged
+
+在代码提交之前，进行代码规则检查能够确保进入 git 库的代码都是符合代码规则的。但是整个项目上运行 lint 速度会很慢，lint-staged 能够让 lint 只检测暂存区的文件，所以速度很快。
+
+**安装与配置**：`husky` 和 `lint-staged`
+
+```bash
+npm i husky lint-staged -D
+```
+
+`package.json` 中配置：
+
+```json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix"
+  }
+}
+```
+
+`git commit` 时触发 `pre-commit` 钩子，运行 `lint-staged` 命令，对 `*.js` 执行 `eslint` 命令。`eslint` 要提前配置好。
+
+#### 其他
+
+`homepage` 项目首页的网址。
+
+```json
+{
+  "homepage": "https://github.com/willysliang/core"
+}
+```
+
+`bugs` 项目的问题追踪系统的 URL 或邮箱地址，这些对遇到软件包问题的人很有帮助。
+
+```json
+{
+  "bugs": {
+    "url": "http://github.com/owner/project/issues",
+    "email": "project@hostname.com"
+  }
+}
+```
+
+`bin` 很多的包都会有执行文件需要安装到 PATH 中去。这个字段对应的是一个 Map，每个元素对应一个**{ 命令名：文件名 }**。这些可执行文件的头部需要加上 `#!/usr/bin/env node`。
+
+```json
+{
+  "bin": {
+    "npm": "./cli.js",
+    "command": "./bin/command"
+  }
+}
+```
+
+`private` 是一个布尔值。如果 private 为 true，可以保证包不会被发布到 npm。这可以防止私有 repositories 不小心被发布出去。
+
+`preferGlobal` 是一个布尔值。如果你的包是个命令行应用程序，需要全局安装，就可以设为 true。
+
+```json
+{
+  "private": true,
+  "preferGlobal": true
+}
+```
+
+`browserslist` 指定项目所支持的浏览器版本。
+
+```json
+{
+  "browserslist": [
+    "last 3 Chrome versions",
+    "last 3 Firefox versions",
+    "Safari >= 10",
+    "Explorer >= 11"
+  ]
+}
+```
+
+`engines` 字段指明了该项目运行的平台，比如 Node 的某个版本或者浏览器，也可以指定适用的 `npm` 版本。
+
+```json
+{
+  "engines": {
+    "node": ">= 12.16.2",
+    "npm": ">= 6.14.8"
+  }
+}
+```
+
+`man` 用来指定当前项目的 man 文档的位置。
+
+```json
+{
+  "man": ["./doc/calc.1"]
+}
+```
+
+`style` 指定供浏览器使用时，样式文件所在的位置。样式文件打包工具 parcelify，通过它知道样式文件的打包位置。
+
+```json
+{
+  "style": ["./node_modules/tipso/src/tipso.css"]
+}
+```
+
+`cpu` 指定 CPU 型号。
+
+```json
+{
+  "cpu": ["x64", "ia32"],
+  "cpu": ["!arm", "!mips"]
+}
+```
+
+`os` 指定项目可以在什么操作系统上运行。
+
+```json
+{
+  "os": ["darwin", "linux"]
+}
+```
+
+`files` 当你发布项目时，具体哪些文件会发布上去。如果需要把某些文件不包含在项目中，添加一个 `.npmignore` 文件。这个文件和 `gitignore` 类似。
+
+```json
+{
+  "files": ["src", "dist/*.js", "types/*.d.ts"]
+}
+```
+
+`publishConfig` 是一个布尔值。如果你的包是个命令行应用程序，需要全局安装，就可以设为 true。
+
+`engineStrick` 是一个布尔值。如果你肯定你的程序只能在制定的 engine 上运行，设置为 true。
+
+还有一些特殊的字段，比如 `prettier`、`unpkg`、`babel`、`jest` 等，他们配合工具使用。
+
+#### 根据 package.json 内容自动生成 README.md 文件
+
+对于任何开源项目来说，最重要的文档就是 README。
+
+这里介绍一个好用的工具 [`readme-md-generator`](https://github.com/lio-zero/readme-md-generator)，它将根据 `package.json` 文件内容自动生成漂亮 README 文件
+
+`readme-md-generator` 能够读取您的环境（`package.json`，git 配置等），创建项目的 README 文件。
+
+以下是该模式提供的一个示例演示：
+
+![使用示例](./images/18281896-f3c63011175001bf-1725004135089.gif)
+
+##### 基本配置
+
+确保已安装 [npx](https://www.npmjs.com/package/npx)（自 npm 以来默认 `npx` `5.2.0`)
+
+只需在项目根部运行以下命令并回答问题：
+
+```bash
+npx readme-md-generator
+```
+
+或使用 `-y` 标志默认生成：
+
+```bash
+npx readme-md-generator -y
+```
+
+假设我们有如下配置：
+
+```json
+{
+  "name": "vue3",
+  "version": "0.1.0",
+  "private": true,
+  "description": "vue3-demo",
+  "author": "willysliang <willysliang@qq.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 12.16.2",
+    "npm": ">= 6.14.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willysliang/core.git"
+  },
+  "homepage": "https://github.com/willysliang/core.git#readme",
+  "keywords": ["vue3", "cli"],
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {}
+}
 ```
 
 
@@ -804,16 +1280,128 @@ const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面
 ## 全局对象 global
 
 ```bash
-## 全局对象 global
+Node 全局对象有 `process`、`console`、`Buffer`、`global`、EventLoop 相关 API（`setImmediate`、`setInterval` 和 `setTimeout` 等）及为模块包装所使用的全局对象（`exports`、`module`、`require` 等），它们都不需要您使用 `require()` 即可在 Node 环境中使用。
+```
 
+
+
+## 操作系统信息 OS
+
+```bash
+OS 模块能获取当前计算机操作系统的信息。
+
+os 提供的主要方法：
+    - `os.platform()` 操作系统名，例如：`darwin`、`freebsd`、`linux`、`openbsd`、`win32` 等
+    - `os.arch()` 操作系统 CPU 架构
+    - `os.totalmem()` 返回操作系统中可用总内存的字节数
+    - `os.freemem()` 返回操作系统中可用空闲内存的字节数
+    - `os.arch()` 返回标识底层架构的字符串，如 `arm`、`x64` 和 `arm64`
+    - `os.cpus()` 返回有关系统上可用 CPU 的信息
+    - `os.userInfo()` 返回有关当前用户的信息
+    - `os.uptime()` 返回计算机自上次重新启动以来已运行的秒数
+    - `os.type()` 识别操作系统：Linux、macOS、Windows
+    - `os.tmpdir()` 返回分配的临时文件夹的路径
+    - `os.release()` 返回一个标识操作系统版本号的字符串
+    - `os.networkInterfaces()` 返回系统上可用网络接口的详细信息
+    - `os.hostname()` 返回主机名
+    - `os.homedir()` 返回当前用户主目录的路径
+
+另外，
+    - `os.constants.signals` 告诉我们所有与处理进程信号相关的常量，如 `SIGHUP`、`SIGKILL` 等。
+    - `os.constants.errno` 设置错误报告的常量，如 `EADDRINUSE`、`EOVERFLOW` 等。
+```
+
+```js
+const os = require('os')
+
+console.log('Platform: ' + os.platform()) // Platform: win32
+console.log('Architecture: ' + os.arch()) // Architecture: x64
+console.log('total memory : ' + os.totalmem() + ' bytes.') // total memory : 31194900400 bytes.
+console.log('free memory : ' + os.freemem() + ' bytes.') // free memory : 30666943900 bytes.
+```
+
+
+
+## URL接口
+
+```bash
+## URL 接口（代替内置模块 url）
+浏览器原生提供 `URL()` 接口，它是一个构造函数，用来构造、解析和编码 URL。一般情况下，通过 `window.URL` 可拿到这个构造函数。
+
+
+
+### URLSearchParams 对象(代替内置模块querystring使用)
+URLSearchParams 对象是浏览器的原生对象，用来构造、解析和处理 URL 的查询字符串（即 URL 问号后面的部分）。
+它本身也是一个构造函数，可以生成实例。参数可以为查询字符串，起首的问号?有没有都行，也可以是对应查询字符串的数组或对象。
+
+  1. nodejs内置模块querystring有些方法要被废弃，我们使用URLSearchParams API 构造代替
+  2. 如果你的nodejs版本大于18，可以使用 `const querystring= require('node:querystring')`。querystring比URLSearchParams性能更高，但不是 标准化的 API。使用URLSearchParams 当性能不重要或 当需要与浏览器代码兼容时。
+  3. 还可以安装qs模块，使用方式和querystring一样
+
+
+### qs 模块
+安装：`$ npm install qs`
+- `qs.parse()` 将URL解析成对象的形式
+- `qs.stringify()` 将对象 序列化成URL的形式，以 `&` 进行拼接
+```
+
+#### url 模块和 URL 接口的对比
+
+```js
+// url模块，url.parse('link')
+const url = {
+    protocol: "https:",
+    slashes: true,
+    auth: null,
+    host: "m.shop.com",
+    port: null,
+    hostname: "m.shop.com",
+    hash: "#detail",
+    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    query: "id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    pathname: "/home/share",
+    path: "/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
+}
+
+// new URL()
+const newURL = {
+    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
+    origin: "https://m.shop.com",
+    protocol: "https:",
+    username: "",
+    password: "",
+    host: "m.shop.com",
+    hostname: "m.shop.com",
+    port: "",
+    pathname: "/home/share",
+    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
+    // searchParams: URLSearchParams
+    searchParams: {
+        id: "4433",
+        name: "李备",
+        directCompanyId: "",
+        mobile: "18951431099",
+    },
+    hash: "#detail",
+}
 
 ```
+
+
+
+## 进程 process
+
+```bash
+
+```
+
+
 
 ## 操作路径 path
 
 ```bash
-## 操作路径：path
-`const path = require(path)`
+`const path = require(node:path)`
 
 常用API
     - 拼接规范的绝对路径：`path.resolve`
@@ -826,33 +1414,10 @@ const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面
 
 
 ### __dirname
-`__dirname` 是 nodejs 中的一个全局变量，表示当前模块所在的目录的绝对路径。
-例如，如果一个 Node.js 模块位于 `C:\Users\username\projects\myapp\index.js`，那么在该模块中访问 __dirname 变量的值为 `C:\Users\username\projects\myapp`。
-__dirname 变量通常用于构建文件路径，比如读取文件、写入文件、加载模块等。使用 `__dirname` 变量可以确保路径的正确性，避免出现相对路径错误。
-注意：`__dirname` 变量不是全局变量的一部分，而是每个模块独有的局部变量。因此在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
-
-
-### 相对路径和绝对路径问题
-- 相对路径参照物：命令执行的工作目录（即在不同目录下执行命令，则会把当前的工作目录下作为参照物，因而会导致路径的不稳定性（特别是会导致生成/读取文件所在目录））。
-- 绝对路径'全局变量'保存的是：所在文件的所在目录的绝对路径。
-
-- 会导致生成文件目录不确定性：`fs.writeFileSync('./index.html', 'love')`
-- 稳定生成在该文件夹下：`fs.writeFileSync(__dirname + '/index.html', 'love')`
-
-
-### 相对路径和绝对路径的转化
-1. 绝对路径
-- `https://www.baidu.com`：完整的url地址，直接跳转。
-- `//jd.com`：会获取网站上的的协议名称拼接然后再跳转。如现在的网站是 `http://test.com`，则打开这个链接会拼接成 `http://jd.com`，但因为 jd 会对 `http://jd.com` 进行 301 重定向，所以导致页面上显示的是 `https://jd.com`。
-- `/search`：会获取网站上的协议名称、域名、端口号跟这个路径进行拼接。如现在的网站是 `http://test.com`，则打开这个链接会拼接成 `http://test.com/search`。
-
-2. 相对路径
-会根据原来的网站来进行相应的回退和前进来拼接，当页面的url错误时，会以网站的初始地址为基准。如现在的网站是 `http://test.com/demo1/index.html`：
-    - `./css/index.css`：跳转 `http://test.com/demo1/css/index.css`。
-    - `js/index.js`：跳转 `http://test.com/demo1/js/index.js`。
-    - `../img/logo.jpg`: 跳转 `http://test.com/img/logo.jpg`。
-    - `../../img/logo.jpg`: 跳转 `http://test.com/img/logo.jpg`。
-
+`__dirname` 表示当前模块所在的目录的绝对路径。
+`__dirname` 是每个模块独有的局部变量（不是一个全局变量），因此在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
+例如，一个 Node.js 模块位于 `C:\myapp\index.js`，那么在该模块中访问 __dirname 变量的值为 `C:\myapp`。
+`__dirname` 变量可以确保路径的正确性，避免出现相对路径错误，常用于构建文件路径，比如读取文件、写入文件、加载模块等。
 ```
 
 ```js
@@ -873,29 +1438,136 @@ const pathStr = 'C:\\Users\\OP0213\\Desktop\\core\\index.js'
 console.log(path.parse(pathStr))
 
 /** 文件基础名称：basename */
-console.log(path.basename(pathStr)) // index.js
+path.basename(pathStr) // index.js
+path.basename('/path/to/test.txt') // 'test.txt'
+
 
 /** 文件的所在目录名称：dirname */
-console.log(path.dirname(pathStr)) // C:\Users\OP0213\Desktop\core 
+path.dirname(pathStr) // C:\Users\OP0213\Desktop\core
+path.dirname('/path/to/test.txt') // '/path/to'
 
-/** 路径的扩展名：extname */
-console.log(path.extname(pathStr)) // .js
 
+/** 文件的扩展名：extname */
+path.extname('/path/to/test.txt') // '.txt'
+path.extname('/path/to/index.') // '.'
+path.extname('/path/to/README') // ''
+path.extname('/path/to/.gitignore') // ''
 ```
 
-##  文件操作 fs 
+#### 相对路径与绝对路径问题
 
 ```bash
-## 文件操作 fs
-`const fs = require(fs)`
+- 相对路径参照物：命令执行的工作目录（即在不同目录下执行命令，则会把当前的工作目录下作为参照物，因而会导致路径的不稳定性（特别是会导致生成/读取文件所在目录））。
+- 绝对路径'全局变量'保存的是：所在文件的所在目录的绝对路径。
+
+- 会导致生成文件目录不确定性：`fs.writeFileSync('./index.html', 'love')`
+- 稳定生成在该文件夹下：`fs.writeFileSync(__dirname + '/index.html', 'love')`
+
+
+### 相对路径和绝对路径的转化
+1. 绝对路径
+- `https://www.baidu.com`：完整的url地址，直接跳转。
+- `//jd.com`：会获取网站上的的协议名称拼接然后再跳转。如现在的网站是 `http://test.com`，则打开这个链接会拼接成 `http://jd.com`，但因为 jd 会对 `http://jd.com` 进行 301 重定向，所以导致页面上显示的是 `https://jd.com`。
+- `/search`：会获取网站上的协议名称、域名、端口号跟这个路径进行拼接。如现在的网站是 `http://test.com`，则打开这个链接会拼接成 `http://test.com/search`。
+
+2. 相对路径
+会根据原来的网站来进行相应的回退和前进来拼接，当页面的url错误时，会以网站的初始地址为基准。如现在的网站是 `http://test.com/demo1/index.html`：
+    - `./css/index.css`：跳转 `http://test.com/demo1/css/index.css`。
+    - `js/index.js`：跳转 `http://test.com/demo1/js/index.js`。
+    - `../img/logo.jpg`: 跳转 `http://test.com/img/logo.jpg`。
+    - `../../img/logo.jpg`: 跳转 `http://test.com/img/logo.jpg`。
+```
+
+
+
+#### `process.cwd()` 跟 `__dirname` 的区别
+
+```bash
+一. process.cwd()
+- process.cwd() 是一个方法，用于获取 Nodejs 进程启动时所在的工作目录的绝对路径。
+- 这个路径通常是在启动 Nodejs 应用程序时指定的，或者是在命令行中运行 Node.js 时的当前目录。
+
+
+二. __dirname
+- __dirname 是一个特殊的全局变量，用于获取当前模块的目录名的绝对路径。
+- 这个路径是相对于当前模块文件的位置，所以它的值再不同模块中可能不同。
+
+
+三. 两者区别
+__dirname 是相对于当前模块的目录，而 process.cwd() 是整个应用程序的当前工作目录，因此它们的值可能在不同上下文和不同模块中有所不同。
+如果需要模块特定的路径信息，使用 __dirname；如果需要整个应用程序的当前工作目录，使用 process.cwd()。
+```
+
+
+
+#### path.relative
+
+```bash
+`path.relative(from, to)` 方法根据当前工作目录返回从 `from` 到 `to` 的相对路径。
+如果 `from` 和 `to` 都解析为相同的路径（在分别调用 `path.resolve()` 之后），则返回零长度字符串。
+
+如果给定了相对于一个目录的路径，但需要相对于另一个目录的路径，则 `path.relative()` 方法非常有用。
+```
+
+```js
+// 返回相对于第一条路径的第二条路径的路径
+path.relative('/app/views/home.html', '/app/layout/index.html') // '../../layout/index.html'
+
+
+const watcher = chokidar.watch('mydir')
+// 如果用户添加 mydir/path/to/test.txt，则会打印 mydir/path/to/test.txt
+watcher.on('add', (path) => console.log(path))
+```
+
+**Gatsby 库使用 `path.relative()` 方法帮助同步静态文件目录**
+
+假设用户向 `static` 目录添加了一个新文件 `main.js`。Chokidar 调用 `on('add')` 事件处理程序，路径设置为 `static/main.js`。但是，当您将文件复制到 `/public` 时，不需要额外的 `static/`。
+
+调用 `path.relative('static', 'static/main.js')` 返回 `static/main.js` 相对于 `static` 的路径，这正是您想要将 `static` 的内容复制到 `public` 的路径。
+
+```js
+export const syncStaticDir = (): void => {
+  const staticDir = nodePath.join(process.cwd(), `static`)
+  chokidar
+    .watch(staticDir)
+    .on(`add`, (path) => {
+      const relativePath = nodePath.relative(staticDir, path)
+      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+    })
+    .on(`change`, (path) => {
+      const relativePath = nodePath.relative(staticDir, path)
+      fs.copy(path, `${process.cwd()}/public/${relativePath}`)
+    })
+}
+```
+
+
+
+
+
+##  文件操作 fs
+
+```bash
+fs 模块可以执行以下操作：
+  - 创建文件和目录
+  - 修改文件和目录
+  - 删除文件和目录
+  - 读取文件和目录的内容
 
 
 ### 同步与异步的取舍
-- 由于Node环境执行的JavaScript代码是服务器端代码，所以绝大部分需要在服务器运行期反复执行业务逻辑的代码**必须使用异步代码**，否则，同步代码在执行时期，服务器将停止响应，因为**JavaScript只有一个执行线程**。
-- **服务器启动时**如果需要读取配置文件，或者结束时需要写入到状态文件时，可以使用同步代码，因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。
+- 由于 Node 环境执行的JS代码一般作为服务端的代码运行，且其绝大部分需要在服务器运行期反复执行业务逻辑的代码，所以必须使用异步代码，否则，同步代码在执行时期，服务器将会因为同步错误而停止响应（因为JavaScript只有一个执行线程，产生同步错误会跳出异常并停止运行）。
+- 服务器启动时，如果需要读取配置文件，或者结束时需要写入到状态文件时，可以使用同步代码，因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。
+
+
+同步方法有两个缺点：
+	1. 同步方法同步的执行代码，因此它们阻塞了主线程。例如：我使用 `fs.readdirSync` 同步读取目录下的所有文件，它将阻塞后面代码的运行，直到读取目录完成。阻塞 Node.js 中的主线程被认为是不好的做法，我们不应该这么做
+	2. 同步代码需要使用 `try...catch` 捕获错误
+
+因此，以下都使用文件系统模块中的异步方法。
 ```
 
-### 文件读取
+### 文件读取 readFile
 
 ```bash
 ## 文件读取
@@ -905,7 +1577,7 @@ console.log(path.extname(pathStr)) // .js
 
 
 ### 文件读取方法
-1. 异步读取：readFile
+1. 异步读取：`fs.readFile(path[, options], callback)`
 2. 同步读取：readFileSync
 3. 流式读取：createReadStream
 
@@ -918,11 +1590,6 @@ console.log(path.extname(pathStr)) // .js
 - 播放视频、音乐
 - 上传文件
 - 查看 Git 提交记录
-
-
-
-### 异步读取 readFile
-- `fs.readFile(path[, options], callback)`
 ```
 
 ```js
@@ -947,11 +1614,11 @@ try {
 }
 ```
 
-### 文件写入
+### 文件写入 writeFile
 
 ```bash
 ## 文件写入
-将数据写入文件是通过`fs.writeFile()`函数实现；同步写文件则是`writeFileSync()`函数。
+将数据写入文件是通过 `fs.writeFile()` 函数实现；同步写文件则是`writeFileSync()`函数。
 `writeFile()`的参数依次为文件名、数据和回调函数。如果传入的数据是String，默认按UTF-8编码写入文本文件，如果传入的参数是`Buffer`，则写入的是二进制文件。回调函数由于只关心成功与否，因此只需要一个`err`参数。
 
 
@@ -1018,8 +1685,7 @@ fs.writeFileSync('test.txt', data)
 ### 文件信息状态 stat
 
 ```bash
-## 文件信息资源状态 stat
-`fs.stat()` 或 `fs.statSync()` 可以获取文件大小，创建时间等信息，它返回一个`Stat`对象，能告诉我们文件或目录的详细信息。
+`fs.stat()` 或 `fs.statSync()` 可以获取文件大小，创建时间等信息，它返回一个`Stat`对象，里面包含文件或目录的详细信息。
 
 语法：
 	- `fs.stat(path[, options], callback)`
@@ -1031,6 +1697,17 @@ fs.writeFileSync('test.txt', data)
     - 文件体积大小 `size`
     - 创建时间 `birthtime`
     - 最后修改时间 `mtime`
+
+
+文件信息包含在 `stats` 变量中。包括：
+    - 如果文件是目录或文件，则使用 `stats.isFile()` 和 `stats.isDirectory()`
+    - 如果文件是符号链接，则使用 `stats.isSymbolicLink()`
+    - 文件大小（以字节为单位），使用 `stats.size`
+
+
+stat() 与 fstat() 的区别
+    - `fs.stat` 接收的第一个参数是一个文件路径字符串
+    - `fs.fstat` 接收的是一个文件描述符
 ```
 
 ```js
@@ -1060,7 +1737,6 @@ fs.stat('./blog', function (err, stat) {
 ### stream 流
 
 ```bash
-## stream 流
 - stream 是 nodejs 提供的又一个仅在服务区端可用的模块，目的是支持 “流” 这种数据结构。
 - 流的特点是数据有序的，而且必须依次读取，或者依次写入，不能像 Array 那样随机定位。（类似堆栈）
 
@@ -1072,6 +1748,14 @@ fs.stat('./blog', function (err, stat) {
     3. `error`事件表示出错了。
 
 - 注意：`data` 事件可能会有多次，每次传递的 `chunk` 是流的一部分数据。
+
+
+
+#### readFile() 与 createReadStream() 的区别
+- `readFile` 方法异步读取文件的全部内容，并存储在内存中，然后再传递给用户
+- `createReadStream` 使用一个可读的流，逐块读取文件，而不是全部存储在内存中
+
+与 `readFile` 相比，`createReadStream` 使用更少的内存和更快的速度来优化文件读取操作。如果文件相当大，用户不必等待很长时间直到读取整个内容，因为读取时会先向用户发送小块内容。
 ```
 
 ```js
@@ -1096,7 +1780,6 @@ rs.on("open", () => {
     .on("data", (chunk) => {
         console.log("单批数据流入: ", chunk.length, chunk)
     })
-
 ```
 
 ```js
@@ -1131,7 +1814,6 @@ ws.write("helloworld2!", (err) => {
 ws.end(() => {
     console.log("文件写入关闭")
 })
-
 ```
 
 - 要以流的形式写入文件，只需要不断调用`write()`方法，最后以`end()`结束:
@@ -1161,7 +1843,6 @@ ws2.end()
 通过 pipe() 把一个文件流和另一个文件流串联，这样源文件的所有数据就自动写入到目标文件中(实际是复制文件的过程)
 
 默认情况下，当读取流的数据的`end`事件触发后，将自动关闭写入流。而限制写入流的自动关闭，则需要传入参数：`readable.pipe(writable, { end: false })`
-
 ```
 
 ```js
@@ -1238,7 +1919,7 @@ rs.on('end', () => {
 
 
 
-### 文件重命名与移动
+### 文件重命名与移动 rename
 
 ```js
 const fs = require('fs')
@@ -1264,7 +1945,12 @@ fs.rename('./temp/temp2.json', './temp2.json', (err) => {
 
 
 
-### 文件删除
+### 文件删除 unlink
+
+```bash
+文件系统模块有一种方法，允许您删除文件。但是，需要注意的是，它只适用于文件，不适用于目录。
+当以文件路径作为参数调用 `unlink` 方法时，它将删除该文件。
+```
 
 ```js
 const fs = require('fs')
@@ -1291,7 +1977,7 @@ fs.rm('./temp/temp2.json', err => {
 
 
 
-### 文件夹操作
+### 文件夹操作 mkdir
 
 ```bash
 ## 文件夹操作
@@ -1334,7 +2020,6 @@ fs.readdir('./temp', callback('读取', true))
 
 /** 删除文件夹 */
 fs.rm('./temp', { recursive: true }, callback('删除'))
-
 ```
 
 
@@ -1366,73 +2051,124 @@ deleteFolderRecursive('temp')
 
 
 
-## URL接口
+### 文件中添加内容 appendFile
 
-```bash
-## URL 接口（代替内置模块 url）
-浏览器原生提供 `URL()` 接口，它是一个构造函数，用来构造、解析和编码 URL。一般情况下，通过 `window.URL` 可拿到这个构造函数。
-
-
-
-## URLSearchParams 对象(代替内置模块querystring使用)
-URLSearchParams 对象是浏览器的原生对象，用来构造、解析和处理 URL 的查询字符串（即 URL 问号后面的部分）。
-它本身也是一个构造函数，可以生成实例。参数可以为查询字符串，起首的问号?有没有都行，也可以是对应查询字符串的数组或对象。
-
-  1. nodejs内置模块querystring有些方法要被废弃，我们使用URLSearchParams API 构造代替
-  2. 如果你的nodejs版本大于18，可以使用 `const querystring= require('node:querystring')`。querystring比URLSearchParams性能更高，但不是 标准化的 API。使用URLSearchParams 当性能不重要或 当需要与浏览器代码兼容时。
-  3. 还可以安装qs模块，使用方式和querystring一样
-
-
-## qs 模块
-qs是一个npm仓库所管理的包,可通过npm install qs命令进行安装。
-qs.parse()将URL解析成对象的形式
-qs.stringify()将对象 序列化成URL的形式，以&进行拼接
-```
-
-#### url 模块和 URL 接口的对比
+使用文件系统模块，可以使用`appendFile` 方法向现有文件添加新内容。
 
 ```js
-// url模块，url.parse('link')
-const url = {
-    protocol: "https:",
-    slashes: true,
-    auth: null,
-    host: "m.shop.com",
-    port: null,
-    hostname: "m.shop.com",
-    hash: "#detail",
-    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    query: "id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    pathname: "/home/share",
-    path: "/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
-}
+const fs = require('fs')
 
-// new URL()
-const newURL = {
-    href: "https://m.shop.com/home/share?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099#detail",
-    origin: "https://m.shop.com",
-    protocol: "https:",
-    username: "",
-    password: "",
-    host: "m.shop.com",
-    hostname: "m.shop.com",
-    port: "",
-    pathname: "/home/share",
-    search: "?id=4433&name=%E6%9D%8E%E5%A4%87&directCompanyId=&mobile=18951431099",
-    // searchParams: URLSearchParams
-    searchParams: {
-        id: "4433",
-        name: "李备",
-        directCompanyId: "",
-        mobile: "18951431099",
-    },
-    hash: "#detail",
-}
+fs.appendFile(filePath, '\nAll work and no play makes Jack a dull boy!', (err) => {
+  if (err) throw err
 
+  console.log('All work and no play makes Jack a dull boy!')
+})
 ```
 
 
+
+### 检查文件是否存在 exists
+
+`fs.exists` 已经废弃，建议使用 `fs.access`：
+
+```js
+const { access, constants } = require('fs')
+
+const file = 'package.json'
+
+// 检查当前目录中是否存在该文件
+access(file, constants.F_OK, (err) => {
+  console.log(`${file} ${err ? '不存在' : '存在'}`)
+})
+```
+
+
+
+### 截断文件内容 ftruncate
+
+```bash
+语法：`fs.ftruncate(fd, len, callback)`
+
+`close` 方法接受以下参数：
+    - `fd` — 文件 `fs.open()` 方法返回的文件描述符。
+    - `len` — 文件的长度，在此长度之后文件将被截断。
+    - `callback` — 回调函数，它不获取任何参数，除非给完成回调一个可能的异常。
+```
+
+```js
+const { open, close, ftruncate } = require('node:fs')
+
+function closeFd(fd) {
+  close(fd, (err) => {
+    if (err) throw err
+  })
+}
+
+open('temp.txt', 'r+', (err, fd) => {
+  if (err) throw err
+
+  try {
+    ftruncate(fd, 4, (err) => {
+      closeFd(fd)
+      if (err) throw err
+    })
+  } catch (err) {
+    closeFd(fd)
+    if (err) throw err
+  }
+})
+```
+
+
+
+### 监听文件 watch
+
+```bash
+watch() 与 watchFile() 的区别
+二者主要用来监听文件变动：
+- `fs.watch` 利用操作系统原生机制来监听，可能不适用网络文件系统
+- `fs.watchFile` 则是定期检查文件状态变更，适用于网络文件系统，但是相比 `fs.watch` 有些慢，因为不是实时机制
+```
+
+
+
+### fs.extra
+
+```bash
+`fs.extra` 是原生 fs 的替代品，该模块继承了 `fs-extra` 中所有方法，添加了原生 `fs` 模块中不包含的文件系统方法，并向 `fs` 方法添加了 promise 支持。
+
+fs.extra 分为同步和异步版本。
+
+`$ npm i fs-extra`
+```
+
+```js
+const { copy, copySync, emptyDirSync } = require('fs-extra')
+
+// 同步
+try {
+  copySync('/tmp/myFile', '/tmp/myNewFile')
+  console.log('success!')
+} catch (err) {
+  console.error(err)
+}
+
+// 异步 promise
+copy('/tmp/myFile', '/tmp/myNewFile')
+  .then(() => console.log('success!'))
+  .catch((err) => console.error(err))
+
+// 异步回调
+copy('/tmp/myFile', '/tmp/myNewFile', (err) => {
+  if (err) return console.error(err)
+  console.log('success!')
+})
+
+
+// 清空文件夹
+const folder = './node_modules'
+emptyDirSync(folder)
+```
 
 
 
@@ -1472,7 +2208,9 @@ readStream.pipe(gunzip).pipe(writeStream)
 
 ```
 
-### 服务端gzip压缩
+
+
+#### 服务端gzip压缩
 
 ```js
 const fs = require("fs")
@@ -1515,10 +2253,45 @@ server.listen(3000, () => {
 
 
 
+#### 下载和解压 Node 中的 gz 文件
+
+```bash
+- got：适用于 Node.js 的人性化且功能强大的 HTTP 请求库。
+- Node-gzip：只需使用 `promise` 在 Node.js 中使用 `gzip` 和 `ungzip`。
+```
+
+```js
+import got from 'got'
+import pkg from 'node-gzip'
+
+const { ungzip } = pkg
+const SITEMAP_URL = 'https://developer.mozilla.org/sitemaps/en-US/sitemap.xml.gz'
+
+async function main() {
+  // 获取文件
+  const { body } = await got(SITEMAP_URL, { responseType: 'buffer' })
+
+  // 解压缓冲的 gzip 站点地图
+  const sitemap = (await ungzip(body)).toString()
+
+  console.log(sitemap)
+}
+
+main()
+```
+
+
+
 ## 网络协议 http
 
 ```bash
 ## 网络协议 http
+http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传输数据的方法。而 https 模块通过 HTTP TLS/SSL 协议传输数据的方法，该协议是安全的 HTTP 协议。
+	- 各种 Node HTTP 服务框架的底层原理都是离不开该模块。
+使用内置的 `http` 模块，我们可以快速的搭建一个简单的 HTTP 服务器。该服务器允许我们监听任意端口并提供一个回调函数，该函数将在每个传入请求时调用。
+回调将接收两个参数：一个 Request 对象和一个 Response 对象。Request 对象将填充有关请求的有用属性，而 Response 对象将用于向客户端发送响应。
+
+
 
 ### 配置本地 host
 1. 打开hosts文件。该文件通常位于以下位置：C:\Windows\System32\drivers\etc\hosts（对于Windows）或/etc/hosts（对于Mac和Linux）
@@ -1566,45 +2339,47 @@ server.listen(3000, () => {
 ```js
 const http = require("node:http")
 
-const server = http.createServer((request, response) => {
-    // 获取请求的方法
-    const { method } = request
+const router = (request, response) => {
+  // 获取请求的方法
+  const { method } = request
 
-    // 获取请求的 url 路径
-    const { pathname } = new URL(request.url, "http://127.0.0.1")
+  // 获取请求的 url 路径
+  const { pathname } = new URL(request.url, "http://127.0.0.1")
 
-    console.log(method, pathname)
+  console.log(method, pathname)
 
-    /** 响应状态码 */
-    response.statusCode = 203
-    response.statusMessage = "willysliang"
-    /** 响应头 */
-    response.setHeader("willy", ["L", "O", "V", "E"])
+  /** 响应状态码 */
+  response.statusCode = 203
+  response.statusMessage = "willysliang"
+  /** 响应头 */
+  response.setHeader("willy", ["L", "O", "V", "E"])
 
-    /** 响应体设置 */
-    response.write("I ")
-    response.write("LOVE ")
-    response.write("U! ")
-    response.end("willysliang")
+  /** 响应体设置 */
+  response.write("I ")
+  response.write("LOVE ")
+  response.write("U! ")
+  response.end("willysliang")
 
-    /** 请求超时处理 */
-    const timeout = 5000 // 设置超时时间为5秒
-    request.setTimeout(timeout, () => {
-        response.statusCode = 408 // 请求超时状态码
-        response.end("Request Timeout") // 响应超时信息
-    })
-})
+  /** 请求超时处理 */
+  const timeout = 5000 // 设置超时时间为5秒
+  request.setTimeout(timeout, () => {
+    response.statusCode = 408 // 请求超时状态码
+    response.end("Request Timeout") // 响应超时信息
+  })
+}
+
+const server = http.createServer(router)
 
 /** socket 连接超时处理 */
 server.on("connection", (socket) => {
-    // 如果连接超时，则socket会触发timeout事件，可以在该事件的回调函数中调用socket.destroy()方法来关闭连接
-    socket.setTimeout(5000) // 设置超时时间为5秒
+  // 如果连接超时，则socket会触发timeout事件，可以在该事件的回调函数中调用socket.destroy()方法来关闭连接
+  socket.setTimeout(5000) // 设置超时时间为5秒
 })
 
-server.listen(80, () => {
-    console.log("listener 80....")
+const PORT = 80
+server.listen(PORT, () => {
+  console.log("listener 80....")
 })
-
 ```
 
 ### 加载完整项目
@@ -1641,7 +2416,7 @@ const server = http.createServer((request, response) => {
         const resourcePath = __dirname + pathname
         if (fs.existsSync(resourcePath)) {
             const resource = fs.readFileSync(resourcePath)
-        
+
             // 获取文件的后缀名
             const ext = path.extname(pathname).slice(1)
 
@@ -1707,7 +2482,7 @@ const errorResponse = (response, code) => {
             response.statusCode = 500
             response.end('<h1>500 Internet Server Error</h1>')
     }
-    
+
     return response
 }
 
@@ -2034,50 +2809,126 @@ if (loginHash === savedHash) {
 
 
 
-## Buffer 类
+## 缓存区 Buffer类
 
 ```bash
-## Buffer 类
-Buffer 是 Node.js 中用于处理二进制数据的类，它是 Node.js 在处理 TCP 流、文件系统操作、加密算法等方面的核心模块之一。
-注意：Buffer对象在创建时需要指定其大小（以字节为单位），且创建后无法改变其大小。在使用Buffer时，需要注意内存泄漏和安全问题，避免出现缓冲区溢出等问题。
-
-
-### Buffer 的作用：
-1. 存储二进制数据：Buffer可以存储二进制数据，包括字节、位、16进制、ASCII等。
-2. 处理网络流数据：Buffer可以用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
-3. 处理文件系统操作：Buffer可以用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
-4. 实现加密算法：Buffer可以用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
-5. 处理数据传输：Buffer可以用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
-6. 支持转换编码：Buffer可以将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
-
-
-### 计算机基本组成
-内存：读写速度较快，断电丢失数据
-硬盘：读写速度较慢，断电不丢失数据
-线程：线程是一个进程的执行流
+#### Buffer 的作用：
+1. 存储二进制数据：可存储二进制数据，包括字节、位、16进制、ASCII等。
+2. 处理网络流数据：可用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
+3. 处理文件系统操作：可用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
+4. 实现加密算法：可用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
+5. 处理数据传输：可用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
+6. 支持转换编码：可将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
 
 
 
-### 类方法：Buffer.from(buffer)
+#### 概念
+1. 二进制代码：
+因为计算机处理器由晶体管组成，靠开（0）和关（1）信号激活。为了让计算机能理解、处理和存储数据，必须将数据转换为二进制代码。
+发送到计算机的每一条数据在处理和输出结果之前，首先由微处理器转换成二进制，因此需要区分不同的数据类型。而计算机通过对不同的数据类型进行不同的编码，以区分不同类型的数据。
+
+2. 缓冲区：
+二进制流是大量二进制数据的集合，由于二进制流庞大，因而不会被一起发送，需要在发送之前分解成更小部分再进行发送。
+当数据处理单元不能接收更多数据流时，多余的数据将存储在缓冲区中，直到数据处理单元准备好接收更多数据。
+
+3. Node.js 中的缓冲区类
+Node.js 中的 Buffer 类用于处理二进制数据，它是 Node.js 在处理 TCP 流、文件系统操作、加密算法等方面的核心模块之一。
+	- 读写文件系统（文件存储在二进制文件中）
+	- 处理 TCP 流，它们在以小块形式发送二进制数据之前保护与接收器的连接。发送到接收器的数据流需要存储在缓冲区，直到接收器准备好接收更多数据块进行处理为止。
+注意：
+	- Buffer 类在 V8 引擎之外处理二进制数据分配存储。
+	- Buffer 对象在创建时需指定其大小（以字节为单位），且创建后无法改变。在使用Buffer时需要注意内存泄漏、安全及避免缓冲区溢出问题。
+	- Buffer 类可以方便地进行二进制数据的拼接、切片等操作，提高对二进制数据的处理效率。
+```
+
+#### 属性和方法
+
+```bash
+- `Buffer.alloc()` 创建指定长度的缓冲区对象。它以字节为单位分配缓冲区的大小。
+- `Buffer.byteLength()` 返回指定对象中的字节数
+- `Buffer.compare()` 比较两个缓冲区对象
+- `Buffer.concat()` 将缓冲区对象数组连接到一个缓冲区对象中
+- `Buffer.fill()` 用指定的值填充缓冲区对象
+- `Buffer.from()` 从对象（字符串/数组/缓冲区）创建缓冲区对象
+- `Buffer.isEncoding()` 检查缓冲区对象是否支持指定的编码
+
+- `buf.entries()` 返回缓冲区对象的 index、byte 对的迭代器
+- `buf.includes()` 检查缓冲区对象是否包含指定的值。如果存在匹配项，则返回`true`，否则返回 `false`
+- `buf.slice()` 将一个缓冲区对象分割成一个新的缓冲区对象，从指定的位置开始和结束。
+- `buf.readInt8()` 从缓冲区对象读取 8 位整数
+- `buf.writeFloatBE()` 使用 big-endian 将指定的字节写入缓冲区对象。字节应为 32 位浮点。
+- `buf.length` 返回缓冲区对象的长度，以字节为单位
+
+
+
+#### 创建 Buffer
+在 Node V6.0 之前，要创建新的 Buffer，只需要使用 `new` 关键字调用构造函数：
+		`const newBuffer = new Buffer('new String')`
+在 Node V6.0 之后，`new Buffer()` 构造函数已被弃用，并被单独的 `Buffer.from()`、`Buffer.alloc()` 和 `Buffer.allocUnsafe()` 方法替换。要创建新的 Buffer 实例：
+		`const newBuffer = Buffer.from('new String')`
+
+const buf = Buffer.alloc(15) // 创建长度为15的空Buffer
+buf // <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
+buf.length // 15
+
+
+
+#### 类方法：Buffer.from(buffer)
 - Buffer.from()方法用于创建包含指定字符串，数组或缓冲区的新缓冲区。
-- `Buffer.from( object, encoding )`
+- `Buffer.from( object, encoding)`
     - object：此参数可以包含字符串，缓冲区，数组或arrayBuffer。
     - encoding：如果对象是字符串，则用于指定其编码。它是可选参数。其默认值为utf8。
 
 
 
-### buffer 与字符串的转换
-- 转换为buffer：Buffer.from()
-- 转换为字符串：Buffer.toString()
+#### buffer 与字符串的转换
+- 转换为buffer：`Buffer.from()`
+- 转换为字符串：`Buffer.toString()`，默认情况下，它会转换为 utf-8 格式字符串。
 注意：一个 buffer 位只能存储最高二进制值为256的数值，超出256的数值会在转换为二进制后进行高位舍弃。
 
 const buf1 = Buffer.from('hi, willy')
-const buf2 = Buffer.from([105, 108, 111, 118, 101,121,111,117])
+const buf2 = Buffer.from([105, 108, 111, 118, 101, 121, 111, 117])
 const str1 = buf2.toString() // iloveyou
 console.log(buf1, buf2, str1)
-
-
 ```
+
+#### Buffer 转换为 JSON 和 `utf-8` 字符串
+
+```js
+const bufferOne = Buffer.from('iloveyou')
+console.log(bufferOne) // // <Buffer 69 6c 6f 76 65 79 6f 75>
+
+
+/** 将 Buffer 转换为 JSON */
+const json = JSON.stringify(bufferOne, null, 2)
+console.log(json)
+/**
+ {
+  "type": "Buffer",
+  "data": [
+    105,
+    108,
+    111,
+    118,
+    101,
+    121,
+    111,
+    117
+  ]
+}
+ */
+
+
+/** 将 JSON 转换为 Buffer */
+const bufferOriginal = Buffer.from(JSON.parse(json).data)
+console.log(bufferOriginal) // <Buffer 69 6c 6f 76 65 79 6f 75>
+
+
+/** 将 Buffer 转换为 UTF-8 字符串 */
+console.log(bufferOriginal.toString('utf8')) // iloveyou
+```
+
+
 
 ## 事件机制模块 events
 
@@ -2113,16 +2964,27 @@ events.emit("someEvent", "arg1 参数", "arg2 参数")
  * listener1 arg1 参数 arg2 参数
     listener2 arg1 参数 arg2 参数
  */
-
 ```
 
 ## 爬虫 puppeteer
 
 ```bash
-## 爬虫 puppeteer
+Puppeteer 用来模拟 Chrome 浏览器的运行，它提供了高级 API 来通过 DevTools 协议控制 Chrome 或 Chromium。Puppeteer 默认情况下无头运行，但可以配置为运行完整（无头）的 Chrome 或 Chromium。
+由于它在初始化时启动了一个新的 Chrome 实例，因此它可能不是性能最好的。这是使用 Chrome 自动化测试的最精确方法，因为它使用的是真正的浏览器。
+确切地说，它使用 Chrome 的开源部分 Chromium，这主要意味着它没有 Google 许可且无法开源的专有编解码器（MP3、AAC、H.264..），也没有与崩溃报告、谷歌更新等谷歌服务的集成，但从编程的角度来看，它应该与 Chrome 100% 相似（除了媒体播放）。
 
-$ pnpm i puppeteer-core
 
+安装：`$ pnpm i puppeteer-core`
+
+作用：
+    - 抓取网页
+    - 自动化表单提交
+    - 执行任何类型的浏览器自动化
+    - 跟踪页面加载性能
+    - 创建单页应用的服务器端渲染版本
+    - 制作屏幕截图
+    - 创建自动化测试
+    - 从网页生成 PDF
 ```
 
 ```js
@@ -2140,13 +3002,13 @@ const puppeteer = require("puppeteer-core")
     // 使用 browser.newPage 方法创建一个新页面
     const page = await browser.newPage()
 
-    // 使用 page.goto 方法跳转到指定的网页：
+    // 使用 page.goto 方法跳转到指定的网页并加载：
     await page.goto("https://cc.163.com/")
 
     // 捕获console的输出,通过监听console事件
     page.on("console", (msg) => console.log("PAGE LOG:", ...msg.args))
 
-    // 使用 page.evaluate(pageFunction, ...args) 执行 JavaScript 代码并获取结果
+    // 使用 page.evaluate(pageFunction, ...args) 执行 JavaScript 代码并获取页面内容
     const dimensions = await page.evaluate(() => {
         return {
             width: document.documentElement.clientWidth,
@@ -2167,7 +3029,6 @@ const puppeteer = require("puppeteer-core")
     // 使用 browser.close 方法关闭浏览器
     await browser.close()
 })()
-
 ```
 
 ### 爬虫模拟登录
@@ -2336,7 +3197,7 @@ const doPyt = async () => {
         btn && btn.click()
 
         /* 等待指定的选择器匹配的元素出现在页面中，如果调用此方法时已经有匹配的元素，
-  那么此方法立即返回。如果指定的选择器在超时时间后扔不出现，此方法会报错。 
+  那么此方法立即返回。如果指定的选择器在超时时间后扔不出现，此方法会报错。
   返回: <Promise<ElementHandle>>*/
         await page.waitForSelector(
             "div#content_left > div.result-op.c-container.xpath-log"

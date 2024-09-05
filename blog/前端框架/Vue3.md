@@ -23,7 +23,11 @@ Description: Vue3
 如果同一个 watcher 被多次触发，只会被推入到队列中依次。
 这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作时非常重要的。
 然后，在下一个的事件循环 'Tick' 中，vue 刷新队列并执行实际（已去重的）工作。
-vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObserver` 和 `setTmmediate`，如果执行环境不支持，则采用 `setTimeout(fn, 0)` 代替。
+vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObserver` 和 `setImmediate`，如果执行环境不支持，则采用 `setTimeout(fn, 0)` 代替。
+
+
+三、vue渲染是异步的，为什么还使用 NextTick
+渲染队列跟nexttick处理时机不同的，nextTick 是在渲染队列清空之后执行，因此能获取到新的 Dom 节点内容。
 ```
 
 
@@ -256,7 +260,7 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >        }
 >      },
 >
->     remove: child => { },
+>      remove: child => { },
 >      createText: text => { },
 >      createComment: text => { },
 >      setText: (node, text) => { },
@@ -598,7 +602,7 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 
 > **1.使用app.config.globalProperties**
 >
-> ```vue
+> ```bash
 > // main.js 入口文件
 > import { createApp } from 'vue'
 > import axios from 'axios'
@@ -643,10 +647,10 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > import { createApp } from 'vue'
 > import axios from 'axios'
 > const app = createApp({
->   inject: ['$axios'],
->   created() {
->     console.log(this.$axios)
->   }
+>     inject: ['$axios'],
+>     created() {
+>        console.log(this.$axios)
+>     }
 > })
 > app.provide('$axios', axios)
 > app.mount('#root')
@@ -654,6 +658,17 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 
 ### data选项应始终被声明为一个函数
 
+> ```bash
+> 组件中的 data 为什么是一个函数返回一个对象，而不是一个对象？
+> 1. vue中组件是用来复用的，为了防止data复用，将其定义为函数。
+> 
+> 2. vue组件中的data数据都应该是相互隔离，互不影响的，组件每复用一次，data数据就应该被复制一次，之后，当某一处复用的地方组件内data数据被改变时，其他复用地方组件的data数据不受影响，就需要通过data函数返回一个对象作为组件的状态。
+> 
+> 3. 当我们将组件中的data写成一个函数，数据以函数返回值形式定义，这样每复用一次组件，就会返回一份新的data，拥有自己的作用域，类似于给每个组件实例创建一个私有的数据空间，让各个组件实例维护各自的数据。
+> 
+> 4. 当我们组件的date单纯的写成对象形式，这些实例用的是同一个构造函数，由于JavaScript的特性所导致，所有的组件实例共用了一个data，就会造成一个变了全都会变的结果。
+> ```
+>
 > ```js
 > createApp({
 >   data() {
@@ -695,7 +710,7 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >
 > # 异步任务
 > 1. 宏任务：script（整体代码）、setTimeout、setInterval、UI交互事件、postMessage、Ajax
-> 2. 微任务：Promise then catch finally、MutationObserver、process.nextTick(Node.js环境)
+> 2. 微任务：Promise 的then catch finally、MutationObserver、process.nextTick(Node.js环境)
 >
 >
 > # 事件循环 Event Loop 运行机制
@@ -742,7 +757,7 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >
 > const change = async () => {
 >    text.value = 'william'
->    console.log(willy.value?.innerText) // willysliang
+>    console.log(willy.value?.innerText) // willysliang（因为虚拟DOM的视图更新是异步的）
 >    await nextTick();
 >    console.log(willy.value?.innerText) //william
 > }
@@ -977,29 +992,29 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >
 > ```vue
 > <template>
->   <div>子组件</div>
->   <div>父组件传递的值：{{title}}</div>
-> 	<button @click="toEmits">子组件向外暴露数据</button>
+> <div>子组件</div>
+> <div>父组件传递的值：{{title}}</div>
+> <button @click="toEmits">子组件向外暴露数据</button>
 > </template>
 >
 > <script setup lang="ts">
->    import { reactive } from 'vue'
+>   import { reactive } from 'vue'
 >
->    type Props = {
->      title?: string,
->      data?: number[]
->    }
->    const  props = withDefaults(defineProps<Props>(), {
->      title: "我是默认标题",
->      data: () => [1, 2, 3],
->    });
->    console.log(props.title) //父的值
+>   type Props = {
+>     title?: string,
+>     data?: number[]
+>   }
+>   const  props = withDefaults(defineProps<Props>(), {
+>     title: "我是默认标题",
+>     data: () => [1, 2, 3],
+>   });
+>   console.log(props.title) //父的值
 >
->    const  emits = defineEmits(['on-click']);
->    const list = reactive<number[]>([1, 2, 3])
->    const  toEmits = () => {
->      emits('on-click', list)
->    }
+>   const  emits = defineEmits(['on-click']);
+>   const list = reactive<number[]>([1, 2, 3])
+>   const  toEmits = () => {
+>     emits('on-click', list)
+>   }
 > </script>
 > ```
 
@@ -1010,15 +1025,15 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > ```vue
 > <!-- 子组件 -->
 > <script setup>
-> import { ref } from 'vue'
+>   import { ref } from 'vue'
 >
-> const a = 1
-> const b = ref(2)
-> //主动暴露组件属性
-> defineExpose({
-> a,
-> b
-> })
+>   const a = 1
+>   const b = ref(2)
+>   //主动暴露组件属性
+>   defineExpose({
+>     a,
+>     b
+>   })
 > </script>
 > ```
 >
@@ -1031,14 +1046,14 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > </template>
 >
 > <script setup>
-> import {ref} from 'vue'
-> import Child from './child.vue'
-> const childRef= ref()  //注册响应数据
-> const getChildData =()=>{
-> //子组件接收暴露出来得值
-> console.log(childRef.value.a) //1
-> console.log(childRef.value.b) //2  响应式数据
-> }
+>   import {ref} from 'vue'
+>   import Child from './child.vue'
+>   const childRef= ref()  //注册响应数据
+>   const getChildData =()=>{
+>     //子组件接收暴露出来得值
+>     console.log(childRef.value.a) //1
+>     console.log(childRef.value.b) //2  响应式数据
+>   }
 > </script>
 > ```
 
@@ -1089,18 +1104,18 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >
 >
 > <script setup>
-> import { useSlots, useAttrs, reactive, toRef } from 'vue'
-> const state = reactive({
-> name: '张三',
-> age: '18'
-> })
+>   import { useSlots, useAttrs, reactive, toRef } from 'vue'
+>   const state = reactive({
+>     name: '张三',
+>     age: '18'
+>   })
 >
-> const slots = useSlots()
-> console.log(slots.default()); //获取到默认插槽的虚拟dom对象
-> console.log(slots.title());   //获取到具名title插槽的虚拟dom对象
-> // console.log(slots.footer()); //报错  不知道为啥有插槽作用域的无法获取
-> //useAttrs() 用来获取父组件传递的过来的属性数据的（也就是非 props 的属性值）。
-> const attrs = useAttrs()
+>   const slots = useSlots()
+>   console.log(slots.default()); //获取到默认插槽的虚拟dom对象
+>   console.log(slots.title());   //获取到具名title插槽的虚拟dom对象
+>   // console.log(slots.footer()); //报错  不知道为啥有插槽作用域的无法获取
+>   //useAttrs() 用来获取父组件传递的过来的属性数据的（也就是非 props 的属性值）。
+>   const attrs = useAttrs()
 > </script>
 > ```
 >
@@ -1108,20 +1123,20 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >
 > ```jsx
 > <script lang='jsx'>
-> import { defineComponent, useSlots } from "vue";
-> export default defineComponent({
-> setup() {
-> // 获取插槽数据
-> const slots = useSlots();
-> // 渲染组件
-> return () => (
-> <div>
->  {slots.default?slots.default():''}
->  {slots.title?slots.title():''}
-> </div>
-> );
-> },
-> });
+>   import { defineComponent, useSlots } from "vue";
+>   export default defineComponent({
+>     setup() {
+>       // 获取插槽数据
+>       const slots = useSlots();
+>       // 渲染组件
+>       return () => (
+>         <div>
+>            {slots.default?slots.default():''}
+>            {slots.title?slots.title():''}
+>         </div>
+>       );
+>     },
+>   });
 > </script>
 > ```
 
@@ -1244,14 +1259,14 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > app.use(Loading)
 >
 > type Lod = {
->     show: () => void,
->     hide: () => void
+>   show: () => void,
+>   hide: () => void
 > }
 > //编写ts loading 声明文件放置报错 和 智能提示
 > declare module '@vue/runtime-core' {
->     export interface ComponentCustomProperties {
->         $loading: Lod
->     }
+>   export interface ComponentCustomProperties {
+>     $loading: Lod
+>   }
 > }
 >
 > app.mount('#app')
@@ -1295,29 +1310,29 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > import { onMounted } from 'vue'
 >
 > type Options = {
->     el: string
+>   el: string
 > }
 >
 > export default function (option: Options): Promise<{ Baseurl: string | null }> {
->     return new Promise((resolve) => {
->         onMounted(() => {
->           const file: HTMLImageElement = document.querySelector(option.el) as HTMLImageElement;
->           file.onload = ():void => {
->             resolve({ Baseurl: toBase64(file) })
->           }
->         })
->
->         const toBase64 = (el: HTMLImageElement): string => {
->           const canvas: HTMLCanvasElement = document.createElement('canvas')
->           const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
->
->           canvas.width = el.width
->           canvas.height = el.height
->           ctx.drawImage(el, 0, 0, canvas.width,canvas.height)
->
->           return canvas.toDataURL('./image/png')
->         }
+>   return new Promise((resolve) => {
+>     onMounted(() => {
+>       const file: HTMLImageElement = document.querySelector(option.el) as HTMLImageElement;
+>       file.onload = ():void => {
+>         resolve({ Baseurl: toBase64(file) })
+>       }
 >     })
+>
+>     const toBase64 = (el: HTMLImageElement): string => {
+>       const canvas: HTMLCanvasElement = document.createElement('canvas')
+>       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+>
+>       canvas.width = el.width
+>       canvas.height = el.height
+>       ctx.drawImage(el, 0, 0, canvas.width,canvas.height)
+>
+>       return canvas.toDataURL('./image/png')
+>     }
+>   })
 > }
 > ```
 >
@@ -1421,14 +1436,12 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > <template>
 >   <div v-move class="box">
 >     <div class="header"></div>
->     <div>
->       内容
->     </div>
+>     <div>内容</div>
 >   </div>
 > </template>
->
+> 
 > <script setup lang='ts'>
-> import { Directive } from "vue";
+>import { Directive } from "vue";
 > const vMove: Directive = {
 >   mounted(el: HTMLElement) {
 >     let moveEl = el.firstElementChild as HTMLElement;
@@ -1451,9 +1464,9 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >   },
 > };
 > </script>
->
+> 
 > <style lang='less'>
-> .box {
+>.box {
 >   position: fixed;
 >   left: 50%;
 >   top: 50%;
@@ -4437,6 +4450,8 @@ export default defineComponent({
 > </script>
 > ```
 
+
+
 ## 	Router 4
 
 ### Router 4概念
@@ -6341,187 +6356,6 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 
 ## Vue扩展
 
-### 接口可视化
-
-> ```bash
-> # 查看接口软件： apifox
->
-> # 接口 API
-> npm install ts-node -g
-> npm init -y
-> npm install @types/node -D
-> npm install express -S
-> npm install @types/express -D
-> npm install axios -S
->
->
-> # 使用api
->
-> ```
->
-> #### 后台接口
->
-> ````ts
-> // index.ts
-> import express, { Express, Router, Request, Response } from 'express'
-> const app:Express = express();
-> const router:Router = express.Router();
->
-> app.use('/api', router);
->
-> router.get('/list', async (req:Request, res:Response) => {
-> const result = await axios.post('http://api.inews.qq.com/newsqa/v1/query');
-> })
->
-> app.listen(3000, () => {
-> console.log('success server 3000');
-> })
-> ````
->
-> ```json
-> // package.json
-> {
->   "scripts": {
->     "dev": "ts-node index.ts",
->   }
-> }
-> ```
-
-### axios封装
-
-> ````js
-> import Vue from 'vue'
-> import axios from 'axios'
->
-> const service = axios.create({
->   // baseURL: 'http://172.31.132.8:8011/api',
->   baseURL: '',
->   timeout: 6000,
->   crossDomain: true //允许跨域
-> })
->
-> // request拦截器,在请求之前做一些处理
-> service.interceptors.request.use(
->   config => {
->     if (uni.getStorageSync('login_token')) {
->       // 给请求头添加user-token 这块看你使用什么方式存储，需要确定是否有其他关键字
->       config.headers["Authorization"] = `Bearer ${uni.getStorageSync('login_token')}`;
->     }
->     console.log('此时请求拦截成功')
->     return config;
->   },
->   error => {
->     console.log(error); // for debug
->     return Promise.reject(error);
->   }
-> );
->
-> //配置成功后的拦截器
-> service.interceptors.response.use(res => {
->   console.log(res, '相应拦截了')
->   return res.data
-> }, error => {
->   console.log('相应拦截了直接错误')
->   const { response } = error;
->   if (response.status) {
->     switch (response.status) {
->       case 400:
->         console.log('请求无效')
->         break
->       case 401:
->         console.log('尚未登录请重新登录')
->         break
->       case 403:
->         console.log('您没有权限这样做，请联系管理员')
->         break
->       case 404:
->         console.log('请求未找到')
->         break
->       case 500:
->         console.log('系统异常')
->         break
->       case 504:
->         console.log('请求超时，请稍后再试')
->         break
->       default:
->         console.log('系统异常')
->         break
->     }
->   }
->   return Promise.reject(error)
-> })
->
-> // 在main.js中放入这段自定义适配器的代码，就可以实现uniapp的app和小程序开发中能使用axios进行跨域网络请求，并支持携带cookie
-> /* axios.defaults.adapter = function(config) {
-> 	return new Promise((resolve, reject) => {
-> 		console.log(config)
-> 		var settle = require('axios/lib/core/settle');
-> 		var buildURL = require('axios/lib/helpers/buildURL');
-> 		uni.request({
-> 			method: config.method.toUpperCase(),
-> 			url: config.baseURL + buildURL(config.url,
-> 				config.params, config.paramsSerializer),
-> 			header: config.headers,
-> 			data: config.data,
-> 			dataType: config.dataType,
-> 			responseType: config.responseType,
-> 			sslVerify: config.sslVerify,
-> 			complete: function complete(response) {
-> 				console.log("执行完成：", response)
-> 				response = {
-> 					data: response.data,
-> 					status: response.statusCode,
-> 					errMsg: response.errMsg,
-> 					header: response.header,
-> 					config: config
-> 				};
->
-> 				settle(resolve, reject, response);
-> 			}
-> 		})
-> 	})
-> } */
->
-> export default service
->
-> /***
->  * npm i axios
->
->   const res = await this.$axios({
->     method: 'GET',
->     url: '/nav',
->     params: { key: 'abc' }
->   })
->   const res = await this.$axios({
->     url: 'base/auto/',
->     method: 'POST',
->     data: { username: 'aaa' }
->   })
-> */
-> ````
-
-### vite
-
-> - Vite是开发构建工具，开发期它利用浏览器native ES Module特性导入组织代码，生产中理由rollup作为打包工具，它具有光速启动、热模块替换、按需编译的特点
->
-> ```bash
-> # 创建vite：
-> yarn create vite   # 或 npm init vite@latest
->
-> # 使用vite安装项目：
-> npm init vite-app project-name
->
-> # 安装依赖包：
-> yarn
->
-> # 启动：
-> npm run dev
->
-> # 安装mockjs：
-> npm i mockjs -S
-> npm i vite-plugin-mock cross-env -D
-> ```
-
 ### 集成Tailwind CSS
 
 > ```css
@@ -6587,51 +6421,55 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > # 什么是 CSS 原子化
 > 	https://zhuanlan.zhihu.com/p/425814828
 > 	相对于 TailWind CSS 更快速
->
+> 
 > # CSS原子化的优缺点
 > 1.减少了css体积，提高了css复用
 > 2.减少起名的复杂度
 > 3.增加了记忆成本：将css拆分为原子后，势必要记住一些class才能书写，哪怕tailwindcss提供了完善的工具链， background，也要记住开头是bg
->
+> 
 > # 装入 unocss 依赖
 > 	npm i -D unocss
->
+> 
 > # presetIcons Icon图标预设
 > 图标集合安装：npm i -D @iconify-json/ic
->
+> 
 > 首先我们去icones官网[https://icones.js.org/]（方便浏览和使用iconify）浏览我们需要的icon，比如这里我用到了Google Material Icons图标集里面的baseline-add-circle图标
 > <div  class="i-ic-baseline-backspace text-3xl bg-green-500" />
->
+> 
 > 2.presetAttributify 属性化模式支持
 > 属性语义化 无须class
 > <div font="black">
->     btn
+>  btn
 > </div>
->
->
+> 
+> 
 > 3.presetUno 工具类预设
->
+> 
 > 默认的 @unocss/preset-uno 预设（实验阶段）是一系列流行的原子化框架的 通用超集，包括了 Tailwind CSS，Windi CSS，Bootstrap，Tachyons 等。
->
+> 
 > 例如，ml-3（Tailwind），ms-2（Bootstrap），ma4（Tachyons），mt-10px（Windi CSS）均会生效。
 > ```
 >
 > ```ts
 > // vite.config.ts
 > import unocss from 'unocss/vite'
->
-> plugins: [vue(), vueJsx(), unocss({
->   rules: [	// 转换规则
->      [/^m-(\d+)$/, ([, d]) => ({ margin: `${Number(d) * 10}px` })],
->      ['flex', { display: "flex" }],
->      ['pink', { color: 'pink' }]
->   ],
->   shortcuts: {	// 原子化
->      btn: "pink flex",
->      cike: ['flex', 'red'],
->   },
->   presets:[presetIcons(),presetAttributify(),presetUno()], // 预设
-> })],
+> 
+> plugins: [
+>   vue(), 
+>   vueJsx(), 
+>   unocss({
+>     rules: [	// 转换规则
+>       [/^m-(\d+)$/, ([, d]) => ({ margin: `${Number(d) * 10}px` })],
+>       ['flex', { display: "flex" }],
+>       ['pink', { color: 'pink' }]
+>     ],
+>     shortcuts: {	// 原子化
+>       btn: "pink flex",
+>       cike: ['flex', 'red'],
+>     },
+>     presets:[presetIcons(),presetAttributify(),presetUno()], // 预设
+>   }),
+> ],
 > ```
 >
 > ```ts

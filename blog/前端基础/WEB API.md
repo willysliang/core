@@ -268,20 +268,20 @@ document.mozFullScreen
 > - 本地存储`window.localStorage`：保存在浏览器内存或硬盘中
 > - 永久生效，除非手动删除
 > - 可以多窗口共享数据
-> 
-> 
+>
+>
 > ## 会话存储
 > - 会话存储`window.sessionStorage`：保存在内存中
 > - 当窗口关闭时销毁数据
 > - 在同一个窗口下可共享数据
-> 
-> 
+>
+>
 > ## Web存储特性
 > - 设置、读取方便。
 > - 容量较大，sessionStorage 约5M、localStorage 约20M（`document.cookie`只有4k）
 > - 只能存储字符串，可以将对象 JSON.stringify() 编码后存储。
-> 
-> 
+>
+>
 > ## 存储方式
 > 1. 设置存储内容(若存在该则替换内容)：`setItem(key, value);`
 > 2. 读取存储内容：`getItem(key);`
@@ -344,17 +344,17 @@ document.mozFullScreen
 >
 > ```appcache
 > CACHE MANIFEST
-> 
+>
 > #要缓存的文件
 > CACHE:
 >     images/img1.jpg
 >     images/img2.jpg
-> 
+>
 > #指定必须联网才能访问的文件
 > NETWORK:
 >      images/img3.jpg
 >      images/img4.jpg
-> 
+>
 > #当前页面无法访问是回退的页面
 > FALLBACK:
 >     404.html
@@ -367,8 +367,12 @@ document.mozFullScreen
 ### IntersectionObserver 相交节点观察器
 
 ```bash
-## IntersectionObserver API
-IntersectionObserver API 是异步的，不随着目标元素的滚动同步触发。 即只有线程空闲下来，才会执行观察器。这意味着，这个观察器的优先级非常低，只在其他任务执行完，浏览器有了空闲才会执行。
+IntersectionObserver API 检测元素何时完全或部分出现在屏幕上。
+IntersectionObserver API 是异步的，不随着目标元素的滚动同步触发。这意味着这个观察器的优先级非常低，只在其他任务执行完，浏览器线程空闲才会执行观察器。
+
+`IntersectionObserver` 是浏览器原生提供的构造函数，接受两个参数，返回一个观察器实例：
+    - `callback` 是可见性变化时的回调函数
+    - `option` 是配置对象（可选）
 
 
 ## IntersectionObserverEntry对象提供目标元素的信息，一共有六个属性。
@@ -387,21 +391,43 @@ rootMagin：'' // "100px 0" 与margin类型写法，指定与跟元素相交时�
 
 
 ## 实例方法
+ `let io = new IntersectionObserver(callback, option)`
 - observe()
-	- 观察某个目标元素，一个观察者实例可以观察任意多个目标元素。
-	- 注意：这不是事件，没有冒泡。所以不能只调用一次 observe 方法就能观察一个页面里的所有 img 元素
+    - 观察某个目标元素（DOM 节点），一个观察者实例可以观察任意多个目标元素（需要观察多个节点，就要调用多次该方法）
+    - 注意：这不是事件，没有冒泡。所以不能只调用一次 observe 方法就能观察一个页面里的所有 img 元素
+    - `io.observe(el)`
 - unobserve()
-	- 取消对某个目标元素的观察，延迟加载通常都是一次性的，observe 的回调里应该直接调用 unobserve() 那个元素.
+    - 取消对某个目标元素的观察，延迟加载通常都是一次性的，observe 的回调里应该直接调用 unobserve() 那个元素
+    - `io.unobserve()`
 - disconnect()
-	- 取消观察所有已观察的目标元素
+    - 取消观察所有已观察的目标元素（关闭观察）
+    - `io.disconnect()`
 - takeRecords()
-    在浏览器内部，当一个观察者实例在某一时刻观察到了若干个相交动作时，它不会立即执行回调，它会调用 window.requestIdleCallback() （目前只有 Chrome 支持）来异步的执行我们指定的回调函数，而且还规定了最大的延迟时间是 100 毫秒，相当于浏览器会执行：
-    requestIdleCallback(() => {
-      if (entries.length > 0) {
-        callback(entries, observer)
-      }
-    }, { timeout: 100 })
+    在浏览器内部，当一个观察者实例在某一时刻观察到了若干个相交动作时，它不会立即执行回调，它会调用 window.requestIdleCallback() 来异步的执行指定的回调函数，而且还规定了最大的延迟时间是 100 毫秒，相当于浏览器会执行：
+      requestIdleCallback(() => {
+        if (entries.length > 0) {
+          callback(entries, observer)
+        }
+      }, { timeout: 100 })
+```
 
+```js
+const block = document.querySelector('.block')
+const header = document.querySelector('.header')
+const otherHeader = document.querySelector('.other-header')
+
+// 当头部 `header` 滚动到一定区域时，会切换为另一个 `header`
+const observer = new IntersectionObserver((entries) => {
+  if (entries[0].intersectionRatio > 0) {
+    header.classList.remove('switch-header')
+    otherHeader.classList.remove('switch-other-header')
+  } else {
+    header.classList.add('switch-header')
+    otherHeader.classList.add('switch-other-header')
+  }
+})
+
+observer.observe(block)
 ```
 
 
@@ -410,58 +436,61 @@ rootMagin：'' // "100px 0" 与margin类型写法，指定与跟元素相交时�
 
 ```vue
 <template>
-  <img
-    v-for="(item, index) in imgUrl"
-    :key="index"
-    ref="imgRef"
-    :src="systemNotfound"
-    :data-src="imgUrl[index]"
-    class="h-96"
-  />
+<img
+     v-for="(item, index) in imgUrl"
+     :key="index"
+     ref="imgRef"
+     :src="systemNotfound"
+     :data-src="imgUrl[index]"
+     class="h-96"
+     />
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { systemNotfound } from '@/assets/images'
+  import { onMounted, ref } from 'vue'
+  import { systemNotfound } from '@/assets/images'
 
-const imgRef = ref([])
-const imgUrl = ref([
-  'https://img2.baidu.com/it/u=617579813,2960860841&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-  'https://img2.baidu.com/it/u=1003272215,1878948666&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-  'https://img1.baidu.com/it/u=2995157981,91041597&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=750',
-  'https://img2.baidu.com/it/u=1395980100,2999837177&fm=253&fmt=auto&app=120&f=JPEG?w=1200&h=675',
-  'https://img0.baidu.com/it/u=925843206,3288141497&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=769',
-  'https://img1.baidu.com/it/u=1300668939,1504410366&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=858',
-  'https://img0.baidu.com/it/u=4008146120,512111027&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
-  'https://img1.baidu.com/it/u=3622442929,3246643478&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
-  'http://t13.baidu.com/it/u=230088816,2918366315&fm=224&app=112&f=JPEG?w=250&h=500',
-  'https://img2.baidu.com/it/u=3038223445,2416689412&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
-])
+  const imgRef = ref([])
+  const imgUrl = ref([
+    'https://img2.baidu.com/it/u=617579813,2960860841&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+    'https://img2.baidu.com/it/u=1003272215,1878948666&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+    'https://img1.baidu.com/it/u=2995157981,91041597&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=750',
+    'https://img2.baidu.com/it/u=1395980100,2999837177&fm=253&fmt=auto&app=120&f=JPEG?w=1200&h=675',
+    'https://img0.baidu.com/it/u=925843206,3288141497&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=769',
+    'https://img1.baidu.com/it/u=1300668939,1504410366&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=858',
+    'https://img0.baidu.com/it/u=4008146120,512111027&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
+    'https://img1.baidu.com/it/u=3622442929,3246643478&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500',
+    'http://t13.baidu.com/it/u=230088816,2918366315&fm=224&app=112&f=JPEG?w=250&h=500',
+    'https://img2.baidu.com/it/u=3038223445,2416689412&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800',
+  ])
 
-onMounted(() => {
-  const options = {
-    root: null,
-    // 这里是一个数组可以指定多个比例类似[0.25, 0.5, 0.75, 1]
-    threshold: [0], // 交会处
-    rootMargin: '0px', // 对视口进行收缩和扩张
-  }
-  const lazyIntersection = new IntersectionObserver((entires) => {
-    // entires为监听的节点数组对象
-    entires.forEach((item: any) => {
-      // isIntersecting是当前监听元素交叉区域是否在可视区域指定的阈值内返回的是一个布尔值
-      if (item.isIntersecting) {
-        item.target.src = item.target?.getAttribute('data-src')
-        // 这里资源加载后就停止进行观察
-        lazyIntersection.unobserve(item.target)
-      }
+  const initObserver = () => {
+    const options = {
+      root: null,
+      // 这里是一个数组可以指定多个比例类似[0.25, 0.5, 0.75, 1]
+      threshold: [0], // 交会处
+      rootMargin: '0px', // 对视口进行收缩和扩张
+    }
+    const lazyIntersection = new IntersectionObserver((entires) => {
+      // entires为监听的节点数组对象
+      entires.forEach((item: any) => {
+        // isIntersecting是当前监听元素交叉区域是否在可视区域指定的阈值内返回的是一个布尔值
+        if (item.isIntersecting) {
+          item.target.src = item.target?.getAttribute('data-src')
+          // 这里资源加载后就停止进行观察
+          lazyIntersection.unobserve(item.target)
+        }
+      })
+    }, options)
+
+    /** observe用来观察指定的DOM节点 */
+    imgRef.value.forEach((item) => {
+      lazyIntersection.observe(item)
     })
-  }, options)
-
-  /** observe用来观察指定的DOM节点 */
-  imgRef.value.forEach((item) => {
-    lazyIntersection.observe(item)
+  }
+  onMounted(() => {
+    initObserver()
   })
-})
 </script>
 ```
 
@@ -587,6 +616,32 @@ console.log(notice)
 ```
 
 ![恢复删除的水印](./image/recover_deleted_watermark.webp)
+
+
+
+### ResizeObserver 元素大小监听器
+
+```bash
+响应迅速的 Web 应用程序会根据视口大小调整其内容。这通常是通过 CSS 和媒体查询来实现的。当 CSS 能力不够时，我们会使用 JavaScript。Javascript DOM 操作通过侦听 `window.resize` 事件与视口大小保持同步。
+现代的 Web 应用程序通过一系列组件构成，这些组件也需要响应。以往的方法（CSS 媒体查询，JS `window.resize`，以及其他 Hack）无法跟踪组件的大小。
+随着响应式 Web 应用的普及，对响应式组件的需求也会随之增长。ResizeObserver 的出现正是为组件提供响应大小变化的方式。
+```
+
+```js
+const img = document.getElementById('img')
+
+function init() {
+  const hasSupport = window.ResizeObserver ? true : false
+  if (!hasSupport) return '不支持 Resize Observer API'
+
+  const resizeObserver = new ResizeObserver(() => {
+    console.log('bbb')
+  })
+  resizeObserver.observe(img)
+}
+
+init()
+```
 
 
 
@@ -727,7 +782,7 @@ Web组件允许添加自己的 HTML 自定义元素，元素名称必须要包�
 
   <template id="userCardTemplate">
     <style>
-      /* :host伪类，指代自定义元素本身 */
+      /* :host 伪类选择器允许选择 shadow 宿主（包含 shadow 树的元素），指代自定义元素本身 */
       :host {
         display: flex;
         align-items: center;
@@ -1716,22 +1771,22 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 > ```js
 > /** 主线程 */
 > const worker = new Worker("./worker.js")
-> 
+>
 > // 发送数据给 Worker 线程
 > worker.postMessage('Hello World！')
 > worker.postMessage({ method: 'echo', args: ['Work'] })
-> 
+>
 > // 接收 Worker 线程发送过来的数据
 > worker.onmessage = function (event) {
 > console.log('Received message' + event.data)
 > doSomething()
 > }
-> 
+>
 > function doSomething () {
 > // 执行任务
 > worker.postMessage('Worker done!')
 > }
-> 
+>
 > // 在 Worker 完成任务后，主线程可以把它关掉
 > worker.terminate()
 > ```
@@ -1744,20 +1799,20 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 > self.addEventListener('message', function(event) {
 > self.postMessage('Your said：' + event.data)
 > }, false)
-> 
+>
 > /**
 > // 与 self 等同的写法一：
 > this.addEventListener('message', function(event) {
 > this.postMessage('Your said：' + event.data)
 > }, false)
-> 
+>
 > // 与 self 等同的写法二：
 > addEventListener('message', function(event) {
 > postMessage('Your said：' + event.data)
 > }, false)
 > */
-> 
-> 
+>
+>
 > // 根据主线程发来的消息，Worker 可调用不同方法
 > self.addEventListener('message', function (event) {
 > const data = event.data
@@ -1773,12 +1828,12 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 >    self.postMessage('Worker command: ' + data.msg)
 > }
 > }, false)
-> 
-> 
+>
+>
 > // worker加载脚本（可加载多个脚本）
 > self.importScripts('script1.js', 'script2.js')
-> 
-> 
+>
+>
 > // 主线程可以监听 Worker 是否发生错误，如果发生错误，Worker 会触发主线程的 error 事件
 > self.onerror(event => {
 > console.log(['Error: Line', e.lineno, 'in ', e.filename, ': ', e.message].join(''))
@@ -1803,8 +1858,8 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 >   uInt8Array[i] = i * 2 // [0, 2, 4, 6, ...]
 > }
 > worker.postMessage(uInt8Array)
-> 
-> 
+>
+>
 > // Worker 线程（接收主线程发送的数据，并进行返回）
 > self.onmessage = function (e) {
 >   const uInt8Array = e.data
@@ -1820,8 +1875,8 @@ Web Worker 无法访问 DOM，因此您无法与 `window` 和 `document` 对象�
 > ```js
 > // 直接转移数据的控制权（Transferable Object格式）
 >   worker.postMessage(arrayBuffer, [arrayBuffer])
-> 
-> 
+>
+>
 > // 例子
 > const ab = new ArrayBuffer(1)
 > worker.postMessage(ab, [ab])
@@ -1874,7 +1929,7 @@ addEventListener('message', (event) => {
 > const blob = new Blob([document.querySelector('#worker').textContent]);
 > const url = window.URL.createObjectURL(blob);
 > const worker = new Worker(url);
-> 
+>
 > worker.onmessage = function (e) {
 >   // e.data === 'some message'
 > };
@@ -1895,16 +1950,16 @@ addEventListener('message', (event) => {
 > var worker = new Worker(url);
 > return worker;
 > }
-> 
+>
 > var pollingWorker = createWorker(function (e) {
 > var cache;
-> 
+>
 > function compare(new, old) { ... };
-> 
+>
 > setInterval(function () {
 >  fetch('/my-api-endpoint').then(function (res) {
 >    var data = res.json();
-> 
+>
 >    if (!compare(data, cache)) {
 >      cache = data;
 >      self.postMessage(data);
@@ -1912,11 +1967,11 @@ addEventListener('message', (event) => {
 >  })
 > }, 1000)
 > });
-> 
+>
 > pollingWorker.onmessage = function () {
 > // render data
 > }
-> 
+>
 > pollingWorker.postMessage('init');
 > ```
 
@@ -1930,8 +1985,8 @@ addEventListener('message', (event) => {
 > 在以前和现在常用的本地存储方式一般都是 localStorage、sessionStorage 和 cookie。
 > 但它们都不能存放大量数据，在现在的业务情况下，很容易出现存放数据过大，导致超出浏览器对于 localStorage、sessionStorage 和 cookie 的存储大小（cookies 不能超过4KB，localStorage、sessionStorage一般不超过4MB），所以这些技术不太适合存放大量数据，此时就可以使用 HTML5 提供的新 API：IndexedDB。
 > 是属于 NoSQL 的一种。
-> 
-> 
+>
+>
 > ### IndexedDB 的特点
 > 1. key/value 的存储方式：
 > IndexedDB 和 localStorage 的存储方式类似，都是通过一个 key 对应一个 value，而且 key 是唯一的方式进行存储的，但是 IndexedDB 和 localStorage 有很不一样的一点就是可以直接存储对象数组等，不需要像  localSotrage 那样必须转为字符串。
@@ -1945,14 +2000,14 @@ addEventListener('message', (event) => {
 > IndexedDB 存储空间相比 localStorage 要大得多，一般不少于 250 MB。
 > 6. 支持二进制
 > IndexedDB 不但可以存储对象、字符串等，还可以存储二进制数据。
-> 
-> 
+>
+>
 > ### 应用场景
 > 比如在对商品列表的数据进行缓存，因为在浏览器中实现后退上一个页面，不刷新页面，一般只有用单页面应用才能实现，但因为种种原因而没有使用单页面框架，所以必须要将数据缓存到本地，下次打开列表后，发现如果 url 中的 id 和缓存数据的 id 一致，那么久直接使用缓存数据，不再进行请求。
 > 如果使用 localStorage 来解决会发现在一些特定情况下，数据有可能达到接近 5MB 的数据，在 PC 端的 Chorme 中是可以存到 localStorage 中，但在 IOS 中可能会报出空间不足，导致无法放入 localStorage 中，此时可以使用 indexedDB。
 > 因为 IndexedDB 的空间足够大，可以无需去考虑数据数据大小，而且还能直接以对象的形式存入，无需转为 JSON 字符串，大大减少了转换的运算。但使用 IndexedDB 基本上都是一步操作且要考虑一些低版本的手机可能不支持的情况，所以需要封装中间件，同样的调用，根据设备对 IndexedDB 的兼容情况，自动决定使用 IndexedDB 还是 localStorage。最终完成需求，并且优化前后达到超过 70% 的优化率，页面的渲染基本是秒开。
-> 
-> 
+>
+>
 > ### localStorage 和 IndexedDB 区别
 > - 相同点：两者都是在客户端永久性存储数据，都通过键值对存储数据。
 > - 不同点：
@@ -1977,7 +2032,7 @@ addEventListener('message', (event) => {
 >   /** 版本更新时是否需要删除原来的仓库 */
 >   isClear: boolean
 > }
-> 
+>
 > interface IndexedDBConfig {
 >   /** 数据库名 */
 >   dbName: string
@@ -1988,9 +2043,9 @@ addEventListener('message', (event) => {
 >   /** 初始化回调 */
 >   initCb?: () => void
 > }
-> 
+>
 > type TransactionMode = 'readonly' | 'readwrite' | 'versionchange'
-> 
+>
 > declare global {
 >   interface Window {
 >     webkitIndexedDB?: IDBFactory
@@ -1998,7 +2053,7 @@ addEventListener('message', (event) => {
 >     msIndexedDB?: IDBFactory
 >   }
 > }
-> 
+>
 > /** 跳出错误函数 */
 > export function throwError (
 >   name: string,
@@ -2010,7 +2065,7 @@ addEventListener('message', (event) => {
 >   }
 >   throw new Error(`${content}, name: ${name}`)
 > }
-> 
+>
 > /** IndexedDB 数据库操作帮手 */
 > export class IndexedDBHelper {
 >   /** 单例模式实例 */
@@ -2023,12 +2078,12 @@ addEventListener('message', (event) => {
 >   private readonly dbInfo?: IndexedDBConfig
 >   /** 数据库请求对象 */
 >   private readonly dbReq?: IDBOpenDBRequest
-> 
+>
 >   constructor (config: IndexedDBConfig) {
 >     if (IndexedDBHelper.dbInstance) {
 >       return IndexedDBHelper.dbInstance
 >     }
-> 
+>
 >     const indexedDb =
 >       window.indexedDB ||
 >       window.webkitIndexedDB ||
@@ -2037,24 +2092,24 @@ addEventListener('message', (event) => {
 >     if (!indexedDb) {
 >       throwError(IndexedDBHelper.name, '您的浏览器不支持IndexedDB')
 >     }
-> 
+>
 >     this.indexedDb = indexedDb
 >     this.dbInfo = config
 >     this.dbReq = this.open()
 >     this.initRequestHandler()
 >     IndexedDBHelper.dbInstance = this
 >   }
-> 
+>
 >   /** 去除 proxy（主要针对 vue3 中响应式数据内置的 proxy 对象） */
 >   private removeProxy (data) {
 >     return JSON.parse(JSON.stringify(data))
 >   }
-> 
+>
 >   /** 添加单条数据 */
 >   public add (storeName: string, data: any): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).add(this.removeProxy(data))
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息添加成功', ...arguments)
 >         resolve(event)
@@ -2068,12 +2123,12 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 获取单条数据 */
 >   public get (storeName: string, primaryKey: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).get(primaryKey)
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息获取成功', ...arguments)
 >         resolve(event)
@@ -2087,7 +2142,7 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 获取所有数据 */
 >   public getAll (storeName: string): Promise<any[]> {
 >     return new Promise((resolve, reject) => {
@@ -2112,7 +2167,7 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 通过索引获取相应数据 */
 >   public getByIndex (storeName: string, indexName: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
@@ -2137,7 +2192,7 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 更新数据 */
 >   public update (
 >     storeName: string,
@@ -2146,7 +2201,7 @@ addEventListener('message', (event) => {
 >   ): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).put(data, primaryKey)
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息设置成功', ...arguments)
 >         resolve(event)
@@ -2160,12 +2215,12 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 删除数据 */
 >   public delete (storeName: string, primaryKey: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).delete(primaryKey)
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息删除成功', ...arguments)
 >         resolve(event)
@@ -2179,11 +2234,11 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   public count (storeName: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName, 'readonly').count()
-> 
+>
 >       req.onsuccess = (event) => {
 >         console.log('数据库条数获取成功', ...arguments)
 >         resolve(event)
@@ -2197,13 +2252,13 @@ addEventListener('message', (event) => {
 >       }
 >     })
 >   }
-> 
+>
 >   /** 打开数据库 */
 >   private open (): IDBOpenDBRequest {
 >     const { dbName, version } = this.dbInfo as IndexedDBConfig
 >     return this.indexedDb!.open(dbName, version)
 >   }
-> 
+>
 >   /** 初始化助手 */
 >   private initRequestHandler (): void {
 >     const dbReq = this.dbReq
@@ -2211,19 +2266,19 @@ addEventListener('message', (event) => {
 >     dbReq!.onerror = (event) => {
 >       throwError(IndexedDBHelper.name, 'IndexedDB数据库连接失败', event)
 >     }
-> 
+>
 >     /** 连接被阻止 */
 >     dbReq!.onblocked = (event) => {
 >       throwError(IndexedDBHelper.name, 'IndexedDB数据库连接被阻止', event)
 >     }
-> 
+>
 >     /** 成功打开数据库 */
 >     dbReq!.onsuccess = (event) => {
 >       console.log('数据库连接成功')
 >       this.db = dbReq!.result
 >       this.dbInfo!.initCb?.()
 >     }
-> 
+>
 >     /** 如果指定的版本号，大于数据库的实际版本号，就会发生数据库升级事件 */
 >     dbReq!.onupgradeneeded = (event) => {
 >       const db: IDBDatabase = (event as any).target?.result
@@ -2241,7 +2296,7 @@ addEventListener('message', (event) => {
 >       })
 >     }
 >   }
-> 
+>
 >   /** 建表 */
 >   private createStore (store: IndexedDBStore, db: IDBDatabase = this.db!): void {
 >     const { name, primaryKey, indexList } = store
@@ -2255,20 +2310,20 @@ addEventListener('message', (event) => {
 >       newStore.createIndex(name, name, { unique })
 >     })
 >   }
-> 
+>
 >   private beginTransaction (
 >     storeName: string,
 >     mode: TransactionMode = 'readwrite',
 >   ): IDBObjectStore {
 >     const transaction = this.db?.transaction(storeName, mode)
-> 
+>
 >     transaction!.onerror = (event) => {
 >       throwError(IndexedDBHelper.name, '事务创建失败!', event)
 >     }
 >     transaction!.oncomplete = (event) => {
 >       console.log('数据库修改结束，事务完成')
 >     }
-> 
+>
 >     return transaction!.objectStore(storeName)
 >   }
 > }
@@ -2278,14 +2333,6 @@ addEventListener('message', (event) => {
 
 ## Service Worker
 
-```bash
-## Service Worker
-
-
-```
-
-
-
 ### Cache API
 
 [Cache API](https://developer.mozilla.org/zh-CN/docs/Web/API/Cache) 是 Service Worker 规范的一部分，是一种增强资源缓存能力的好方法。
@@ -2293,19 +2340,15 @@ addEventListener('message', (event) => {
 - 它允许您缓存 URL 可寻址资源，这意味着资源、网页、HTTP API 响应。
 - 它并不意味着缓存单个数据块，这是 IndexedDB API 的任务。
 
-
-
 #### 检测 Cache API 是否可用
 
 Cache API 通过 `caches` 对象公开。要检测 API 是否在浏览器中实现，只需使用以下命令检查其是否存在：
 
 ```js
-if ('caches' in window) { 
-  console.log('支持 Cache API') 
+if ('caches' in window) {
+  console.log('支持 Cache API')
 }
 ```
-
-
 
 #### 初始化缓存
 
@@ -2317,8 +2360,6 @@ caches.open('my-cache').then((cache) => {
   // 您可以开始使用缓存
 })
 ```
-
-
 
 #### 将项目添加到缓存
 
@@ -2354,8 +2395,6 @@ caches.open('my-cache').then((cache) => {
 })
 ```
 
-
-
 #### 手动获取和添加
 
 `cache.add()` 自动获取资源并将其缓存。
@@ -2370,8 +2409,6 @@ fetch(url).then((res) => {
 })
 ```
 
-
-
 #### 从缓存中检索项目
 
 `cache.match()` 返回一个 Response 对象，其中包含有关请求的所有信息和网络请求的响应
@@ -2383,8 +2420,6 @@ caches.open('my-cache').then((cache) => {
   })
 })
 ```
-
-
 
 #### 获取缓存中的所有项目
 
@@ -2398,8 +2433,6 @@ caches.open('my-cache').then((cache) => {
 })
 ```
 
-
-
 #### 获取所有可用的缓存
 
 `caches.keys()` 方法列出了每个可用缓存的键。
@@ -2411,8 +2444,6 @@ caches.keys().then((keys) => {
 })
 ```
 
-
-
 #### 从缓存中删除项目
 
 给定一个 `cache` 对象，其 `delete()` 方法将从中删除缓存的资源。
@@ -2422,8 +2453,6 @@ caches.open('my-cache').then((cache) => {
   cache.delete('/api/todos')
 })
 ```
-
-
 
 #### 删除缓存
 
@@ -2528,15 +2557,12 @@ Push 是工作在 serviceWorker 线程下的，所以不关系浏览器窗口是
 - PushMessageData
 - PushSubscription
 - PushSubscriptionOptions
-
 ```
 
 ##### PushManager
 
 ```bash
-### PushManager
-通过 ServiceWorkerRegistration.PushManager 获取。
-PushManager 接口用于操作推送订阅。
+PushManager 接口用于操作推送订阅，通过 ServiceWorkerRegistration.PushManager 获取
 
 
 #### `PushManager.subscribe()`：用于订阅推送服务。
@@ -2568,20 +2594,16 @@ options 参数:
 ##### PushEvent
 
 ```bash
-### PushEvent
 Push API 接收消息时的事件。此事件在 ServiceWorkerGlobalScope 下响应。
 
 属性
 	- data：返回对 PushMessageData 类型，包含发送到的数据的对象。
-
 ```
 
 ##### PushMessageData
 
 ```bash
-### PushMessageData
-此接口为 PushEvent.data 中的类型。
-与 Fetch 中 Body 的方法相似，不同处再于可以重复调用。
+PushMessageData 接口为 PushEvent.data 中的类型。与 Fetch 中 Body 的方法相似，不同处再于可以重复调用。
 
 方法
 	- arrayBuffer()
@@ -2593,7 +2615,6 @@ Push API 接收消息时的事件。此事件在 ServiceWorkerGlobalScope 下响
 ##### PushSubscription
 
 ````bash
-### PushSubscription
 PushSubscription 为 PushManager.subscribe() 的订阅信息类型。
 
 #### 属性
@@ -2648,7 +2669,6 @@ name 参数：
 #### Push 相关事件
 
 ```bash
-### Push 相关事件
 Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅更改事件。
 
 
@@ -2667,7 +2687,6 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 语法：
 	- `ServiceWorkerGlobalScope.onpushsubscriptionchange = function() { ... }`
 	- `self.addEventListener('pushsubscriptionchange', function() { ... })`
-
 ```
 
 
@@ -2681,7 +2700,6 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 ##### 浏览器端订阅
 
 ```bash
-### 浏览器端订阅
 浏览器端在订阅 Push Server 时，必须 Notification 是授权的，否则会出现授权窗口，这里的授权交互和 Notification 的授权是一样的。
 
 注意：Notificatino 的授权状态手动调整改变后，订阅体将失效，需要重新订阅。
@@ -2691,7 +2709,6 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 关于推送请求问题，需要使用 VAPID 协议。
 
 订阅时applicationServerKey 使用 VAPID 公钥作为识别标示，规范中要求公钥需要 UInt8 类型，所以订阅前要进行类型转换。
-
 ```
 
 ![image-20240228204948313](./image/image-20240228204948313.png)
@@ -2720,21 +2737,14 @@ navigator.serviceWorker.ready.then(swReg => {
 
 ##### 应用服务器端发送
 
-```bash
-### 应用服务器端发送
 应用服务器从数据库里取出你的订阅信息，然后根据 Web Push 协议要求，对要发送的消息进行拼装和加密，然后发送给相应的 Push 服务器，然后 Push 服务器再根据订阅信息中的标志发送给相应的终端。
-
-```
 
 ![image-20240228205239484](./image/image-20240228205239484.png)
 
 ##### 设备端接收
 
-```bash
-### 设备端接收
 浏览器端收到推送消息后，会激活相应的 ServiceWorker 线程，并触发 Push 事件。
 例如收到消息后，展示一个 Notification，或者做任何其他的事。
-```
 
 ![image-20240228205720647](./image/image-20240228205720647.png)
 
@@ -2761,11 +2771,9 @@ self.addEventListener("push", function(event) {
 ##### 浏览器订阅
 
 ```bash
-### 浏览器订阅
 在 `subscribe()` 方法中的 `applicationServerKey` 选项用于推送服务器鉴别订阅用户的应用服务，并用确保推送消息发送给哪个订阅用户。
 
 `applicationServerKey` 是一对公私钥。私钥应用服务器保存，公钥交给浏览器，浏览器订阅时将这个公钥传给推送服务器，这样推送服务器可以将你的公钥和用户的 `PushSubscription` 绑定。
-
 ```
 
 
@@ -2773,7 +2781,6 @@ self.addEventListener("push", function(event) {
 ##### 你的服务器发送
 
 ```bash
-### 你的服务器发送
 当你的服务器要发送推送消息时，需要创建一个 `Authorization` 的 header 头，`Authorization` 由规范要求的加密算法进行私钥加密。推送消息收到消息时，首先取消息请求中 `endpoint` 对应的公钥，解码消息请求中签名过的 `Authorization` header 头，验证签名是否合法，防止它人伪造身份。通过后，推送服务器把消息发送到相应的设备浏览器。
 
 注：这里说的 applicationServerKey 就是 VAPID key。
@@ -2785,13 +2792,11 @@ Authorization 对 JWT 签名的格式要求：`Authorization: 'WebPush <JWT Info
 在签名的前面加上 WebPush 作为 Authorization 头的值发送给推送服务器。
 推送协议同时要求Crypto-Key header 头，用来发送公钥，并需要p256ecdsa=前缀，格式：`Crypto-Key: p256ecdsa=<URL Safe Base64 Public Application Server Key>
 `
-
 ```
 
 ##### 关于消息部分的加密
 
 ```bash
-### 关于消息部分的加密
 发送的消息部分（即 payload）为了保证安全性，协议里同样要求需要加密，且推送服务器无法解密，只有浏览器才能解密消息数据。
 
 在浏览器向推送服务器进行订阅后产生的订阅体，在这里就用的上了，再看下结构：
@@ -2807,7 +2812,6 @@ Authorization 对 JWT 签名的格式要求：`Authorization: 'WebPush <JWT Info
 
 结构中的 keys 字段就是浏览器端的密钥信息，由浏览器生成。
 加密需要 auth、p256dh和payload 三个值做为输入进行加密，加密过程比较复杂。
-
 ```
 
 **FCM的请求DEMO**
@@ -2919,7 +2923,6 @@ function uint8ArrayToBase64Url(uint8Array, start, end) {
     .replace(/\+/g, '-')
     .replace(/\//g, '_');
 }
-
 ```
 
 ###### 应用服务器端实现
@@ -2952,7 +2955,136 @@ webpush
   .catch(err => {
     // err.statusCode
   });
-
-
 ```
 
+## 扩展 API
+
+### Speech Synthesis API
+
+`SpeechSynthesisUtterance` 代表语音请求
+
+获得语音对象后，可以执行一些调整来编辑语音属性：
+
+```js
+const utterance = new SpeechSynthesisUtterance('你好')
+```
+
+`SpeechSynthesis` 接口在 `window` 对象上可用。它的方法有 `speak()`、`pause()`、`cancel()`、`resume()` 和 `getVoices()`：
+
+- `speak()` —— 添加一个 utterance 到语音谈话队列；它将会在其他语音谈话播放完之后播放。
+- `pause()` —— 把 SpeechSynthesis 对象置为暂停状态。
+- `cancel()` —— 移除所有语音谈话队列中的谈话。
+- `resume()` —— 把 SpeechSynthesis 对象置为一个非暂停状态：如果已经暂停了则继续。
+- `getVoices()` —— 返回当前设备所有可用声音的 SpeechSynthesisVoice 列表。
+
+`SpeechSynthesisUtterance` 的实例属性有：
+
+- `utterance.rate` — 设置速度，接受 [0.1 - 10] 之间，默认为 1
+- `utterance.pitch` — 设置音高，接受 [0 - 2] 之间，默认为 1
+- `utterance.volume` — 设置音量，接受 [0 - 1] 之间，默认为 1
+- `utterance.lang` — 设置语言（值使用 BCP 47 语言标记，比如 en-US 或 it-IT）
+- `utterance.text` — 您可以将其作为属性传递，而不是在构造函数中进行设置。文本最多可包含 32767 个字符
+- `utterance.voice` — 设置语音
+
+```js
+const utterance = new SpeechSynthesisUtterance('你好')
+utterance.pitch = 1.5
+utterance.volume = 0.5
+utterance.rate = 8
+speechSynthesis.speak(utterance)
+```
+
+#### 设置声音
+
+浏览器有不同数量的可用语音。要查看列表，请使用以下代码：
+
+```js
+console.log(`Voices #: ${speechSynthesis.getVoices().length}`)
+
+speechSynthesis.getVoices().forEach((voice) => {
+  console.log(voice.name, voice.lang)
+})
+```
+
+#### 跨浏览器实现以获取语言
+
+由于我们有这种差异，我们需要一种方法来抽象它，以使用 API。本例进行了以下抽象：
+
+```js
+const getVoices = () => {
+  return new Promise((resolve) => {
+    let voices = speechSynthesis.getVoices()
+    if (voices.length) {
+      resolve(voices)
+      return
+    }
+
+    speechSynthesis.addEventListener('voiceschanged', () => {
+      voices = speechSynthesis.getVoices()
+      resolve(voices)
+    })
+  })
+}
+
+const printVoicesList = async () => {
+  ;(await getVoices()).forEach((voice) => {
+    console.log(voice.name, voice.lang)
+  })
+}
+
+printVoicesList()
+```
+
+#### 使用自定义语言
+
+默认语音说英语。通过设置 `lang` 属性，您可以使用任何想要的语言：
+
+```js
+let utterance = new SpeechSynthesisUtterance('中国')
+utterance.lang = 'zh-CN'
+speechSynthesis.speak(utterance)
+```
+
+#### 使用另一个声音
+
+可以有多个可用的声音选择：
+
+```js
+const lang = 'zh-CN'
+const voiceIndex = 1
+
+const speak = async (text) => {
+  if (!speechSynthesis) return
+  const message = new SpeechSynthesisUtterance(text)
+  message.voice = await chooseVoice()
+  speechSynthesis.speak(message)
+}
+
+const getVoices = () => {
+  return new Promise((resolve) => {
+    let voices = speechSynthesis.getVoices()
+    if (voices.length) {
+      resolve(voices)
+      return
+    }
+    speechSynthesis.addEventListener('voiceschanged', () => {
+      voices = speechSynthesis.getVoices()
+      resolve(voices)
+    })
+  })
+}
+
+const chooseVoice = async () => {
+  const voices = (await getVoices()).filter((voice) => voice.lang == lang)
+
+  return new Promise((resolve) => {
+    resolve(voices[voiceIndex])
+  })
+}
+
+speak('点个关注不迷路')
+```
+
+
+
+## 结语

@@ -48,26 +48,7 @@ Description: JavaScript
 > - 1个特殊：`eval()`
 > ```
 
-### 抽象语法树`AST`
 
-- 抽象语法和抽象语法树就是**源代码的抽象语法结构的树状表现形式**
-- 浏览器通过`javascript Parser`解析器将js代码转化为抽象语法树来进行下一步的分析等其他操作。所以将js转化为抽象语法树更利于程序的分析。
-- 常用的`javascript Parser`：esprima、traceur、acorn、shift。
-
-**抽象语法树的作用**
-
-- 代码语法的检查，代码风格的检查，代码的格式化，代码的高亮，代码错误提示，代码自动补全等等
-
-  > 如：JSLint、JSHint 对代码错误或风格的检查，发现一些潜在的错误
-  > IDE的错误提示，格式化，高亮，自动补全等等
-  > 代码的混淆压缩
-  > 如：UglifyJS2等
-
-- 优化变更代码，改变代码结构达到想要的结构
-
-  > 代码打包工具webpack，rollup等等
-  > CommonJS、AMD、CMD、UMD等代码规范之间的转化
-  > CoffeeScript、TypeScript、JSX等转化为原生Javascript
 
 ### 一次js请求的缓存处理
 
@@ -75,6 +56,262 @@ Description: JavaScript
 - `CDN`缓存：内容分发网络，就近节点获取
 - 浏览器缓存：浏览器在用户磁盘上，对最新请求过的文档进行了存储
 - 服务器缓存：将需要频繁访问的Web页面和对象保存在离用户更近的系统中，当再次访问这些对象时加快访问速度。
+
+
+
+## V8 引擎
+
+```bash
+### V8 引擎是什么
+ V8是由Google开发的JavaScript和WebAssembly引擎，他是用C++开发的。目前他主要应用于Chrome浏览器和NodeJS上。
+ 他是参照ECMAScript和WebAssembly规范进行实现，并支持跨平台使用。他可以独立运行，也可以嵌入其他由C++实现的应用中。
+
+
+### 抽象语法树`AST`
+- 抽象语法和抽象语法树就是源代码的抽象语法结构的树状表现形式
+- 浏览器通过`javascript Parser`解析器将js代码转化为抽象语法树来进行下一步的分析等其他操作。所以将js转化为抽象语法树更利于程序的分析。
+- 常用的`javascript Parser`：esprima、traceur、acorn、shift。
+
+抽象语法树的作用
+- 代码语法的检查，代码风格的检查，代码的格式化，代码的高亮，代码错误提示，代码自动补全等等
+    如：JSLint、JSHint 对代码错误或风格的检查，发现一些潜在的错误
+    IDE的错误提示，格式化，高亮，自动补全等
+    代码的混淆压缩，如：UglifyJS2等
+
+- 优化变更代码，改变代码结构达到想要的结构
+    代码打包工具webpack，rollup等
+    CommonJS、AMD、CMD、UMD等代码规范之间的转化
+    CoffeeScript、TypeScript、JSX等转化为原生Javascript
+ 
+ 
+ ### V8 引擎如何执行 JS 代码
+ 1. 将JavaScript代码解析为AST（抽象语法树）
+		1.1 词法分析：将 JS 代码解析成一个个 token，token 就是代码中不能再拆分的小单元。
+		1.2 语法分析：将解析好的 token 根据语法解析成 AST。
+2. 生成字节码：字节码是介于AST与机器码之间的一种产物。他诞生的目的是为了解决内存占用问题。
+
+
+### 参考
+[知乎——认识 V8 引擎](https://zhuanlan.zhihu.com/p/27628685)
+[v8.dev](https://v8.dev/)
+```
+
+
+
+#### 即时编译 JIT
+
+```bash
+机器的解析，理解与交流
+	- 逻辑思考：算数逻辑单元（ALU）
+	- 短期储存：寄存器（Registers）
+	- 长期储存：随机存储器（RAM）
+	
+
+### 计算机基本组成
+内存：读写速度较快，断电丢失数据
+硬盘：读写速度较慢，断电不丢失数据
+线程：线程是一个进程的执行流
+```
+
+
+
+#### V8 如何提升代码执行效率
+
+```bash
+JS是动态类型的。对象的结构也是可以动态变更的。所以翻译成机器码的过程很复杂
+所以使用JIT编译（即时编译）：在代码执行的同时将代码翻译成机器码，而不是AOT(Ahead of Time)
+
+Re-compiler 和 De-optimise
+代码编译过程
+1. Parse JavaScript代码解析成AST
+2. AST再经过基础编译器（Baseline Compiler， Ignition）编译成机器码
+3. 在执行过程，机器码的执行过程会被收集和标记，如果多次被执行，则会被编译成hot
+4. 被标记为Hot之后，会走增强编译器（Optimizing Compiler， TurboFan）再编程成更加高效的机器码
+
+例子：
+    function load(obj) {
+      return obj.x
+    }
+    load({x: 4, y: 7});
+    load({x: 6, y: 3});
+    load({x: 8, y: 7});
+    load({x: 1, y: 5});
+    load({x: 2, y: 4});
+
+多次执行load后，load被标记为hot => 由于load的obj参数多次执行后类型都是一致的
+下次执行后，会直接通过内存偏移的方式直接取出对应的obj.x，大大的提高了代码执行的性能
+
+ES6的优化
+    function foo() {
+        return {[x]: 1}
+    }
+```
+
+![image-20240711172648211](./images/image-20240711172648211.png)
+
+
+
+### WebAssembly
+
+#### WebAssembly 与 JS
+
+```bash
+#### WebAssembly 是什么？
+- WebAssembly 是能让非 JavaScript 语言编写的代码在 Web 浏览器运行的技术，专注高性能。
+		- 是一个可移植、体积小、加载快并且兼容 Web 的全新格式。它与JavaScript是同一层的开发模式。
+		- 主要不是用于写，而是 `C/C++、C#、Rust` 等语言编译后生成，所以即使不知道如何编写 WebAssembly 代码也能利用它的优势。
+		- 其他语言编译的代码能以近似原生速度运行，客户端 App 能在 Web 运行。
+		- 在浏览器或 Node.js 中可以导入 WebAssembly 模块，JS 框架用它获性能优势和新特性且易用。
+
+
+#### WebAssembly 的目标
+1. 快、高效、便利：通过利用一些通用的硬件能力，能够跨平台以近乎于原生的速度执行。
+2. 可读、可调试：WebAssembly 是一种低层次的汇编语言，但是它也有一种人类可读的文本格式，使得人们可编写代码、查看代码、可调试代码。
+3. 确保安全：WebAssembly 明确运行在安全、沙箱的执行环境，类似其他 Web 的代码，它会强制开启同源和一些权限策略。
+4. 不破坏现有的 Web：WebAssembly 被设计与其他 Web 技术兼容运行，并且保持向后兼容性。
+
+
+#### WebAssembly 的优势
+1. 体积小：WebAssembly 在网络中传输的是二进制文件，所以与JS相比，同样逻辑的实现，WebAssembly 的 WASM 文件体积更小。
+2. 解析速度块：V8 引擎对于 JS 的运行效率非常高，但仍然是即时编译（JIT）
+3. 编译优化： 
+	- JS 在加载后首先会被解释器转化为 AST 语法树，然后再被进一步编译成字节码；而 Assembly 自身已经是字节码，所以省略了转化和编译步骤。
+	- 此外，WebAssembly 是有数据类型，所以不会产生不同的类型值，因此不会触发浏览器的重新优化。
+4. 执行优化：WebAssembly 面向编译前设计，执行效率更高。
+5. 手动管理内存：JS 通过 V8 中的垃圾回收器实现垃圾回收处理，但 WebAssembly 是手动管理内存，省去了 GC 的性能消耗。
+
+
+#### WebAssembly 如何与 Web 兼容的？
+Web 平台包含两部分：
+	1. 用于运行 Web 应用代码的虚拟机（VM），如 JS 引擎运行 JS 代码
+	2. 一系列 Web API，Web 应用能调用以控制 Web 浏览器/设备功能（如 DOM、CSSOM、WebGL、IndexedDB、Web Audio API 等）
+
+JS 脚本的缺陷：
+	- 性能问题，如 3D 游戏、VR/AR、计算机视觉、图片/视频编辑、以及其他需要原生性能的领域。
+	- 下载、解析和编译大体积的 JS 应用困难，在一些资源更加受限的平台上，如移动设备等会更加放大这种性能瓶颈。
+
+WebAssembly 并非替代 JS，而是与 JS 互补并协作，让 Web 开发者能重复利用两种语言优点：
+	1. JS 是高层次、灵活且具表现力的语言，动态类型、无需编译步骤，易于编写 Web 应用。
+	2. WebAssembly 是低层次、类汇编的二级制格式语言，能以近乎原生的性能运行，并提供低层次的内存模型，是 `C++、Rust` 等语言的编译目标，使得这类语言编写的代码能够在 Web 上运行（注意：WebAssembly 将在未来提供垃圾回收的内存模型等高层次的目标）
+
+随着 WebAssembly 的出现，VM 现在可以加载两种类型的代码执行：JavaScript 和 WebAssembly。
+JavaScript 和 WebAssembly 能互相操作，实际上一份 WebAssembly 代码被称为一个模块，是因为其模块与 ES2015 的模块具有很多共同的特性。
+```
+
+
+
+#### 两者运行差异
+
+```bash
+1. 解释器的利弊
+解释器能快速获取代码并执行，也不需要执行代码的全部编译步骤，因此解释器与 JS 天然契合。
+但解释器的弊端是当运行相同代码时，如执行一个循环，它就会一遍一遍地重复做同样的事情。
+
+
+2. 编译器的利弊
+编译器在程序初始启动时需要花时间来了解整个编译的步骤。但当运行一个循环时会快速些，因为不需要重复去翻译每一次循环里的代码。
+因为解释器必须要在每次循环访问时不断重新转换代码，作为一个可以摆脱解释器低效率的方法，浏览器将编译器引入。
+虽然浏览器的编译器基本目的相同，但实现上有点区别：浏览器给 JS 引擎添加了监视器（分析器），该监视器在 JS 代码运行时监控代码，并记录代码片段运行的次数以及使用了哪些数据类型。
+	- 如果相同的代码运行了几次，这段代码会被标记为 "warm"，如果运行多次，则会被标记为 "hot"。
+	- 被标记为 "warm" 的代码会被放到基础编译器，之恶能提升一点点编译速度。被标记为 "hot" 的代码会被放到优化编译器，速度提升更多。
+
+
+3. 耗时对比：JS VS WebAssembly
+JIT 编译器中 JS 引擎运行程序的时间：
+	parse => compile+optimize => re-optimize => execute => garbage collection
+      - parsing：将源码转换成解释器可以运行的代码
+      - compiling + optimizing：花费在基础编译和优化编译的时间（因为有一些优化编译的工作不在主线程，所以并不包括这些时间）
+      - Re-optimizing(重新优化)：当预先编译优化的代码不能被优化的情况下，JIT将这些代码重新优化，如果不能重新优化就会给基础编译去做
+      - Execution - 执行代码的过程
+      - Garbage collection - 清理内存的时间
+
+  这些任务不会发生在离散块或特定的序列中，相反，它们将被交叉执行。
+  比如正在做一些代码解析时，还执行着一些其他逻辑，有些代码编译完成后，引擎又做了一些解析，然后又执行了一些逻辑等等。
+  当只有一个解释器运行 JavaScript 时，执行速度相当缓慢。JITs 的引入，大大提升了执行效率。
+  监视和编译代码的开销是需要权衡的事情。如果 JavaScript 开发人员按照相同的方式编写JavaScript，解析和编译时间将会很小。但是，性能的提升使开发人员能够创建更大的JavaScript应用程序。
+
+
+JIT 编译器中 WebAssembly 编译执行时间：
+	decode => compile+optimize => execute
+
+
+
+3.1 请求
+下载执行与 JS 等效的 WebAssembly 文件需要更少的时间，因为它的体积更小。
+	- WebAssembly 以二进制形式表示，体积相对更小。
+	- 即使使用 gzip 压缩的 JS 文件更小，但 WebAssembly 中等效的代码可能更小。
+
+3.2 解析
+JS 源码一旦被下载到浏览器将会被解析为抽象语法树（AST）。
+通常浏览器解析源码是惰性的，浏览器会首先解析需要调用的函数，没有及时被调用的函数只会被创建成存根。在这个过程中，AST 被转换为 JS 引擎的中间表示（字节码）。
+但 WebAssembly 不需要被转换，因为它自身已经是字节码，它仅仅需要被解码并确定没有任何错误。
+
+3.3 编译+优化
+JS 是在执行代码期间编译的，因为 JS 是动态类型语言，相同的代码在多次执行中都有可能因为代码里面含有不同的类型数据而被重新编译，这样会损耗时间。
+但 WebAssembly 与机器代码更接近：
+	- 编译器不需要在运行代码时花费时间去观察代码中的数据类型，在开始编译时做优化。
+	- 编译器不需要去每次执行相同代码。
+
+3.4 重新优化
+有时 JIT 基于运行代码的假设不正确时，会抛出一个优化版本的代码，然后重新优化。例如：当进入循环的变量与先前的迭代不同的时候，或者在原型链中插入新函数时，会发生重新优化。
+在 WebAssembly 中类型是明确的，因此 JIT 不需要根据运行时收集的数据类型对类型进行假设，着意味着不必经过重新优化的周期。
+
+3.5 执行
+尽可能编写执行性能好的 JS 代码来利于 JIT 来做优化。但也很难实现最佳方案，因为有时候需要为了让代码更具备可读性（如：将常见任务抽象为跨类型工作的函数），从而编写一些会阻碍编译器优化的代码。
+因此，执行 WebAssembly 代码通常会更快，有些必须对 JS 做的优化不需要用在 WebAssembly 上。
+另外，WebAssembly 是为编译器设计的，它专门给编译器来阅读，并不是当作编程语言来让开发人员去写。
+
+3.6 垃圾回收机制
+在 JS 中一般不需要担心内存中无用变量的回收，JS 引擎中存在垃圾回收器进行处理。
+但这对于性能最高利用化不是好事，因为并不能控制垃圾回收的时机，所以它可能在非常重要的时间去工作，从而影响到性能。
+而 WebAssembly 不支持垃圾回收，内训是手动管理（如C/C++）。虽然这样会提高开发编程的困难度，但它有效提高了性能。
+```
+
+
+
+#### WebAssembly 的概念
+
+```bash
+- Module：通过浏览器编译成为可执行机器码的 WebAssembly 二进制文件，Module 是无状态的，类似 Blob，能够在 Window 和 Worker 之间通过 postMessage 共享，一个 Module 声明了类似 ES6 模块的 import 和 export。
+- Memory：一个可调整大小的 ArrayBuffer，其中包含由 WebAssembly 的低层次内存访问指令读取和写入的线性字节数组。
+- Table：一个可调整大小的类型化引用数组（如函数），然而处于安全和可移植性的原因，不能作为原始字节存储在内存中。
+- Instance：一个包含它在运行时用到的所有状态，包含 Memory、Table、以及一系列导入值的 Module，一个 Instance 类似一个 ES2015 的模块，它被加载到具有特定导入集的特定全局变量中。
+
+WebAssembly 的 JavaScript API 提供给开发者创建 Module、Memory、Table 和 Instance 的能力，给定一个 WebAssembly 的 Instance，JS 代码可以同步的调用它的 exports（被作为普通的 JavaScript 函数导出）。任意 JavaScript 函数可以被 WebAssembly 代码同步的调用，通过将 JavaScript 函数作为 imports 传给 WebAssembly Instance。
+
+因为 JavaScript 能够完全控制 WebAssembly 代码的下载、编译和运行，所以 JavaScript 开发者可以认为 WebAssembly 只是 JavaScript 的一个新特性（可以高效的生成高性能的函数）。
+
+在未来， WebAssembly 模块可以以 ES2015 的模块加载形式加载，如 `<script type="module">`，意味着 JS 可以获取、编译、和导入一个 WebAssembly 模块，就像导入 ES2015 模块一样简单。
+```
+
+
+
+#### 应用场景
+
+```bash
+#### WebAssembly 适用场景
+可将 WebAssembly 当做是另外一种目标汇编语言。这些机器语言（x86，ARM等）中的每一种都对应于特定的机器架构。
+当代码运行在用户的机器的 web 平台上时，你不知道你的代码将会运行在那种机器结构上。
+所以 WebAssembly 和别的汇编语言是有一些不同的。所以它是一个概念机上的机器语言，不是在一个真正存在的物理机上运行的机器语言。
+正因如此，WebAssembly 指令有时候被称为虚拟指令。它比 JavaScript 代码更快更直接的转换成机器代码，但它们不直接和特定硬件的特定机器代码对应。
+在浏览器下载 WebAssembly后，使 WebAssembly 的迅速转换成目标机器的汇编代码。
+如果想在页面里上添加 WebAssembly，需要将代码编译成 .wasm 文件。
+
+
+
+#### 在应用里使用 WebAssembly
+WebAssembly 给 Web 平台添加了两块内容：一种二进制格式代码，以及一系列可用于加载和执行二进制代码的 API。
+WebAssembly 目前有四个主要的入口：
+	- 使用 EMScripten 来移植 C/C++ 应用
+	- 在汇编层面直接编写和生成 WebAssembly 代码
+	- 编写 Rust 应用，然后将 WebAssembly 作为它的输出
+	- 使用 AssemblyScript，它是一门类似 TypeScript 的语言，能够编译成 WebAssembly 二进制
+
+
+
+#### 编译 `.wasm` 文件
+当前对 WebAssembly 支持最多的编译器工具链为 LLVM。大多数使用 C 和 Rust 来开发编译成 WebAssembly 模块。
+```
 
 
 
@@ -527,64 +764,82 @@ Description: JavaScript
 
 ## 脚本标签 script
 
-> ```bash
-> ## 脚本 script
-> 		`<script type="text/javascript" src="" async></script>`
->    // async:异步		defer：
->    // 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
->
-> 当浏览器看到普通脚本标签声明时，它执行以下步骤：
->     - 暂停 HTML 文档解析器
->     - 创建新请求以下载脚本
->     - 在脚本完全下载后立即执行脚本
->     - 执行结束后，继续解析 HTML 文档
->
->
-> ### async 和 defer
-> async 与 defer 的作用是让浏览器知道脚本可以与文档解析器过程并行下载，从而不阻塞页面的渲染。
-> async 与 defer 的区别是脚本会在不同的时刻执行。
->
-> 1. async 异步执行
->     下载 async 脚本后，浏览器将暂停文档解析器，执行脚本并继续解析文档。
->         1. 解析文档
->         2. 下载脚本
->         3. 暂停解析
->         4. 执行脚本
->         5. 恢复解析
->      async 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），
->      但它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说非常适合。
->
-> 2. defer 延时执行
->     只有当解析器完成其工作时，才会执行 defer 脚本。
->         1. 解析脚本
->         2. 下载脚本
->         3. 执行脚本
->     注意：这个过程中，文档是不会停止解析的。
->
->
-> ### aync 与 defer 的区别
-> async 脚本在完全下载后立即执行，加载和渲染后续文档元素的过程将和 JS 脚本的加载与执行并行进行（异步），因此它们的执行顺序可能与页面中显示的顺序不同（即不管声明顺序如何，只要它加载完成该脚本就会立刻执行）。
-> defer 脚本保证执行顺序。它是等到页面渲染完毕，所有脚本下载完成，在 `DOMContentLoaded` 事件前按照脚本在文档中的顺序执行。
-> ```
+```bash
+## 脚本 script
+		`<script type="text/javascript" src="" async></script>`
+// async:异步		defer：
+// 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
+
+当浏览器看到普通脚本标签声明时，它执行以下步骤：
+    - 暂停 HTML 文档解析器
+    - 创建新请求以下载脚本
+    - 在脚本完全下载后立即执行脚本
+    - 执行结束后，继续解析 HTML 文档
+
+
+### async 和 defer
+async 与 defer 的作用是让浏览器知道脚本可以与文档解析器过程并行下载，从而不阻塞页面的渲染。
+async 与 defer 的区别是脚本会在不同的时刻执行。
+
+1. async 异步执行
+    下载 async 脚本后，浏览器将暂停文档解析器，执行脚本并继续解析文档。
+        1. 解析文档
+        2. 下载脚本
+        3. 暂停解析
+        4. 执行脚本
+        5. 恢复解析
+     async 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），
+     但它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说非常适合。
+
+2. defer 延时执行
+    只有当解析器完成其工作时，才会执行 defer 脚本。
+        1. 解析脚本
+        2. 下载脚本
+        3. 执行脚本
+    注意：这个过程中，文档是不会停止解析的。
+
+
+### aync 与 defer 的区别
+async 脚本在完全下载后立即执行，加载和渲染后续文档元素的过程将和 JS 脚本的加载与执行并行进行（异步），因此它们的执行顺序可能与页面中显示的顺序不同（即不管声明顺序如何，只要它加载完成该脚本就会立刻执行）。
+defer 脚本保证执行顺序。它是等到页面渲染完毕，所有脚本下载完成，在 `DOMContentLoaded` 事件前按照脚本在文档中的顺序执行。
+```
+
+
+
+### 页面的生命周期
+
+```bash
+- DOMContentLoaded：浏览器已经完全加载 HTML，并构建完 DOM 树，但像 `<img>` 标签中引用的图片和样式表之类的外部资源可能尚未加载完成。
+		- DOM 已经就绪，因此处理程序可以查找 DOM 节点，并初始化接口。
+
+- load：浏览器加载完成 HTML 以及所有的外部资源（图片和样式）
+		- 外部资源已加载完成，样式已被应用，图片大小已知。
+		
+- beforeload/upload：当用户离开页面时。
+		- beforeunload：用户正在离开。此时可以检查用户是否保存了更改，并询问是否真的要离开。
+		- unload：用户几乎已经离开，但现阶段仍然可以启动一些操作，如发送统计数据。
+```
+
+
 
 ### DOMContentLoaded 事件
 
 > ```bash
 > ## DOMContentLoaded 事件
 > 当初始HTML文档已完全加载和解析时，将触发DOMContentLoaded事件，而不需要等待样式表，图像和子框架页面加载（事件可以用来检测HTML页面是否完全加载完毕(fully-loaded)）。
->
->
+> 
+> 
 > ### DOMContentLoaded 执行时机
 > #### 1. 普通脚本/sync（等待脚本执行完后再执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到普通脚本 -> 加载&执行脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
->
->
+> 
+> 
 > #### 2. 异步加载脚本/async（衡量HTML加载解析的速度来执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到async脚本 -> (HTML&async脚本)并行加载解析 ->
 > 		- 若HTML解析完后async脚本也已加载完毕 -> 停止HTML解析 -> 执行async脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
 > 		- 若HTML解析完后async脚本还未加载完成 -> DOMContentLoaded事件
->
->
+> 
+> 
 > #### 3. 延时加载脚本/defer（等待脚本执行完后再执行DOMContentLoaded）
 > 	HTML加载解析&defer脚本加载
 > 			- 若HTML解析完后defer脚本也已加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
@@ -593,58 +848,123 @@ Description: JavaScript
 >
 > ![image-20230329111340256](./image/image-20230329111340256.png)
 >
-> #### 对于不同声明的脚本，DOMContentLoaded 的触发时机
+> ```html
+> <script>
+>   document.addEventListener("DOMContentLoaded", () => {
+>    alert("DOM ready!");
+>   });
+> </script>
+> 
+> <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.3.0/lodash.js"></script>
+> 
+> <script>
+>   alert("Library loaded, inline script executed");
+> </script>
+> 
+> <!-- 
+> 先输出 'Library loaded, inline script executed'，
+> 再输出 DOM ready!
+> -->
+> ```
 >
-> ##### sync / 普通 js
->
-> - 文档解析的过程中，如果遇到 script 脚本，就会停止页面的解析进行下载，当脚本都执行完毕后，才会继续解析页面。
->
-> ![image-20230329112327704](./image/image-20230329112327704.png)
->
-> ##### async / 异步加载脚本
->
-> - async 脚本会在加载完毕后执行。
-> - async 脚本的加载不计入 `DOMContentLoaded` 事件统计，就存在下面两种情况会发生。
->
-> 1. HTML 还没有被解析完的时候，async 脚本已经加载完毕，那么 HTML 就会停止解析，去执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329112729627](./image/image-20230329112729627.png)
->
-> 2. HTML 解析完之后，async 脚本还未加载完成，那么在HTML解析完毕后就触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329112749177](./image/image-20230329112749177.png)
->
-> ##### defer / 延时加载脚本
->
-> - 文档解析时，遇到设置了 defer 的脚本，就会在后台进行下载，但是并不会阻止文档的渲染，当页面解析和渲染完毕后，会等到所有的 defer 脚本加载完毕并按照顺序执行完毕才会触发 `DOMContentLoaded` 事件。此时就存在两种情况会发生：
->
-> 1. HTML还没被解析完的时候，defer 脚本已经加载完毕，此时会等待 HTML 解析完成后执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329113352649](./image/image-20230329113352649.png)
->
-> 2. HTML 解析完之后，defer 脚本才加载完，此时会先等待 defer 脚本执行完毕后，才会触发 `DOMContentLoaded` 事件。
->
->    ![image-20230329113418206](./image/image-20230329113418206.png)
 
 ### DOMContentLoaded和load的区别
 
-> ```bash
-> ## DOMContentLoaded 和 load 的区别
-> DOMContentLoaded：在 interactive 触发
-> 	当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完成加载。
+```bash
+## DOMContentLoaded 和 load 的区别
+DOMContentLoaded：在 interactive 触发
+	当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完成加载。
+
+load：在 complete 触发
+	当一个资源及其依赖资源已完成加载时，将触发load事件。
+```
+
+![20190128102028682](./image/20190128102028682.gif)
+
+
+
+### `document.readyState`
+
+```bash
+在文档加载完成之后再设置 DOMContentLoaded，它将不会执行。
+
+而 document.readyState 属性可以提供 DOM 文档当前加载状态的信息。
+一个文档的 readyState 可以是以下值之一：
+  - loading：加载，文档正在被加载。
+  - interactive：互动，此时文档已经完成加载，文档已被解析，但是诸如图像、样式表和iframe之类的子资源仍在加载。
+  - complete：完成，文档被全部读取，并且所有所有子资源（如图片等）都已完成加载。状态表示 load 事件即将被触发。
+
+readystatechange 事件可以监听状态的改变。
+```
+
+```html
+<script>
+  log('initial readyState:' + document.readyState);
+
+  document.addEventListener('readystatechange', () => log('readyState:' + document.readyState));
+  document.addEventListener('DOMContentLoaded', () => log('DOMContentLoaded'));
+
+  window.onload = () => log('window onload');
+</script>
+
+<iframe src="iframe.html" onload="log('iframe onload')"></iframe>
+
+<img src="http://en.js.cx/clipart/train.gif" id="img">
+<script>
+  img.onload = () => log('img onload');
+</script>
+
+<!-- 
+[1] initial readyState:loading
+[2] readyState:interactive
+[2] DOMContentLoaded
+[3] iframe onload
+[4] img onload
+[4] readyState:complete
+[4] window onload
+-->
+```
+
+
+
+### 对于不同声明的脚本，`DOMContentLoaded` 的触发时机
+
+> ##### sync / 普通 JS
 >
-> load：在 complete 触发
-> 	当一个资源及其依赖资源已完成加载时，将触发load事件。
+> - 文档解析的过程中，如果遇到 script 脚本，就会停止页面的解析进行下载，当脚本都下载并执行完毕后，才会继续解析页面。
+>     - 脚本不能访问到位于它们下面的 DOM 元素，因此，脚本无法给它们添加处理程序等
+>     - 如果页面顶部有一个笨重的脚本，它会“阻塞页面”。在该脚本下载并执行结束前，用户都不能看到页面内容（解决方案：把脚本放在页面底部）
 >
+> ![image-20230329112327704](./image/image-20230329112327704.png)
 >
-> ### document.readyState
-> document.readyState 属性描述了文档的加载状态。一个文档的 readyState 可以是以下值之一：
-> 	- loading：加载，此时 document 仍在加载
-> 	- interactive：互动，此时文档已经完成加载，文档已被解析，但是诸如图像、样式表和iframe之类的子资源仍在加载。
-> 	- complete：完成，此时 T 文档和所有子资源已完成加载。状态表示 load 事件即将被触发。
-> ```
+> ##### `async` / 异步加载脚本
 >
-> ![20190128102028682](./image/20190128102028682.gif)
+> - `async` 脚本会在加载完毕后执行。
+> - `async` 脚本的加载不计入 `DOMContentLoaded` 事件统计，就存在下面两种情况会发生。
+>
+> 1. HTML 还没有被解析完的时候，`async` 脚本已经加载完毕，那么 HTML 就会停止解析，去执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329112729627](./image/image-20230329112729627.png)
+>
+> 2. HTML 解析完之后，`async` 脚本还未加载完成，那么在HTML解析完毕后就触发 `DOMContentLoaded` 事件。
+>
+>    ![image-20230329112749177](./image/image-20230329112749177.png)
+>
+> 注意：`DOMContentLoaded` 可能在 `async` 之前或之后触发，不能保证谁先谁后。
+>
+> ##### defer / 延时加载脚本
+>
+> - 文档解析时，遇到设置 defer 属性的脚本，就会在后台进行下载，但是并不会阻止文档的渲染，当页面解析和渲染完毕后，会等到所有的 defer 脚本加载完毕并按照顺序执行完毕才会触发 `DOMContentLoaded` 事件。此时就存在两种情况会发生：
+>
+> 1. HTML还没被解析完的时候，defer 脚本已经加载完毕，此时会等待 HTML 解析完成后执行脚本，脚本执行完毕后触发 `DOMContentLoaded` 事件。
+>
+> ![image-20230329113352649](./image/image-20230329113352649.png)
+>
+> 2. HTML 解析完之后，defer 脚本才加载完，此时会先等待 defer 脚本执行完毕后，才会触发 `DOMContentLoaded` 事件。
+>
+> ![image-20230329113418206](./image/image-20230329113418206.png)
+>
+> 注意：defer 特性仅适用于外部脚本，如果 `<script>` 脚本没有 `src`，则会忽略 `defer` 特性。
 
 
 
@@ -654,7 +974,7 @@ Description: JavaScript
 
 - 创建 `script` 元素
 - 将 `script` 元素的 `src` 属性设置为指向要加载的文件
-- 将 `script` 元素添加到 DOM
+- 将 `script` 元素附加（append）到文档（document）中
 
 ```js
 let myScript = document.createElement('script')
@@ -679,23 +999,12 @@ head.insertBefore(myScript, head.firstElementChild)
 
 代码中有两个新特性，可以确保在渲染页面上的任何其他内容之前加载并运行外部脚本文件：
 
-- 首先将 `script` 元素的 `async` 属性设置为 `false`。为什么呢？这是因为默认情况下，。
+- 因为动态脚本默认情况下是异步的，先加载完成的脚先执行。所以需要先将 `script` 元素的 `async` 属性设置为 `false`，将脚本按照脚本在文档中的顺序执行。
 - 接下来确保在加载页面其余部分之前加载脚本。在 `head` 元素的顶部添加 `script` 元素是确保它在页面可能达到的任何其他内容之前运行的最佳位置。
 
 #### 脚本文件加载后运行相关代码
 
-加载一个外部脚本文件，然后立即调用一个函数（或者依赖于加载的脚本中的某些内容）是很常见的。例如：
-
-```html
-<script src="./api.js"></script>
-<script>
-  getArticleDetail({ id: '1' })
-</script>
-```
-
-第一个 `script` 元素加载 **api.js** 。第二个 `script` 元素调用依赖于前面的 `script` 元素加载的 **api.js** 的内容。所有这些都能正常工作，因为浏览器能很自然地处理了这个场景。
-
-对于动态加载的脚本文件，如果想要类似行为，需要额外添加 `load` 事件来监听我们的 `script`，一旦监听到，就调用相关的代码：
+对于动态加载的脚本文件，如果想要加载一个外部脚本文件，然后立即调用一个函数，需要额外添加 `load` 事件来监听我们的 `script`，一旦监听到就调用相关的代码：
 
 ```js
 let myScript = document.createElement('script')
@@ -738,23 +1047,30 @@ function scriptLoaded() {
 
 
 ### DOM节点属性
-1. nodeName	--> nodeName 属性规定节点的名称，仅只读
+1. nodeName 属性规定节点的名称，仅只读
     - 文档节点（文档）：整个 HTML 文档就是一个文档节点；nodeName 始终是 `#document`
     - 元素节点（标签）：HTML标签；nodeName 与标签名相同
     - 属性节点（属性）：元素的属性；nodeName 与属性名相同
     - 文本节点（文本）：HTML标签中的文本内容(包括标签之间的空格、换行)；nodeName始终是 `#text`
 
-2. nodeValue 	-->  nodeValue 属性规定节点的值
+2. nodeValue 属性规定节点的值
     - 元素节点的 nodeValue 是 undefined 或 null
     - 文本节点的 nodeValue 是文本本身
     - 属性节点的 nodeValue 是属性值
 
-3. NodeType
+3. nodeType 属性获取 DOM 节点类型
     - 元素：1
     - 属性：2
     - 文本：3
     - 注释：8
     - 文档：9
+
+4. tagNme 属性读取标签名
+	- tabNme 属性仅适用于 Element 节点。
+	- nodeName 是为任意 Node 定义的。
+			- 对于元素，它的意义与 tagName 相同
+			- 对于其他节点类型（text，comment 等），它拥有一个对应节点类型的字符串
+		
 ```
 
 ![JS_DOM节点关系表](./image/JS_DOM_node.png)
@@ -816,26 +1132,75 @@ element.className = 'new-class'; // className is a DOMString that you can set
 
 
 
+### 遍历 DOM
+
+```bash
+对 DOM 的所有操作都是以 document 对象开始的，它是 DOM 的访问入口，从它可以访问任何节点。
+
+顶层：documentElement 和 body
+- `<html>` = document.documentElement
+- `<body>` = document.body
+- `<head>` = document.head
+
+- 最顶层的树节点可以直接作为 document 的属性来使用。
+- 在 DOM 中，null 值以为着 '不存在' 或 '没有这个节点'。
+```
+
+![image-20240624211959823](./image/image-20240624211959823.png)
+
+#### document.body为null
+
+```bash
+注意：脚本在运行时无法访问不存在的元素，所以 document.body 的值可能是null（如一个脚本在 `<head>` 中使用同步方式引入时，脚本是无法访问到 document.body 元素，因为浏览器还没解析到 body 标签）
+```
+
+```html
+<html>
+<head>
+  <script>
+    alert( "From HEAD: " + document.body ); // null，这里目前还没有 <body>
+  </script>
+</head>
+
+<body>
+  <script>
+    alert( "From BODY: " + document.body ); // HTMLBodyElement，现在存在了
+  </script>
+</body>
+</html>
+```
+
+
+
 ### DOM属性
 
 ```bash
-### DOM 属性
 - innerHTML - 节点（元素）的文本值
 - parentNode - 节点（元素）的父节点
 - childNodes - 节点（元素）的子节点
 - attributes - 节点（元素）的属性节点
 
+
+#### parentElement 和 parentNode 的区别
+- parentElement 属性返回 '元素类型' 的父节点。
+- parentNode 属性返回 '任何类型' 的父节点。
+
+document.documentElement.parentNode === document
+document.documentElement.parentElement === null
+
+因为根节点 document.documentElement 的父节点是 document。但 document 不是一个元素节点，所以 parentNode 返回 document，但 parentElement 返回 null。
+
+当想从任意节点 ele 到 `<html>` 而不是 document 时，可使用如下：
+while (ele = ele.parentElement) { console.lg(ele) } // 递归向上，直到 <html>
 ```
 
 #### 自定义属性
 
 ```bash
-### 自定义属性
 DOM 中的自定义属性不能直接访问，但可以通过以下方法来进行操作：
 	- 获取标签对应的属性：`getAttribute('属性名')`（注意：属性可以是自定义，也可以是 DOM 自身已有的）
 	- 设置标签属性的值：`setAttribute('属性名', '属性值')`
 	- 移除标签属性值：`removeAttribute('属性名')`
-
 ```
 
 ```js
@@ -2395,47 +2760,350 @@ function del() {
 
 
 
-#### 窗口
-
-> ```bash
-> ## 窗口
-> ### 打开窗口：`window.open(url,target,param)`
->     - url：要打开的地址。
->     - target：新窗口的位置。可以是：`_blank` 、`_self`、 `_parent` 父框架
->     - 返回值：新窗口的句柄
->     - param：新窗口的一些设置(多个参数用逗号隔开)
->         - name：新窗口的名称，可以为空
->         - features：属性控制字符串，在此控制窗口的各种属性，属性之间以逗号隔开。
->         - fullscreen= { yes/no/1/0 } 是否全屏，默认no
->         - channelmode= { yes/no/1/0 } 是否显示频道栏，默认no
->         - toolbar= { yes/no/1/0 } 是否显示工具条，默认no
->         - location= { yes/no/1/0 } 是否显示地址栏，默认no。（有的浏览器不一定支持）
->         - directories = { yes/no/1/0 } 是否显示转向按钮，默认no
->         - status= { yes/no/1/0 } 是否显示窗口状态条，默认no
->         - menubar= { yes/no/1/0 } 是否显示菜单，默认no
->         - scrollbars= { yes/no/1/0 } 是否显示滚动条，默认yes
->         - resizable= { yes/no/1/0 } 是否窗口可调整大小，默认no
->         - width=number 窗口宽度（像素单位）
->         - height=number 窗口高度（像素单位）
->         - top=number 窗口离屏幕顶部距离（像素单位）
->         - left=number 窗口离屏幕左边距离（像素单位）
->
->
-> ### 关闭窗口：window.close()
->
->
-> ### 新窗口
->     - 新窗口.moveTo(5,5)
->     - 新窗口.moveBy()
->     - 新窗口.resizeTo()
->     - window.resizeBy()
-> ```
-
-### 错误捕获
+### 窗口
 
 ```bash
-## 页面错误捕获
+### 打开窗口：`window.open(url, target, param)`
+    - url：要打开的地址。
+    - target：新窗口的位置。可以是：`_blank` 、`_self`、 `_parent` 父框架
+    - 返回值：新窗口的句柄
+    - param：新窗口的一些设置(多个参数用逗号隔开)
+        - name：新窗口的名称，可以为空
+        - features：属性控制字符串，在此控制窗口的各种属性，属性之间以逗号隔开。
+        - `fullscreen= { yes/no/1/0 }` 是否全屏，默认no
+        - `channelmode= { yes/no/1/0 }` 是否显示频道栏，默认no
+        - `toolbar= { yes/no/1/0 }` 是否显示工具条，默认no
+        - `location= { yes/no/1/0 }` 是否显示地址栏，默认no（有的浏览器不一定支持）
+        - `directories = { yes/no/1/0 }` 是否显示转向按钮，默认no
+        - `status = { yes/no/1/0 }` 是否显示窗口状态条，默认no
+        - `menubar = { yes/no/1/0 }` 是否显示菜单，默认no
+        - `scrollbars = { yes/no/1/0 }` 是否显示滚动条，默认yes
+        - `resizable = { yes/no/1/0 }` 是否窗口可调整大小，默认no
+        - `width = number` 窗口宽度（像素单位）
+        - `height = number` 窗口高度（像素单位）
+        - `top = number` 窗口离屏幕顶部距离（像素单位）
+        - `left = number` 窗口离屏幕左边距离（像素单位）
+        
 
+    
+### 同源策略限制
+只有在窗口是同源的时，窗口才能自由访问彼此的内容（相同的协议://domain:port）。
+否则，例如，如果主窗口来自于 site.com，弹窗来自于 gmail.com，则处于安全性考虑，这两个窗口不能访问彼此的内容。
+
+
+### 阻止弹窗
+在过去很多网站滥用弹窗，所有大多数浏览器都会阻止弹窗打开来保护用户。
+如果弹窗是在用户触发的事件（如 onclick 事件）之外的地方调用，大多数浏览器都会阻止此类弹窗。
+如果在 setTimeout 中打开，有可能也会被阻止打开（Firefox 可以接受 2000ms 或更短的延迟，但是超过这个时间则移除“信任”，限制打开）
+	- 被阻止打开：`setTimeout(() => window.open('http://google.com'), 3000)` 
+	- 允许打开：`setTimeout(() => window.open('http://google.com'), 1000)`
+
+
+### 关闭窗口
+- 关闭一个窗口：`newWin.close()`
+- 检查一个窗口是否被关闭：`newWin.closed`
+
+
+
+### 新窗口移动和调整大小的方法
+- 新窗口.moveBy(x, y)
+		将窗口相对于当前位置向右移动 x 像素，并向下移动 y 像素。允许负值（向上/向左移动）
+		
+- 新窗口.moveTo(x,y)
+		将窗口移动到屏幕上的坐标 (x,y) 处
+
+- 新窗口.resizeBy(width,height)
+		根据给定的相对于当前大小的 width/height 调整窗口大小。允许负值。
+
+- window.resizeTo(width,height)
+		将窗口调整为给定的大小。
+```
+
+```js
+const handleOpenWin = () => {
+  const params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+width=600,height=300,left=100,top=100`;
+  const newWin = window.open('/', 'test', params);
+
+  newWin && newWin.focus();
+
+  const handleClose = () => {
+    if (newWin && !newWin.closed) newWin.close();
+  };
+  return handleClose;
+};
+
+// 获取到相应的关闭
+const newWinClose = handleOpenWin();
+
+// 5s 后关闭弹窗
+setTimeout(newWinClose, 5000);
+```
+
+
+
+### `iframe`
+
+```bash
+### 跨窗口的同源策略
+如果我们有对另外一个窗口（如一个使用 window.open 创建的弹窗，或者一个窗口中的 iframe）的引用，并且该窗口是同源的，那么我们就具有对该窗口的全部访问权限。
+否则，如果该窗口不是同源的，则无法访问该窗口中的内容（变量，文档，任何东西），但可以修改其 location（注意：只能写入，不能读取）。
+
+
+
+### iframe
+一个 `<iframe>` 标签承载了一个单独的嵌入的窗口，它具有自己的 document 和 window。
+    - iframe.contentWindow：获取 `<iframe>` 中的 window
+    - iframe.contentDocument：获取 `<iframe>` 中的 document，是 iframe.contentWindow.document 的简写。
+
+当我们访问嵌入的窗口中的内容时，浏览器会检查 iframe 是否具有相同的源。
+如果非同源，只能进行以下操作：
+	- 更改另一个窗口的 location （只能写入(进而重定向用户)，无法读取(防止泄露而保证安全性)）
+
+
+
+#### 子域上的window：`documen.domain`
+根据定义，两个具有不同域的 URL 具有不同的源。但是如果窗口的二级域相同，如 `john.site.com 、 peter.site.com 、 site.com`（它们共同的二级域是 site.com），我们可以给每个窗口添加相同的 domain 使浏览器忽略该差异（`document.domain = 'site.com';`），使得它们可以被作为“同源”，以便进行跨窗口通信。
+
+
+
+### iframe 的 sandbox 特性（attribute）
+如果一个 iframe 具有 sandbox 特性（attribute），则它会被强制处于“非同源”状态，除非在其特性值中指定了 allow-same-origin。这可用于在同一网站的 iframe 中运行不受信任的代码。
+`<iframe sandbox="allow-same-origin allow-forms allow-popups">`
+
+- allow-same-origin：默认情况下，"sandbox" 会为 iframe 强制实施“不同来源”的策略。即是说它使浏览器将 iframe 视为来自另一个源，即使其 src 指向的是同一个网站也是如此。具有所有隐含的脚本限制。此选项会移除这些限制。
+- allow-top-navigation：允许 iframe 更改 parent.location。
+- allow-forms：允许在 iframe 中提交表单。
+- allow-scripts：允许在 iframe 中运行脚本。
+- allow-popups：允许在 iframe 中使用 window.open 打开弹窗。
+```
+
+```html
+<iframe src="https://example.com" id="iframe"></iframe>
+
+<script>
+  iframe.onload = function() {
+    // 我们可以获取对内部 window 的引用
+    let iframeWindow = iframe.contentWindow; // OK
+    try {
+      // ...但是无法获取其中的文档
+      let doc = iframe.contentDocument; // ERROR
+    } catch(e) {
+      alert(e); // Security Error（另一个源）
+    }
+
+    // 并且，我们也无法读取 iframe 中页面的 URL
+    try {
+      // 无法从 location 对象中读取 URL
+      let href = iframe.contentWindow.location.href; // ERROR
+    } catch(e) {
+      alert(e); // Security Error
+    }
+
+    // ...可以写入 location（所以在 iframe 中加载了其他内容）
+    iframe.contentWindow.location = '/'; // OK
+
+    iframe.onload = null; // 清空处理程序，在 location 更改后不要再运行它
+  };
+</script>
+```
+
+```html
+<!-- 来自同一个网站的 iframe -->
+<iframe src="/" id="iframe"></iframe>
+
+<script>
+  iframe.onload = function() {
+    // doSomething
+    iframe.contentDocument.body.prepend("Hello, world!");
+  };
+</script>
+```
+
+
+
+#### 页面所有的`iframe`集合：`window.frames`
+
+```bash
+获取 <iframe> 的window 对象另一种方式是从命名集合 window.frames 中获取：
+	- 通过索引获取：`window.frames[0]` —— 文档中的第一个 iframe 的 window 对象。
+	- 通过名称获取：`window.frames.iframeName` —— 获取 `name="iframeName"` 的 iframe 的 window 对象。
+	
+	
+	
+#### iframe 内嵌
+一个 iframe 内可能嵌套了其他的 iframe。我们可以使用以下方式访问父/子窗口。
+    - window.frames —— “子”窗口的集合（用于嵌套的 iframe）。
+    - window.parent —— 对“父”（外部）窗口的引用。
+    - window.top —— 对最顶级父窗口的引用。
+    - iframe.contentWindow 是 <iframe> 标签内的 window 对象
+
+```
+
+```html
+<iframe src="/" style="height:80px" name="win" id="iframe"></iframe>
+
+<script>
+  console.log(iframe.contentWindow == frames[0]); // true
+  console.log(iframe.contentWindow == frames.win); // true
+
+  console.log(window.frames[0].parent === window); // true
+
+  // 使用 top 属性来检查当前的文档是否是在 iframe 内打开的
+  if (window == window.top) { // 当前 window == window.top?
+    alert('The script is in the topmost window, not in a frame');
+  } else {
+    alert('The script runs in a frame!');
+  }
+</script>
+```
+
+
+
+#### 两个窗口的通信：`postMessage`
+
+```bash
+postMessage 接口允许两个具有任何源的窗口之间进行通信：
+1. 发送方调用 targetWin.postMessage(data, targetOrigin)。
+		- 如果 targetOrigin 不是 '*'，浏览器会检查窗口 targetWin 是否具有源 targetOrigin。
+	- 如果它具有，targetWin 会触发具有特殊的属性的 message 事件：
+			- origin —— 发送方窗口的源（比如 http://my.site.com）。
+			- source —— 对发送方窗口的引用。
+			- data —— 数据，可以是任何对象。但 IE 浏览器只支持字符串，因此需要对对象数据调用 JSON.stringify 方法进行兼容处理。
+			
+2. 使用 addEventListener 来在目标窗口中设置 message 事件的处理程序。
+```
+
+```html
+<h1>Parent Page</h1>
+<iframe name="example" src="child.html"></iframe>
+<button id="sendMessageBtn">Send Message to iframe</button>
+
+<script>
+  const iframe = document.getElementById('myIframe');
+  const btn = document.getElementById('sendMessageBtn');
+
+  btn.addEventListener('click', () => {
+    const message = { type: 'greeting', text: 'Hello from parent page' };
+    iframe.contentWindow.postMessage(message, 'http://example.com');
+  });
+
+  window.addEventListener('message', (event) => {
+    // 忽略不可信任的来源
+    if (event.origin !== 'http://example.com') return;
+    console.log('Received message from iframe:', event.data);
+  });
+</script>
+```
+
+```html
+<h1>Child Page</h1>
+<div id="message"></div>
+<button id="replyBtn">Reply to Parent</button>
+
+<script>
+  // 监听父页面发送的消息
+  window.addEventListener('message', (event) => {
+    // 忽略不可信任的来源
+    if (event.origin !== 'http://example.com') return;
+    console.log('Received message from parent:', event.data);
+  });
+
+  // 向父页面发送消息
+  document.getElementById('replyBtn').addEventListener('click', () => {
+    const message = { type: 'response', text: 'Hello from iframe' };
+    window.parent.postMessage(message, 'http://your-parent-origin.com');
+  });
+</script>
+```
+
+
+
+#### `iframe` 的劫持攻击
+
+```bash
+iframe 劫持攻击（Iframe Hijacking）是一种通过在 iframe 中加载恶意内容或劫持用户交互的安全威胁。常见的 iframe 攻击包括 Clickjacking 和 XSS（跨站脚本攻击）。
+```
+
+```bash
+1. Clickjacking
+Clickjacking 是一种通过透明或不可见的 iframe 覆盖用户界面元素进行用户交互劫持的攻击方式。攻击者通常在 iframe 中加载目标网站，并诱导用户点击看似无害的页面元素，实际点击的是透明 iframe 上的内容。
+
+
+防御 Clickjacking
+  为了防御 Clickjacking 攻击，可以使用 X-Frame-Options 头:
+  通过设置 HTTP 响应头 X-Frame-Options 来防止你的网页被嵌入到 iframe 中。
+    - DENY：完全禁止页面被嵌入 iframe。
+    - SAMEORIGIN：允许同源页面嵌入 iframe。
+    - ALLOW-FROM uri：允许特定 URI 的页面嵌入 iframe。
+```
+
+```js
+const express = require('express');
+const app = express();
+
+// 设置 X-Frame-Options 头
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
+
+// 设置 Content Security Policy 头
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self'");
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+```
+
+```bash
+2. 跨站脚本攻击（XSS）
+XSS 攻击是指攻击者向受信任的网站注入恶意脚本。这些脚本通常通过 iframe 进行加载，从而执行恶意操作。
+
+
+防御 XSS
+  输出编码：在输出用户生成的内容时进行编码，以防止脚本注入。
+  内容安全策略（CSP）：使用 CSP 可以防止加载未经授权的脚本。
+  输入验证和清理：对用户输入进行验证和清理，防止注入恶意代码。
+```
+
+```bash
+3. 内容安全策略（CSP）
+CSP 是一种强大的安全机制，用于防止多种类型的攻击，包括 XSS 和数据注入攻击。通过定义哪些资源可以加载，CSP 可以大大减少攻击面。
+```
+
+```js
+const express = require('express');
+const app = express();
+
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'");
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+```
+
+
+
+
+
+### 页面错误捕获
+
+```bash
 ### 即时错误
 - `window.onerror = function(msg, url, row, col, error) { ... }`
 		- msg 为异常基本信息

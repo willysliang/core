@@ -86,21 +86,21 @@ Description: ES6+ 语法
 >
 > // 3、全局作用域函数下的this是undefined
 > function fn() {
->     console.log(this); //undefined
+>   console.log(this); //undefined
 > }
 > fn();
 >
 > // 4、构造函数不加new调用，this会报错
 > function fun() {
->     console.log(this); //fun{}
->     this.sex = '男';
+>   console.log(this); //fun{}
+>   this.sex = '男';
 > }
 > let willy = new fun();
 > console.log(willy.sex);
 >
 > // 5、定时器的this还是指向window
 > setTimeout(function(){
->     console.log(this);  //window
+>   console.log(this);  //window
 > },1000);
 >
 > //函数里面的参数不允许有重名
@@ -825,7 +825,7 @@ F1()
 
 ### 执行上下文
 
-- 执行上下文是以栈（一种 LIFO 的数据结构）的方式被存放起来的，我们称之为**执行上下文栈（Execution Context Stack）**
+- 执行上下文是以栈（LIFO）的方式被存放起来的，我们称之为**执行上下文栈（Execution Context Stack）**
 
 - **在 JavaScript 代码开始执行时，首先进入全局环境，此时全局上下文被创建并入栈，之后当调用函数时则进入相应的函数环境，此时相应函数上下文被创建并入栈，当处于栈顶的执行上下文代码执行完毕后，则会将其出栈**
 
@@ -932,21 +932,20 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 - 构造函数的this指向实例对象
 - 绑定事件函数的this指向函数的调用者
 - 还可通过call、bind、apply改变this的指向，区别是传参方式或执行时间不同
-
 ```
 
 > ````js
 > //1、普通函数 this指向window
 > function fn() {
->   console.log("普通函数this：" + this);
+>     console.log("普通函数this：" + this);
 > }
 > window.fn();
 >
 > //2、对象的方法 this指向是对象本身
 > let obj = {
->   say: function () {
->     console.log("对象的方法的this：" + this);
->   }
+>     say: function () {
+>        console.log("对象的方法的this：" + this);
+>     }
 > }
 > obj.say();
 > let fun = obj.say;
@@ -960,17 +959,17 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > //4、绑定事件函数  this指向是函数的调用者 btn按钮对象
 > let btn = document.querySelector("button");
 > btn.onclick = function () {
->   console.log("绑定事件函数的this：" + this);
+>     console.log("绑定事件函数的this：" + this);
 > }
 >
 > //5、定时器函数 this指向window
 > setTimeout(function () {
->   console.log('定时器函数的this：' + this);
+>     console.log('定时器函数的this：' + this);
 > }, 1000);
 >
 > //6、立即执行函数 this指向window
 > (function () {
->   console.log("立即执行函数的this：" + this);
+>     console.log("立即执行函数的this：" + this);
 > }())
 > ````
 >
@@ -979,13 +978,13 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > ```js
 > var uname = "window";
 > var object = {
->   uname: "object",
->   fun:function() {
->     console.log(this.uname);
->     return function() {
->       console.log(this.uname);
+>     uname: "object",
+>     fun:function() {
+>        console.log(this.uname); // object
+>        return function() {
+>          console.log(this.uname); // window
+>        }
 >     }
->   }
 > }
 > object.fun()();	// 输出 object window
 > // 因为第一个函数是由object对象调用，this指向object对象；第二个是普通函数调用，指向window
