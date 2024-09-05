@@ -102,10 +102,5 @@
     "stylelint-declaration-block-no-ignored-properties": "^2.8.0",
     "stylelint-order": "^6.0.4",
     "typescript": "^5.4.5"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "pinia@2.1.7": "patches/pinia@2.1.7.patch"
-    }
   }
 }
