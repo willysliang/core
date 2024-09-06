@@ -706,201 +706,192 @@ corepack enable
     env
 ```
 
-## 安装依赖问题
+
+
+## npm 常用命令
+
+### 基础
+
+#### npm 帮助
+
+`npm help` 命令提供了快速查询所有选项：
 
 ```bash
-### ETIMEDOUT
-问题：connect ETIMEDOUT 104.16.26.34:443
-
-解决方案：
-1. 清除缓存
-$ npm config set proxy false
-
-2. 如果报错，继续强制清除
-$ npm cache clean --force
-
-3. 重新执行安装步骤
-$ npm i
+npm help
 ```
 
+它可以帮助我们无论是否在线/离线状态下，都可以快速查看 npm 提供的所有选项。
 
-
-## 模块化 CommonJS
+还可以显示特定 npm 命令的帮助：
 
 ```bash
-## 模块化
-- nodejs 是一种 javascript 的运行环境，能够使得 javascript 脱离浏览器运行。
-- node 的加载机制：node 会把整个待加载的 js 文件放入一个包装 load 中执行。在执行整个 load 函数前Node 会调用 module 变量。
-- 模块化的好处：防止命名冲突、高复用性、高维护性。
-
-
-### CommonJS
-CommonJS 是 NodeJS 使用的模块化规范。
-CommonJS 规范规定：每个模块内部，module 变量代表当前模块。这个变量是一个对象，它的 exports 属性（即`module.exports`）是对外的接口对象。加载某个模块其实是加载该模块的 `module.exports` 对象。
-
-在 CommonJS 中每个文件都可以当作一个模块：
-  - 在服务端：模块的加载是运行时同步加载的。
-  - 在客户端：模块需要提前编译打包处理。因为同步容易引起阻塞，且浏览器不认识 require 语法，因此需要提前编译打包。
-- 不限node版本的情况下，如果不声明严格模式`'use strict';`，往往es6语法不支持启动。
-
-
-### 模块暴露：exports 和 module.exports 的区别
-- 模块暴露数据的方式有两种：
-    1. module.exports = value
-    2. exports.propName = value
-
-- Node 中每个模块的最后都会执行 `return module.exports`。
-- Node 中每个模块都会把 module.exports 指向的对象赋值给一个变量 exports，并且初始化为空对象`{}`。
-		- 即存在隐式关系：`exports = module.exports = {}`。
-		- 不能使用 `exports = value` 的形式暴露数据的原因：在通过 require 引入数据时，是引用 module.exports 里面的数据，`exports = value` 不能让 module.exports 里面的数据发生变化。
-		- 能使用  `exports.propName = value` 的形式暴露数据的原因： 因为 module.exports 和 exports 通过隐式赋值关系来共用了同一个对象的内存空间，所以在 `exports.propName = value` 修改属性值时 module.exports 也会同时改变值。
-
-
-
-### 引入模块的方式：require
-- `const module1 = require('模块名')`
-    - 内置模块：require 的是包名。
-    - 下载的第三方模块：require 的是包名（会自动在 node_modules 中寻找相应的模块）
-    - 自定义模块：require 的是文件路径。文件路径既可以用绝对路径，也可以用相对路径。后缀名 `.js` 可以省略。
-
-- require() 函数的两个作用：
-		- 执行导入的模块中的对象。
-		- 返回导入模块中的接口对象。
-
-- 导入自定义模块的流程
-    1. 将相对路径转为绝对路径，定位目标文件。
-    2. 缓存检测（查看之前是否加载过该目标文件，如果加载则取缓存的，无需再次加载）。
-    3. 读取目标文件代码。
-    4. 包裹成一个立即执行函数（可通过 `arguments.callee.toString()` 查看自执行函数）。
-    5. 缓存模块的值。
-    6. 返回 module.exports 的值。
-
-
-
-### 自定义模块导入目录的加载规则
-- 在目录中放置一个`package.json`文件，并且将入口文件写入`main`字段。
-- 如果 require 传入的参数字符串是指向一个目录，则会首先检测该目录的`package.json`文件中 `main` 属性对应的文件，然后加载`main` 字段指定的入口文件。如果 main 属性不存在，或者不存在 package.json 文件，则会检测加载目录下的 `index.js` 和 `index.json` 文件，如果还是没找到，则会报错。
-
-
-#### 模块的缓存
-- 第一次加载某个模块时，Node会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的`module.exports`属性。
-
-
-### 清除模块缓存
-- 所有缓存的模块保存在`require.cache`之中
-- 注意，缓存是根据绝对路径识别模块的，如果同样的模块名，但是保存在不同的路径，`require`命令还是会重新加载该模块。
-
-    // 删除指定模块的缓存
-    delete require.cache[moduleName];
-
-    // 删除所有模块的缓存
-    Object.keys(require.cache).forEach((key) => {
-      delete require.cache[key];
-    })
-```
-
-### 导入模块原理
-
-```js
-/**
- * 模块导入 伪代码
- */
-function require(file) {
-    // 1. 将相对路径转化为绝对路径，定位目标文件
-    const absolutePath = path.resolve(__dirname, file)
-
-    // 2. 缓存检测（查看之前是否加载过该目标文件，如果加载则取缓存的，无需再次加载）
-    const caches = {}
-    if (caches[absolutePath]) {
-        return caches[absolutePath]
-    }
-
-    // 3. 读取目标文件代码
-    const code = fs.readFileSync(absolutePath).toString()
-
-    const module = {}
-    const exports = (module.exports = {})
-
-    // 4. 包裹成一个立即执行函数
-    ;(function (exports, require, module, __filename, __dirname) {
-        var test = {
-            name: "willy",
-        }
-        module.exports = test
-        console.log(arguments.callee.toString())
-    })(exports, require, module, __filename, __dirname)
-
-    // 5. 缓存模块的值
-    caches[absolutePath] = module.exports
-
-    // 6. 返回 module.exports 的值
-    return module.exports
-}
-
-const m1 = require("./tsconfig.json")
-const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面首次执行的内容
+npm help <command>
+# or
+npm <command> -h
 ```
 
 
 
-### 在 nodejs 使用 ES6 导入语法
+#### npm 的全局配置文件
+
+npm 配置文件是 `.npmrc`，全局配置文件默认在用户目录下。
+
+如果没有找到，可以通过以下命令查看：
 
 ```bash
-ES6 的 模块化（ESM）：一个 JS 文件可以导出一个或多个值，导出的值可以是变量、对象或函数。
-	- 引入模块：import
-	- 导出值：export
-	- 单个文件的默认导出：export default
-NodeJS 应用由模块组成，其模块系统采用 CommonJS 规范，它并不是 JS 语言规范的正式组成部分。
-	- 加载模块：require
-	- 导出模块：module.exports
-
-
-1. 可以用最简单的方式使用 ES 模块。在创建时，以 `.cjs` 和 `.mjs` 扩展区分使用 CommonJS 还是 ES 模块。
-2. 在 NodeJS v14.x.x 以上的版本，在 `package.json` 中设置 `"type": "module"`。
-3. 在低于 Node V14 的版本环境引入 `@babel/core` 来支持 ESM 模块化。
+npm config get userconfig
 ```
 
-**在 Node.js 版本 `14.x.x` 以上的版本，在 `package.json` 文件中设置 `"type": "module"` 。**
+您可以查看该文件的所有 npm 配置信息。
 
-```json
-{
-  "type": "module"
-}
+以下是其他一些便捷的命令。
+
+查看所有配置项：
+
+```bash
+npm config ls -l
 ```
 
-**低于 Node v14 的版本环境需要引入支持 es6 的 babel 库来进行解析。**
+查看缓存配置，`get` 后面可以跟任意配置项
 
-安装依赖项：`$ npm i -D @babel/core @babel/preset-env @babel/node`
-
-然后在 Node.js 项目的根目录下创建一个名为 `babel.config.json` 的文件，并添加以下内容：
-
-```json
-module.exports = {
-  "presets": ["@babel/preset-env"]
-}
+```bash
+npm config get cache
 ```
 
-`@babel/node` 包是一个 CLI 实用程序，它在运行 Node.js 项目之前用 Babel 预设和插件编译 JS 代码。这意味着它将在执行 Node 项目之前读取并应用 `babel.config.json` 中提供的任何配置。
+打开全局 `.npmrc` 文件，：
 
-运行命令执行脚本时，使用 `babel-node` 替换 `node`。
-
-为了方便使用，在 `package.json` 中配置一个 npm script 来运行 node。
-
-```json
-{
-  "scripts": {
-    "dev": "node --exec babel-node index.js"
-  }
-}
+```bash
+npm config edit
 ```
 
 
 
-## `package.json`
+#### 设置镜像源
+
+npm cli 还可以安装其他来源的包：
+
+```bash
+npm config set xxx
+
+# 淘宝镜像
+npm config set registry https://registry.npmmirror.com
+```
+
+查看是否切换成功：
+
+```bash
+npm config get registry
+```
+
+如果返回设置的源链接，说明镜像设置成功。
+
+> **Tips**：您可以安装 [nrm](https://github.com/Pana/nrm) 包在不同源之间快速切换，例如 `npm`、`cnpm`、`taobao` 等。
+
+
+
+#### 使用快捷方式安装包
+
+安装依赖项：
+
+```bash
+npm install <package_name>
+npm i <package_name>
+```
+
+安装开发环境依赖：
+
+```bash
+npm install --save-dev <package_name>
+npm i -D <package_name>
+```
+
+安装生产环境依赖（默认）：
+
+```bash
+npm install --save-prod <package_name>
+npm i -P <package_name>
+```
+
+全局安装软件包：
+
+```bash
+npm install --global <package_name>
+npm i -g <package_name>
+```
+
+同时安装多个包：
+
+```bash
+npm i express cheerio axios
+```
+
+安装具有相同前缀的多个包：
+
+```bash
+npm i eslint-{plugin-import,plugin-react,loader} express
+```
+
+额外的，当你需要指定包版本时，可以使用 `@` 符号：
+
+```bash
+npm i vue@3.2.25
+npm i -g webpack@5.58.0
+```
+
+检查 npm 包的所有版本，可以在下面的**检查任何 npm 包的最新版本**找到。
+
+
+
+#### 检测当前镜像源的延迟
+
+检测当前镜像源的延迟情况：
+
+```bash
+npm ping
+```
+
+
+
+### `package.json`
 
 当创建一个 Node 项目时， 需要创建一个 package.json 文件，描述这个项目所需要的各种模块，以及项目的配置信息（比如名称、版本、许可证等元数据）。
 
 可以在命令行使用 `npm help package.json` 命令，将跳转到页面，查看这些字段如何使用。
+
+
+
+#### 初始化 package.json
+
+`npm init` 命令是一个逐步构建项目的工具。
+
+```bash
+npm init
+```
+
+根据提示填写内容，也可以按提供的默认值一路回车（Enter）。
+
+为了省去上面的操作，加上 `--yes` 标志将自动使用默认值 `npm init` 填充所有选项：
+
+```bash
+npm init --yes
+npm init -y
+```
+
+完成以上面操作后，将会生成一个 `package.json` 文件并将其放置在当前目录中。
+
+可以通过 `npm config set` 配置常用的默认字段值：
+
+```bash
+npm config set init-author-name "willysliang"
+npm config set init-author-email "willysliang@qq.com"
+npm config set init-author-url "https://github.com/willysliang"
+npm config set init-license "MIT"
+# ...
+```
+
+> **Tips**：可以打开全局的 `.npmic` 文件配置统一配置它们。
+
+
 
 #### 基础信息
 
@@ -1055,30 +1046,86 @@ module.exports = {
 }
 ```
 
-#### 配置
 
-`config` 字段中的键作为 `env` 环境变量公开给脚本。
+
+#### NPM scripts
+
+`npm scripts` 用于自定义脚本，例如：
+
+```bash
+npm run env
+```
+
+上面的命令是 `npm cli` 为我们提供的一个脚本命令，用于列出程序内的所有环境变量。
+
+通常可以在 `package.json` 内的 `scripts` 定义我们的脚本命令，例如：
 
 ```json
 {
-  "name": "node",
+  "name": "app-project",
+  "scripts": {
+    "serve": "nodemon app.js"
+  }
+}
+```
+
+可以通过运行 `npm run serve` 来启动我们的应用程序。
+
+可以使用不带参数的 `npm run` 命令查看项目上的所有命令脚本：
+
+```bash
+npm run
+
+#  serve
+#    nodemon app.js
+```
+
+> **注意**：每当 `npm run` 命令，都会新建一个 shell 文件来执行我们当前的执行的命令，只要符合 shell 可运行的命令，都可以执行。
+
+在执行 `npm scripts` 的过程中，可以通过 `npm_package_xxx` 前缀拿到 `package.json` 内的字段。
+
+例如，获取 `name` 字段：
+
+```js
+console.log(process.npm_package_name) // app-project
+```
+
+
+
+#### 配置自定义变量
+
+`config` 字段中的键作为 `env` 环境变量公开给脚本。
+
+可以在 `package.json` 内的 `config` 字段添加自己的自定义变量，当用户执行 `npm run start` 命令时，这个脚本就可以得到值。
+
+执行以下命令将看到刚才所配置的变量，它以 `npm_package_config_` 为前缀。
+
+```json
+{
+  "name": "app-project",
   "config": {
     "foo": "hello"
   }
 }
 ```
 
-你可以在应用程序中使用 `config` 字段，当用户执行 `npm run start` 命令时，这个脚本就可以得到值。
+```bash
+npm run env | grep npm_package_config_
+```
+
+项目中获取自定义变量：
 
 ```js
-console.log(process.env.npm_package_config_foo)
+console.log(process.npm_package_config_myVariable) // hello
 ```
 
-你可以使用下面命令改变这个值。
+**注意**：`config` 字段内的变量可以在输入命令时被覆盖：
 
 ```bash
-npm config set node:foo hi
+npm config set app-project:foo hi Node
 ```
+
+
 
 #### lint-staged
 
@@ -1273,6 +1320,605 @@ npx readme-md-generator -y
   "dependencies": {},
   "devDependencies": {}
 }
+```
+
+
+
+### 包信息
+
+#### 打开包的包主页、储存库和 issues
+
+在查找 npm 包的文档时，我们经常使用 Google 搜索其主页和 npm 页面。
+
+但也有其他更快速的方法，我们可以通过运行以下命令快速进入主页：
+
+```bash
+npm home <package_name>
+# or
+npm docs <package_name>
+
+# 例如：
+npm home axios
+npm home vue
+```
+
+导航到 issues：
+
+```bash
+npm bug <package_name>
+```
+
+打开它的存储库：
+
+```bash
+npm repo <package_name>
+
+# 例如：
+npm repo axios
+npm repo vue
+```
+
+这几个命令都将在默认浏览器中打开目标网站，它们通常会通过 `package.json` 文件所提供的信息进行检索。
+
+
+
+#### npm root 定位全局节点模块目录
+
+```bash
+# 本地 node_modules
+npm root
+
+# 全局 node_modules
+npm root -g
+```
+
+
+
+### 移除/清理
+
+#### 干净安装你的包依赖
+
+`npm ci` 用于清除安装包依赖项。它通常用于自动化环境，如 CI/CD 平台。
+
+```bash
+npm ci
+```
+
+它与 `npm install` 有以下不同之处：
+
+- 它安装的是 `package-lock.json` 中提到的包的确切版本。
+- 删除现有的 `node_modules` 并运行新的安装。
+- 它不会写信给你的 `package.json`或 `*-lock` 文件。
+- 它不会安装与 npm install 类似的单个软件包。
+
+
+
+#### 删除重复包
+
+`npm dedupe` 命令用于删除重复的依赖项。它通过删除重复的包并在多个依赖包之间有效地共享公共依赖项来简化整体结构。它会产生一个扁平的和去重的树。
+
+```bash
+npm dedupe
+# or
+npm ddp
+```
+
+
+
+#### 清理 npm 缓存
+
+磁盘满了，试着清楚 npm 缓存：
+
+```bash
+npm cache clean --force
+yarn cache clean
+pnpm store prune
+```
+
+
+
+#### 安装依赖问题
+
+```bash
+### ETIMEDOUT
+问题：connect ETIMEDOUT 104.16.26.34:443
+
+解决方案：
+1. 清除缓存
+$ npm config set proxy false
+
+2. 如果报错，继续强制清除
+$ npm cache clean --force
+
+3. 重新执行安装步骤
+$ npm i
+```
+
+
+
+### 检查
+
+#### 扫描应用程序是否存在漏洞
+
+`npm audit` 检查项目依赖项是否存在漏洞。它可以看出有风险的 package、依赖库的依赖链、风险原因及其解决方案。
+
+```bash
+npm audit
+```
+
+如果发现存在漏洞，可以使用 `npm audit fix`，它将自动安装所有易受攻击依赖包的修补版本（如果可用）。
+
+```bash
+npm audit fix
+# or
+npm audit fix --force
+```
+
+更好的做法是使用 [synk](https://github.com/snyk/cli)，它是一个高级版的 `npm audit`，可自动修复，且支持 CI/CD 集成与多种语言。
+
+```bash
+npx snyk
+```
+
+
+
+#### 检查环境
+
+`npm doctor` 命令可以在我们的环境中运行多项检查，已检查当前 node 和 npm 存在的问题。
+
+```bash
+npm doctor
+```
+
+
+
+#### 检查过时的包
+
+使用 `npm outdated` 命令来检查所有过时的 npm 包。它还显示了应该为任何过时的软件包安装的最新版本。
+
+```bash
+npm outdated --long
+# or
+npm outdated -l
+```
+
+#### 检查任何 npm 包的最新版本
+
+我们可以通过运行以下命令来检查任何已发布的 npm 包的最新版本的详细信息：
+
+```bash
+npm view <package_name>
+# or
+npm v <package_name>
+npm info <package_name>
+npm show <package_name>
+```
+
+仅显示最新版本号：
+
+```bash
+npm v <package_name> version
+```
+
+显示所有版本的列表：
+
+```bash
+npm v <package_name> versions
+```
+
+#### 列出所有已安装的包
+
+`npm list` 命令可以列出项目中安装的所有 npm 包。它将创建一个树结构，显示已安装的包及其依赖项。
+
+```bash
+npm list
+#or
+npm ls
+```
+
+- 可以利用 `--depth flag` 来限制搜索深度
+
+```bash
+npm ls --depth=1
+
+# 查看全局安装的软件包
+npm list -g --depth 0
+```
+
+
+
+#### 查找未使用的 npm 依赖项
+
+`depcheck` 可以用来扫描代码并识别任何未使用的依赖项。
+
+```bash
+npx depcheck
+```
+
+如果有任何未使用的依赖项，将看到类似于以下的输出：
+
+```txt
+Unused dependencies
+* eslint
+* node-cron
+* rss-parser
+* uuid
+* zlib
+```
+
+另外 `depcheck` 还将识别您正在使用的、未在 `package.json` 文件中明确列出的任何依赖项，如下所示：
+
+```txt
+Missing dependencies
+* type-fest
+```
+
+还可以使用 `depcheck` 以在提交/推送时自动运行这些检查以确保您或其他开发者不会安装到这些未使用的依赖项。
+
+
+
+### 更新
+
+#### 更新软件包
+
+`npm update` 命令用于更新软件包：
+
+```bash
+npm update <name>
+npm update <name> -g
+npm update <name> -D
+```
+
+为了便于查看依赖信息，我们可以安装 `npm-check` 包，它用于检查过时、不正确和未使用的依赖项。
+
+```bash
+npm i -g npm-check
+```
+
+运行以下命令：
+
+```bash
+npm-check -u
+```
+
+它将显示用于选择要更新的模块的交互式 UI。替代的还有 [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)。
+
+
+
+#### 查看哪些包已过时
+
+查看哪些包已过时：
+
+```bash
+npm outdated
+```
+
+查看全局环境的已过时包：
+
+```bash
+npm outdated -g --depth=0
+```
+
+
+
+#### 锁定包依赖
+
+[npm shrinkwrap](https://docs.npmjs.com/cli/shrinkwrap) 命令用于锁定包依赖项的版本，以便您可以准确控制在安装包时将使用每个依赖项的哪些版本。
+
+```bash
+npm shrinkwrap
+```
+
+它在部署 Node.js 应用程序时非常有用。通过它，您可以确定要部署哪些版本的依赖项。
+
+
+
+### 自定义包
+
+#### 在本地测试你的 npm 包
+
+我们可以将本地开发的 npm 包安装到全局或指定目录。
+
+```bash
+npm i . -g
+# 在某个项目中安装本地包
+npm i /path/to/packageName
+```
+
+还可以使用 `npm link` 命令做一个软链指向当前需要测试的项目：
+
+```bash
+# 先在本地开发的 npm 包中执行
+npm link
+
+# 然后切换到你需要安装本地测试包的项目中
+npm link <package_name>
+```
+
+使用 `npm unlink` 可以取消安装本地的调试包：
+
+```
+npm unlink <package_name>
+```
+
+
+
+#### 发布一个包
+
+首先，需要使用 `npm login` 登录：
+
+```bash
+npm login
+```
+
+然后，在使用 `npm publish` 发布项目：
+
+```bash
+npm publish
+```
+
+
+
+#### 控制项目版本号
+
+当我们发布 npm 包后，每次我们要推送新版本时，都需要修改版本号的，这时可以通过 `npm version` 命令进行设置：
+
+```bash
+# 新补丁版本表示向后兼容的错误修复
+npm version patch
+
+# 新的次要版本表示向后兼容的新功能
+npm version minor
+
+# 新的主要版本表示重大更改
+npm version major
+```
+
+
+
+#### 弃用发布的包
+
+> **注意**：强烈建议弃用包或包版本而不是取消发布它们，因为取消发布会从注册表中完全删除一个包，这意味着任何依赖它的人都将无法再使用它，而不会发出警告。
+
+弃用整个包：
+
+```bash
+npm deprecate <package_name> "弃用信息"
+```
+
+弃用包的单个版本：
+
+```bash
+npm deprecate <package_name>@<version> "弃用信息"
+```
+
+取消弃用操作：
+
+```bash
+# 将弃用消息改为空字符串即可
+npm deprecate <package_name> ""
+```
+
+取消发布整个包：
+
+```bash
+npm unpublish <package_name> -f
+```
+
+取消发布包的指定版本：
+
+```bash
+npm unpublish <package_name>@<version>
+```
+
+取消发布包后，以相同名称重新发布将被阻止 24 小时。如果您错误地取消发布了一个包，建议您以不同的名称再次发布，或者对于未发布的版本，增加版本号并再次发布。
+
+
+
+## 模块化 CommonJS
+
+```bash
+## 模块化
+- nodejs 是一种 javascript 的运行环境，能够使得 javascript 脱离浏览器运行。
+- node 的加载机制：node 会把整个待加载的 js 文件放入一个包装 load 中执行。在执行整个 load 函数前Node 会调用 module 变量。
+- 模块化的好处：防止命名冲突、高复用性、高维护性。
+
+
+### CommonJS
+CommonJS 是 NodeJS 使用的模块化规范。
+CommonJS 规范规定：每个模块内部，module 变量代表当前模块。这个变量是一个对象，它的 exports 属性（即`module.exports`）是对外的接口对象。加载某个模块其实是加载该模块的 `module.exports` 对象。
+
+在 CommonJS 中每个文件都可以当作一个模块：
+  - 在服务端：模块的加载是运行时同步加载的。
+  - 在客户端：模块需要提前编译打包处理。因为同步容易引起阻塞，且浏览器不认识 require 语法，因此需要提前编译打包。
+- 不限node版本的情况下，如果不声明严格模式`'use strict';`，往往es6语法不支持启动。
+
+
+### 模块暴露：exports 和 module.exports 的区别
+- 模块暴露数据的方式有两种：
+    1. module.exports = value
+    2. exports.propName = value
+
+- Node 中每个模块的最后都会执行 `return module.exports`。
+- Node 中每个模块都会把 module.exports 指向的对象赋值给一个变量 exports，并且初始化为空对象`{}`。
+		- 即存在隐式关系：`exports = module.exports = {}`。
+		- 不能使用 `exports = value` 的形式暴露数据的原因：在通过 require 引入数据时，是引用 module.exports 里面的数据，`exports = value` 不能让 module.exports 里面的数据发生变化。
+		- 能使用  `exports.propName = value` 的形式暴露数据的原因： 因为 module.exports 和 exports 通过隐式赋值关系来共用了同一个对象的内存空间，所以在 `exports.propName = value` 修改属性值时 module.exports 也会同时改变值。
+
+
+
+### 引入模块的方式：require
+- `const module1 = require('模块名')`
+    - 内置模块：require 的是包名。
+    - 下载的第三方模块：require 的是包名（会自动在 node_modules 中寻找相应的模块）
+    - 自定义模块：require 的是文件路径。文件路径既可以用绝对路径，也可以用相对路径。后缀名 `.js` 可以省略。
+
+- require() 函数的两个作用：
+		- 执行导入的模块中的对象。
+		- 返回导入模块中的接口对象。
+
+- 导入自定义模块的流程
+    1. 将相对路径转为绝对路径，定位目标文件。
+    2. 缓存检测（查看之前是否加载过该目标文件，如果加载则取缓存的，无需再次加载）。
+    3. 读取目标文件代码。
+    4. 包裹成一个立即执行函数（可通过 `arguments.callee.toString()` 查看自执行函数）。
+    5. 缓存模块的值。
+    6. 返回 module.exports 的值。
+
+
+
+### 自定义模块导入目录的加载规则
+- 在目录中放置一个`package.json`文件，并且将入口文件写入`main`字段。
+- 如果 require 传入的参数字符串是指向一个目录，则会首先检测该目录的`package.json`文件中 `main` 属性对应的文件，然后加载`main` 字段指定的入口文件。如果 main 属性不存在，或者不存在 package.json 文件，则会检测加载目录下的 `index.js` 和 `index.json` 文件，如果还是没找到，则会报错。
+
+
+#### 模块的缓存
+- 第一次加载某个模块时，Node会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的`module.exports`属性。
+
+
+### 清除模块缓存
+- 所有缓存的模块保存在`require.cache`之中
+- 注意，缓存是根据绝对路径识别模块的，如果同样的模块名，但是保存在不同的路径，`require`命令还是会重新加载该模块。
+
+    // 删除指定模块的缓存
+    delete require.cache[moduleName];
+
+    // 删除所有模块的缓存
+    Object.keys(require.cache).forEach((key) => {
+      delete require.cache[key];
+    })
+```
+
+#### 导入模块原理
+
+```js
+/**
+ * 模块导入 伪代码
+ */
+function require(file) {
+    // 1. 将相对路径转化为绝对路径，定位目标文件
+    const absolutePath = path.resolve(__dirname, file)
+
+    // 2. 缓存检测（查看之前是否加载过该目标文件，如果加载则取缓存的，无需再次加载）
+    const caches = {}
+    if (caches[absolutePath]) {
+        return caches[absolutePath]
+    }
+
+    // 3. 读取目标文件代码
+    const code = fs.readFileSync(absolutePath).toString()
+
+    const module = {}
+    const exports = (module.exports = {})
+
+    // 4. 包裹成一个立即执行函数
+    ;(function (exports, require, module, __filename, __dirname) {
+        var test = {
+            name: "willy",
+        }
+        module.exports = test
+        console.log(arguments.callee.toString())
+    })(exports, require, module, __filename, __dirname)
+
+    // 5. 缓存模块的值
+    caches[absolutePath] = module.exports
+
+    // 6. 返回 module.exports 的值
+    return module.exports
+}
+
+const m1 = require("./tsconfig.json")
+const m2 = require("./tsconfig.json") // 此时取缓存的，不会执行里面首次执行的内容
+```
+
+
+
+#### 在 nodejs 使用 ES6 导入语法
+
+```bash
+ES6 的 模块化（ESM）：一个 JS 文件可以导出一个或多个值，导出的值可以是变量、对象或函数。
+	- 引入模块：import
+	- 导出值：export
+	- 单个文件的默认导出：export default
+NodeJS 应用由模块组成，其模块系统采用 CommonJS 规范，它并不是 JS 语言规范的正式组成部分。
+	- 加载模块：require
+	- 导出模块：module.exports
+
+
+1. 可以用最简单的方式使用 ES 模块。在创建时，以 `.cjs` 和 `.mjs` 扩展区分使用 CommonJS 还是 ES 模块。
+2. 在 NodeJS v14.x.x 以上的版本，在 `package.json` 中设置 `"type": "module"`。
+3. 在低于 Node V14 的版本环境引入 `@babel/core` 来支持 ESM 模块化。
+```
+
+**在 Node.js 版本 `14.x.x` 以上的版本，在 `package.json` 文件中设置 `"type": "module"` 。**
+
+```json
+{
+  "type": "module"
+}
+```
+
+**低于 Node v14 的版本环境需要引入支持 es6 的 babel 库来进行解析。**
+
+安装依赖项：`$ npm i -D @babel/core @babel/preset-env @babel/node`
+
+然后在 Node.js 项目的根目录下创建一个名为 `babel.config.json` 的文件，并添加以下内容：
+
+```json
+module.exports = {
+  "presets": ["@babel/preset-env"]
+}
+```
+
+`@babel/node` 包是一个 CLI 实用程序，它在运行 Node.js 项目之前用 Babel 预设和插件编译 JS 代码。这意味着它将在执行 Node 项目之前读取并应用 `babel.config.json` 中提供的任何配置。
+
+运行命令执行脚本时，使用 `babel-node` 替换 `node`。
+
+为了方便使用，在 `package.json` 中配置一个 npm script 来运行 node。
+
+```json
+{
+  "scripts": {
+    "dev": "node --exec babel-node index.js"
+  }
+}
+```
+
+
+
+#### 在 ES 模块（Node.js）中导入 JSON 文件
+
+**使用 fs 模块读取和解析 JSON 文件**
+
+```js
+import { readFile } from 'fs/promises'
+
+// 使用 fs 模块读取文件并解析
+const json = JSON.parse(await readFile(new URL('./some-file.json', import.meta.url)))
+```
+
+**利用 CommonJS `require` 方法加载 JSON 文件**
+
+createRequire 允许构造 CommonJS `require` 方法。而 CommonJS 的 require 可以读取 JSON ES 模块。
+
+```js
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url)
+const data = require('./data.json')
+```
+
+- 二者的区别是 `require` 机制情况下，如果多个模块都加载了同一个 JSON 文件，那么其中一个改变了 JS 对象，其它跟着改变，这是由 Node 模块的缓存机制造成的，只有一个 JS 模块对象
+- 第一种方式可以随意改变加载后的 JS 变量，而且各模块互不影响，因为他们都是独立的，是多个 JS 对象。
+
+**import Assertions**
+
+JSON 模块已经存在于 Chrome 91（仅在 Chorme91 中支持），它看起来就像一个 ES Modules 风格的导入，只是在最后设置了类型。
+
+```js
+import data from './data.json' assert { type: 'json' }
+
+console.log(data)
 ```
 
 

@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年9月6日
+  - docs(前端基础): [Nodejs] package.json 与 npm 常用命令
+
 ## 2024年9月4日
   - docs(前端基础): [Nodejs] 操作路径path
 
