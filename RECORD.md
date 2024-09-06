@@ -24,6 +24,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2024年9月5日
+  - fix: pnpm patch-remove 移除修改 node_modules 的内容
+
 
 ## 2024年6月4日
   - feat: pnpm修改node_modules的内容
