@@ -1057,7 +1057,6 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
 ## 类文件对象 Blob
 
 ```bash
-## 类文件对象 Blob
 - Blob 表示二进制类型的大对象，在 JS 中 Blob 类型的对象表示一个不可变的类似文件对象的原始数据。
 - Blob 存储的数据可以按文本或二进制的格式进行读取，也可以转换成 ReadableStream 来用于数据操作。
 
@@ -1098,7 +1097,6 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
 - [Blob](https://zh.javascript.info/blob)
 - [你不知道的 Blob](https://juejin.cn/post/6844904178725158926)
 - [《你不知道的 Blob》番外篇](https://juejin.cn/post/6844904183661854727)
-
 ```
 
 ![blob_composition](./image/blob_composition.png)
@@ -1106,7 +1104,6 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
 #### 创建 Blob
 
 ```bash
-### 创建 Blob
 #### 创建 Blob 的方式一：使用 Blob 构造函数
 - Blob 由一个可选的字符串 `type`（通常指 MIME 类型）和 `blobParts` 组成。
 - 语法：`const Blob = new Blob(blobParts, options)`
@@ -1119,15 +1116,14 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
         	- "native"：代表行结束符会被更改为适合宿主操作系统文件系统的换行符。
         	- "transparent"：代表会保持 blob 中保存的结束符不变。
 
-
 - 例子：
 	- `const data = new Blob(['Test'])`
 	- `const data = new Blob(['Test'], { type: 'text/plain' })`
 
 
+
 #### 创建 Blob 的方式二：从另一个 Blob，使用 `Blob.slice()` 实例方法
 	- 从 aBlob 字节 10 到 20 创建新 blob：`const partialBlob = aBlob.slice(10, 20)`
-
 ```
 
 ```js
@@ -1164,15 +1160,12 @@ const blob1 = new Blob(['hello willy'])
 const blob2 = blob1.slice(6)
 const blob2Text = await blob2.text()
 console.log(blob2Text) // 'willy'
-
 ```
 
 #### 读取 Blob 的数据
 
 ```bash
-### 读取 Blob 的数据
 - 无法直接访问 Blob 对象中包含的数据，必须使用 `FileReader` 对象或使用响应对象`Response`。
-
 ```
 
 ```js
@@ -1216,7 +1209,6 @@ text // 'Test'
     - 映射在文档卸载时自动清除，因此 Blob 对象随后被释放。但是，如果应用程序寿命很长，那不会很快发生。因此，如果我们创建一个 Blob URL，即使不再需要该 Blob，它也会存在内存中。
 
 - 生成 Blob URL 后，可以通过调用 `URL.revokeObjectURL()` 方法，从内部映射中删除引用，从而允许删除 Blob（如果没有其他引用），并释放内存。
-
 ```
 
 
@@ -1224,8 +1216,6 @@ text // 'Test'
 #### Blob 转换为 Base64
 
 ```bash
-### Blob 转换为 Base64
-
 #### Base64
 Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法，它常用于处理文本数据的场合，表示、传输、存储二进制数据(如 MIME 的电子邮件及 XML 的一些复杂数据)。
 
@@ -1244,7 +1234,6 @@ mediatype 是一个 MIME 类型的字符串，如 `image/jpeg` 表示 JPEG 图�
 注意：如果图片较大，图片的色彩层次比较丰富，则不适合使用这种方式，因为该图片经过 base64 编码后的字符串非常大，会明显增大 HTML 页面的大小，从而影响加载速度。
 
 对于 FileReader 对象来说，除了支持把 Blob/File 对象转换为 Data URL 之外，还提供了 readAsArrayBuffer() 和 readAsText() 方法，用于把 Blob/File 对象转换为其它的数据格式。
-
 ```
 
 ##### blob 转换为 base64
@@ -1369,17 +1358,11 @@ async function uploadBase64FilePostHandler(req: Request, res: Response) {
 }
 
 router.route('/upload_base64').post(uploadBase64FilePostHandler)
-
 ```
 
 
 
 #### 从本地磁盘加载文件并获取
-
-```bash
-### 从页面上的本地磁盘加载文件并获取
-
-```
 
 ```html
 <!-- 用 input 标签选择图像，一旦选择图像，则删除输入元素并显示图像，然后在完成图像显示后清除 Blob  -->
@@ -1409,10 +1392,8 @@ if (input !== null) {
 #### 图片压缩
 
 ```bash
-### 图片压缩
 一般在上传本地图片时，先对图片进行一定压缩，然后再提交到服务器，从而减少传输的数据量。
 一般前端实现图片压缩，可以利用 Canvas 对象提供的 toDataURL() 方法，该方法接收 type（图片格式）和 encoderOptions（图片质量）两个可选参数。
-
 ```
 
 ```ts
@@ -1476,11 +1457,6 @@ compressImage(
 
 #### 上传 Blob 数据
 
-```bash
-### 上传 Blob 数据
-
-```
-
 ```js
 /**
  * @function uploadBlob 上传Blob 数据
@@ -1496,16 +1472,13 @@ export const uploadBlob = (url, blob, trackProgress) => {
   xhr.send(blob)
   xhr.upload.onprogress = trackProgress
 }
-
 ```
 
 #### 文件分片上传
 
 ```bash
-### 文件分片上传
 File 对象是特殊类型的 Blob，且可以用在任意的 Blob 类型的上下文中。
 所以针对大文件传输的场景，可以使用 Blob 的 slice() 实例方法对大文件进行切割，然后分片进行上传。
-
 ```
 
 ```js
@@ -1533,18 +1506,11 @@ const chunkSize = 4000
 const uploadUrl = 'http://willy.com/api/upload_file/post'
 
 chunkedUpload(file, uploadUrl, chunkSize)
-
 ```
 
 
 
 #### 以 Blob 形式从互联网下载数据
-
-```bash
-### 以 Blob 形式从互联网下载数据
-
-
-```
 
 ```js
 /**
@@ -1585,7 +1551,6 @@ fetch(requestImg)
 
     if (myImage && 'src' in myImage) myImage.src = objectURL
   })
-
 ```
 
 
@@ -1612,7 +1577,6 @@ const downloadBlob = (blob: Blob, fileName: string) => {
   // 及时清除 Blob 对象
   URL.revokeObjectURL(link.href)
 }
-
 ```
 
 
@@ -2957,9 +2921,54 @@ webpush
   });
 ```
 
+
+
+## 通讯 API
+
+### Broadcast Channel API
+
+```bash
+BroadcastChannel API 可以将 1 对 1 消息从浏览器窗口哦发送到 iframe 或 Web Worker 等；也可用于发送 1 对多消息，同时与多个实体通信。
+
+要在频道上发送消息，可以使用 postMessage() 方法，消息可以是以下任何受支持的值：
+    - 所有基本类型，不包括 `Symbol`
+    - 数组
+    - 对象字面量
+    - String、Date、RegExp 对象
+    - Blob、File、FileList 对象
+    - ArrayBuffer、ArrayBufferView 对象
+    - FormData 对象
+    - ImageData 对象
+    - map 和 set 对象
+
+要从频道上接收消息，需要监听 message 事件（此事件会为所有监听器触发，发送消息的监听器除外）：
+	`channel.onmessage = (event) => {}`
+
+要关闭频道，需要使用 close() 方法：
+	`channel.close()`
+```
+
+```js
+const hasSupport = () => Boolean('BroadcastChannel' in window)
+const CHANNEL_NAME = 'web_api_channel'
+
+function run() {
+  const bc = new BroadcastChannel(CHANNEL_NAME)
+  bc.postMessage('I am superman!')
+  bc.onmessage = (event) => {
+    console.log(`在频道 "${event.data}" 上收到消息 "${CHANNEL_NAME}"`)
+
+    const receiver = document.getElementById('broadcast-receiver')
+    receiver.innerText = event.data
+  }
+}
+```
+
+
+
 ## 扩展 API
 
-### Speech Synthesis API
+### 语音 Speech Synthesis API
 
 `SpeechSynthesisUtterance` 代表语音请求
 
@@ -3083,6 +3092,247 @@ const chooseVoice = async () => {
 }
 
 speak('点个关注不迷路')
+```
+
+
+
+### 访问网络摄像头 MediaDevices API
+
+```bash
+MediaDevices API 接口提供访问连接媒体输入的设备，如照相机和麦克风，以及屏幕共享等。它可以使你取得任何硬件资源的媒体数据。
+注意：MediaDevices API 只有通过 HTTPS 提供内容时才能访问网络摄像头。该 API 基于 Promise 规范。
+```
+
+```html
+<button id="start-webcam-btn" onclick="start()">开启摄像头</button>
+<button id="stop-webcam-btn" onclick="stop()">停止摄像头</button>
+<video autoplay="true" id="videoElement" style="width: 500px; height: 500px"></video>
+
+<script>
+  const video = document.querySelector('#videoElement')
+
+  /** 开启摄像头 */
+  const start = () => {
+    if (navigator.mediaDevices.getUserMedia) {
+      const constraints = {
+        video: {
+          aspectRatio: 16 / 9,
+        },
+        audio: {
+          echoCancellation: true,
+          sampleRate: 44100,
+        },
+      }
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+        video.srcObject = stream
+      })
+        .catch((err) => {
+        console.log('ERROR: ', err)
+      })
+    }
+  }
+
+  /** 关闭摄像头 */
+  const stop = () => {
+    const stream = video.srcObject
+    const tracks = stream.getTracks()
+
+    for (i = 0; i < tracks.length; i++) {
+      tracks[i].stop()
+    }
+
+    video.srcObject = null
+  }
+</script>
+```
+
+![允许或者禁止浏览器使用您的摄像头](images/image-20240911153218289.png)
+
+#### constraints 参数
+
+`mediaDevices.getUserMedia(constraints)`中的 `constraints` 指定了请求的媒体类型和相对应的参数。
+
+以下同时请求不带任何参数的音频和视频：
+
+```js
+const constraints = {
+  audio: true,
+  video: true
+}
+```
+
+如果为某种媒体类型设置了 `true` ，得到的结果的流中就需要有此种类型的轨道。
+
+如果其中一个由于某种原因无法获得，`getUserMedia()` 将会产生一个错误。
+
+当由于隐私保护的原因，无法访问用户的摄像头和麦克风信息时，应用可以使用额外的 `constraints` 参数请求它所需要或者想要的摄像头和麦克风能力。
+
+浏览器会试着满足这个请求参数，但是如果无法准确满足此请求中参数要求或者用户选择覆盖了请求中的参数时，有可能返回其它的分辨率。
+
+```js
+// 使用 `1280 x 720` 的摄像头分辨率
+const constraints = {
+  audio: true,
+  video: { width: 1280, height: 720 }
+}
+```
+
+强制要求获取特定的尺寸时，可以使用关键字 `min`，`max` 或者 `exact`（就是 `min == max`）。
+
+```js
+// 获取最低为 `1280 x 720` 的分辨率
+const constraints = {
+  audio: true,
+  video: {
+    width: { min: 1280 },
+    height: { min: 720 }
+  }
+}
+```
+
+如果摄像头不支持请求的或者更高的分辨率，返回的 `Promise` 会处于 `rejected` 状态，而且用户将不会得到要求授权的提示。
+
+造成不同表现的原因是，相对于简单的请求值和 `ideal` 关键字而言，关键字 `min`，`max` 和 `exact` 有着内在关联的强制性
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    width: { 
+      min: 1024, ideal: 1280, max: 1920 },
+    height: { min: 776, ideal: 720, max: 1080 }
+  }
+}
+```
+
+当请求包含一个 `ideal`（应用最理想的）值时，这个值有着更高的权重，意味着浏览器会先尝试找到最接近指定的理想值的设定或者摄像头（如果设备拥有不止一个摄像头）。
+
+简单的请求值也可以理解为是应用理想的值，因此我们的第一个指定分辨率的请求也可以写成如下：
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    width: { ideal: 1280 },
+    height: { ideal: 720 }
+  }
+}
+```
+
+在移动设备上，表示优先使用前置摄像头（如果有的话）：
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    facingMode: 'user'
+  }
+}
+```
+
+强制使用后置摄像头，可以使用：
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    facingMode: {
+      exact: 'environment'
+    }
+  }
+}
+```
+
+在某些情况下，比如 WebRTC 上使用受限带宽传输时，低帧率可能更适宜。
+
+```js
+const constraints = {
+  video: {
+    frameRate: {
+      ideal: 10,
+      max: 15
+    }
+  }
+}
+```
+
+
+
+### 浏览器中截屏
+
+#### html2canvas
+
+使用 `html2canvas` 库在浏览器中使用 JS 截取屏幕截图，它可以将 DOM 转换成 `canvas`。
+
+```html
+<button onclick="report()">截图</button>
+<div id="capture" style="padding: 10px; background: #f5da55">
+  <h4 style="color: #000">Hello world!</h4>
+</div>
+<img width="100%" class="screen" />
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+```
+
+```js
+function report() {
+  html2canvas(document.body).then((canvas) => {
+    let pngUrl = canvas.toDataURL() // dataURL 格式的 PNG
+    let img = document.querySelector('.screen')
+    img.src = pngUrl
+
+    // 其他操作...
+  })
+}
+```
+
+
+
+#### 截屏 screen Capture API
+
+使用原生的 screen Capture API 进行屏幕捕获，使用 `getDisplayMedia()` 方法，以 `canvas` 或 `Blob` 等形式获取屏幕截图。
+
+```html
+<button onclick="report()">截图</button>
+<div id="capture" style="padding: 10px; background: #f5da55">
+  <h4 style="color: #000">Hello world!</h4>
+</div>
+<canvas id="canvas" style="width: 300px"></canvas>
+<img width="300" class="screen" />
+```
+
+```js
+const canvas = document.getElementById('canvas')
+const img = document.querySelector('.screen')
+
+function report() {
+  navigator.mediaDevices
+    .getDisplayMedia()
+    .then((stream) => {
+    let track = stream.getTracks()[0]
+    let capture = new ImageCapture(track)
+    capture.grabFrame().then((bitmap) => {
+      // 停止共享
+      track.stop()
+      console.log(bitmap)
+      // 将 bitmap 绘制到 canvas
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      canvas.getContext('2d').drawImage(bitmap, 0, 0)
+      canvas.toBlob(
+        (blob) => {
+          console.log('output blob:', blob)
+          const screenshotJpegBlob = URL.createObjectURL(blob)
+          img.src = screenshotJpegBlob
+        },
+        'image/jpeg',
+        0.95
+      )
+    })
+  })
+    .catch((e) => console.log(e))
+}
 ```
 
 

@@ -91,6 +91,9 @@ html(5)/css(3)，前端页面相关技术
 
 ## 2024年9月13日
   - docs(前端基础): [Nodejs] process、net、readline模块、puppeteer的Page方法
+  - docs(前端基础): [WEB_API] 访问网络摄像头、截屏
+  - docs(前端进阶): [功能记录本] 获取视频时长
+
 
 ## 2024年9月6日
   - docs(前端基础): [Nodejs] package.json 与 npm 常用命令
