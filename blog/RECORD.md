@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年9月13日
+  - docs(前端基础): [Nodejs] process、net、readline模块、puppeteer的Page方法
+
 ## 2024年9月6日
   - docs(前端基础): [Nodejs] package.json 与 npm 常用命令
 

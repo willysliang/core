@@ -9,7 +9,6 @@ Description: NodeJS
 ## nodejs
 
 ```bash
-## node.js
 ### nodejs 的学习规划
 1. 学习JavaScript，Node.js是基于JavaScript语言的，因此需要先学习 JS，掌握其基本语法、函数、面向对象编程等基础知识。
 2. 学习Node.js基础知识，包括模块、事件机制、异步编程等。
@@ -40,7 +39,6 @@ Description: NodeJS
   - setInterval()   //设置间歇定时器
   - clearInterval()  //清除间歇定时器
 - node 应用场景：自动化构件等工具、HTTP Proxy、网站应用开发、im即时聊天(socket、io)
-
 ```
 
 
@@ -146,12 +144,7 @@ $ npm update
 
 - npm配置有仓库地址，install时都会从仓库地址中找模块。默认的仓库地址是：`https://registry.npmjs.org/`，可配置默本地默认的npm仓库下载地址：`npm config set registry http://ggjs-app-03.hnisi.com.cn:8090`
 
-#### 淘宝NPM镜像
 
-1. 使用淘宝镜像：`npm install -g cnpm --registry=http://registry.npm.taobao.org`
-2. 安装模块：`cnpm install [name]`
-3. 创建模块：nodejs模块就是发布到npm的代码块。
-   1. 首先利用`npm init`命令创建package.json，这个过程中命令行会逐步提示你输入这个模块的信息，其中模块的名字和版本号是必填项。
 
 #### 国内镜像（国内加速访问GitHub）
 
@@ -191,7 +184,7 @@ vi /etc/hosts
 
 **概念**
 
-- Yarm是一个由Facebook、Google、exponent和tilde构建的新的JavaScript包管理器。目标是解决npm所遇的问题：安装包不够快速和稳定；因npm允许包在安装时运行代码导致存在安全隐患。
+- Yarm是JavaScript包管理器。目标是解决npm所遇的问题：安装包不够快速和稳定；因npm允许包在安装时运行代码导致存在安全隐患。
 - Yarm不能完全替代npm。Yarm仅仅是一个能够从npm仓库获取模块的新的CLI客户端。
 - 特点：速度超快(yarm缓存每个下载过的包，再次使用无需重复下载)；安全(在执行代码前，yarm会通过算法校检每个安装包的完整性)；可靠(使用详细、简介的锁文件格式和明确的安装算法，Yarm能保证在不同系统上无差异工作)
 
@@ -1968,6 +1961,774 @@ console.log('free memory : ' + os.freemem() + ' bytes.') // free memory : 306669
 
 
 
+## 进程 process
+
+```bash
+
+```
+
+#### 环境变量 process.env
+
+```js
+if (process.env.NODE_ENV === 'production') {
+  console.log('生产环境');
+} else {
+  console.log('非生产环境');
+}
+```
+
+运行命令 `NODE_ENV=production node env.js`，将输出 `非生产环境`。
+
+
+
+#### 异步：process.nextTick(fn)
+
+```bash
+process.nextTick 的作用是把回调函数作为微任务，放入事件循环的任务队列中。
+
+因为 nodejs 并不适合计算密集型的应用，一个进程就一个线程，在当下时间点上，就一个事件在执行。那么，如果我们的事件占用了很多 cpu 时间，那么之后的事件就要等待非常久。所以，nodejs 的一个编程原则是尽量缩短每一个事件的执行事件。process.nextTick 的作用就在这，将一个大的任务分解成多个小的任务
+
+process.nextTick(fn) 虽然跟 setTimeout(fn, 0) 类似，但实际有实现及性能上的差异：
+
+	
+
+
+在浏览器端，nextTick 会退化成 setTimeout(callback, 0)。
+但在 nodejs 中请使用 nextTick 而不是 setTimeout，前者效率更高，并且严格来说，两者创建的事件在任务队列中顺序并不一样。
+	- process.nextTick(fn) 将 fn 放到 node 事件循环的 下一个tick 里；
+	- setTimetout(fn, 0) 将回调函数作为宏任务中的异步任务，放到事件循环的任务队列中。
+	- 宏任务中的同步任务 -> 微任务 -> 宏任务中的异步任务 -> 下一次循环中的同步任务
+```
+
+```js
+setTimeout(function() {
+  console.log("第一个1秒");
+  process.nextTick(function() {
+    console.log("第一个1秒：nextTick");
+  });
+}, 1000);
+
+setTimeout(function() {
+  console.log("第2个1秒");
+}, 1000);
+
+console.log("我要输出1");
+
+process.nextTick(function() {
+  console.log("nextTick");
+});
+
+console.log("我要输出2");
+
+/*
+	输出：
+    我要输出1
+    我要输出2
+    nextTick
+    第一个1秒
+    第一个1秒：nextTick
+    第2个1秒
+*/
+```
+
+
+
+#### 获取命令参数
+
+```bash
+process.argv 获取传给 node 的参数。例如 `node --harmony script.js --version` 中，`--harmony` 就是传给 node 的参数。
+process.execArgv 获取传给进程的参数。例如 `node script.js --version --help` 中，`--version --help` 就是传给进程的参数。
+
+
+process.argv 与 process.execArgv 返回一个数组，数组元素分别如下：
+	- 元素1：node
+	- 元素2：可执行文件的绝对路径
+	- 元素x：其他，比如参数等
+```
+
+```js
+// 命令行执行：node --harmony execArgv.js --nick chyingp
+
+// execArgv.js
+process.execArgv.forEach((val, index) => {
+  console.log(index + ': ' + val)
+})
+// 输出：
+// 0: --harmony
+
+process.argv.forEach((val, index) => {
+  console.log(index + ': ' + val)
+})
+// 输出：
+// 0: /Users/a/.nvm/versions/node/v6.1.0/bin/node
+// 1: /Users/a/Documents/execArgv.js
+// 2: --nick
+// 3: chyingp
+```
+
+
+
+#### 处理工作目录
+
+```bash
+- process.cwd()：返回当前工作目录
+- process.chdir(directory)：切换当前工作目录，失败后会抛出异常
+```
+
+````js
+console.log('Starting directory: ' + process.cwd())
+try {
+  process.chdir('/tmp')
+  console.log('New directory: ' + process.cwd())
+} catch (err) {
+  console.log('chdir: ' + err)
+}
+
+/**
+ * 输出如下：
+  Starting directory: /Users/a/Documents/2016.11.22-node-process
+  New directory: /private/tmp
+ */
+````
+
+
+
+#### 处理异常
+
+**uncaughtException 事件：来处理未捕获的异常**
+
+Nodejs 可以通过 try-catch 来捕获异常。如果异常未捕获，则会一直从底向事件循环冒泡。如是冒泡到事件循环的异常没被处理，那么就会导致当前进程异常退出。
+
+可以通过监听 process 的 uncaughtException 事件，来处理未捕获的异常。
+
+```js
+process.on("uncaughtException", (err, origin) => {
+  console.log(err.message);
+});
+
+const a = 1 / b;
+console.log("abc"); // 不会执行
+
+// 控制台的输出是：b is not defined。捕获了错误信息，并且进程以0退出
+```
+
+
+
+**unhandledRejection 事件**
+
+如果一个 Promise 回调的异常没有被`.catch()`捕获，那么就会触发 process 的 unhandledRejection 事件：
+
+```javascript
+process.on("unhandledRejection", (err, promise) => {
+    console.log(err.message);
+});
+
+Promise.reject(new Error("错误信息")); // 未被catch捕获的异常，交由unhandledRejection事件处理
+```
+
+
+
+**warning 事件**
+
+告警不是 Node.js 和 Javascript 错误处理流程的正式组成部分。 一旦探测到可能导致应用性能问题，缺陷或安全隐患相关的代码实践，Node.js 就可发出告警。
+
+比如前一段代码中，如果出现未被捕获的 promise 回调的异常，那么就会触发 warning 事件。
+
+
+
+**警告信息:process.emitWarning(warning)**
+
+用来抛出警告信息。
+
+```js
+process.emitWarning('Something happened!');
+// (node:50215) Warning: Something happened!
+```
+
+可以
+
+```js
+process.emitWarning('Something Happened!', 'CustomWarning');
+// (node:50252) CustomWarning: Something Happened!
+```
+
+可以对其进行监听
+
+```js
+process.emitWarning('Something Happened!', 'CustomWarning');
+
+process.on('warning', (warning) => {
+  console.warn(warning.name);
+  console.warn(warning.message);
+  console.warn(warning.stack);
+});
+
+/*
+(node:50314) CustomWarning: Something Happened!
+CustomWarning
+Something Happened!
+CustomWarning: Something Happened!
+    at Object.<anonymous> (/Users/a/Documents/git-code/nodejs-learning-guide/examples/2016.11.22-node-process/emitWarning.js:3:9)
+    at Module._compile (module.js:541:32)
+    at Object.Module._extensions..js (module.js:550:10)
+    at Module.load (module.js:456:32)
+    at tryModuleLoad (module.js:415:12)
+    at Function.Module._load (module.js:407:3)
+    at Function.Module.runMain (module.js:575:10)
+    at startup (node.js:160:18)
+    at node.js:445:3
+*/  
+```
+
+也可以直接给个Error对象
+
+```js
+const myWarning = new Error('Warning! Something happened!');
+myWarning.name = 'CustomWarning';
+
+process.emitWarning(myWarning);
+```
+
+
+
+#### 标准流对象
+
+```bash
+process 提供了 3 个标准流。需要注意的是，它们有些在某些时候是同步阻塞的
+	- process.stderr：标准错误是程序写入错误消息并调试数据的流。WriteStream 类型，console.error的底层实现，默认对应屏幕
+	- process.stdout：标准输出是程序将其输出数据写入的流。WriteStream 类型，console.log的底层实现，默认对应屏幕
+	- process.stdin：ReadStream 类型，默认对应键盘输入
+```
+
+```js
+process.stdin.setEncoding('utf8')
+
+process.stdin.on('readable', () => {
+  let chunk;
+  while ((chunk = process.stdin.read()) !== null) {
+    process.stdout.write(`data: ${chunk}`)
+  }
+})
+
+process.stdin.on('end', () => {
+  process.stdout.write('end')
+})
+
+/*
+	通过 process.stdin 读取用户输入同时，通过 Process.stdout 将内容输出到控制台
+      hello
+      data: hello
+      world
+      data: world
+*/
+```
+
+
+
+#### 用户组/用户 相关
+
+```bash
+- process.seteuid(id) 与 process.geteuid()：获得当前用户的id。（POSIX平台上才有效）
+- process.setegid(id) 与 process.getegid()：获得当前有效群组的id。（POSIX平台上才有效）
+- process.setgid(id) 与 process.getgid()：获得当前群组的id。（POSIX平台上才有效，群组、有效群组 的区别，请自行谷歌）
+- process.setroups(groups) 与 process.getgroups()：获得附加群组的id。（POSIX平台上才有效，
+- process.setgroups(groups) 与 process.getgroups()：获取群组信息
+- process.initgroups(user, extra_group)：初始化群组
+```
+
+
+
+#### 进程消息
+
+##### 当前进程信息
+
+- process.pid：返回进程id。
+- process.title：可以用它来修改进程的名字，当用ps命令，同时启动多个node进程时发挥作用。
+
+
+
+##### 进程运行所在环境
+
+- process.arch：返回当前系统的处理器架构（字符串），比如'arm', 'ia32', or 'x64'。
+- process.platform：返回关于平台描述的字符串，比如 darwin、win32 等。
+
+
+
+##### 运行情况/资源占用情况
+
+- process.uptime()：当前node进程已经运行了多长时间（单位是秒）。
+- process.memoryUsage()：返回进程占用的内存，单位为字节。输出内容大致如下：
+
+```js
+{ 
+    rss: 19181568, 
+    heapTotal: 8384512, // V8占用的内容
+    heapUsed: 4218408 // V8实际使用了的内存
+}
+```
+
+- process.cpuUsage([previousValue])：CPU使用时间耗时，单位为毫秒。user表示用户程序代码运行占用的时间，system表示系统占用时间。如果当前进程占用多个内核来执行任务，那么数值会比实际感知的要大。
+
+```js
+const startUsage = process.cpuUsage();
+// { user: 38579, system: 6986 }
+
+// spin the CPU for 500 milliseconds
+const now = Date.now();
+while (Date.now() - now < 500);
+
+console.log(process.cpuUsage(startUsage));
+// { user: 514883, system: 11226 }
+```
+
+- process.hrtime()：一般用于做性能基准测试。返回一个数组，数组里的值为 [[seconds, nanoseconds] （1秒等10的九次方毫微秒）。 注意，这里返回的值是相对于过去一个随机的时间，所以本身没什么意义。仅当你将上一次调用返回的值做为参数传入，才有实际意义。 
+
+```js
+const time = process.hrtime();
+
+setInterval(() => {
+  const diff = process.hrtime(time);
+
+  console.log(`Benchmark took ${diff[0] * 1e9 + diff[1]} nanoseconds`);
+}, 1000);
+
+/*
+	输出如下：
+    Benchmark took 1006117293 nanoseconds
+    Benchmark took 2049182207 nanoseconds
+    Benchmark took 3052562935 nanoseconds
+    Benchmark took 4053410161 nanoseconds
+    Benchmark took 5056050224 nanoseconds
+*/
+```
+
+
+
+##### node可执行程序相关信息
+
+- process.version：返回当前node的版本，比如'v6.1.0'。
+- process.versions：返回node的版本，以及依赖库的版本，如下所示。
+
+```js
+{ 
+  http_parser: '2.7.0',
+  node: '6.1.0',
+  v8: '5.0.71.35',
+  uv: '1.9.0',
+  zlib: '1.2.8',
+  ares: '1.10.1-DEV',
+  icu: '56.1',
+  modules: '48',
+  openssl: '1.0.2h'
+}
+```
+
+- process.release：返回当前node发行版本的相关信息，大部分时候不会用到。具体字段含义可以看这里。
+
+```js
+{
+  name: 'node',
+  lts: 'Argon',
+  sourceUrl: 'https://nodejs.org/download/release/v4.4.5/node-v4.4.5.tar.gz',
+  headersUrl: 'https://nodejs.org/download/release/v4.4.5/node-v4.4.5-headers.tar.gz',
+  libUrl: 'https://nodejs.org/download/release/v4.4.5/win-x64/node.lib'
+}
+```
+
+- process.config：返回当前 node版本 编译时的参数，同样很少会用到，一般用来查问题。
+- process.execPath：node可执行程序的绝对路径，比如 '/usr/local/bin/node'
+
+
+
+#### 向进程发送信号并关闭进程：process.kill(pid, signal)
+
+process.kill() 这个方法先向进程发送信号，并关闭进程。
+
+```js
+console.log('hello');
+
+process.kill(process.pid, 'SIGHUP');
+
+console.log('world');
+```
+
+输出如下，可以看到，最后一行代码并没有执行，因为向当前进程发送 SIGHUP 信号，进程退出所致。
+
+```shell
+hello
+[1]    50856 hangup     node kill.js
+```
+
+可以通过监听 SIGHUP 事件，来阻止它的默认行为。
+
+```js
+process.on('SIGHUP', () => {
+  console.log('Got SIGHUP signal.');
+});
+
+console.log('hello');
+process.kill(process.pid, 'SIGHUP');
+console.log('world');
+```
+
+测试结果比较意外，输出如下：（osx 10.11.4），SIGHUP 事件回调里的内容并没有输出。
+
+```shell
+hello
+world
+```
+
+猜测是因为写标准输出被推到下一个事件循环导致（类似process.exit()小节提到的），再试下
+
+```js
+process.on('SIGHUP', () => {
+  console.log('Got SIGHUP signal.');
+});
+
+setTimeout(function(){
+  console.log('Exiting.');
+}, 0);
+
+console.log('hello');
+
+process.kill(process.pid, 'SIGHUP');
+
+console.log('world');
+```
+
+输出如下
+
+```shell
+hello
+world
+Exiting.
+Got SIGHUP signal.
+```
+
+
+
+#### 终止进程
+
+##### process.exit() vs process.exitCode
+
+- `process.exit([exitCode])` 可以用来立即退出进程。即使当前有操作没执行完，比如 process.exit() 的代码逻辑，或者未完成的异步逻辑。
+- 但不推荐直接使用 process.exit()，这会导致事件循环中的任务直接不被处理，以及可能导致数据的截断和丢失（例如 stdout 的写入）。
+  - 写数据到 process.stdout 之后，立即调用 process.exit() 是不保险的，因为在node中往 stdout 写数据是非阻塞的，可以跨越多个事件循环，所以可能会存在写数据写到一半退出进程导致无法写入数据完成。比较保险的做法是，通过process.exitCode设置退出码，然后等进程自动退出。
+- 如果程序出现异常，必须退出不可，那么，可以抛出一个未被捕获的error，来终止进程，这个比 process.exit() 安全。 
+
+不推荐写法
+
+```js
+setTimeout(() => {
+    console.log("我不会执行");
+});
+
+process.exit(0);
+```
+
+正确安全的处理是，设置 process.exitCode，并允许进程自然退出。
+
+```js
+setTimeout(() => {
+    console.log("我不会执行");
+});
+
+process.exitCode = 1;
+```
+
+
+
+##### 事件
+
+```bash
+用于处理进程退出的事件有：beforeExit 事件 和 exit 事件。
+
+
+#### beforeExit 事件
+beforeExit 事件在进程退出之前（清空其事件循环并且没有其他工作要安排时）触发，参数为 exitCode。
+	- 如在退出时做一些异步操作，可以写在 beforeExit 事件中。
+	- 当 EventLoop 清空后显示调用 process.exit() 退出，或者未捕获的异常导致退出，beforeExit 不会触发。
+	- 注意：在 beforeExit 事件中如果是异步任务，那么又会被添加到任务队列中。当任务队列完成所有任务后，则又会触发 beforeExit 事件。因此需要处理这种情况来避免出现死循环。
+
+
+#### exit 事件
+在 exit 事件中，只能执行同步操作。在调用 'exit' 事件监听器之后，Node.js 进程将立即退出，从而导致在事件循环中仍排队的任何其他工作被放弃。
+```
+
+```js
+let hasSend = false;
+process.on("beforeExit", () => {
+    if (hasSend) return; // 避免死循环
+
+    setTimeout(() => {
+        console.log("mock send data to serve");
+        hasSend = true;
+    }, 500);
+});
+
+console.log(".......");
+
+// 输出：
+// .......
+// mock send data to serve
+```
+
+
+
+### 进程通信 IPC
+
+```bash
+child_process 模块提供了生成子进程的能力，可以给主进程提供优化 CPU 计算、多进程开发问题。
+
+
+- process.connected：如果当前进程是子进程，且与父进程之间通过IPC通道连接着，则为true；
+- process.disconnect()：
+		- 断开与父进程之间的IPC通道，此时会将 process.connected 置为false；
+		- 首先是 connected.js，通过 fork 创建子进程（父子进程之间创建了IPC通道）
+```
+
+```js
+const child_process = require('child_process')
+
+child_process.fork('./connectedChild.js', {
+  stdio: 'inherit',
+})
+```
+
+```js
+// connectedChild.js
+console.log('process.connected: ' + process.connected)
+process.disconnect()
+console.log('process.connected: ' + process.connected)
+
+// 输出：
+// process.connected: true
+// process.connected: false
+```
+
+
+
+#### 创建子进程
+
+```bash
+child_process 模块创建子进程的方法：spawn、fork、exec、execFile。
+	- fork、exec、execFile 都是通过 spawn 来实现的。
+	- exec 默认会创建 shell。execFile 默认不会创建 shell，意味着不能使用 I/O 重定向、file glob，但效率更高。
+	- spawn、exec、execFile 都有同步版本，但会造成进程阻塞。
+
+
+
+`spawn()` 传递 2 个参数：
+    - 第一个参数是要运行的命令。
+    - 第二个参数是一个包含选项列表的数组。
+		- 如 `spawn('ls', ['-lh', 'test'])` 则将生成命令 `ls -lh test`
+
+调用 `spawn()` 方法的结果是 `ChildProcess` 类的一个实例，用于标识生成的子进程。
+```
+
+`child_process.spawn()`的使用：
+
+```javascript
+const { spawn } = require("child_process");
+
+// 返回ChildProcess对象，默认情况下其上的stdio不为null
+const ls = spawn("ls", ["-lh"]);
+
+ls.stdout.on("data", data => {
+  console.log(`stdout: ${data}`);
+});
+
+ls.stderr.on("data", data => {
+  console.error(`stderr: ${data}`);
+});
+
+ls.on("close", code => {
+  console.log(`子进程退出，退出码 ${code}`);
+});
+```
+
+`child_process.exec()`的使用：
+
+```javascript
+const { exec } = require("child_process");
+// 通过回调函数来操作stdio
+exec("ls -lh", (err, stdout, stderr) => {
+  if (err) {
+    console.error(`执行的错误: ${err}`);
+    return;
+  }
+  console.log(`stdout: ${stdout}`);
+  console.error(`stderr: ${stderr}`);
+});
+```
+
+
+
+#### 取消子进程
+
+```js
+// 创建一个仅运行 5s 的子进程
+// 注意：这里不需要加 await，这里演示 1s 后取消子进程
+const subprocess = execa('sleep', ['5s'])
+
+// 1s 后取消子进程
+setTimeout(() => {
+  subprocess.cancel()
+}, 1000)
+
+try {
+  const { stdout, stderr } = await subprocess
+
+  console.log({ stdout, stderr })
+} catch (error) {
+  if (error.isCanceled) {
+    console.error(`ERROR: The command took too long to run.`)
+  } else {
+    console.error(error)
+  }
+}
+```
+
+
+
+
+
+#### 父子进程通信
+
+`fork()`返回的 ChildProcess 对象，监听其上的 message 事件，来接受子进程消息；调用 send 方法，来实现 IPC。
+
+```javascript
+// parent.js
+
+const { fork } = require("child_process");
+const cp = fork("./sub.js");
+cp.on("message", msg => {
+  console.log("父进程收到消息：", msg);
+});
+cp.send("我是父进程");
+```
+
+```javascript
+// sub.js
+
+process.on("message", m => {
+    console.log("子进程收到消息：", m);
+});
+
+process.send("我是子进程");
+```
+
+运行后结果：
+
+```shell
+父进程收到消息： 我是子进程
+子进程收到消息： 我是父进程
+```
+
+
+
+#### 独立子进程
+
+在正常情况下，父进程一定会等待子进程退出后，才退出。如果想让父进程先退出，不受到子进程的影响，那么应该：
+
+- 调用 ChildProcess 对象上的`unref()`
+- `options.detached` 设置为 true
+- 子进程的 stdio 不能是连接到父进程
+
+```javascript
+// main.js
+
+const { spawn } = require("child_process");
+const subprocess = spawn(process.argv0, ["sub.js"], {
+    detached: true,
+    stdio: "ignore"
+});
+
+subprocess.unref();
+```
+
+```javascript
+// sub.js
+
+setInterval(() => {}, 1000);
+```
+
+
+
+#### 进程管道
+
+options.stdio 选项用于配置在父进程和子进程之间建立的管道。 默认情况下，子进程的 stdin、 stdout 和 stderr 会被重定向到 ChildProcess 对象上相应的 subprocess.stdin、subprocess.stdout 和 subprocess.stderr 流。 这意味着可以通过监听其上的 `data`事件，在父进程中获取子进程的 I/O 。
+
+必须将子进程的输出通过管道传输到主进程，否则我们将看不到它的任何输出
+
+```js
+'use strict'
+
+const fs = require('fs')
+const { spawn } = require('child_process')
+const filename = 'test'
+
+fs.watch(filename, () => {
+  const ls = spawn('ls', ['-lh', filename])
+  ls.stdout.pipe(process.stdout)
+})
+```
+
+可以用来实现“重定向”：
+
+```javascript
+const fs = require("fs");
+const { spawn } = require("child_process");
+
+const subprocess = spawn("ls", {
+  stdio: [
+    0, // 使用父进程的 stdin 用于子进程。
+    "pipe", // 把子进程的 stdout 通过管道传到父进程 。
+    fs.openSync("err.out", "w") // 把子进程的 stderr 定向到一个文件。
+  ]
+});
+```
+
+也可以用来实现"管道运算符"：
+
+```javascript
+const { spawn } = require("child_process");
+
+const ps = spawn("ps", ["ax"]);
+const grep = spawn("grep", ["ssh"]);
+
+ps.stdout.on("data", data => {
+  grep.stdin.write(data);
+});
+
+ps.stderr.on("data", err => {
+  console.error(`ps stderr: ${err}`);
+});
+
+ps.on("close", code => {
+  if (code !== 0) {
+    console.log(`ps 进程退出，退出码 ${code}`);
+  }
+  grep.stdin.end();
+});
+
+grep.stdout.on("data", data => {
+  console.log(data.toString());
+});
+
+grep.stderr.on("data", data => {
+  console.error(`grep stderr: ${data}`);
+});
+
+grep.on("close", code => {
+  if (code !== 0) {
+    console.log(`grep 进程退出，退出码 ${code}`);
+  }
+});
+```
+
+
+
 ## URL接口
 
 ```bash
@@ -2031,14 +2792,6 @@ const newURL = {
     },
     hash: "#detail",
 }
-
-```
-
-
-
-## 进程 process
-
-```bash
 
 ```
 
@@ -2778,12 +3531,102 @@ watch() 与 watchFile() 的区别
 
 
 
+### 按行读取数据流 readline
+
+```bash
+readline 模块提供一次一行的方式来读取数据流。
+
+readline 模块的使用步骤
+- 使用 `readline` 的 `createInterface` 方法创建了一个接口实例
+- 调用实例的相关方法，如 `question` 方法输入
+- 监听 `readline` 的 `close` 事件
+
+一旦执行，Node.js 应用程序将不会终止，直到 `readline.Interface` 关闭，因为接口在输入流上等待接收数据。
+当所有操作的完成时，我们使用 `close` 方法来触发 `close` 事件，并可在事件中结束程序。
+
+
+`readline` 属性和方法
+    - `clearLine()` 清除指定流的当前行
+    - `clearScreenDown()` 从当前光标向下位置清除指定的流
+    - `createInterface()` 创建一个接口对象
+    - `cursorTo()` 将光标移动到指定位置
+    - `emitKeypressEvents()` 为指定流触发按键事件
+    - `moveCursor()` 将光标移动到相对于当前位置的新位置
+```
+
+```js
+const readline = require('readline')
+const { stdin: input, stdout: output } = require('process')
+
+const rl = readline.createInterface({ input, output })
+
+rl.question('你觉得 Node.js 怎么样？', (answer) => {
+  console.log(`感谢您的宝贵反馈: ${answer}`)
+
+  rl.close()
+})
+
+rl.on('close', () => {
+  console.log('退出程序')
+  process.exit(0)
+})
+```
+
+
+
+**打开一个文件并逐行返回内容**
+
+```js
+const readline = require('readline')
+const fs = require('fs')
+
+const rl = readline.createInterface({
+  input: fs.createReadStream('./package.json')
+})
+
+let lineno = 0
+rl.on('line', (line) => {
+  lineno++
+  console.log(`Line number ${lineno}': ${line}`)
+})
+```
+
+**回文扫描器**
+
+```js
+const readline = require('readline')
+
+const { stdin: input, stdout: output } = require('process')
+const rl = readline.createInterface({
+  input,
+  output
+})
+
+function isPalindrome(str) {
+  const result = str
+    .replace(/[\W_]/g, '')
+    .toLowerCase()
+    .split('')
+    .reverse()
+    .join('')
+  if (result == str.toLowerCase()) return true
+  else return false
+}
+
+console.log('------- 回文扫描器 ------- ')
+console.log('输入回文: ')
+rl.on('line', (input) => {
+  console.log(`${input} ${isPalindrome(input) ? '是' : '不是'}回文`)
+  console.log('输入回文: ')
+})
+```
+
+
+
 ### fs.extra
 
 ```bash
 `fs.extra` 是原生 fs 的替代品，该模块继承了 `fs-extra` 中所有方法，添加了原生 `fs` 模块中不包含的文件系统方法，并向 `fs` 方法添加了 promise 支持。
-
-fs.extra 分为同步和异步版本。
 
 `$ npm i fs-extra`
 ```
@@ -2818,13 +3661,12 @@ emptyDirSync(folder)
 
 
 
-## 资源压缩 zib
+## 资源压缩 zlib
 
 ```bash
-## 资源压缩 zlib
 使用gizp：浏览器向服务端发起资源请求时，浏览器通过在 http 头部添加 `Accept-Encoding: gzip, deflate` 来告诉服务端可以用 gzip 或者 defalte 算法来压缩资源。如下载一个js文件，服务端会先对资源进行压缩再返回给浏览器，以此减少资源的大小，加快返回速度。
 
-在 nodejs 中能对资源压缩的模块为 Alib 模块。
+在 nodejs 中能对资源压缩的模块为 zlib 模块。
 
 
 - 压缩文件：`zlib.createGzip()`
@@ -2851,7 +3693,6 @@ console.log(gzipStr)
 /** 资源解压 */
 const gunzip = zlib.createGunzip()
 readStream.pipe(gunzip).pipe(writeStream)
-
 ```
 
 
@@ -2894,7 +3735,6 @@ const server = http.createServer((req, res) => {
 server.listen(3000, () => {
     console.log("server start")
 })
-
 ```
 
 
@@ -2931,10 +3771,9 @@ main()
 ## 网络协议 http
 
 ```bash
-## 网络协议 http
 http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传输数据的方法。而 https 模块通过 HTTP TLS/SSL 协议传输数据的方法，该协议是安全的 HTTP 协议。
 	- 各种 Node HTTP 服务框架的底层原理都是离不开该模块。
-使用内置的 `http` 模块，我们可以快速的搭建一个简单的 HTTP 服务器。该服务器允许我们监听任意端口并提供一个回调函数，该函数将在每个传入请求时调用。
+使用内置的 `http` 模块，可搭建一个 HTTP 服务器。该服务器允许我们监听任意端口并提供一个回调函数在每个传入请求时调用。
 回调将接收两个参数：一个 Request 对象和一个 Response 对象。Request 对象将填充有关请求的有用属性，而 Response 对象将用于向客户端发送响应。
 
 
@@ -2977,7 +3816,6 @@ http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传�
 ### 事件 close/finish
 - close：response.end() 被调用前连接就断开，此时会触发这个事件。
 - finish：响应header、body都已经发送出去（交给操作系统，排队等候传输），但客户端是否实际收到数据为止。（这个事件后 res 上就不会再有其他事件触发）
-
 ```
 
 ### 服务器请求
@@ -3245,12 +4083,63 @@ server.listen(3000)
 
 ```
 
+
+
+## TCP通讯服务 net
+
+```bash
+net 模块提供了一种创建 TCP 服务器和 TCP 客户端的方法。它是 NodeJS 通讯功能实现的基础。
+
+net 模块主要包含两部分：
+	- net.Server：用于创建 TCP 或 IPC 服务器。
+	- net.Socket：对象是 TCP 或 UNIX Socket 的抽象。net.Socket 实例实现一个双工流接口，可以在用户创建客户端（使用 connect()） 时使用，或用 Node 创建它们，并通过 connection 服务器事件传递给用户。
+```
+
+```js
+// server.js
+const net = require('net')
+
+// 建立服务器
+const server = net.createServer((connection) => {
+  console.log('client connected')
+  connection.on('end', () => {
+    console.log('客户端关闭连接')
+  })
+  connection.write('Hello Node.js!')
+  connection.pipe(connection)
+})
+
+const port = 8080
+server.listen(port, () => {
+  console.log(`App listening on port ${port}`)
+})
+```
+
+```js
+// client.js
+const net = require('net')
+
+const port = 8080
+const client = net.connect({ port }, () => {
+  console.log('连接到服务器！')
+})
+
+client.on('data', (data) => {
+  console.log(data.toString())
+  client.end()
+})
+
+client.on('end', () => {
+  console.log('断开与服务器的连接')
+})
+```
+
+
+
 ## 数据加密 crypto
 
 ```bash
-## 数据加密 crypto
 crypto 模块的目的是为了提供通用的加密和哈希算法。
-
 ```
 
 ```js
@@ -3285,11 +4174,10 @@ console.log("decrypted:", decrypted) // decrypted: hello world
 ### 计算摘要 hash
 
 ```bash
-## 计算摘要 Hash
 在 crypto 模块中，Hash 是一种用于计算数据摘要的算法，它可以将任意长度的数据映射为固定长度的哈希值。
 哈希值通常用于验证数据完整性、数据签名和密码存储等场景。
 
-注意：Hash 对象是单向的，即不能从哈希值中恢复原始数据。因此 Hash 算法通常用于验证数据完整性和密码存储等场景。
+注意：Hash 对象是单向的，不能从哈希值中恢复原始数据。因此 Hash 算法通常用于验证数据完整性和密码存储等场景。
 在密码场景中，通常将密码的哈希值存储在数据库中，而不是存储密码本身，以提高安全性。当用户登录时，将输入的密码进行哈希计算，然后将计算得到的哈希值与数据库中存储的哈希值进行比较，以验证密码是否正确。
 
 在 crypto 模块中，可以使用 `const hash = crypto.createHash(algorithm)` 方法创建一个 Hash 对象。
@@ -3308,7 +4196,6 @@ console.log("decrypted:", decrypted) // decrypted: hello world
 		input_encoding 可以是 utf8、ascii 或者 latin1。
 	如果 data 是字符串，且没有指定 input_encoding，则默认是utf8。
 	注意：hash.update() 方法可以调用多次。
-
 ```
 
 ```js
@@ -3677,6 +4564,339 @@ const puppeteer = require("puppeteer-core")
 })()
 ```
 
+### Page 方法
+
+调用 `browser.newPage()` 得到的 `page` 对象，所有方法都返回一个 Promise，因此它们通常带有 `await` 关键字。
+
+#### 查询dom节点 page.$()
+
+允许访问页面上的 `querySelector()` 方法
+
+#### 查询全部dom节点 page.$$()
+
+允许访问页面上的 `querySelectorAll()` 方法
+
+#### 查询dom节点并传入函数 page.$eval()
+
+接受 2 个或更多参数。第一个是选择器，第二个是函数。如果有更多参数，则这些参数将作为附加参数传递给函数。
+
+它在页面上运行 `querySelectorAll()`，使用第一个参数作为选择器，然后将该参数用作函数的第一个参数。
+
+```js
+const innerTextOfButton = await page.$eval(
+  'button#submit',
+  (el) => el.innerText
+)
+```
+
+#### 点击事件 click()
+
+在作为参数传递的元素上执行鼠标单击事件：
+
+```js
+await page.click('button#submit')
+```
+
+我们可以传递一个带有选项对象的附加参数：
+
+- `button` 可以设置为 `left`（默认）、`right` 或 `middle`
+- `clickCount` 是一个默认为 1 的数字，用于设置应单击元素的次数
+- `delay` 是点击之间的毫秒数。默认为 `0`
+
+#### 获取页面内容 content()
+
+获取页面的 HTML 源代码：
+
+```js
+const source = await page.content()
+```
+
+#### 模拟设备 emulate()
+
+`emulate()` 用于模拟设备。它将用户代理设置为特定设备，并相应地设置视口。
+
+以下是模拟 iPhone X 的方法：
+
+```js
+const puppeteer = require('puppeteer')
+const device = require('puppeteer/DeviceDescriptors')['iPhone X']
+
+puppeteer.launch().then(async (browser) => {
+  const page = await browser.newPage()
+  await page.emulate(device)
+
+  //do stuff
+
+  await browser.close()
+})
+```
+
+#### 计算函数 evaluate()
+
+在页面上下文中计算函数。在这个函数中可以访问 `document` 对象，因此可以调用任何 DOM API。
+
+在此处调用的任何内容都在页面上下文中执行，因此如果运行 `console.log()`，将不会在 Node.js 上下文中看到结果，因为这是在无头浏览器中执行的。
+
+我们可以在这里计算值并返回 JavaScript 对象，但如果想返回一个 DOM 元素并在 Node.js 上下文中访问它，必须使用方法 `evaluateHandle()`。如果从 `evaluate()` 返回一个 DOM 元素，我们只会得到一个空对象。
+
+```js
+const puppeteer = require('puppeteer')
+
+;(async () => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto('https://github.com/lio-zero')
+
+  const result = await page.evaluate(() => {
+    return document.querySelector('.avatar-user').length
+  })
+
+  console.log(result)
+})()
+```
+
+
+
+#### 计算函数并返回DOM元素 evaluateHandle()
+
+类似于 `evaluate()`，但是如果返回一个 DOM 元素，将得到正确的对象而不是一个空对象：
+
+```js
+const puppeteer = require('puppeteer')
+
+;(async () => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto('https://github.com/lio-zero')
+
+  const result = await page.evaluateHandle(() => {
+    return document.querySelector('.avatar-user')
+  })
+
+  console.log(result)
+})()
+```
+
+#### 导出函数 exposeFunction()
+
+此方法允许在浏览器上下文中添加一个新函数，该函数在 Node.js 上下文中执行。这意味着可以添加一个在浏览器中运行 Node.js 代码的函数。
+
+此示例在浏览器上下文中添加一个 `test()` 函数，该函数从文件系统读取 `app.js` 文件，其路径相对于脚本：
+
+```js
+const puppeteer = require('puppeteer')
+const fs = require('fs')
+
+;(async () => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto('https://github.com/lio-zero')
+
+  await page.exposeFunction('test', () => {
+    const loadData = (path) => {
+      try {
+        return fs.readFileSync(path, 'utf8')
+      } catch (err) {
+        console.error(err)
+        return false
+      }
+    }
+    return loadData('app.js')
+  })
+
+  const result = await page.evaluate(() => {
+    return test()
+  })
+
+  console.log(result)
+})()
+```
+
+#### 聚焦元素 focus()
+
+聚焦元素：
+
+```js
+await page.focus('input#name')
+```
+
+#### 页面回退 goBack()
+
+返回页面导航历史：
+
+```js
+await page.goBack()
+```
+
+#### 页面前进 goForward()
+
+在页面导航历史中前进：
+
+```js
+await page.goForward()
+```
+
+#### 打开页面 goto()
+
+打开一个新页面：
+
+```js
+await page.goto('https://github.com/lio-zero')
+```
+
+可以使用选项将对象作为第二个参数传递。其中，如果传递了 `waitUntil: networkidle2`，将等到导航完成：
+
+```js
+await page.goto('https://github.com/lio-zero', { waitUntil: 'networkidle2' })
+```
+
+#### 页面悬停 hover()
+
+在作为参数传递的选择器上执行鼠标悬停：
+
+```js
+await page.hover('input#name')
+```
+
+#### 生成pdf文件 pdf()
+
+从页面生成 PDF：
+
+注意：`launch` 方法不要设置 `headless` 选项的值为 `false`。
+
+```js
+await page.pdf({ path: 'file.pdf' })
+```
+
+#### 重加载页面 reload()
+
+重新加载页面：
+
+```js
+await page.reload()
+```
+
+#### 页面截图 screenshot()
+
+获取页面的 PNG 截图，将其保存到使用 `path` 选择的文件名：
+
+```js
+await page.screenshot({ path: 'screenshot.png' })
+```
+
+#### 选择dom元素 select()
+
+选择作为参数传递的选择器标识的 DOM 元素
+
+```js
+await page.select('input#name')
+setContent()
+```
+
+可以设置页面的内容，而不是打开现有的网页。对于以编程方式使用现有 HTML 生成 PDF 或屏幕截图非常有用：
+
+```js
+const html = '<h1>Hello!</h1>'
+await page.setContent(html)
+await page.pdf({ path: 'hello.pdf' })
+await page.screenshot({ path: 'screenshot.png' })
+```
+
+#### 设置视窗大小 setViewPort()
+
+默认情况下，视口为 `800 x 600`。如果想有一个不同的视口，也许需要截屏，调用 `setViewport` 传递一个带有 `width` 和 `height` 属性的对象。
+
+```js
+await page.setViewport({ width: 1280, height: 800 })
+```
+
+#### 获取页面标题 title()
+
+获取页面标题：
+
+```js
+await page.title()
+```
+
+#### type()
+
+输入标识表单元素的选择器
+
+```js
+await page.type('input#name', 'lotto')
+```
+
+`delay` 选项允许像真实用户一样模拟打字，在每个字符之间添加延迟：
+
+```js
+await page.type('input#name', 'lotto', { delay: 100 })
+```
+
+#### url()
+
+获取页面地址：
+
+```js
+await page.url()
+```
+
+#### viewport()
+
+获取页面视口：
+
+```js
+await page.viewport()
+```
+
+#### waitFor()
+
+等待特定的事情发生。具有以下快捷功能：
+
+- `waitForFunction`
+- `waitForNavigation`
+- `waitForRequest`
+- `waitForResponse`
+- `waitForSelector`
+- `waitForXPath`
+
+```js
+await page.waitFor(waitForNameToBeFilled)
+const waitForNameToBeFilled = () => page.$('input#name').value != ''
+```
+
+### Page 命名空间
+
+`page` 对象可以访问几个不同的对象：
+
+- `accessibility`
+- `coverage`
+- `keyboard`
+- `mouse`
+- `touchscreen`
+- `tracing
+
+```js
+// 触发 `input` 元素的方式
+await page.keyboard.type('hello!')
+```
+
+其他键盘方法是：
+
+- `keyboard.down()` 发送 `keydown` 事件
+- `keyboard.press()` 发送一个 `keydown` 后跟一个 `keyup`（模拟普通键类型）。主要用于修饰键（`shift`、`ctrl` 和 `cmd`）
+- `keyboard.sendCharacter()` 发送按键事件
+- `keyboard.type()` 发送 `keydown`、`keypress` 和 `keyup` 事件
+- `keyboard.up()` 发送 `keyup` 事件
+
+`mouse` 提供 4 种方法：
+
+- `mouse.click()` 模拟点击：`mousedown` 和 `mouseup` 事件
+- `mouse.down()` 模拟 `mousedown` 事件
+- `mouse.move()` 移动到不同的坐标
+- `mouse.up()` 模拟 `mouseup` 事件
+
+
+
 ### 爬虫模拟登录
 
 ```ts
@@ -3738,7 +4958,6 @@ const doPyt = async () => {
     browser.close()
 }
 doPyt()
-
 ```
 
 ![爬虫](./image/e70bfa89b435885a8705d32af28fa5123d4c38da.gif)
@@ -3801,7 +5020,6 @@ const doPyt = async () => {
     await browser.close()
 }
 doPyt()
-
 ```
 
 ### 输入文本与元素点击
@@ -3866,7 +5084,6 @@ const doPyt = async () => {
     }
 }
 doPyt()
-
 ```
 
 
