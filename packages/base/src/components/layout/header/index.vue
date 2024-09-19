@@ -18,11 +18,13 @@ import { Left, Right, AlignTextLeft, AlignTextRight } from '@icon-park/vue-next'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useAppStore } from '@store/app'
 import { useSettingStore } from '@store/app/setting'
 import { useThemeStore } from '@store/app/theme'
 
 const router = useRouter()
 
+const { appConfig } = storeToRefs(useAppStore())
 const { showMenu, showPlayerModule } = storeToRefs(useSettingStore())
 const { themeLayoutIsVertical } = storeToRefs(useThemeStore())
 const toggleMenuStatus = () => {
@@ -77,6 +79,17 @@ const menuConfig = computed(() => {
         @click="router.go(1)"
       />
     </el-tooltip>
+
+    <!-- 当前路由的标题 -->
+    <div
+      v-if="appConfig?.routeInfo"
+      class="flex items-center text-gray-400 hover-text"
+    >
+      <IconPark :icon="appConfig.routeInfo.icon" size="16" :stroke-width="4" />
+      <span class="text-base ml-px cursor-pointer">{{
+        appConfig.routeInfo.title
+      }}</span>
+    </div>
   </div>
 
   <!-- 搜索栏 -->

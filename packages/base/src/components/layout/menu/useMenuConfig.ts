@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-05-31 17:26:31
- * @ Modifier: willy
- * @ ModifierTime: 2024-06-06 21:34:22
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-09-19 11:02:38
  * @ Description: 菜单的配置
  */
 
@@ -60,7 +60,11 @@ export function useMenuConfig() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMenuSelect = (name, indexPath) => {
     if (name !== 'logo') {
-      router.push({ name, replace: false, query: { indexPath } })
+      router.push({
+        name,
+        replace: false,
+        query: { indexPath: encodeURIComponent(indexPath.join('/')) },
+      })
     }
   }
 

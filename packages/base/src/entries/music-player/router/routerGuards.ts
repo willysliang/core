@@ -2,17 +2,18 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-10-25 16:53:47
  * @ Modifier: willysliang
- * @ ModifierTime: 2024-06-18 14:25:23
+ * @ ModifierTime: 2024-09-19 11:21:00
  * @ Description:路由守卫 routerGuards
  */
 
+import { isNavigationFailure, Router } from 'vue-router'
+import { ElLoading, ElMessage } from 'element-plus'
 import NProgress from 'nprogress' // 导入 nprogress模块
 import 'nprogress/nprogress.css' // 导入样式，否则看不到效果
-import { isNavigationFailure, Router } from 'vue-router'
+import { useAppStoreWithOut } from '@store/app'
 import { USER_TOKEN } from '@/config/constant/cache'
 import { Storage } from '@utils/cache'
 import { Pages } from './constant'
-import { ElLoading, ElMessage } from 'element-plus'
 
 NProgress.configure({ showSpinner: false }) // 显示右上角螺旋加载提示
 
@@ -29,7 +30,6 @@ export function createRouterGuards(router: Router) {
       background: 'rgba(0, 0, 0, 0.7)',
     })
 
-    // 不使用TS扩展，这里将会得到 unkonw 类型
     document.title = to.meta.title
 
     const token = Storage.get(USER_TOKEN, null)
@@ -54,9 +54,14 @@ export function createRouterGuards(router: Router) {
   })
 
   /** 路由后置守卫 */
-  router.afterEach((__, _, failure) => {
+  router.afterEach((to, _, failure) => {
+    const appStore = useAppStoreWithOut()
+    appStore.$patch((state) => {
+      state.appConfig.routeInfo = to.meta
+    })
+
     if (isNavigationFailure(failure)) {
-      // console.error('failed navigation', failure)
+      console.error('failed navigation', failure)
       ElMessage.info('您已在当前页')
     }
 
@@ -66,6 +71,6 @@ export function createRouterGuards(router: Router) {
 
   /** 路由错误 */
   router.onError((error) => {
-    console.log(error, '路由错误')
+    console.error(error, '路由错误')
   })
 }

@@ -13,5 +13,8 @@ const videoRef = ref()
 </script>
 
 <template>
-  <div ref="videoRef" style="width: 100%; height: 10rem">视频弹幕</div>
+  <div ref="videoRef" style="width: 100%; height: 10rem">
+    视频弹幕
+    <br />(TODO.....)
+  </div>
 </template>
