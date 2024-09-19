@@ -15,6 +15,8 @@
 <style lang="scss">
 .TextReflection-pages {
   min-height: 30rem;
+  display: flex;
+  flex-wrap: wrap;
 
   p {
     position: relative;
@@ -26,6 +28,7 @@
     background-size: cover;
     background-clip: text;
     color: transparent;
+    width: 50%;
 
     &::before {
       content: attr(content);

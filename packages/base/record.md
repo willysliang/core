@@ -29,6 +29,7 @@ Description: 日志记录
 
 ## 2024年9月19日
   - feat(layout): 当前路由的标题显示到头部导航栏中
+  - feat(demo): [CssEffects] 萤火虫特效
 
 ## 2024年8月23日
   - feat(hooks): [handler] computedWithControl 响应式实现computed的非响应式数据变化
