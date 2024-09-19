@@ -85,7 +85,7 @@ const menuConfig = computed(() => {
       v-if="appConfig?.routeInfo"
       class="flex items-center text-gray-400 hover-text"
     >
-      <IconPark :icon="appConfig.routeInfo.icon" size="16" :stroke-width="4" />
+      <IconPark :icon="appConfig.routeInfo.icon" :size="16" :stroke-width="4" />
       <span class="text-base ml-px cursor-pointer">{{
         appConfig.routeInfo.title
       }}</span>
