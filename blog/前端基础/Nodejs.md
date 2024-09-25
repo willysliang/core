@@ -4499,6 +4499,101 @@ events.emit("someEvent", "arg1 参数", "arg2 参数")
  */
 ```
 
+
+
+## 断言测试 assert
+
+```bash
+在 Node.js 中，assert 模块用于进行断言测试，它提供一组用于验证条件的函数，如果条件不满足，就会抛出错误。
+用于进行断言测试和错误处理。在开发过程中，可以使用它来确保代码的正确性，但在生产环境中应该谨慎使用，以避免不必要的错误抛出。
+
+
+#### 注意事项
+1. 断言失败会抛出错误：
+   - 当断言条件不满足时，`assert`模块会抛出一个`AssertionError`。在生产环境中，通常不应该使用断言，因为抛出错误可能会导致应用程序崩溃。在开发和测试环境中，可以使用断言来帮助调试和确保代码的正确性。
+2. 自定义错误消息：
+   - 大多数`assert`函数都接受一个可选的`message`参数，可以用来提供更详细的错误消息。这对于在断言失败时快速理解问题很有帮助。
+3. 与其他测试框架的结合：
+   - 虽然`assert`模块可以用于简单的测试，但在实际项目中，通常会使用更强大的测试框架，如`Mocha`、`Jest`等。这些框架提供了更多的功能和更好的测试报告。
+   
+   
+   
+#### 用途
+1. 单元测试：
+	- 在编写单元测试时，可以使用`assert`模块来验证函数的输出是否符合预期。
+	- 例如，测试一个加法函数是否正确地返回两个数的和。
+
+2. 调试和错误处理：
+	- 在开发过程中，可以使用断言来检查代码中的假设是否成立。
+	- 如果假设不成立，说明可能存在错误，可以快速定位问题。
+
+
+
+#### 主要方法
+1. 真值：assert.ok(value[, message])
+检查 `value` 是否为真值（即不是`false`、`0`、`''`、`null`、`undefined`和`NaN`）。
+如果不是真值，就会抛出一个带有可选`message`的`AssertionError`。
+
+
+2. 相等：assert.equal(actual, expected[, message])
+检查`actual`和`expected`是否严格相等（使用`===`运算符）。
+如果不相等，就会抛出一个带有可选`message`的`AssertionError`。
+
+3. 不等：assert.notEqual(actual, unexpected[, message])
+检查`actual`和`unexpected`是否不严格相等（使用`!==`运算符）。
+如果相等，就会抛出一个带有可选`message`的`AssertionError`。
+
+4. 深度相等：assert.deepEqual(actual, expected[, message])
+递归地比较`actual`和`expected`是否相等。它会比较对象的属性和数组的元素，而不仅仅是引用相等。
+如果不相等，就会抛出一个带有可选`message`的`AssertionError`。
+
+5. 不深度相等：assert.notDeepEqual(actual, unexpected[, message])
+与`assert.deepEqual`相反，检查`actual`和`unexpected`是否不深度相等。
+如果相等，就会抛出一个带有可选`message`的`AssertionError`。
+```
+
+**方法示例**
+
+```js
+const assert = require('assert');
+
+assert.ok(true); // 不会抛出错误
+assert.ok(false, 'Value should be true'); // 会抛出 AssertionError: Value should be true
+
+assert.equal(1, 1); // 不会抛出错误
+assert.equal(1, 2, 'Values should be equal'); // 会抛出 AssertionError: Values should be equal
+
+assert.notEqual(1, 2); // 不会抛出错误
+assert.notEqual(1, 1, 'Values should not be equal'); // 会抛出 AssertionError: Values should not be equal
+
+const obj1 = { a: 1, b: 2 };
+const obj2 = { a: 1, b: 2 };
+assert.deepEqual(obj1, obj2); // 不会抛出错误
+assert.notDeepEqual(obj1, obj2, 'Objects should not be deeply equal'); // 会抛出 AssertionError: Objects should not be deeply equal
+```
+
+**用途示例**
+
+```js
+// 测试一个加法函数是否正确地返回两个数的和
+function add(a, b) {
+  return a + b;
+}
+const assert = require('assert');
+assert.equal(add(2, 3), 5); // 验证加法函数的结果
+
+
+// 调试和错误处理
+function divide(a, b) {
+  assert.ok(b!== 0, 'Division by zero is not allowed');
+  return a / b;
+}
+divide(10, 2); // 正常执行
+divide(10, 0); // 会抛出 AssertionError: Division by zero is not allowed
+```
+
+
+
 ## 爬虫 puppeteer
 
 ```bash
