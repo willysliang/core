@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-26 10:10:39
- * @ Modifier: willy
- * @ ModifierTime: 2024-02-26 10:10:56
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-09-23 14:57:01
  * @ Description: 格式化
  */
 
@@ -93,6 +93,20 @@ export const formatDate = (
     if (new RegExp(k).test(formatRegTxt)) {
       formatRegTxt = formatRegTxt.replace(new RegExp(k), formatRegMap[k])
     }
+  }
+
+  /** 周转换 */
+  const weeks = [
+    '\u65e5',
+    '\u4e00',
+    '\u4e8c',
+    '\u4e09',
+    '\u56db',
+    '\u4e94',
+    '\u516d',
+  ]
+  if (/(E+)/.test(formatRegTxt)) {
+    formatRegTxt = formatRegTxt.replace(RegExp.$1, weeks[date.getDay()])
   }
 
   return formatRegTxt

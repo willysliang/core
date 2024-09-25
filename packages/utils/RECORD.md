@@ -24,6 +24,8 @@ Description: 日志记录
   - bug 发现但未修复的bug
 
 
+## 2024年9月25日
+  - feat(utils): [common] formatDate 日期格式化
 
 ## 2024年6月5日
   - feat(app): [browser] 全屏 fullScreen
