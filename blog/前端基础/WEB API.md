@@ -2664,15 +2664,13 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 ##### 浏览器端订阅
 
 ```bash
-浏览器端在订阅 Push Server 时，必须 Notification 是授权的，否则会出现授权窗口，这里的授权交互和 Notification 的授权是一样的。
+浏览器端在订阅 Push Server 时，Notification 必须是授权的，否则会出现授权窗口，这里的授权交互和 Notification 的授权是一样的。
 
 注意：Notificatino 的授权状态手动调整改变后，订阅体将失效，需要重新订阅。
 
 注意：目前大部分国内网络环境无法访问 Chrome 的 FCM 推送服务器，所以在不出海的网络环境下浏览器无法完成订阅。FireFox 的推送服务器不存在此问题，所以可以在 FireFox 下测试此功能。
 
-关于推送请求问题，需要使用 VAPID 协议。
-
-订阅时applicationServerKey 使用 VAPID 公钥作为识别标示，规范中要求公钥需要 UInt8 类型，所以订阅前要进行类型转换。
+关于推送请求问题：订阅时 applicationServerKey 需要使用 VAPID 协议公钥作为识别标示，规范中要求公钥需要 UInt8 类型，所以订阅前要进行类型转换。
 ```
 
 ![image-20240228204948313](./image/image-20240228204948313.png)
@@ -2754,8 +2752,7 @@ self.addEventListener("push", function(event) {
 Authorization 的签名采用 JWT（JSON web token），JWT 是一种向第三方发送消息的方式，三方收到后，获取发送者的公钥进行验证 JWT 的签名。
 Authorization 对 JWT 签名的格式要求：`Authorization: 'WebPush <JWT Info>.<JWT Data>.<Signature>'`
 在签名的前面加上 WebPush 作为 Authorization 头的值发送给推送服务器。
-推送协议同时要求Crypto-Key header 头，用来发送公钥，并需要p256ecdsa=前缀，格式：`Crypto-Key: p256ecdsa=<URL Safe Base64 Public Application Server Key>
-`
+推送协议同时要求Crypto-Key header 头，用来发送公钥，并需要 `p256ecdsa=` 前缀，格式：`Crypto-Key: p256ecdsa=<URL Safe Base64 Public Application Server Key>`
 ```
 
 ##### 关于消息部分的加密
@@ -2920,6 +2917,50 @@ webpush
     // err.statusCode
   });
 ```
+
+
+
+### 显示消息 Notification API
+
+```bash
+Notifications API 是浏览器向开发人员公开的接口，允许在用户允许的情况下向用户显示消息，即使网站/Web 应用未在浏览器中打开。
+这些消息是一致的和原生的，这意味着接收者习惯于它们的 UI 和 UX（用户界面和用户体验），是系统范围的，而不是特定于您的网站。
+	- 与 Push API 相结合，这项技术可以成为提高用户参与度和增强应用功能的成功途径。
+	- Notifications API 与 Service Worker 进行了大量的交互，因为它是推送通知所需要的。您可以使用 Notifications API 而不使用 Push API，但是它的用例是有限的。
+
+在这两种情况下，函数都会被传递一个 `permission` 字符串，该字符串可以具有以下值之一：
+  - `granted` — 用户接受，我们可以显示权限
+  - `denied` — 用户拒绝，我们无法显示任何权限
+	- 也可以通过检查 `Notification.permission` 属性来检索这些值，如果用户已经授予权限，则该属性的计算结果为 `granted` 或 `denied`，但如果您尚未调用 `Notification.requestPermission()`，它将解析为 `default`。
+```
+
+```js
+if (window.Notification && Notification.permission !== 'denied') {
+  const process = (permission) => {
+    // 如果用户接受，状态为 granted
+    if (permission === 'granted') {
+      // 打开通知
+      const n = new Notification('Title', {
+        body: '我是正文内容!',
+        icon: '/path/to/icon.png' // 可选
+      })
+      
+      // 关闭通知
+			setTimeout(n.close(), 1000)
+    }
+  }
+  
+  // 调用请求此权限
+  // 因为过去对 `Notification.requestPermission()` 的不同实现，我们现在必须支持它，因为我们事先不知道浏览器中运行的是哪个版本（是 Promise 还是同步调用回调函数不确定）
+  Notification.requestPermission((status) => {
+    process(status)
+  }).then((permission) => {
+    process(permission)
+  })
+}
+```
+
+
 
 
 

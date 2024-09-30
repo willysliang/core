@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年9月30日
+  - docs(前端基础): [WEB_API] 显示消息 Notification API
+
 ## 2024年9月25日
   - docs(前端基础): [Nodejs] 任务调度node-cron、断言测试assert
 
