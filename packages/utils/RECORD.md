@@ -23,6 +23,8 @@ Description: 日志记录
   - wip 开发中
   - bug 发现但未修复的bug
 
+## 2024年10月22日
+  - feat(utils): [file] baseFileUtils.compressFileImage 对图片文件进行压缩
 
 ## 2024年9月25日
   - feat(utils): [common] formatDate 日期格式化
