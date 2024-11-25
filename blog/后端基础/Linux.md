@@ -111,8 +111,8 @@ $client.DownloadFile('http://test.com/xxx.html','D:\index.html')
 
 > ```bash
 > # Nginx 概述
-> Nginx (engine x) 是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。
-> Nginx是由伊戈尔·赛索耶夫为俄罗斯访问量第二的Rambler.ru站点（俄文：Рамблер）开发的，第一个公开版本0.1.0发布于2004年10月4日。2011年6月1日，nginx 1.0.4发布。
+> Nginx (engine x) 是一个高性能的 HTTP 和反向代理 web 服务器，同时也提供了 IMAP/POP3/SMTP 服务。
+> 
 >
 > 高并发/大流量：需要面对高并发用户，大流量访问。
 > Nginx 是一个安装非常的简单、配置文件非常简洁（还能够支持perl语法）、Bug非常少的服务。
@@ -631,3 +631,320 @@ Nginx配置文件
 > $request_method 请求方法
 > ```
 
+
+
+### 地址匹配 location
+
+location 用于定义URL匹配规则，以决定哪些请求会被转发到哪个配置区块进行处理。
+它通常与 root 指令配合使用来指定处理这些请求的文件目录。
+location 的作用是匹配请求的URI，并不改变该URI。
+
+
+#### Nginx 静态文件中 root 和 alias 指令
+
+1. root 指令
+   root 指令用来指定服务器上的一个目录作为请求的根目录，当触发请求时 Nginx 会将请求的 URL 直接附加到这个根目录后面，从而找到对应的文件。
+
+2. alias 指令
+   alias 指令用来修改匹配到的location路径，实际上改变了请求资源的文件路径。
+   不同于 root，alias 会替换掉 location 匹配到的部分路径。
+
+3. root 和 alias 区别在于指定路径的处理方式。
+
+  - root: location 部分会附加到 root 部分的路径上，最终形成路径为 `root + location`
+  - alias: location 部分将被替换为 alias 部分的路径，最终路径为 `alias`
+
+```nginx
+server {
+  listen 80;
+  server_name www.willy.com;
+
+  # 用 root 指令处理主页
+  location / {
+    root /var/www/html;
+    index index.html;
+  }
+
+  # 用 root 指令处理静态文件
+  location /static/ {
+    root /var/www/;
+  }
+
+  # 用 alias 指令处理图片目录
+  location /images/ {
+    alias /var/www/images/;
+  }
+}
+
+# 说明
+## 1. 主页处理：当访问 `http://www.willy.com/` 时，Nginx 会匹配到第一个 location 块。由于配置 `root /var/www/html;`，Nginx 会在 `/var/www/html/` 目录下查找 `index.html` 文件来响应这个请求。
+## 2. 静态文件: 当访问 `http://www.willy.com/static/example.png` 会在 `/var/www/` 位置寻找 `example.png` 文件。
+## 3. 图片处理：当访问 `http://www.willy.com/image/logo.png` 时，Nginx 匹配到第二个 location 块。通过配置 `alias /var/www/images/;`，Nginx 会在 `/var/www/images/` 目录下查找 `logo.png` 图片文件 (`/images/URI` 被替换成了文件系统上的路径 `/var/www/images/`)
+```
+
+
+### 重定向 rewrite
+
+rewrite 模块负责静态重写，它允许使用正则表达式改变 URI，并根据变量来重定向以及选择配置。
+语法: `rewrite patten replace flag`
+
+  - patten 是正则表达式，与 patten 匹配的 URL 都会被改写成 replace，
+  - flag 可选，有如下标志:
+    - `last` — 完成 rewrite，然后搜索相应的 URI 和位置。
+    - `break` — 中止 `rewrite`，不再匹配后面的规则
+    - `redirect` — 返回 code 为 302 的临时重定向
+    - `permanent` — 返回 code 为 301 的永久重定向
+      注意:
+  - 当使用 rewrite 时，务必注意不要创建循环重定向，这会导致浏览器显示错误。
+  - 在配置重定向时，需考虑 SEO (搜索引擎优化) 影响，特别是 301 重定向的使用。
+
+```bash
+1. 临时重定向 (302)
+server {
+  listen 80;
+  server_name example.com;
+
+  location /oldpage {
+    return 302 /newpage;
+  }
+}
+
+
+2. 永久重定向 (301)
+server {
+  listen 80;
+  server_name example.com;
+
+  location /oldpage {
+    return 301 /newpage;
+  }
+}
+
+
+3. 强制使用 Https
+server {
+  listen 80;
+  server_name example.com;
+
+  location /oldpage {
+    return 302 https://example.com$request_uri;
+  }
+}
+
+
+4. 非 www 到 www
+server {
+  listen 80;
+  server_name example.com;
+
+  location /oldpage {
+    return 302 https://www.example.com$request_uri;
+  }
+}
+
+
+5. www 到非 www
+server {
+  listen 80;
+  server_name www.example.com;
+
+  location /oldpage {
+    return 302 https://example.com$request_uri;
+  }
+}
+
+
+6. 使用 rewrite 重定向
+server {
+  listen 80;
+  server_name example.com;
+  rewrite ^/oldpage$ /newpage permanent;
+}
+```
+
+
+#### 配置旧域名重定向到新域名
+
+```bash
+1. 将旧域名重定向到新域名上:
+server {
+  listen 443 ssl;
+  server_name old.com;
+  rewrite .* https://new.com;
+}
+
+
+2. 跳转到新域名上时要保留路径
+server {
+  listen 443 ssl;
+  server_name old.domain.com;
+  rewrite ^/(.*)$ https://new.domain.com/$1;
+}
+
+3. 如果域名不是 `www.new.domain.com`，旧统一跳转到 `https://www.new.domain.com`
+server {
+  listen 443 ssl;
+  server_name old.domain.com new.domain.com example.com www.example.com;
+  if ($host != 'www.new.domain.com') {
+    rewrite ^/(.*)$ https://new.domain.com/$1 permanent;
+  }
+}
+
+
+4. rewrite 与 location 配合实现图片文件跳转 CDN:
+server {
+  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$ {
+    expires 30d;
+    rewrite ^/uploadfile\/(.*)$ https://cdn.new.domain.com/uploadfile/$1;
+  }
+}
+```
+
+
+
+## Docker
+
+```bash
+参考文献：
+1. 入门概念：https://zhuanlan.zhihu.com/p/187505981
+```
+
+
+
+### 概念
+
+#### 虚拟机 VS 容器
+
+正常的操作系统运行是需要占用很多资源的，假设一台机器有16G内存，需要部署三个应用，则虚拟机技术划分：
+
+![img](./image/v2-c20cb49c88034e73e09059668b8cecfb_1440w.jpg)
+
+在这台机器上开启三个虚拟机，每个虚拟机上部署一个应用，其中VM1占用2G内存，VM2占用1G内存，VM3占用4G内存。
+
+虚拟机本身总共就占据7G内存，因而没法划分更多虚拟机内存来部署其他应用程序，可我们需求本身是部署应用程序而不是操作系统。
+
+容器技术则可以避免我们把内存浪费在“冗余”的操作系统上，并且可以优化了操作系统的启动和加载时间问题。
+
+容器英译为 container（集装箱），语义为：集装箱(容器)之间相互隔离，可长期反复利用，快速装载和卸载，规格标准。
+
+在软件开发中的隔离是指应用程序在运行时相互独立互不干扰：
+
+- 虚拟机技术：通过将应用程序部署在不同的虚拟机中，从而实现隔离（但每个虚拟机本身会占用多余内存）
+- 容器技术：只隔离应用程序运行时环境，但容器之间可以共享同一个操作系统，这里的运行时环境指程序运行依赖的各种库以及配置。
+
+容器轻量级且占用资源更少：
+
+- 空间：与操作系统的运行内存占用相比，容器只需数M空间，因此在同样规格的硬件上大量部署容器，这是虚拟机所不能比拟的；
+- 时间：操作系统需要数分钟的启动时间，容器几乎瞬时启动，容器技术为打包服务栈提供了一种更加高效的方式。
+
+![image-20241123105916251](image/image-20241123105916251.png)
+
+
+
+#### Docker概述
+
+```bash
+docker 是 Go 语言实现的开源项目，可让我们方便创建和使用容器。
+docker 将程序以及程序所有的依赖都打包到 docker container，这样你的程序在任何环境下都有一致的行为表现。
+
+docker 可屏蔽运行环境差异：这里程序运行的依赖就是容器(集装箱)，容器所处的操作系统环境(载体：货船/港口)，程序的表现只和容器(集装箱)有关，和容器在哪个操作系统(货船/港口)无关。
+docker 可快速部署：容器的启动速度非常快速，只要确保一个容器中的程序正确运行，就能确定无论在生产环境部署多少都能正确运行。
+
+
+
+### 如何使用 docker？
+docker 中存在的概念：
+	- dockerfile：为image镜像的源代码
+	- image：dockerfile执行后的编译结果，可执行程序
+	- container：运行起来的进程
+
+1. 先在 dockerfile 中设定配置项：指定需要哪些程序、什么样的依赖；
+2. 然后把 dockerfile 交给编译器进行编译（`docker build`命令），生成的可执行程序就是 image；
+3. 最后运行这个 image（`docker run`命令），image 运行起来就是 container。
+
+
+
+### docker 如何工作？
+Docker 基于 CS（Client-Server）架构模式来工作。 Docker 的架构体系中包含了 Docker 客户端（Docker Client）与 Docker 守护进程（Docker Daemon）这两个核心组件。
+docker client 负责处理用户输入的各种命令，如`docker build`、`docker run`，而真正工作的是 docker demon。
+注意：docker client 和 docker daemon 可运行在同一台机器上。
+
+0. dockerfile
+这是一个用于定义如何构建 Docker 镜像的文本文件，其中包含了基础镜像、安装软件包、配置环境等诸多构建镜像所需的指令。
+
+
+1. docker build
+当编写完 dockerfile 交给 docker 编译时使用这个命令，client 在接收到请求后转发给 docker daemon，接着 docker demon 根据 dockerfile （依据 dockerfile 逐步完成如获取基础镜像、安装指定软件包、进行环境配置等）创建可执行程序 的镜像 image。
+
+
+2. docker run
+使用 docker run 后，docker daemon 接收到该命令后（依据命令中指定的镜像名称或标识等信息）找到具体的 image，然后加载到内存开始执行，image 执行起来就成为一个 container。
+
+
+3. docker pull
+Docker Registry 可用来存放各种 image，公共的可以供任何人下载 image 的仓库就是 Docker Hub。
+Docker Hub 是 docker 官方应用商店，可通过 `docker pull imageName` 命令来下载别人编写好并共享出来的 image，这样就无需自己从头编写 dockerfile 了。
+`docker pull` 命令是用户通过 docker client 发送命令，docker daemon 接收到命令后向 docker registry 发送 image 下载请求，下载后存放在本地，这样就可以使用 image 了。
+
+
+
+### docker 底层实现
+docker 基于 Linux 内核提供以下功能实现：
+1. NameSpace
+Linux 中的 PID、IPC、网络等资源是全局的，而 NameSpace 机制是一种资源隔离方案，在该机制下这些资源不再是全局，而是属于某个特定的 NameSpace，各个 NameSpace 下的资源互不干扰，就使得每个 NameSpace 看上去就像一个独立的操作系统一样。
+
+2. Control groups
+虽然 NameSpace 技术可以实现资源隔离，但进程还是可以不受控地访问系统资源，比如 CPU、内存、磁盘、网络等，为了控制容器中进行对资源的访问，Docker 采用 control groups 技术(cgroup)，有了 cpgroup 就可以控制容器中进程对系统资源的消耗，比如可以限制某个容器使用内存的上限、可以在哪些 CPU 上运行等。
+```
+
+![image-20241125150207185](./image/image-20241125150207185.png)
+
+
+
+#### 安装
+
+```bash
+# 移除旧版本docker
+sudo yum remove docker \
+	docker-client \
+	docker-client-latest \
+	docker-common \
+	docker-latest \
+	docker-latest-logrotate \
+	docker-logrotate \
+	docker-engine
+
+
+# 配置docker yum源。
+sudo yum install -y yum-utils
+sudo yum-config-manager \
+--add-repo \
+http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+
+
+# 安装 最新 docker
+sudo yum install -y docker-ce docker-ce-cli containerd,io docker-buildx-plugin docker-comp
+
+
+# 启动 docker
+systemctl enable docker --now
+
+
+# 配置国内镜像源加速，然后重启 docker
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF"
+{
+	"registry-mirrors": ["https://mirror.ccs.tencentyun.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+
+
+### 指令
+
+
+
+## 结语
