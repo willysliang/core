@@ -3189,7 +3189,7 @@ MediaDevices API 接口提供访问连接媒体输入的设备，如照相机和
 </script>
 ```
 
-![允许或者禁止浏览器使用您的摄像头](images/image-20240911153218289.png)
+![允许或者禁止浏览器使用您的摄像头](image/image-20240911153218289.png)
 
 #### constraints 参数
 
