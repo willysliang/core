@@ -91,6 +91,7 @@ html(5)/css(3)，前端页面相关技术
 
 ## 2024年12月16日
   - docs(前端框架): [NodeJS] nodejs事件循环、mongoose Schema
+  - docs(计算机网络): [网络安全] 数据加密
 
 ## 2024年11月25日
   - docs(后端基础): [Linux] Docker 概念
