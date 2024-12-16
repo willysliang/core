@@ -89,6 +89,9 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年12月16日
+  - docs(前端框架): [NodeJS] nodejs事件循环、mongoose Schema
+
 ## 2024年11月25日
   - docs(后端基础): [Linux] Docker 概念
   - docs: blog images的图片移动到image目录下
