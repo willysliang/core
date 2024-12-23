@@ -49,13 +49,38 @@ HTML 是网页的基础，是指超文本标记语言。
 ### DOCTYPE
 
 ```bash
-## DOCTYPE
-`<!DOCTYPE>` 声明位于 HTML 文档中的第一行，处于 `<html>` 标签之前。告知浏览器的解析器使用标准模式渲染文档。DOCTYPE 不存在或格式不正确会导致文档以兼容模式呈现。
+`<!DOCTYPE>` 声明位于 HTML 文档中的第一行，处于 `<html>` 标签之前。告知浏览器的解析器使用标准模式渲染文档。
+
+
 
 ### HTML 混乱模式
 - 网站设置 `<!DOCTYPE html>` 是为了防止浏览器在渲染文档时，使用一个不符合规范的渲染模式。
+- `DOCTYPE` 不存在或格式不正确会导致文档以混杂模式呈现。
 - 在严格模式下，浏览器根据 W3C 标准进行解析并渲染，而在混杂模式下浏览器会用自己的渲染方式解析并渲染。
 - 混杂模式的存在是为了在没有 W3C 标准时间段写的旧网页可以顺利地加载出来。
+
+- 严格模式的排版和 JS 运作模式是以该浏览器支持的最高标准运行。
+- 在混杂模式中，页面以宽松的向后兼容的方式显示。模式老式浏览器的行为以防站点无法工作。
+
+
+
+### Doctype 文档类型
+该标签可声明三种 DTD 类型，分别表示严格版本、过渡版本以及基于框架的 HTML 文档。
+HTML 4.01 规定三种文档类型：Strict、Transitional、Frameset。
+XHTML 1.0 规定三种XML文档类型：Strict、Transitional、Frameset。
+Stamdards（标准）模式（严格呈现模式）用于呈现遵循最新标准的网页，而 Quirks（包容）模式（松散呈现模式/兼容模式/混乱模式）用于呈现传统浏览器而设计的网页。
+
+
+
+### HTML 与 XHTML 的区别
+1. 所有的标记都必须要有一个相应的结束标记
+2. 所有标签的元素和属性的名字都必须使用小写
+3. 所有的XML标记都必须合理嵌套
+4. 所有的属性必须用引号 `""` 括起来
+5. 把所有 `<` 和 `&` 特殊符号用编码表示
+6. 给所有属性赋一个值
+7. 不要在注释内容中使 `--`
+8. 图片必须有说明文字
 ```
 
 
@@ -113,10 +138,37 @@ HTML 是网页的基础，是指超文本标记语言。
 >
 > 注意：该标签中的关键字不是给用户看的
 
-### 外链link
 
-> 1. 链接外部文件，比如css文件
-> 2. 设置网页图标
+
+### 外链 link
+
+```bash
+1. 链接外部文件，比如css文件
+2. 设置网页图标
+
+
+#### link标签跟CSS的`@import`区别
+- link 属于 HTML 标签，`@import` 是 CSS 提供。
+- 页面被加载时，link 的样式会同时被加载，而 `@import` 引用的 CSS 会等到页面加载完再加载。
+- `@import` 只再 IE5 以上才能识别，而 link 是 HTML 标签，无兼容问题。
+- link 方式的样式权重高于 `@import` 的权重。
+
+
+
+#### 什么是 FOUC（无样式内容闪烁）？你如何来避免 FOUC？
+FOUC（Flash of Unstyled Content）是指在网页加载过程中，由于样式表加载的延迟或者顺序问题，导致用户先看到没有应用样式的网页内容，然后在样式表加载完成后，内容才突然应用样式，从而出现闪烁的现象。这种闪烁可能会让用户体验变差，尤其是在页面布局和外观突然改变时。
+例如，当浏览器开始加载 HTML 文档时，它会尽快解析并显示内容。如果 CSS 样式表加载较慢，在样式表加载之前，文本可能会以浏览器默认的字体和布局显示，等 CSS 加载完成后，字体、颜色、间距等样式才突然生效，就会出现明显的闪烁。
+
+避免 FOUC 的方法
+  - 将样式表放在文档头部用 `link` 标签或者 `style` 标签加载样式。
+  - 使用内联样式（容易产生样式权重问题，应避免使用）
+  - 确保样式表尽快加载
+      - 优化 CSS 文件大小和加载顺序：尽量减小 CSS 文件的大小，避免过多的嵌套和复杂的选择器
+      - 使用 CDN 或缓存
+  - 避免使用@import导入样式表（@import会导致样式表的加载顺序变为顺序加载，而且可能会延迟样式的应用）
+```
+
+
 
 ### 列表 ul、ol、il
 
@@ -1276,19 +1328,29 @@ HTML `reversed` 属性可以帮助我们创建一个降序的编号列表。此�
 
 ## Html5
 
-> ```bash
-> ## HTML5
-> ### HTML5 新特性
->     - 8 个语义元素header section footer aside nav main article figure
->     - 内容元素 mark 高亮 progress 进度
->     - 新的表单控件 calander date time email url search
->     - 新的 input 类型color date datetime datetime-local email
->     - 移除过时标签 big font frame frameset
->     - canvas 绘图，支持内联SVG。支持MathML
->     - 多媒体 audio video source embed track
->     - 本地离线存储，把需要离线存储在本地的文件列在一个manifest 配置文件
->     - web 存储：localStorage、SessionStorage
-> ```
+```bash
+### HTML5 新特性
+HTML5 现在已经不是 SGML 的子集，主要是关于图像，位置，存储，多任务等功能的增加。
+    - 8个语义元素（header、section、footer、aside、nav、main、article、figure）
+    - 内容元素 mark 高亮 progress 进度
+    - 新的表单控件（calendar、date、time、email、url、search）
+    - 新的 input 类型（color date datetime datetime-local email）
+    - 移除过时标签 big font frame frameset
+    - 画布：canvas绘图，支持内联SVG。支持MathML
+    - 多媒体 audio video source embed track
+    - 本地离线存储，把需要离线存储在本地的文件列在一个manifest 配置文件
+    - web 存储：localStorage、SessionStorage
+    - 拖拽释放(Drag and drop) API
+    - 地理(Geolocation) API
+
+
+
+### HTML5移除的元素
+- 纯表现的元素：basefont，big，center，font, s，strike，tt，u；
+- 对可用性产生负面影响的元素：frame，frameset，noframes；
+```
+
+
 
 ### html5新标签
 
@@ -1298,21 +1360,21 @@ HTML `reversed` 属性可以帮助我们创建一个降序的编号列表。此�
 > ## 标签语义化
 > 概念：根据内容的结构化（内容语义化），选择合适的标签（代码语义化），合理正确地使用语义化的标签来创建页面结构。
 > 语义化的标签：h1~h5、p、strong、em、button、header、nav、article、aside、section、footer 等。
->
+> 
 > 作用：
 >     1. HTML标签语义化让页面的内容结构化，在没有 css 样式的情况下，页面整体也会呈现很好的结构效果。
 >     2. 有利于浏览器、搜索引擎解析（SEO）优化：搜索引擎爬虫会根据不同的标签来赋予不同的权重。和搜索引擎建立良好沟通，有了良好的结构和语义，网页内容自然容易被搜索引擎抓取到。
 >     3. 方便其他设备解析，根据语义渲染页面（如屏幕阅读器、盲人阅读器、移动设备）
 >     4. 代码结构清晰，易于阅读，便于团队开发和维护。
 >     5. 提升用户体验，比如title、alt。
->
+> 
 > 注意事项：
 >     1. 尽可能少使用无语义化的标签，如 div 和 span。
 >     2. 在语义不明显时，既可使用 div 或 p 时，尽量使用 p，要使用有语义的标签。
 >     3. 不要使用春样式标签，如：b、font、u 等，应该改用 css 设置。
 >     4. 需要强调的文本，可以包含在 strong 或 em 标签中；strong 默认样式是加粗（不要用b），em 是斜体（不要用 i）。
->
->
+> 
+> 
 > ### HTML5 新增的语义化标签
 >     - 头部标签：header
 >     - 导航标签：nav

@@ -59,6 +59,23 @@ Description: JavaScript
 
 
 
+### IE与其他浏览器不同的特性
+
+```bash
+- IE支持`currentStyle`，FIrefox使用`getComputStyle`
+- IE  使用`innerText`，Firefox使用`textContent`
+- 滤镜方面：IE:`filter:alpha(opacity= num)`；Firefox：`-moz-opacity:num`
+- 事件方面：IE：`attachEvent`：火狐是`addEventListener`
+- 鼠标位置：IE是`event.clientX`；火狐是`event.pageX`
+- IE使用`event.srcElement`；Firefox使用`event.target`
+- IE中消除list的原点仅需margin:0即可达到最终效果；FIrefox需要设置`margin:0;padding:0以及list-style:none`
+- CSS圆角：ie7以下不支持圆角
+```
+
+
+
+
+
 ## V8 引擎
 
 ```bash
@@ -245,8 +262,8 @@ Code Caching是缓存的Parsing和Complie的字节码，提高的是脚本的解
 
 #### WebAssembly 的目标
 1. 快、高效、便利：通过利用一些通用的硬件能力，能够跨平台以近乎于原生的速度执行。
-2. 可读、可调试：WebAssembly 是一种低层次的汇编语言，但是它也有一种人类可读的文本格式，使得人们可编写代码、查看代码、可调试代码。
-3. 确保安全：WebAssembly 明确运行在安全、沙箱的执行环境，类似其他 Web 的代码，它会强制开启同源和一些权限策略。
+2. 可读、可调试：WebAssembly 是一种低层次的汇编语言，但是它也有一种人类可读的文本格式，使得人们可编写、查看、调试代码。
+3. 确保安全：WebAssembly 明确运行在安全、沙箱的执行环境，会强制开启同源和一些权限策略。
 4. 不破坏现有的 Web：WebAssembly 被设计与其他 Web 技术兼容运行，并且保持向后兼容性。
 
 
@@ -442,33 +459,32 @@ WebAssembly 目前有四个主要的入口：
 ### 浏览器
 
 > ```bash
-> ## 浏览器
 > ### 浏览器是多进程的
-> - 浏览器是多线程的，如Chrome浏览器，我们每打开一个 Tab 页就会产生一个进程，每个进程又有很多线程，都会占用内部才能，这也以为这内存等资源消耗会很大，因此当Chrome运行时间长了就会导致电脑会越来越卡。
+> - 浏览器是多线程的，如Chrome浏览器，我们每打开一个 Tab 页就会产生一个进程，每个进程又有很多线程，都会占用内存，这也让这内存等资源消耗会很大，因此当Chrome运行时间长了就会导致电脑会越来越卡。
 > - 浏览器需要多进程的原因：如果浏览器是单线程，当某个Tab页、插件崩溃，就影响了整个浏览器，影响用户体验感
+> 
 >
->
-> ### 浏览器包含的进程
+>### 浏览器包含的进程
 > 1. Browser 进程
 >     - 浏览器的主进程（负责协调、主控），该进程只有一个。
 >     - 负责浏览器界面显示，与用户交互。如页面的前进、后退等。
 >     - 负责各个页面的管理，创建和销毁其他进程。
 >     - 将渲染(Renderer)进程得到的内存中的 Bitmap(位图)，绘制到用户界面上。
 >     - 网络资源的管理、下载等。
->
-> 2. 第三方插件进程
+> 
+>2. 第三方插件进程
 > 		- 每种类型的插件对应一个进程，当使用该插件时才创建。
->
-> 3. GPU 进程
+> 
+>3. GPU 进程
 > 		- 该进程也只有一个，用于 3D 绘制等等。
->
-> 4. 渲染进程（重点）
+> 
+>4. 渲染进程（重点）
 >     - 浏览器内核（Renderer进程，其内部是多线程）。
 >     - 每个 Tab 页面都有一个渲染进程，互不影响。
 >     - 主要作为页面渲染、脚本执行、事件处理等。
+> 
 >
->
-> ### 渲染进程 Renderer 的主要进程
+>### 渲染进程 Renderer 的主要进程
 > #### GUI 渲染线程
 > - 负责渲染浏览器界面，解析HTML、CSS、构建DOM树和RenderObject树，布局和绘制等。
 >     1. 解析html代码（HTML代码本质是字符串）转化为浏览器认识的节点，生成 DOM树（DOM Tree）
@@ -481,9 +497,9 @@ WebAssembly 目前有四个主要的入口：
 > - GUI 渲染线程与 JS 引擎线程是互斥的
 > 		- 当 JS 引擎执行时 GUI 线程会被挂起（相当于被冻结）。
 > 		- GUI 更新会被保存在一个队列中等到 JS 引擎空闲时立即被执行。
+> 
 >
->
-> #### JS 引擎线程
+>#### JS 引擎线程
 > - JS 引擎就是 JS 内核，负责处理 JavaScript 脚本程序（例如 V8 引擎）
 > - JS 引擎线程负责解析 JavaScript 脚本，运行代码。
 > - JS 引擎一直等待任务队列中任务的到来，然后加以处理。
@@ -492,28 +508,28 @@ WebAssembly 目前有四个主要的入口：
 > - GUI 渲染线程与 JS 引擎线程是互斥的，JS 引擎线程会阻塞 GUI 渲染线程。
 > 		- 就是我们常遇到的 JS 执行时间过长，造成页面渲染不连贯，导致页面渲染加载阻塞（页面加载缓慢）
 > 		- 例如浏览器渲染时遇到 script 标签，就会停止 GUI 的渲染，然后 JS 引擎线程开始工作，执行里面的js代码，等js执行完毕，JS 引擎线程停止工作，GUI 继续渲染下面的内容。如果js执行时间太长就会造成页面卡顿的情况。
+> 
 >
->
-> #### 事件触发线程
+>#### 事件触发线程
 > - 属于浏览器而不是 JS 引擎，用来控制事件循环，并且管理着一个事件队列（task queue）
 > - 当js执行碰到事件绑定和一些异步操作（如setTimeOut，也可来自浏览器内核的其他线程，如鼠标点击、AJAX异步请求等），会走事件触发线程将对应的事件添加到对应的线程中（比如定时器操作，便把定时器事件添加到定时器线程），等异步事件有结果，便把它们的回调操作添加到事件队列，等待 JS 引擎线程空闲时来处理。
 > - 当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待 JS 引擎的处理。
 > - 因为 JS 是单线程的，所以这些待处理队列中的事件都得排队等待 JS 引擎处理。
+> 
 >
->
-> #### 定时触发器线程
+>#### 定时触发器线程
 > - setInterval 与 setTimeout 所在的线程。
 > - 浏览器定时计数器并不是由 JavaScript 引擎计数的（因为 JS 引擎是单线程的，如果处于阻塞线程状态，就会影响计时的准确）
 > - 通过单独线程来计时并触发定时（计时完毕后，添加到事件触发线程的事件队列中，等待 JS 引擎空闲后执行），这个线程就是定时触发器线程，也叫定时器线程。
 > - W3C 在 HTML 标准中规定，规定要求 setTimeout 中低于 4ms 的时间间隔计算为 4ms。
+> 
 >
->
-> #### 异步 http 请求线程
+>#### 异步 http 请求线程
 > - 在XMLHttpRequest 在连接后是通过浏览器新开一个线程请求。
 > - 将检测到状态变更时。如果设置有回调函数，异步线程就产生状态变更事件，将整个回调再放入事件队列中，再由 JavaScript 引擎执行。
 > - 简单说就是当执行一个 http 异步请求时，就把异步请求事件添加到异步请求线程，等收到响应（准确说应该是http状态变化），再把回调函数添加到事件队列，等待 JS 引擎线程来执行。
 > ```
->
+> 
 
 ### 事件循环 Event Loop
 
@@ -1061,6 +1077,17 @@ readystatechange 事件可以监听状态的改变。
 
 
 
+### 异步加载脚本的方案
+
+````bash
+1. 动态创建DOM方式（创建script，插入到DOM中，加载完毕后callBack）
+2. 通过 ajax 去获取 js 代码，然后通过 eval 执行
+3. 在 script 标签上添加 defer 或 async 属性
+4. 创建并插入 iframe，让它异步执行 js
+````
+
+
+
 ### 动态加载脚本文件
 
 要使用 JavaScript 动态加载脚本文件，基本步骤如下：
@@ -1163,7 +1190,6 @@ function scriptLoaded() {
 	- nodeName 是为任意 Node 定义的。
 			- 对于元素，它的意义与 tagName 相同
 			- 对于其他节点类型（text，comment 等），它拥有一个对应节点类型的字符串
-		
 ```
 
 ![JS_DOM节点关系表](./image/JS_DOM_node.png)
@@ -1173,7 +1199,6 @@ function scriptLoaded() {
 ### DOMString
 
 ```bash
-## DOMString
 DOMString 是一种字符串类型。它是由 16 位无符号证书序列组成，每个整数代表一个 UTF-16 代码单元。
 
 每个代码单元都是一个 16 位的数值，通常代表一个字符，但有时需要两个代码单元来表示一个字符（对于 Unicode 辅助平面上的字符）。当文档或 Web API 规范提到 DOMString 时，它指的就是这样的字符串。
@@ -1186,7 +1211,6 @@ DOMString 是一种字符串类型。它是由 16 位无符号证书序列组成
 	- 在构造函数中当做参数，如 new Text('Hello, world!')，其中 'Hello, world!' 就是一个 DOMString。
 	- 表示 URL、选择器字符串或其他需要以文本形式表示的数据。
 注意：尽管 DOMString 在概念上等同于 JavaScript 字符串，但在一些特殊情境下，DOMString 可能会被指定为 null 或 undefined，这通常表明字符串值是不存在的。此外，有些 API 可能会将 DOMString 限定为必须符合某些模式或格式(可能不接收 null 值)，比如必须是合法的 CSS 选择器或有效的 URL。在这些情况下，需要确保提供的字符串满足这些要求。
-
 ```
 
 ```js
@@ -1198,7 +1222,6 @@ let elementClasses = element.className;  // `elementClasses` is a DOMString
 /** 设置 DOM 元素属性值 */
 element.id = 'new-id';  // Setting a DOMString
 element.className = 'new-class'; // className is a DOMString that you can set
-
 ```
 
 
@@ -1216,11 +1239,32 @@ element.className = 'new-class'; // className is a DOMString that you can set
 7. append(添加)
 
 
-- getElementById(id) - 获取带有指定 id 的节点（元素）
-- appendChild(node) - 插入新的子节点（元素）
-- removeChild(node) - 删除子节点（元素）
-- createAttribute() - 创建属性节点
-- 要复制的节点.cloneNode(true)--复制节点
+1. 创建节点
+- 创建一个DOM片段: `createDocumentFragment()`
+- 创建一个具体的元素: `createElement()`
+- 创建一个文本节点: `createTextNode()`
+- 创建属性节点: `createAttribute()`
+
+2. 添加、移除、替换、插入节点
+- 插入新的子节点（元素）: `appendChild(node)`
+- 删除子节点（元素）: `removeChild(node)`
+- 替换子节点: `replaceChild()`
+- 插入兄弟节点: `insertBefore()`，并没有 `insertAfter()`
+- 复制节点：`要复制的节点.cloneNode(true)`
+
+3. 查找节点
+- 获取带有指定 id 的节点（元素）: `getElementById(id)`，具有唯一性
+- 通过元素的Name属性的值: `getElementsByName()`，会得到一个数组，其中包括id等于name值的
+- 通过标签名称获取: `getElementsByTagName()`
+
+
+
+#### attribute 和 property 的区别
+- attribute 是 DOM 元素在文档中作为 html 标签拥有的属性
+- property 是 DOM 元素在 JS 中作为对象拥有的属性。
+
+- 对于 HTML 标准属性来说，attribute 和 property 是同步的，会自动更新。
+- 对于自定义属性来说，attribute 和 property 是不同步的。
 ```
 
 
@@ -1416,43 +1460,51 @@ getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav,
 
 ### DOM修改（操作样式）
 
-> **操作样式：**设置类样式class 、设置行内样式style
->
-> ```js
-> let list = document.getElementsByTagName('li')[0];
-> list.style.color = "lightgray";
-> list.className = 'list';
-> console.log(list['src'], list['className'])
-> ```
->
-> **动态创建元素**（innerHTML、document.write、inerText）:动态创建元素优点-->提高网页性能，降低流量使用
->
-> **注意：通过`attribute`和设置`style`只能通过获取id标签来更改**
->
-> - **innerHTML 和 innerText 区别**
->   - innerHTML 返回的是标签内的html内容，包含里层的html标签
->   - inerText 返回的是标签的文本值，不包含html标签
->   - innerHTML 和 innerText，如果两个都写，下面的内容会把上面的内容覆盖
->
-> - **document.write()**      //比如弹出新框的在线客服
->   - 当页面加载时，会产生输出流，这个输出流在页面加载完毕时关闭
->   - 如果输出流关闭后执行document.write()，它会开启一个新的输出流，页面会被覆盖
->   - 使用建议：使用document.write只可以在页面加载中，可以使用在弹出新窗口时
->
-> - **innerHTML**
->   - 在设置时会覆盖原来的内容，但是可以通过+=去解决
->
-> - **inerHTML 和 document.write 区别**
->   - innerHTML 是将内容写入某个DOM节点，不会导致页面全部重绘
->   - document.write 是直接将内容写入页面的内容流，会导致页面全部重绘
-> - `document.createElement()`
-> - 动态操作表格
->   - rows (只读，table和textarea能用)
->   - insertRow(index) (只有table能调用)
->   - deleteRow(index) (只有table能调用)
->   - cells (只读，table和textarea能用)
->   - insertCell(index) (只有tr能调用)
->   - deleteCell(index) (只有tr能调用)
+```bash
+### 操作样式：设置类样式、行内样式style
+    let list = document.getElementsByTagName('li')[0]
+    list.style.color = "lightgray"
+    list.className = 'list'
+    console.log(list['src'], list['className'])
+
+
+
+### 动态创建元素（innerHTML、document.write、innerText）
+- 动态创建元素优点-->提高网页性能，降低流量使用
+- 注意：通过`attribute`和设置`style`只能通过获取id标签来更改
+
+
+1. **document.write()**      //比如弹出新框的在线客服
+  - 当页面加载时，会产生输出流，这个输出流在页面加载完毕时关闭。如果输出流关闭后执行 `document.write()`，它会开启一个新的输出流，页面会被覆盖。
+  - document.write 可用在两方面：
+  		- 页面载入过程中用实时脚本创建内容
+  		- 用延时脚本创建本窗口或新窗口的内容
+
+
+2. **innerHTML**
+  - 在设置时会覆盖原来的内容，但是可以通过+=去解决
+  
+3. `document.createElement()`
+
+
+- **inerHTML 和 document.write 区别**
+  - innerHTML 是将内容写入某个DOM节点，可以重绘页面的一部分
+  - document.write 是直接将内容写入页面的内容流，会导致整个页面重绘
+
+- innerHTML 和 innerText 区别
+  - innerHTML 返回的是标签内的html内容，包含里层的html标签
+  - inerText 返回的是标签的文本值，不包含html标签
+  - innerHTML 和 innerText，如果两个都写，下面的内容会把上面的内容覆盖
+
+
+### 动态操作表格
+  - rows (只读，table和textarea能用)
+  - insertRow(index) (只有table能调用)
+  - deleteRow(index) (只有table能调用)
+  - cells (只读，table和textarea能用)
+  - insertCell(index) (只有tr能调用)
+  - deleteCell(index) (只有tr能调用)
+```
 
 
 
