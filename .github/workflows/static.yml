@@ -33,23 +33,23 @@ jobs:
         with:
           path: /path/to/cache # 指定要清除的缓存路径
           key: ${{ runner.os }}-cache # 缓存的键，用于标识不同的缓存
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up Node
-        uses: actions/setup-node@v3
-      - name: pnpm
+      
+      - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+          # 选择要使用的 pnpm 版本
+          version: 9
+          # 使用 pnpm 安装依赖
+          run_install: true
+      
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile && pnpm install
-      - name: Install requests package
-        run: pnpm install
+          # 选择要使用的 node 版本
+          node-version: 18.19
+          # 缓存 pnpm 依赖
+          cache: pnpm
+
       - name: Build
         run: pnpm run build
 
