@@ -875,9 +875,7 @@ WebAssembly 目前有四个主要的入口：
 
 ```bash
 ## 脚本 script
-		`<script type="text/javascript" src="" async></script>`
-// async:异步		defer：
-// 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
+`<script type="text/javascript" src="" async></script>`
 
 当浏览器看到普通脚本标签声明时，它执行以下步骤：
     - 暂停 HTML 文档解析器
@@ -1140,6 +1138,23 @@ function scriptLoaded() {
 
 
 
+### noscript 标签
+
+```bash
+`<noscript>` 标签用来定义在脚本未被执行时的替代内容（文本）。
+
+`<noscript>` 标签中的内容只有在下列情况下才会显示出来：
+  - 浏览器不支持脚本
+  - 浏览器支持脚本，但脚本被禁用
+```
+
+```html
+<!-- 给予用户友好的提示! -->
+<noscript>您的浏览器不支持 JavaScript！</noscript>
+```
+
+
+
 ## DOM
 
 ```bash
@@ -1331,17 +1346,19 @@ document.documentElement.parentElement === null
 while (ele = ele.parentElement) { console.lg(ele) } // 递归向上，直到 <html>
 ```
 
-#### 自定义属性
+#### 自定义属性 dataset
 
 ```bash
 DOM 中的自定义属性不能直接访问，但可以通过以下方法来进行操作：
 	- 获取标签对应的属性：`getAttribute('属性名')`（注意：属性可以是自定义，也可以是 DOM 自身已有的）
 	- 设置标签属性的值：`setAttribute('属性名', '属性值')`
 	- 移除标签属性值：`removeAttribute('属性名')`
+
+通过 dataset 可以方便的获取或设置 `data-*` 自定义数据属性集
 ```
 
 ```js
-const ele = document.getElementById('data') as HTMLElement
+const ele = document.getElementById('data')
 
 /**
  * 获取 data-* 属性的值
@@ -1571,16 +1588,22 @@ const bgColor = styles.getPropertyValue('background-color')
 >- Checkbox的checked 为选中状态
 > - 取反则是为非：!   形如：获取的变量.checked=!获取的变量.checked
 
-#### 切换类
+#### 切换类 classList
 
 ```bash
+classList 控制 CSS 的增、删、切换、是否存在某个类。
+	- ele.classList.add('addClass')
+	- ele.classList.remove('removeClass')
+	- ele.classList.toggle('toggleClass')
+	- ele.classList.contains('containsClass')
+
+
 ### 切换类
 classList.toggle() 是 JavaScript 中用于切换 HTML 元素类名的方法。
 使用该方法时，元素存在该类名就会移除，没有则添加该类。
 
 const toggleClass = (el, className) => el.classList.toggle(className)
 toggleClass(document.querySelector('p.hdfp'), 'hdfp')
-
 ```
 
 ```html
@@ -1602,7 +1625,6 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
     </script>
   </body>
 </html>
-
 ```
 
 
@@ -1995,24 +2017,23 @@ const handleClick = () => {
 #### DOM事件流
 
 > ````bash
-> ## DOM 事件流
 > 事件传播的三个阶段：事件捕获 -> 目标 -> 事件冒泡
->
-> 1. 捕获阶段
+> 
+>1. 捕获阶段
 > 事件从祖先元素往子元素查找（DOM树结构），直到捕获到事件目标 target。在这个过程中，默认情况下，事件相应的监听函数时不会被触发的。
 > 捕获阶段事件依次传递的顺序是：'window -> document -> html -> body -> 父元素 -> 子元素 -> 目标元素'。
+> 
 >
->
-> 2. 事件目标
+>2. 事件目标
 > 当到达目标元素后，执行目标元素该事件相应的处理函数。如果没有绑定监听函数，那就不执行。
+> 
 >
->
-> 3. 事件冒泡
+>3. 事件冒泡
 > 事件从事件目标 target 开始，从子元素往祖先元素向上冒泡，直到页面的最顶级标签。
 > 冒泡指的是：'子元素的事件被触发时，父元素的同样的事件也会被触发'。取消冒泡就是取消这种机制。
 > 冒泡的顺序是：'div -> body -> html -> document -> window'。
->
-> 注意：
+> 
+>注意：
 > 以下事件不冒泡（即事件不会往父元素那里传递）：'blur、focus、load、unload、onmouseenter、onmouseleave'。
 > ````
 
@@ -2075,36 +2096,35 @@ const handleClick = () => {
 #### 事件委托
 
 > ```bash
-> ## 事件委托
 > ### 事件委托的原理：
 > 不给每个子节点单独设置事件监听器，而是设置在其父节点上，然后利用冒泡原理设置每个子节点。
+> 
 >
->
-> ### 事件委托的应用：
+>### 事件委托的应用：
 > 给 ul 注册点击事件，然后利用事件对象的 target（`event.target`） 来找到当前点击的 li ，然后事件冒泡到 ul 上， ul 有注册事件，就会触发事件监听器。
+> 
 >
->
-> ### 事件委托的好处：
+>### 事件委托的好处：
 > 只操作了一次 DOM，提高了程序的性能。
 > 当该触发改事件的同一种标签过多，会过于消耗性能和内存。所以把触发事件绑定到该标签的父层，减少了事件绑定的次数，然后利用冒泡机制，在执行事件函数时利用冒泡机制再去匹配判断目标元素。
+> 
 >
->
-> ### 为什么要事件委托？
+>### 为什么要事件委托？
 > 在 JavaScript 中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能，因为 '需要不断地操作 DOM'，那么引起 '浏览器重绘和回流' 的可能也就更多，页面交互的时间也就变得越长，这就是为什么要 '减少 DOM 操作的原因'。
 > 每一个事件处理函数都是一个对象，若存在许多的事件处理函数，内存就会被多占用一部分。如果使用事件委托，就会将所有的操作放到 JS 程序中，'只对它的父级（如果它只有一个父级）这一个对象进行操作，此时与 DOM 的操作就只需要交互一次，这样就能大大减少与 DOM 的交互次数，以此来提高性能'。
 > ```
->
-> ```html
+> 
+>```html
 > <ul id="parent-list" style="background-color: #bfa;">
->   <li><p>我是p元素</p></li>
+> <li><p>我是p元素</p></li>
 >   <li><a href="javascript:;" class="link">超链接一</a></li>
 >   <li><a href="javascript:;" class="link">超链接二</a></li>
 >   <li><a href="javascript:;" class="link">超链接三</a></li>
-> </ul>
->
-> <script>
->   window.onload = function () {
->     document.getElementById('parent-list').addEventListener('click', function (event) {
+>   </ul>
+> 
+><script>
+> window.onload = function () {
+>    document.getElementById('parent-list').addEventListener('click', function (event) {
 >       event = event || window.event
 >       // e.target 表示：触发事件的对象
 >       // 如果触发事件的对象是我们期望的元素，则执行否则不执行
@@ -2112,15 +2132,13 @@ const handleClick = () => {
 >         console.log('我是ul的单击响应函数')
 >       }
 >     }, false)
->   }
-> </script>
+>    }
+>   </script>
 > ```
 
 #### 触发事件
 
 ```bash
-## 触发事件
-
 ### 输入触发事件
   1. 用于文本框和文本区域（input/textarea 标签）
       - ele.focus()
@@ -2148,6 +2166,27 @@ trigger(ele, 'mousedown')
 const e = document.createEvent('CustomEvent')
 e.initCustomEvent('hello', true, true, { message: 'Hello World' })
 ele.dispatchEvent(e) // 触发事件
+```
+
+#### 自定义右键菜单 contextMenu
+
+```bash
+contextMenu 事件并不会替换原有的右键菜单，而是将你的自定义右键菜单添加到浏览器的右键菜单里。
+
+    <div id="menu">Lorem ipsum dolor sit amet.</div>
+    <script>
+      menu.addEventListener('contextmenu', function () {
+        alert('点我！')
+      })
+    </script>
+   
+
+
+也可以阻止它，显示自己自定义的菜单
+    menu.addEventListener('contextmenu', function (e) {
+      e.preventDefault()
+      // ...
+    })
 ```
 
 
