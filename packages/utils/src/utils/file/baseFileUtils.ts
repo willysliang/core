@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-03-06 12:55:30
- * @ Modifier: willy
- * @ ModifierTime: 2024-03-06 14:13:22
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-10-22 16:30:22
  * @ Description: 基础的文件工具类
  */
 
@@ -254,6 +254,62 @@ export class FileOptimizeUtils {
 
       imgDom.onload = imgOnload
       imgDom.onerror = reject
+    })
+  }
+
+  /**
+   * @function compressFileImage 对图片文件进行压缩
+   * @param {File} file 图片文件
+   * @param {number} quality 图片质量的比例（要压缩的比例），取值范围（0 ~ 1），默认1为不压缩，值越小，压缩率越高，图片质量越低
+   * @param {string} mimeType 表示图像格式的 DOMString
+   * @param {number} maxWidth 压缩图片的最大宽度
+   * @param {number} maxHeight 压缩图片的最大高度
+   * @returns  {Promise<Blob | null>} 返回压缩后的 Blob 对象
+   */
+  compressFileImage(
+    file: File,
+    quality: number = 0.92,
+    mimeType: string = 'image/jpeg',
+    maxWidth: number = 800,
+    maxHeight: number = 800,
+  ): Promise<Blob | null> {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+      fileReader.onerror = reject
+      fileReader.onload = (event: any) => {
+        const img = new Image()
+        img.src = event.target.result
+
+        img.onerror = reject
+        img.onload = () => {
+          let width = img.width
+          let height = img.height
+
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width
+            width = maxWidth
+          }
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height
+            height = maxHeight
+          }
+
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')!
+          canvas.width = width
+          canvas.height = height
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+          canvas.toBlob(
+            (blob) => {
+              resolve(blob)
+            },
+            mimeType,
+            quality,
+          )
+        }
+      }
     })
   }
 }

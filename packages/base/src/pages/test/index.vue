@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import { demoPages } from '../constant'
 import './test'
+import VideoTest from './videoTest.vue'
 
 defineOptions({
   name: demoPages.TEST.name,
@@ -23,4 +24,6 @@ defineOptions({
 
 <template>
   <el-button>按钮</el-button>
+
+  <VideoTest />
 </template>

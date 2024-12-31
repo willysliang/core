@@ -3876,12 +3876,61 @@ ReactDOM.render(<Home />, document.getElementById('root'))
 
 ## CSS-in-JS
 
-> ```bash
-> ## CSS-in-JS 的提升程序性能方案
-> - 不要过渡的组合嵌套样式组件：这可以让React需要管理的组件更少，可以更快的完成渲染工作
-> - 优先使用静态组件：一些 CSS-in-JS 库会在你的CSS没有依赖主题或props的情况下优化其执行。你的标签模板越是‘静态’， CSS-in-JS 运行时就越有可能执行得更快
-> - 避免无效的React重新渲染：确保只在需要时才渲染
-> ```
+```bash
+## CSS-in-JS 的提升程序性能方案
+- 不要过渡的组合嵌套样式组件：这可以让React需要管理的组件更少，可以更快的完成渲染工作
+- 优先使用静态组件：一些 CSS-in-JS 库会在你的CSS没有依赖主题或props的情况下优化其执行。你的标签模板越是‘静态’， CSS-in-JS 运行时就越有可能执行得更快
+- 避免无效的React重新渲染：确保只在需要时才渲染
+
+ 需要安装依赖库：`$ npm i styled-components`
+```
+
+**styled-components**
+
+```jsx
+import React from 'react';
+import styled from 'styled-components';
+
+const Button = styled.button`
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+  	background-color: darkblue;
+  }
+`;
+
+const MyComponent = () => {
+  return <Button>Click me</Button>;
+};
+
+export default MyComponent;
+```
+
+**安装依赖：`$ yarn add @linaria/react @linaria/core`**
+
+```jsx
+import React from 'react';
+import { css } from '@linaria/react';
+
+const myStyle = css`
+  .title {
+    color: teal;
+    font-size: 20px;
+  }
+`;
+
+const MyComponent = () => {
+  return <h1 className={myStyle.title}>Hello from Linaria!</h1>;
+};
+
+export default MyComponent;
+```
+
+
 
 ## 更新复杂对象插件
 

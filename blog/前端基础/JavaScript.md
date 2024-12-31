@@ -59,6 +59,23 @@ Description: JavaScript
 
 
 
+### IE与其他浏览器不同的特性
+
+```bash
+- IE支持`currentStyle`，FIrefox使用`getComputStyle`
+- IE  使用`innerText`，Firefox使用`textContent`
+- 滤镜方面：IE:`filter:alpha(opacity= num)`；Firefox：`-moz-opacity:num`
+- 事件方面：IE：`attachEvent`：火狐是`addEventListener`
+- 鼠标位置：IE是`event.clientX`；火狐是`event.pageX`
+- IE使用`event.srcElement`；Firefox使用`event.target`
+- IE中消除list的原点仅需margin:0即可达到最终效果；FIrefox需要设置`margin:0;padding:0以及list-style:none`
+- CSS圆角：ie7以下不支持圆角
+```
+
+
+
+
+
 ## V8 引擎
 
 ```bash
@@ -147,7 +164,86 @@ ES6的优化
     }
 ```
 
-![image-20240711172648211](./images/image-20240711172648211.png)
+![image-20240711172648211](./image/image-20240711172648211.png)
+
+
+
+#### SnapShot 和 Code Caching 的区别
+
+```bash
+一、概念及作用对象
+SnapShot：
+概念：它主要是针对 V8 上下文创建过程进行优化的一种机制。在 JavaScript 运行环境中，像浏览器里创建全局对象（如窗口对象）以及初始化众多内置功能到 V8 的堆中，这一初始化过程耗时较长。SnapShot 通过将先前准备好的快照直接反序列化到堆里，快速获取初始化的上下文，避免了每次都从头去创建这些内容。
+作用对象：V8 引擎启动时所涉及的上下文相关内容，重点在于初始化阶段的全局对象和内置功能等在堆中的状态。
+Code Caching：
+概念：鉴于 V8 对 JavaScript 采用 JIT（即时编译）机制，脚本在执行前的解析和编译阶段开销较大。Code Caching 则是在首次编译脚本时，把生成的相关缓存数据存储起来，后续当 V8 需要再次编译相同脚本时（即便在不同的 V8 实例中），能直接利用这些缓存数据来重新创建编译结果，无需重新从头进行解析和编译操作。
+作用对象：JavaScript 脚本本身，确切说是脚本在解析和编译过程中产生的可用于后续快速复现编译结果的中间数据。
+二、缓存内容及侧重点
+SnapShot：
+缓存内容：包含了已经初始化好的全局对象以及各类内置功能在 V8 堆中的状态信息，是一种对 V8 上下文初始完整状态的快照式保存。
+侧重点：侧重于缩短 V8 引擎启动、创建上下文的时间，使得后续使用该上下文时能快速就绪，提升启动阶段的整体效率，比如让浏览器等 JavaScript 运行环境能更快进入可交互、可执行脚本的状态。
+Code Caching：
+缓存内容：是脚本在首次解析和编译过程中生成的字节码以及相关编译数据，这些数据可以帮助快速还原出之前的编译成果。
+侧重点：着重解决脚本重复编译带来的性能损耗问题，特别是在有多次执行相同脚本的场景下（比如网页多次刷新、应用多次调用相同功能模块对应的脚本等），通过复用编译结果加快脚本的执行速度。
+三、应用场景及性能提升体现
+SnapShot：
+应用场景：广泛应用于各类使用 V8 引擎的环境启动阶段，像浏览器打开新页面、Node.js 启动新的 JavaScript 运行实例等，每次需要创建新的 V8 上下文时都能发挥作用。
+性能提升体现：在不同设备上有明显的启动时间缩短效果，例如在 PC 机上可将创建上下文的时间从约 40ms 降低到 2ms，在手机端能从 270ms 降到 10ms，极大地优化了启动环节的用户体验。
+Code Caching：
+应用场景：只要存在脚本多次执行（且脚本内容未改变）的情况都能受益，比如网页应用中频繁调用的公共 JavaScript 函数、库文件，或者服务器端 Node.js 应用中反复运行的业务逻辑脚本等。
+性能提升体现：使得脚本再次执行时省去解析和编译的时间开销，直接利用缓存数据快速进入执行阶段，整体上让脚本执行得更快，尤其对于复杂且经常使用的脚本，对性能提升效果更为显著。
+四、缓存生命周期及管理特点
+SnapShot：
+生命周期：通常与 V8 上下文的创建和销毁关联紧密，当一个新的上下文需要被创建时，如果有可用的快照，就可以拿来快速初始化；而当上下文不再使用被销毁时，对应的快照相关资源也随之释放（具体由 V8 引擎的内存管理机制来协同处理）。
+管理特点：更多是由 V8 引擎在启动相关环节自动进行管理和调用，开发人员一般较少直接干预其快照的具体生成和使用细节，主要依赖引擎自身对不同应用场景下上下文创建需求的适配。
+Code Caching：
+生命周期：缓存数据的生命周期基于脚本的变化情况，只要脚本内容未改变，其缓存就可以在多次执行该脚本的不同时机被复用；一旦脚本有更新修改，之前的缓存就可能失效，需要重新生成新的缓存数据。
+管理特点：V8 引擎会根据脚本的标识等信息来判断是否能复用缓存，开发人员在一些情况下可以通过配置相关编译选项等方式来间接影响 Code Caching 的行为，例如控制缓存的大小限制、缓存的更新策略等（不过这些操作相对较底层且需要对 V8 编译机制有较深入了解）。
+总的来说，SnapShot 和 Code Caching 虽都旨在提升 JavaScript 执行效率，且都借助缓存机制，但在具体缓存对象、作用环节、性能提升侧重点以及管理特点等方面有着明显区别，各自在不同的层面助力 JavaScript 应用运行得更加高效流畅。
+
+```
+
+
+
+```bash
+### SnapShot
+JavaScript 规范中规定了很多的内建函数，如数学函数、功能齐全的正则表达式引擎。
+每个新创建的V8上下文从一开始就具有这些功能。
+为此，必须创建全局对象（例如浏览器中的窗口对象）和所有内置功能，并在创建上下文时将其初始化到V8的堆中。
+这一初始化过程耗时较长。
+
+SnapShot 通过将先前准备好的快照直接反序列化到堆中，快速获取初始化的上下文，避免了每次都从头开始去创建这些内容。
+作用对象：V8引擎启动时所设计的上下文相关内容，重点在于初始化阶段的全局对象和内置功能等在堆中的状态。
+缓存内容：包含了已经初始化好的全局对象以及各类内置功能在 V8 堆中的状态信息，是一种对 V8 上下文初始完整状态的快照式保存。
+侧重点：缩短 V8 引擎启动、创建上下文的时间，使得后续使用上下文时能快速就绪，提升启动阶段的整体效率，比如让浏览器等 JS 运行环境能更快进入可交互、可执行脚本状态。
+应用场景：应用于各类使用 V8 引擎的环境启动阶段，如浏览器打开新页面、Nodejs启动新的JS运行实例等，每次需要创建新的 V8 上下文都能发挥作用。
+
+性能提升效果：
+ * PC机中创建上下文的时间可以从原来的40ms降到2ms
+ * 手机中创建上下的时间从270ms降到10ms
+
+
+
+### Code Caching
+V8 对于 JavaScript 采用 JIT 编译机制，所以脚本在执行之前都会经过解析（Parse）和编译（Compile）阶段，而这两个过程会造成很大的开销。
+而Code Caching就是用来解决这个开销问题，让脚本执行得更快。
+Code Caching 在首次编译脚本时，将生成并存储相关缓存数据。后续当 V8 需要编译相同的脚本时（即使在不同的 V8 实例中），它也能利用这些缓存数据来重新创建编译结果，而不是从头开始进行解析编译操作。
+
+作用对象：JS脚本本身（可跨实例），准确来说是JS脚本在解析和编译过程中产生的可用于后续快速复现编译结果的中间数据。
+缓存内容：缓存的是脚本在首次解析和编译过程中生成的字节码以及相关编译数据，这些数据可以帮助快速还原出之前的编译结果。
+侧重点：着重解决脚本重复编译带来的性能损耗问题，特别是在有多次执行相同脚本的场景下（如页面多次刷新、应用多次调用相同功能模块对应的脚本等），通过服用编译结果加快脚本的执行速度。
+应用场景：只要存在脚本多次执行（且脚本内容未改变）的情况都能受益，比如网页应用中频繁调用公共JS函数、库文件，或者服务端 Nodejs 应用中反复运行的业务逻辑脚本等。
+
+
+
+### 共同
+二者都是为了提高JavaScript的执行效率，手段也都是通过将一些中间产物缓存起来，下次启动再反序列化来提高执行效率
+
+
+### 区别
+SnapShot是缓存的V8的上下文，提高的是V8引擎启动时的性能。
+Code Caching是缓存的Parsing和Complie的字节码，提高的是脚本的解析性能。
+```
 
 
 
@@ -166,8 +262,8 @@ ES6的优化
 
 #### WebAssembly 的目标
 1. 快、高效、便利：通过利用一些通用的硬件能力，能够跨平台以近乎于原生的速度执行。
-2. 可读、可调试：WebAssembly 是一种低层次的汇编语言，但是它也有一种人类可读的文本格式，使得人们可编写代码、查看代码、可调试代码。
-3. 确保安全：WebAssembly 明确运行在安全、沙箱的执行环境，类似其他 Web 的代码，它会强制开启同源和一些权限策略。
+2. 可读、可调试：WebAssembly 是一种低层次的汇编语言，但是它也有一种人类可读的文本格式，使得人们可编写、查看、调试代码。
+3. 确保安全：WebAssembly 明确运行在安全、沙箱的执行环境，会强制开启同源和一些权限策略。
 4. 不破坏现有的 Web：WebAssembly 被设计与其他 Web 技术兼容运行，并且保持向后兼容性。
 
 
@@ -363,33 +459,32 @@ WebAssembly 目前有四个主要的入口：
 ### 浏览器
 
 > ```bash
-> ## 浏览器
 > ### 浏览器是多进程的
-> - 浏览器是多线程的，如Chrome浏览器，我们每打开一个 Tab 页就会产生一个进程，每个进程又有很多线程，都会占用内部才能，这也以为这内存等资源消耗会很大，因此当Chrome运行时间长了就会导致电脑会越来越卡。
+> - 浏览器是多线程的，如Chrome浏览器，我们每打开一个 Tab 页就会产生一个进程，每个进程又有很多线程，都会占用内存，这也让这内存等资源消耗会很大，因此当Chrome运行时间长了就会导致电脑会越来越卡。
 > - 浏览器需要多进程的原因：如果浏览器是单线程，当某个Tab页、插件崩溃，就影响了整个浏览器，影响用户体验感
+> 
 >
->
-> ### 浏览器包含的进程
+>### 浏览器包含的进程
 > 1. Browser 进程
 >     - 浏览器的主进程（负责协调、主控），该进程只有一个。
 >     - 负责浏览器界面显示，与用户交互。如页面的前进、后退等。
 >     - 负责各个页面的管理，创建和销毁其他进程。
 >     - 将渲染(Renderer)进程得到的内存中的 Bitmap(位图)，绘制到用户界面上。
 >     - 网络资源的管理、下载等。
->
-> 2. 第三方插件进程
+> 
+>2. 第三方插件进程
 > 		- 每种类型的插件对应一个进程，当使用该插件时才创建。
->
-> 3. GPU 进程
+> 
+>3. GPU 进程
 > 		- 该进程也只有一个，用于 3D 绘制等等。
->
-> 4. 渲染进程（重点）
+> 
+>4. 渲染进程（重点）
 >     - 浏览器内核（Renderer进程，其内部是多线程）。
 >     - 每个 Tab 页面都有一个渲染进程，互不影响。
 >     - 主要作为页面渲染、脚本执行、事件处理等。
+> 
 >
->
-> ### 渲染进程 Renderer 的主要进程
+>### 渲染进程 Renderer 的主要进程
 > #### GUI 渲染线程
 > - 负责渲染浏览器界面，解析HTML、CSS、构建DOM树和RenderObject树，布局和绘制等。
 >     1. 解析html代码（HTML代码本质是字符串）转化为浏览器认识的节点，生成 DOM树（DOM Tree）
@@ -402,9 +497,9 @@ WebAssembly 目前有四个主要的入口：
 > - GUI 渲染线程与 JS 引擎线程是互斥的
 > 		- 当 JS 引擎执行时 GUI 线程会被挂起（相当于被冻结）。
 > 		- GUI 更新会被保存在一个队列中等到 JS 引擎空闲时立即被执行。
+> 
 >
->
-> #### JS 引擎线程
+>#### JS 引擎线程
 > - JS 引擎就是 JS 内核，负责处理 JavaScript 脚本程序（例如 V8 引擎）
 > - JS 引擎线程负责解析 JavaScript 脚本，运行代码。
 > - JS 引擎一直等待任务队列中任务的到来，然后加以处理。
@@ -413,28 +508,28 @@ WebAssembly 目前有四个主要的入口：
 > - GUI 渲染线程与 JS 引擎线程是互斥的，JS 引擎线程会阻塞 GUI 渲染线程。
 > 		- 就是我们常遇到的 JS 执行时间过长，造成页面渲染不连贯，导致页面渲染加载阻塞（页面加载缓慢）
 > 		- 例如浏览器渲染时遇到 script 标签，就会停止 GUI 的渲染，然后 JS 引擎线程开始工作，执行里面的js代码，等js执行完毕，JS 引擎线程停止工作，GUI 继续渲染下面的内容。如果js执行时间太长就会造成页面卡顿的情况。
+> 
 >
->
-> #### 事件触发线程
+>#### 事件触发线程
 > - 属于浏览器而不是 JS 引擎，用来控制事件循环，并且管理着一个事件队列（task queue）
 > - 当js执行碰到事件绑定和一些异步操作（如setTimeOut，也可来自浏览器内核的其他线程，如鼠标点击、AJAX异步请求等），会走事件触发线程将对应的事件添加到对应的线程中（比如定时器操作，便把定时器事件添加到定时器线程），等异步事件有结果，便把它们的回调操作添加到事件队列，等待 JS 引擎线程空闲时来处理。
 > - 当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待 JS 引擎的处理。
 > - 因为 JS 是单线程的，所以这些待处理队列中的事件都得排队等待 JS 引擎处理。
+> 
 >
->
-> #### 定时触发器线程
+>#### 定时触发器线程
 > - setInterval 与 setTimeout 所在的线程。
 > - 浏览器定时计数器并不是由 JavaScript 引擎计数的（因为 JS 引擎是单线程的，如果处于阻塞线程状态，就会影响计时的准确）
 > - 通过单独线程来计时并触发定时（计时完毕后，添加到事件触发线程的事件队列中，等待 JS 引擎空闲后执行），这个线程就是定时触发器线程，也叫定时器线程。
 > - W3C 在 HTML 标准中规定，规定要求 setTimeout 中低于 4ms 的时间间隔计算为 4ms。
+> 
 >
->
-> #### 异步 http 请求线程
+>#### 异步 http 请求线程
 > - 在XMLHttpRequest 在连接后是通过浏览器新开一个线程请求。
 > - 将检测到状态变更时。如果设置有回调函数，异步线程就产生状态变更事件，将整个回调再放入事件队列中，再由 JavaScript 引擎执行。
 > - 简单说就是当执行一个 http 异步请求时，就把异步请求事件添加到异步请求线程，等收到响应（准确说应该是http状态变化），再把回调函数添加到事件队列，等待 JS 引擎线程来执行。
 > ```
->
+> 
 
 ### 事件循环 Event Loop
 
@@ -540,8 +635,11 @@ WebAssembly 目前有四个主要的入口：
 > }
 > async1()
 > setTimeout(function () {
->   console.log('setTimeout')
+>   console.log('setTimeout 1')
 > }, 0)
+> setInterval(() => {
+>   console.log('setInterval 1')
+> })
 > new Promise(resolve => {
 >   console.log('Promise')
 >   resolve()
@@ -549,6 +647,14 @@ WebAssembly 目前有四个主要的入口：
 >   console.log('promise1')
 > }).then(function () {
 >   console.log('promise2')
+> 
+>   setTimeout(() => {
+>     console.log('setTimeout 2')
+>   }, 0)
+> 
+>   setInterval(() => {
+>     console.log('setInterval 2')
+>   })
 > })
 > console.log('script end')
 > 
@@ -560,7 +666,10 @@ WebAssembly 目前有四个主要的入口：
 > async1 end
 > promise1
 > promise2
-> setTimeout */
+> setTimeout 1
+> setTimeout 2
+> setInterval 1
+> setInterval 2*/
 > ```
 
 ### 完整的事件循环 Event Loop
@@ -766,9 +875,7 @@ WebAssembly 目前有四个主要的入口：
 
 ```bash
 ## 脚本 script
-		`<script type="text/javascript" src="" async></script>`
-// async:异步		defer：
-// 注意： 该属性指的是浏览器将外部js文件下载完成后，立马执行。
+`<script type="text/javascript" src="" async></script>`
 
 当浏览器看到普通脚本标签声明时，它执行以下步骤：
     - 暂停 HTML 文档解析器
@@ -968,6 +1075,17 @@ readystatechange 事件可以监听状态的改变。
 
 
 
+### 异步加载脚本的方案
+
+````bash
+1. 动态创建DOM方式（创建script，插入到DOM中，加载完毕后callBack）
+2. 通过 ajax 去获取 js 代码，然后通过 eval 执行
+3. 在 script 标签上添加 defer 或 async 属性
+4. 创建并插入 iframe，让它异步执行 js
+````
+
+
+
 ### 动态加载脚本文件
 
 要使用 JavaScript 动态加载脚本文件，基本步骤如下：
@@ -1016,6 +1134,23 @@ myScript.addEventListener('load', scriptLoaded)
 function scriptLoaded() {
   console.log('Hi')
 }
+```
+
+
+
+### noscript 标签
+
+```bash
+`<noscript>` 标签用来定义在脚本未被执行时的替代内容（文本）。
+
+`<noscript>` 标签中的内容只有在下列情况下才会显示出来：
+  - 浏览器不支持脚本
+  - 浏览器支持脚本，但脚本被禁用
+```
+
+```html
+<!-- 给予用户友好的提示! -->
+<noscript>您的浏览器不支持 JavaScript！</noscript>
 ```
 
 
@@ -1070,7 +1205,6 @@ function scriptLoaded() {
 	- nodeName 是为任意 Node 定义的。
 			- 对于元素，它的意义与 tagName 相同
 			- 对于其他节点类型（text，comment 等），它拥有一个对应节点类型的字符串
-		
 ```
 
 ![JS_DOM节点关系表](./image/JS_DOM_node.png)
@@ -1080,7 +1214,6 @@ function scriptLoaded() {
 ### DOMString
 
 ```bash
-## DOMString
 DOMString 是一种字符串类型。它是由 16 位无符号证书序列组成，每个整数代表一个 UTF-16 代码单元。
 
 每个代码单元都是一个 16 位的数值，通常代表一个字符，但有时需要两个代码单元来表示一个字符（对于 Unicode 辅助平面上的字符）。当文档或 Web API 规范提到 DOMString 时，它指的就是这样的字符串。
@@ -1093,7 +1226,6 @@ DOMString 是一种字符串类型。它是由 16 位无符号证书序列组成
 	- 在构造函数中当做参数，如 new Text('Hello, world!')，其中 'Hello, world!' 就是一个 DOMString。
 	- 表示 URL、选择器字符串或其他需要以文本形式表示的数据。
 注意：尽管 DOMString 在概念上等同于 JavaScript 字符串，但在一些特殊情境下，DOMString 可能会被指定为 null 或 undefined，这通常表明字符串值是不存在的。此外，有些 API 可能会将 DOMString 限定为必须符合某些模式或格式(可能不接收 null 值)，比如必须是合法的 CSS 选择器或有效的 URL。在这些情况下，需要确保提供的字符串满足这些要求。
-
 ```
 
 ```js
@@ -1105,7 +1237,6 @@ let elementClasses = element.className;  // `elementClasses` is a DOMString
 /** 设置 DOM 元素属性值 */
 element.id = 'new-id';  // Setting a DOMString
 element.className = 'new-class'; // className is a DOMString that you can set
-
 ```
 
 
@@ -1123,11 +1254,32 @@ element.className = 'new-class'; // className is a DOMString that you can set
 7. append(添加)
 
 
-- getElementById(id) - 获取带有指定 id 的节点（元素）
-- appendChild(node) - 插入新的子节点（元素）
-- removeChild(node) - 删除子节点（元素）
-- createAttribute() - 创建属性节点
-- 要复制的节点.cloneNode(true)--复制节点
+1. 创建节点
+- 创建一个DOM片段: `createDocumentFragment()`
+- 创建一个具体的元素: `createElement()`
+- 创建一个文本节点: `createTextNode()`
+- 创建属性节点: `createAttribute()`
+
+2. 添加、移除、替换、插入节点
+- 插入新的子节点（元素）: `appendChild(node)`
+- 删除子节点（元素）: `removeChild(node)`
+- 替换子节点: `replaceChild()`
+- 插入兄弟节点: `insertBefore()`，并没有 `insertAfter()`
+- 复制节点：`要复制的节点.cloneNode(true)`
+
+3. 查找节点
+- 获取带有指定 id 的节点（元素）: `getElementById(id)`，具有唯一性
+- 通过元素的Name属性的值: `getElementsByName()`，会得到一个数组，其中包括id等于name值的
+- 通过标签名称获取: `getElementsByTagName()`
+
+
+
+#### attribute 和 property 的区别
+- attribute 是 DOM 元素在文档中作为 html 标签拥有的属性
+- property 是 DOM 元素在 JS 中作为对象拥有的属性。
+
+- 对于 HTML 标准属性来说，attribute 和 property 是同步的，会自动更新。
+- 对于自定义属性来说，attribute 和 property 是不同步的。
 ```
 
 
@@ -1194,17 +1346,19 @@ document.documentElement.parentElement === null
 while (ele = ele.parentElement) { console.lg(ele) } // 递归向上，直到 <html>
 ```
 
-#### 自定义属性
+#### 自定义属性 dataset
 
 ```bash
 DOM 中的自定义属性不能直接访问，但可以通过以下方法来进行操作：
 	- 获取标签对应的属性：`getAttribute('属性名')`（注意：属性可以是自定义，也可以是 DOM 自身已有的）
 	- 设置标签属性的值：`setAttribute('属性名', '属性值')`
 	- 移除标签属性值：`removeAttribute('属性名')`
+
+通过 dataset 可以方便的获取或设置 `data-*` 自定义数据属性集
 ```
 
 ```js
-const ele = document.getElementById('data') as HTMLElement
+const ele = document.getElementById('data')
 
 /**
  * 获取 data-* 属性的值
@@ -1323,43 +1477,51 @@ getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav,
 
 ### DOM修改（操作样式）
 
-> **操作样式：**设置类样式class 、设置行内样式style
->
-> ```js
-> let list = document.getElementsByTagName('li')[0];
-> list.style.color = "lightgray";
-> list.className = 'list';
-> console.log(list['src'], list['className'])
-> ```
->
-> **动态创建元素**（innerHTML、document.write、inerText）:动态创建元素优点-->提高网页性能，降低流量使用
->
-> **注意：通过`attribute`和设置`style`只能通过获取id标签来更改**
->
-> - **innerHTML 和 innerText 区别**
->   - innerHTML 返回的是标签内的html内容，包含里层的html标签
->   - inerText 返回的是标签的文本值，不包含html标签
->   - innerHTML 和 innerText，如果两个都写，下面的内容会把上面的内容覆盖
->
-> - **document.write()**      //比如弹出新框的在线客服
->   - 当页面加载时，会产生输出流，这个输出流在页面加载完毕时关闭
->   - 如果输出流关闭后执行document.write()，它会开启一个新的输出流，页面会被覆盖
->   - 使用建议：使用document.write只可以在页面加载中，可以使用在弹出新窗口时
->
-> - **innerHTML**
->   - 在设置时会覆盖原来的内容，但是可以通过+=去解决
->
-> - **inerHTML 和 document.write 区别**
->   - innerHTML 是将内容写入某个DOM节点，不会导致页面全部重绘
->   - document.write 是直接将内容写入页面的内容流，会导致页面全部重绘
-> - `document.createElement()`
-> - 动态操作表格
->   - rows (只读，table和textarea能用)
->   - insertRow(index) (只有table能调用)
->   - deleteRow(index) (只有table能调用)
->   - cells (只读，table和textarea能用)
->   - insertCell(index) (只有tr能调用)
->   - deleteCell(index) (只有tr能调用)
+```bash
+### 操作样式：设置类样式、行内样式style
+    let list = document.getElementsByTagName('li')[0]
+    list.style.color = "lightgray"
+    list.className = 'list'
+    console.log(list['src'], list['className'])
+
+
+
+### 动态创建元素（innerHTML、document.write、innerText）
+- 动态创建元素优点-->提高网页性能，降低流量使用
+- 注意：通过`attribute`和设置`style`只能通过获取id标签来更改
+
+
+1. **document.write()**      //比如弹出新框的在线客服
+  - 当页面加载时，会产生输出流，这个输出流在页面加载完毕时关闭。如果输出流关闭后执行 `document.write()`，它会开启一个新的输出流，页面会被覆盖。
+  - document.write 可用在两方面：
+  		- 页面载入过程中用实时脚本创建内容
+  		- 用延时脚本创建本窗口或新窗口的内容
+
+
+2. **innerHTML**
+  - 在设置时会覆盖原来的内容，但是可以通过+=去解决
+  
+3. `document.createElement()`
+
+
+- **inerHTML 和 document.write 区别**
+  - innerHTML 是将内容写入某个DOM节点，可以重绘页面的一部分
+  - document.write 是直接将内容写入页面的内容流，会导致整个页面重绘
+
+- innerHTML 和 innerText 区别
+  - innerHTML 返回的是标签内的html内容，包含里层的html标签
+  - inerText 返回的是标签的文本值，不包含html标签
+  - innerHTML 和 innerText，如果两个都写，下面的内容会把上面的内容覆盖
+
+
+### 动态操作表格
+  - rows (只读，table和textarea能用)
+  - insertRow(index) (只有table能调用)
+  - deleteRow(index) (只有table能调用)
+  - cells (只读，table和textarea能用)
+  - insertCell(index) (只有tr能调用)
+  - deleteCell(index) (只有tr能调用)
+```
 
 
 
@@ -1426,16 +1588,22 @@ const bgColor = styles.getPropertyValue('background-color')
 >- Checkbox的checked 为选中状态
 > - 取反则是为非：!   形如：获取的变量.checked=!获取的变量.checked
 
-#### 切换类
+#### 切换类 classList
 
 ```bash
+classList 控制 CSS 的增、删、切换、是否存在某个类。
+	- ele.classList.add('addClass')
+	- ele.classList.remove('removeClass')
+	- ele.classList.toggle('toggleClass')
+	- ele.classList.contains('containsClass')
+
+
 ### 切换类
 classList.toggle() 是 JavaScript 中用于切换 HTML 元素类名的方法。
 使用该方法时，元素存在该类名就会移除，没有则添加该类。
 
 const toggleClass = (el, className) => el.classList.toggle(className)
 toggleClass(document.querySelector('p.hdfp'), 'hdfp')
-
 ```
 
 ```html
@@ -1457,7 +1625,6 @@ toggleClass(document.querySelector('p.hdfp'), 'hdfp')
     </script>
   </body>
 </html>
-
 ```
 
 
@@ -1850,24 +2017,23 @@ const handleClick = () => {
 #### DOM事件流
 
 > ````bash
-> ## DOM 事件流
 > 事件传播的三个阶段：事件捕获 -> 目标 -> 事件冒泡
->
-> 1. 捕获阶段
+> 
+>1. 捕获阶段
 > 事件从祖先元素往子元素查找（DOM树结构），直到捕获到事件目标 target。在这个过程中，默认情况下，事件相应的监听函数时不会被触发的。
 > 捕获阶段事件依次传递的顺序是：'window -> document -> html -> body -> 父元素 -> 子元素 -> 目标元素'。
+> 
 >
->
-> 2. 事件目标
+>2. 事件目标
 > 当到达目标元素后，执行目标元素该事件相应的处理函数。如果没有绑定监听函数，那就不执行。
+> 
 >
->
-> 3. 事件冒泡
+>3. 事件冒泡
 > 事件从事件目标 target 开始，从子元素往祖先元素向上冒泡，直到页面的最顶级标签。
 > 冒泡指的是：'子元素的事件被触发时，父元素的同样的事件也会被触发'。取消冒泡就是取消这种机制。
 > 冒泡的顺序是：'div -> body -> html -> document -> window'。
->
-> 注意：
+> 
+>注意：
 > 以下事件不冒泡（即事件不会往父元素那里传递）：'blur、focus、load、unload、onmouseenter、onmouseleave'。
 > ````
 
@@ -1930,36 +2096,35 @@ const handleClick = () => {
 #### 事件委托
 
 > ```bash
-> ## 事件委托
 > ### 事件委托的原理：
 > 不给每个子节点单独设置事件监听器，而是设置在其父节点上，然后利用冒泡原理设置每个子节点。
+> 
 >
->
-> ### 事件委托的应用：
+>### 事件委托的应用：
 > 给 ul 注册点击事件，然后利用事件对象的 target（`event.target`） 来找到当前点击的 li ，然后事件冒泡到 ul 上， ul 有注册事件，就会触发事件监听器。
+> 
 >
->
-> ### 事件委托的好处：
+>### 事件委托的好处：
 > 只操作了一次 DOM，提高了程序的性能。
 > 当该触发改事件的同一种标签过多，会过于消耗性能和内存。所以把触发事件绑定到该标签的父层，减少了事件绑定的次数，然后利用冒泡机制，在执行事件函数时利用冒泡机制再去匹配判断目标元素。
+> 
 >
->
-> ### 为什么要事件委托？
+>### 为什么要事件委托？
 > 在 JavaScript 中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能，因为 '需要不断地操作 DOM'，那么引起 '浏览器重绘和回流' 的可能也就更多，页面交互的时间也就变得越长，这就是为什么要 '减少 DOM 操作的原因'。
 > 每一个事件处理函数都是一个对象，若存在许多的事件处理函数，内存就会被多占用一部分。如果使用事件委托，就会将所有的操作放到 JS 程序中，'只对它的父级（如果它只有一个父级）这一个对象进行操作，此时与 DOM 的操作就只需要交互一次，这样就能大大减少与 DOM 的交互次数，以此来提高性能'。
 > ```
->
-> ```html
+> 
+>```html
 > <ul id="parent-list" style="background-color: #bfa;">
->   <li><p>我是p元素</p></li>
+> <li><p>我是p元素</p></li>
 >   <li><a href="javascript:;" class="link">超链接一</a></li>
 >   <li><a href="javascript:;" class="link">超链接二</a></li>
 >   <li><a href="javascript:;" class="link">超链接三</a></li>
-> </ul>
->
-> <script>
->   window.onload = function () {
->     document.getElementById('parent-list').addEventListener('click', function (event) {
+>   </ul>
+> 
+><script>
+> window.onload = function () {
+>    document.getElementById('parent-list').addEventListener('click', function (event) {
 >       event = event || window.event
 >       // e.target 表示：触发事件的对象
 >       // 如果触发事件的对象是我们期望的元素，则执行否则不执行
@@ -1967,15 +2132,13 @@ const handleClick = () => {
 >         console.log('我是ul的单击响应函数')
 >       }
 >     }, false)
->   }
-> </script>
+>    }
+>   </script>
 > ```
 
 #### 触发事件
 
 ```bash
-## 触发事件
-
 ### 输入触发事件
   1. 用于文本框和文本区域（input/textarea 标签）
       - ele.focus()
@@ -2003,6 +2166,27 @@ trigger(ele, 'mousedown')
 const e = document.createEvent('CustomEvent')
 e.initCustomEvent('hello', true, true, { message: 'Hello World' })
 ele.dispatchEvent(e) // 触发事件
+```
+
+#### 自定义右键菜单 contextMenu
+
+```bash
+contextMenu 事件并不会替换原有的右键菜单，而是将你的自定义右键菜单添加到浏览器的右键菜单里。
+
+    <div id="menu">Lorem ipsum dolor sit amet.</div>
+    <script>
+      menu.addEventListener('contextmenu', function () {
+        alert('点我！')
+      })
+    </script>
+   
+
+
+也可以阻止它，显示自己自定义的菜单
+    menu.addEventListener('contextmenu', function (e) {
+      e.preventDefault()
+      // ...
+    })
 ```
 
 

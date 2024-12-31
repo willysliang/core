@@ -1,8 +1,8 @@
 /**
  * @ Author: willysliang
- * @ Create Time: 2022-10-26 16:53:02
- * @ Modified by: willysliang
- * @ Modified time: 2022-10-28 12:03:08
+ * @ CreateTime: 2022-10-26 16:53:02
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-09-19 11:32:26
  * @ Description: vue-i18n 配置国际化多语言
  */
 
@@ -13,9 +13,8 @@ import { setHtmlPageLang, setLocalePool } from './helper'
 import { localeMap } from './config'
 
 /** 国际化容器的配置项 */
-async function createI18nOptions () {
+async function createI18nOptions() {
   const appStore = useAppStoreWithOut()
-  // const locale = appStore.getLocale()
   const locale = appStore.localeType
   const defaultLocal = await import(`./lang/${locale}.ts`)
   const message = defaultLocal.default?.message ?? {}
@@ -46,6 +45,6 @@ const options = await createI18nOptions()
 export const i18n = createI18n(options)
 
 /** 把国际化实例挂载到 app 上 */
-export async function setupI18n (app: App) {
+export async function setupI18n(app: App) {
   app.use(i18n)
 }

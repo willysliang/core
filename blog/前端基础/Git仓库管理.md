@@ -294,21 +294,14 @@ $ git checkout -- readme.txt
 ### 拉取代码 fetch/pull
 
 ```bash
-## 拉取代码
-注意：在默认模式下，`git pull` 等价于 `git fetch && git merge FETCH_HEAD`。
-
-- 使用 `git pull` 时，Git 会尝试自动合并。它是上下文敏感的，因此 Git 会将任何拉入的提交合并到您当前工作的分支中。`pull` 会直接自动合并提交，而不让您先查看它们。如果你不小心管理你的分支，你可能会经常遇到冲突。
-
-- 使用 `git fetch` 时，Git 从目标分支收集当前分支中不存在的任何提交，并将其存储在本地存储库中。但是，它不会将它们与当前分支合并。如果您需要使存储库保持最新状态，但正在处理更新文件可能会导致冲突时，这一点尤其有用。要将提交集成到当前分支中，必须在之后使用 `merge`。
-
-当你 `fetch` 时，你可以先使用 `diff` 查看更新后的差异之后，再选择 `merge`。
+`git pull`：相当于是从远程获取最新版本并merge到本地，等价于 `git fetch && git merge FETCH_HEAD`
+`git fetch`：相当于是从远程获取最新版本到本地，不会自动merge
 
 
 ### 清理不存在于远程的本地跟踪分支
 过时的远程跟踪分支（即那些已经在远程仓库中被删除，但在本地仍然存在的分支）可以通过添加 --prune 选项来清理
 `$ git fetch origin --prune`
 或 `$ git fetch -p`
-
 ```
 
 

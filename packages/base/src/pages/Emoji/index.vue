@@ -6,23 +6,25 @@
  * @ Description: Emoji 表情包
  -->
 <script setup lang="ts">
-import { onActivated } from 'vue'
 import emojiJson from './emoji.json'
 import { demoPages } from '../constant'
 
-// eslint-disable-next-line no-undef
 defineOptions({
   name: demoPages.EMOJI.name,
   inheritAttrs: false,
 })
 
-onActivated(() => {
-  console.log(demoPages.EMOJI.name)
-})
-
-const emoji = emojiJson.data
+const emojiList = emojiJson.data.split(',')
 </script>
 
 <template>
-  <div>{{ emoji }}</div>
+  <div class="flex flex-wrap mx-4 rounded bg-slate-50">
+    <div
+      v-for="emoji in emojiList"
+      :key="JSON.stringify(emoji)"
+      class="rounded w-10 h-10 flex items-center justify-center text-base cursor-pointer hover:bg-slate-200"
+    >
+      <span>{{ emoji }}</span>
+    </div>
+  </div>
 </template>

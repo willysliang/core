@@ -89,6 +89,39 @@ html(5)/css(3)，前端页面相关技术
 
 # 2024
 
+## 2024年12月31日
+  - docs: HTML基础知识整理
+  - docs: 面试题大纲
+
+## 2024年12月26日
+  - docs(前端基础): html5笔记整理
+
+## 2024年12月23日
+  - docs: 笔记整理
+
+## 2024年12月17日
+  - docs(前端算法): [手写&原理] 并发限制
+
+## 2024年12月16日
+  - docs(前端框架): [NodeJS] nodejs事件循环、mongoose Schema
+  - docs(计算机网络): [网络安全] 数据加密
+  - docs(前端基础): [JavaScript] V8引擎的SnapShot和Code Caching的区别
+
+## 2024年11月25日
+  - docs(后端基础): [Linux] Docker 概念
+  - docs: blog images的图片移动到image目录下
+
+## 2024年9月30日
+  - docs(前端基础): [WEB_API] 显示消息 Notification API
+
+## 2024年9月25日
+  - docs(前端基础): [Nodejs] 任务调度node-cron、断言测试assert
+
+## 2024年9月13日
+  - docs(前端基础): [Nodejs] process、net、readline模块、puppeteer的Page方法
+  - docs(前端基础): [WEB_API] 访问网络摄像头、截屏
+  - docs(前端进阶): [功能记录本] 获取视频时长
+
 ## 2024年9月6日
   - docs(前端基础): [Nodejs] package.json 与 npm 常用命令
 

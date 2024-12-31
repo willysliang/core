@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ Create Time: 2023-11-02 20:49:42
- * @ Modifier: willy
- * @ ModifierTime: 2024-05-31 15:00:45
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2024-09-19 11:15:02
  * @ Description: index app 相关的持久化数据
  */
 
@@ -13,11 +13,15 @@ import { BASE_URL, API_TARGET_URL } from '@/config/constant/cache'
 import { LOCALE_KEY, IS_LOCKSCREEN } from '@/config/constant/app'
 import { Storage } from '@utils/cache'
 import { LocaleType } from '@/locales/config'
+import { IPages } from '@/entries/music-player/router/constant'
 
 /** 项目配置类 */
 interface IAppConfig {
   /** 是否为暗模式 */
   isDark: boolean
+
+  /** 当前路由的信息 */
+  routeInfo?: null | IPages
 }
 
 interface IUserInfo {
@@ -36,7 +40,7 @@ interface IUserInfo {
 }
 
 /** app 全局状态 */
-interface IAppIndexSate {
+interface IAppIndexState {
   /** 后端接口地址 */
   baseUrl: string
 
@@ -66,7 +70,7 @@ interface IAppIndexSate {
 const initLockTime = 5 * 60 * 1000
 export const useAppStore = defineStore({
   id: 'app-index',
-  state: (): IAppIndexSate => ({
+  state: (): IAppIndexState => ({
     /** 后端接口地址 */
     baseUrl: localStorage.getItem(BASE_URL) || API_TARGET_URL,
 
@@ -82,6 +86,7 @@ export const useAppStore = defineStore({
 
     appConfig: {
       isDark: false,
+      routeInfo: null,
     },
 
     userInfo: {

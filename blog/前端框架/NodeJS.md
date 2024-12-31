@@ -47,7 +47,7 @@ MD5加密实践
 
 
 
-## 原生路由
+### 原生路由
 
 ```ts
 /** 
@@ -228,7 +228,7 @@ fetch(`/api/loginpost`, {
 
 
 
-## 中间件
+### 中间件
 
 ```bash
 中间件（Middleware）是一种软件模式，用于将不同的软件系统或组件连接起来，使其能够相互通信和交互。它最大的特点是一个中间件处理完可以再传递给下一个中间件。
@@ -258,7 +258,9 @@ const uselessMiddlewareError = (req, res, next) => {
 }
 ````
 
-## 洋葱模型
+
+
+### 洋葱模型
 
 ```bash
 洋葱模型是 Koa 框架中常用的一种中间件处理方式，它的核心思想是将请求和响应的处理过程看作是一层层的中间件函数，每个中间件函数都可以对请求和响应进行处理，并将处理结果传递给下一个中间件，最终得到最终的响应结果。
@@ -348,6 +350,127 @@ koa.listen(3000)
     { name: 'willy', age: 25 }
     2
  */
+```
+
+
+
+### 事件循环
+
+```bash
+#### Node 的事件循环
+Node 事件循环是一种用于处理异步操作的机制。在 nodejs 中，大部分 I/O 操作（如文件读取、网络请求等）都是异步的，事件循环使得 nodejs 能够在等待这些异步操作完成的同时，继续处理其他任务，从而提高应用程序的效率和性能。
+- 事件队列（Event Queue）：存储各种异步事件的回调函数。当一个异步操作完成时，其对应的回调函数就会被添加到事件队列中。
+		- 例如，当一个文件读取操作完成后，读取文件的回调函数就会进入事件队列。
+- 事件循环（Event Loop）：是一个不断循环的过程，负责从事件队列中取出回调函数并执行。这个循环会持续运行，直到程序结束。
+		- 在进程启动时，Node 会创建一个类似于 `while(true)` 的循环，每执行一次循环体（tick）都会查看事件队列中是否有相应事件待处理，如果有则依次执行队列中所有事件，直到执行完毕，然后进入下一个循环。
+
+
+
+#### 事件循环存在的阶段
+1. 定时器阶段（Timers）：主要执行 setTimeout 和 setInterval 的 callback。
+2. I/O回调阶段（I/O Callbacks）：处理几乎所有的异步 I/O 操作的回调函数。
+		- 文件请求、TCP请求的 callback，即是除了 close 事件的 callbacks、被 timers(定时器：setTimeout、setInterval等)设定的 callbacks、setImmediate 设定的 callbacks 之外的 callbacks
+3. 闲置阶段（Idle、Prepare）：node内部使用
+4. 轮询阶段（Poll）：获取新的 I/O 事件，适当的条件下node将阻塞在这里
+		- 主要用于处理新的 I/O 事件和执行于 I/O 相关的回调函数。如果没有定时器到期并且没有其他高优先级的任务，事件循环会在这个阶段阻塞，等待 I/O 事件的发生。
+		- 如，当使用 `fs.readFile()` 读取文件时，在这个阶段会检查文件读取是否完成，如果完成就执行相应的回调函数。
+		- 同时这个阶段也可用于处理一些其他的异步操作，如某些网络请求的回调。
+5. 检查阶段（Check）：执行setImmediate设定的callbacks
+6. 关闭事件阶段（Close Callbacks）：比如 `socket.on('close',callback)` 设置的callback会在这个阶段执行
+
+
+
+#### poll 阶段
+poll 阶段是衔接整个 EventLoop 各个阶段比较重要的阶段。这个阶段，除 timer、close、setImmediate 之外的所有异步方法完成时，都会将 callback 加到 poll queue 里并立即执行。
+两个主要的功能：
+	1. 执行 poll queue 的 callback
+	2. 当 timer 设置的事件到达时，循环到 timer 阶段执行对应的 callback
+
+1. 如果事件循环到 poll 阶段，且代码未设置 timer
+	- 如果 poll queue 不为空，将同步执行 queue 中的 callback，直到 queue 为空，或执行 callback 达到系统上限。
+	- poll queue 清空或者进来就为空，将会判断代码有没有被 setImmediate 设置 callback，如果有则进入 check 阶段执行 check 阶段的 queue，如果没有设定 setImmediate callback，event loop 将阻塞在这个阶段等待 callback 加入 poll queue。
+2. 如果事件循环到 poll 阶段，且代码设置 timer
+	- 清空 poll queue 进入空闲状态后，event loop 将检查 timers，如果有一个或多个 timers 时间已经到达，event loop 将按循环顺序进入 timer 阶段，并执行 timer queue。
+	- Process.nextTick() 不属于任何阶段，而是在各个阶段切换的中间执行。
+
+
+
+#### 观察者
+判断是否有事件需要处理的过程就是询问观察者的过程，每个事件循环都会有一个或者多个观察者。
+事件循环是一个典型的生产者消费者模型，异步I/O，定时器，网络请求这些都是事件的生产者，执行完成后，这些事件都会被传递到对应的观察者那里，事件循环则从观察者中取出事件进行处理。
+观察者存在优先级，即事件循环会按照观察者的优先级顺序去找相应观察者寻找事件，也就是上述所说的事件循环的六个阶段。
+```
+
+![image-20241216143938620](./image/1460000013681765.png)
+
+```js
+console.log('开始');
+
+process.nextTick(() => {
+  console.log('process.nextTick');
+});
+
+setTimeout(() => {
+  console.log('定时器1');
+}, 0);
+
+setImmediate(() => {
+  console.log('setImmediate 1');
+});
+
+fs.readFile('test.txt', (err, data) => {
+  console.log('文件读取完成');
+  
+  setTimeout(() => {
+    console.log('定时器2');
+  }, 0);
+  
+  setImmediate(() => {
+    console.log('setImmediate 2');
+  });
+});
+
+console.log('结束');
+
+/*
+开始
+结束
+process.nextTick
+文件读取完成
+定时器1
+setImmediate 1
+定时器2
+setImmediate 2
+*/
+```
+
+```bash
+- 代码会按照从上到下的顺序依次执行，首先执行 `console.log('开始');`，所以会输出 `开始`。
+- 接着遇到 `process.nextTick(() => { console.log('process.nextTick'); });`，它会把对应的回调函数添加到当前执行栈的尾部，意味着当前代码块执行完后就会立即执行这个回调函数。
+- 然后遇到`setTimeout(() => { console.log('定时器1'); }, 0);`，定时器回调函数被添加到定时器阶段的队列中。接着遇到`setImmediate(() => { console.log('setImmediate 1'); });`，其回调函数被添加到检查阶段的队列中。
+- 执行`fs.readFile('test.txt', (err, data) => {... });`发起文件读取操作，然后输出`结束`。此时，由于文件读取是异步操作，程序不会等待读取完成，事件循环继续。
+- 当文件读取完成后，文件读取的回调函数被添加到I/O回调阶段的队列中。当事件循环进入I/O回调阶段时，执行文件读取的回调函数，输出`文件读取完成`。
+- 在文件读取回调函数中，又遇到两个异步操作：`setTimeout(() => { console.log('定时器2'); }, 0);`和`setImmediate(() => { console.log('setImmediate 2'); });`。它们的回调函数分别被添加到定时器阶段和检查阶段的队列中。
+- 接下来事件循环进入定时器阶段，执行之前添加的`定时器1`的回调函数，输出`定时器1`。然后进入检查阶段，执行`setImmediate 1`的回调函数，输出`setImmediate 1`。
+- 随着事件循环的继续，当再次进入定时器阶段时，执行`定时器2`的回调函数，输出`定时器2`。进入检查阶段时，执行`setImmediate 2`的回调函数，输出`setImmediate 2`。
+```
+
+
+
+### 底层如何实现 IO
+
+```bash
+### NodeJS中的异步I/O模型
+主要分为4个核心：
+  * 事件循环
+  * 观察者
+  * 请求对象
+  * I/O线程池
+
+
+## 不同环境的实现方式不同
+1. 在Windows下，基于IOCP。
+2. 在Linux中，是基于多线程。epoll
 ```
 
 
@@ -1023,7 +1146,6 @@ new stuModel({ name: "01willy", age: 12, gender: "male", desc: "" }).save(
 #### ObjectIds
 
 ```bash
-### ObjectIds
 默认情况下，MongoDB 在 ObjectID 类型的每个文档上创建一个 _id 属性作为唯一的自增值。
 MongoDB `ObjectIds` 通常使用 24 个十六进制字符串表示，如 `5d6ede6a0ba62570afcedd3a`。Mongoose 根据模式路径将 `ObjectIds` 强制转换 24 个字符字符串。
 Mongoose 还可以将其他的值转换为 `ObjectId`。因为 `ObjectId` 是 12 个任意字节。所以任何 12 字节的缓冲区或 12 个字符的字符串都是有效的 `ObjectId`。
@@ -1063,6 +1185,400 @@ doc = new Model({ testId: Buffer.from('12char12char') })
 doc.testId instanceof mongoose.Types.ObjectId // true
 doc.testId // 313263686172313263686172
 
+```
+
+
+
+#### 数组
+
+##### 基元数组（基础数组）
+
+Mongoose 的 `Array` 类使用额外的 Mongoose 功能扩展了普通的 JavaScript 数组。
+
+例如，假设有一个带有 `tags` 数组的 `BlogPost` 模型骨架，当创建一个新 `BlogPost` 文档时，`tags` 属性是普通 JavaScript 数组类的一个实例。但它也有一些特殊的性质。
+
+```js
+const blogPostSchema = new mongoose.Schema(
+  {
+    title: String,
+    tags: [String]
+  },
+  { versionKey: false }
+)
+const BlogPost = mongoose.model('BlogPost', blogPostSchema)
+
+const doc = new BlogPost({
+  title: 'Intro to JavaScript',
+  tags: ['programming']
+})
+
+Array.isArray(doc.tags) // true
+doc.tags.isMongooseArray // true
+```
+
+例如，Mongoose 截取 `push()` 对 `tags` 数组的调用，当你 `save()` 文档时，它足够聪明地使用 `$push` 更新文档。
+
+```js
+mongoose.set('debug', true)
+
+doc.tags.push('web development')
+// 由于 debug 模式，将打印:
+// Mongoose: blogposts.updateOne({ _id: ObjectId(...) }, { '$push': { tags: { '$each': [ 'web development' ] } } }, { session: null })
+await doc.save()
+```
+
+##### 文档数组（数组对象）
+
+`tags` 示例是一个基元数组。Mongoose 还支持子文档数组。
+
+下面是如何定义 `members` 数组的方法，每个数组都有 `firstName` 和 `lastName` 属性。`doc.members` 是一个普通 JavaScript 数组的实例，因此它具有所有常用函数，例如 `slice()` 和 `filter()`。但它也有一些特定于 Mongoose 的功能。
+
+```js
+const groupSchema = new mongoose.Schema({
+  name: String,
+  members: [{ firstName: String, lastName: String }]
+})
+const Group = mongoose.model('Group', groupSchema)
+
+const doc = new Group({
+  title: 'Jedi Order',
+  members: [{ firstName: 'Luke', lastName: 'Skywalker' }]
+})
+
+Array.isArray(doc.members) // true
+doc.members.isMongooseArray // true
+doc.members.isMongooseDocumentArray // true
+```
+
+例如，如果您设置第 0 个成员的 `firstName`，Mongoose 将在调用 `save()` 时将其转换为 `member.0.firstName` 上的集合。
+
+```js
+const groupSchema = Schema(
+  {
+    name: String,
+    members: [{ firstName: String, lastName: String }]
+  },
+  { versionKey: false }
+)
+const Group = mongoose.model('Group', groupSchema)
+
+const doc = new Group({
+  title: 'Jedi Order',
+  members: [{ firstName: 'Luke', lastName: 'Skywalker' }]
+})
+await doc.save()
+
+mongoose.set('debug', true)
+
+doc.members[0].firstName = 'Anakin'
+// Mongoose: groups.updateOne({ _id: ObjectId("...") }, { '$set': { 'members.0.firstName': 'Anakin' } }, { session: null })
+await doc.save()
+```
+
+##### 设置数组索引时的注意事项
+
+Mongoose 在直接设置数组索引方面存在一个已知问题。例如，如果您设置了 `doc.tags[0]`，Mongoose 更改跟踪将不会获取该更改。
+
+```js
+const blogPostSchema = Schema(
+  {
+    title: String,
+    tags: [String]
+  },
+  { versionKey: false }
+)
+const BlogPost = mongoose.model('BlogPost', blogPostSchema)
+
+const doc = new BlogPost({
+  title: 'Intro to JavaScript',
+  tags: ['programming']
+})
+await doc.save()
+
+// 此更改不会在数据库中结束！
+doc.tags[0] = 'JavaScript'
+await doc.save()
+
+const fromDb = await BlogPost.findOne({ _id: doc._id })
+console.log(fromDb.tags) // ['programming']
+```
+
+为了解决这个问题，需要使用 [`markModified()`方法](https://mongoosejs.com/docs/api/document.html#document_Document-markModified)或在数组元素上显式调用 [`MongooseArray.set()`](https://mongoosejs.com/docs/api/array.html#mongoosearray_MongooseArray-set) 来通知 Mongoose 的更改跟踪。
+
+```js
+// 这种改变是有效的。set() 是 Mongoose 数组上触发更改跟踪的一种特殊方法。
+doc.tags.set(0, 'JavaScript')
+await doc.save()
+
+const fromDb = await BlogPost.findOne({ _id: doc._id })
+console.log(fromDb.tags) // ['JavaScript']
+```
+
+
+
+#### 时间戳（timestamps）
+
+启用 `Schema` 的 `timestamps` 选项时，Mongoose 会将 `createdAt` 和 `updatedAt` 属性添加到模型中。默认情况下，`createdAt` 和 `updatedAt` 的类型为 `Date`。更新文档时，Mongoose 会自动增加 `updatedAt`。
+
+```js
+const userSchema = mongoose.Schema(
+  {
+    name: String
+  },
+  {
+    timestamps: true
+  }
+)
+
+const User = mongoose.model('User', userSchema)
+const doc = await User.create({ name: 'O.O' })
+
+doc.createdAt // 2021-08-20T22:36:59.414Z
+doc.updatedAt // 2021-08-20T22:36:59.414Z
+
+doc.createdAt instanceof Date // true
+
+doc.name = 'D.O'
+await doc.save()
+
+doc.createdAt // 2021-08-20T22:36:59.414Z
+doc.updatedAt // 2021-08-20T22:37:09.071Z
+```
+
+特定的 mongoose 模型写入操作允许跳过 `timestamps`，前提是在 `Schema` 中设置了时间戳。为此，必须将 `timestamps` 设置为 `false`，并且该操作不会更新时间。
+
+```js
+const userSchema = mongoose.Schema(
+  {
+    name: String
+  },
+  {
+    timestamps: true
+  }
+)
+
+const User = mongoose.model('User', userSchema)
+
+const doc = await User.findOneAndUpdate(
+  {
+    email: 'O.O'
+  },
+  {
+    email: 'D.O'
+  },
+  {
+    new: true,
+    upsert: true,
+    timestamps: false
+  }
+)
+```
+
+如果希望仅阻止其中一个更新，我们应该创建具有键值对的对象，而不是将 `timestamps` 设置为 `false` 作为值。根据需求，我们只需要根据需求将 `createdAt` 或 `updatedAt` 设置为 `true` 或 `false`。
+
+```js
+const userSchema = mongoose.Schema(
+  {
+    name: String
+  },
+  {
+    timestamps: true
+  }
+)
+
+const User = mongoose.model('User', userSchema)
+
+const doc = await User.findOneAndUpdate(
+  {
+    name: 'O.O'
+  },
+  {
+    name: 'D.O'
+  },
+  {
+    new: true,
+    upsert: true,
+    timestamps: {
+      createdAt: false,
+      updatedAt: true
+    }
+  }
+)
+```
+
+##### 备用属性名
+
+默认情况下，Mongoose 使用 `createdAt` 和 `updatedAt` 作为时间戳的属性名。但你可以让 Mongoose 使用任何你喜欢的属性名。例如可以让 Mongoose 使用 `created_at` 和 `updated_at` 替代：
+
+```js
+const userSchema = mongoose.Schema(
+  {
+    name: String
+  },
+  {
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at'
+    }
+  }
+)
+const User = mongoose.model('User', userSchema)
+
+const doc = await User.create({
+  name: 'O.O'
+})
+doc.updated_at // 2021-08-20T22:40:06.667Z
+```
+
+##### 使用 UNIX 时间戳
+
+Mongoose `Schema` 支持 `timestamps.currentTime` 选项，该选项允许您传递用于获取当前时间的自定义函数，可以让 Mongoose 将时间戳存储为自 1970 年 1 月 1 日以来的秒数。
+
+```js
+const userSchema = mongoose.Schema(
+  {
+    name: String
+  },
+  {
+    // 让 Mongoose 使用 UNIX 时间（自1970年1月1日起的秒数）
+    timestamps: {
+      currentTime: () => Math.floor(Date.now() / 1000)
+    }
+  }
+)
+```
+
+
+
+#### 唯一索引（unique）
+
+Mongoose 的唯一索引 `unique` 选项都作用是，对于给定的路径，每个文档必须具有唯一的值。
+
+```js
+const mongoose = require('mongoose')
+
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    unique: true // email 必须是唯一的
+  }
+})
+const User = mongoose.model('User', userSchema)
+```
+
+如果您尝试使用相同的 `name` 创建两个用户，您将得到一个重复密钥错误。
+
+```js
+// 抛出 MongoError:E11000 重复密钥错误集合
+await User.create([{ email: 'test@163.com' }, { email: 'test2@163.com' }])
+
+const doc = new User({ email: 'test@163.com' })
+// 抛出 MongoError:E11000 重复密钥错误集合
+await doc.save()
+```
+
+更新还可能引发重复的密钥错误。例如，如果您创建了一个具有唯一电子邮件地址的用户，然后将其电子邮件地址更新为非唯一值，您将得到相同的错误。
+
+```js
+await User.create({ email: 'test2@163.com' })
+
+// 抛出 MongoError:E11000 重复密钥错误集合
+await User.updateOne({ email: 'test2@163.com' }, { email: 'test@163.com' })
+```
+
+##### `unique` 定义索引，而不是验证器
+
+`unique` 选项告诉 Mongoose 定义一个[唯一索引](https://docs.mongodb.com/manual/core/index-unique/)。这意味着当使用 `validate()` 时，Mongoose 不会检查唯一性。
+
+```js
+await User.create({ email: 'test@163.com' })
+
+const doc = new User({ email: 'test@163.com' })
+await doc.validate() // 不会抛出错误
+```
+
+在编写自动测试时，[`unique` 定义索引而不是验证器](https://mongoosejs.com/docs/validation.html#the-unique-option-is-not-a-validator)这一点很重要。如果删除 `User` 模型所连接的数据库，还将删除 `unique` 索引，并且可以保存重复的索引。
+
+```js
+await mongoose.connection.dropDatabase()
+
+// 成功，因为 unique 索引已消失！
+await User.create([{ email: 'test@163.com' }, { email: 'test@163.com' }])
+```
+
+在生产环境中，通常不会删除数据库，因此这在生产环境中很少成为问题。
+
+编写 Mongoose 测试时，通常建议使用 `deleteMany()` 清除测试之间的数据，而不是 `dropDatabase()`。这样可以确保删除所有文档，而无需清除数据库级别的配置，如索引和排序规则 `deleteMany()` 也比 `dropDatabase()` 快得多。
+
+但是，如果选择在测试之间删除数据库，则可以使用 `Model.syncIndexes()` 方法重新生成所有唯一索引。
+
+```js
+await mongoose.connection.dropDatabase()
+
+// 重新生成所有索引
+await User.syncIndexes()
+
+// 抛出 MongoError:E11000 重复密钥错误集合
+await User.create([{ email: 'test@163.com' }, { email: 'test@163.com' }])
+```
+
+##### 处理 `null` 值
+
+`null` 是一个不同的值，您不能保存两个具有 `null` 的 `email` 用户。同样，不能保存两个没有 `email` 属性的用户。
+
+```js
+// 抛出，因为两个文档都有 undefined
+await User.create([{}, {}])
+
+// 抛出，因为两个文档都有 null
+await User.create([{ email: null }, { email: null }])
+```
+
+一种解决方法是使用 `required` 属性 ，这将不允许 `null` 和 `undefined` 的值存在：
+
+```js
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true // email 必须是唯一的
+  }
+})
+```
+
+如果您需要 `email` 是唯一的，除非它没有定义，您可以改为定义一个 **Sparse Indexes（稀疏索引）** 在 `email` 上。
+
+```js
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String, // email 必须是唯一的，除非没有定义
+    index: {
+      unique: true,
+      sparse: true
+    }
+  }
+})
+```
+
+##### 用户友好的重复键错误
+
+要使 `MongoDB E11000` 错误消息对用户友好，可以使用 [mongoose-beautiful-unique-validation](https://www.npmjs.com/package/mongoose-beautiful-unique-validation) 包。
+
+```js
+const schema = new mongoose.Schema({ name: String })
+schema.plugin(require('mongoose-beautiful-unique-validation'))
+
+const UserModel = mongoose.model('User', schema)
+
+const doc = await UserModel.create({ name: 'O.O' })
+
+try {
+  // 尝试创建具有相同 _id 的文档。这将始终失败，因为 MongoDB 集合在 _id 上总是有唯一的索引。
+  await UserModel.create(Object.assign({}, doc.toObject()))
+} catch (err) {
+  // _id 不是唯一的。
+  console.log(err.errors['_id'].message)
+}
 ```
 
 
@@ -1118,6 +1634,63 @@ console.log(docs[1].name) // 'K.O'
 
 
 
+#### 使用会话和事务
+
+除了传递对象数组之外，`create()` 还支持传入单个对象或对象的扩展。
+
+```js
+// 保存两个新文档。
+await User.create({ name: 'O.O' }, { name: 'D.O' })
+```
+
+不幸的是，如果您想将选项传递给 `create()` 方法，比如您想使用 [transactions](https://mongoosejs.com/docs/transactions.html)，扩展语法会导致语法歧义。例如，下面的代码将尝试创建两个文档，而不是将第二个参数视为 `options` 对象。
+
+```js
+const session = await User.startSession()
+
+await session.withTransaction(async () => {
+  // 注意，以下内容将不工作！它不是创建一个带有关联 session 的文档，而是创建两个没有 session 的文档！
+  await User.create({ name: 'D.O' }, { session })
+})
+```
+
+因此，如果要在事务中使用 `create()`，则**必须**将文档作为数组传递，即使只创建一个文档也是如此。
+
+```js  
+const session = await User.startSession()
+
+await session.withTransaction(async () => {
+  // 使用给定 session 创建一个文档。
+  await User.create([{ name: 'D.O' }], { session })
+})
+```
+
+
+
+#### 与 `insertMany()`
+
+`model` 还有一个 [`insertMany()` 方法](https://mongoosejs.com/docs/api/model.html#model_Model.insertMany)在语法上类似于 `create()`。
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String
+  })
+)
+
+const [doc] = await User.insertMany([{ name: 'O.O' }])
+
+console.log(doc instanceof User) // true
+console.log(doc.name) // 'O.O'
+```
+
+最大的区别是，`insertMany()` 最终作为一个原子 `insertMany()` 命令，Mongoose 将它发送给 MongoDB 服务器，而 `create()` 最终作为一组单独的 `insertOne()` 调用。虽然这意味着 `insertMany()` 通常更快，但也意味着 `insertMany()` 更容易受到[**慢查询**](https://docs.mongodb.com/manual/tutorial/manage-the-database-profiler/)的影响。因此，建议使用 `create()` 而不是 `insertMany()`，除非您愿意冒险减慢其他操作以加快批量插入。
+
+另一个区别是 `create()` 触发 `save()` 中间件，因为 `create()` 在内部调用 `save()`。`insertMany()` 不会触发`save()` 中间件，但它会触发 `insertMany()` 中间件。
+
+
+
 ### 文档查询
 
 ```bash
@@ -1150,6 +1723,11 @@ await User.create([
 // 空的 filter 表示匹配所有文档
 const filter = {}
 const all = await User.find(filter)
+
+
+// 不要这样做，req.query 可能是空对象
+// 在这种情况下，查询将返回每个文档。
+await Model.find(req.query)
 ```
 
 
@@ -1206,9 +1784,418 @@ stuModel.find({
 
 
 
+#### 解决 Query was already executed 问题
+
+当给定查询执行两次时，Mongoose 会抛出 "Query was already executed"（查询已执行）错误。对此最常见的解释是您正在混合 `await` 和回调。
+
+```js
+await Model.updateMany({}, { $inc: { count: 1 } }, function (err) {})
+// "MongooseError: Query was already executed"
+```
+
+这是因为 Mongoose 在收到回调或 `await` 时执行查询。如果使用 `await` 并传递回调，则此查询将执行两次。
+
+或者：
+
+```js
+Model.updateMany({}, { $inc: { count: 1 } }, function (err) {}).then(() => {})
+```
+
+此查询执行两次。一次是因为回调，一次是因为 `then()` 方法。
+
+解决方案是跳过传递回调。在 Mongoose 中不需要回调，因为 Mongoose 支持 `promises` 和 `async/await`。
+
+```js
+await Model.updateMany({}, { $inc: { count: 1 } })
+// or
+Model.updateMany({}, { $inc: { count: 1 } }).then(() => {})
+```
+
+但如果我们想执行两次查询呢？可以使用 `clone()` 方法：
+
+```js
+let query = Model.findOne()
+
+await query
+
+// 抛出 "MongooseError: Query was already executed" 错误
+await query
+
+// ✅
+await query.clone()
+```
+
+
+
+#### sanitizeFilter 选项
+
+`sanitizeFilter` 选项可以防御查询选择器注入攻击。它只是将过滤器包装在 `$eq` 标签中，从而防止查询选择器注入攻击。
+
+```js
+// 使用 sanitizeFilter，Mongoose 将下面的查询转换为 { age, hashedPassword: { $eq: { $ne: null } } }
+const user = await User.find({
+  email: 'test@163.com',
+  hashedPassword: { $ne: null }
+}).setOptions({ sanitizeFilter: true })
+```
+
+#### cursor
+
+假设你的应用程序很受欢迎，你有数百万用户。一次将所有用户加载到内存是行不通的。要一次遍历所有用户，而不将其全部加载到内存中，请使用 `cursor`。
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String,
+    email: String
+  })
+)
+
+// 注意此处没有 await
+const cursor = User.find().cursor()
+
+for (let doc = await cursor.next(); doc != null; doc = await cursor.next()) {}
+```
+
+或者使用异步迭代器。
+
+```js
+for await (const doc of User.find()) {
+}
+```
+
+#### select 查询某些字段
+
+要过滤 mongoose 中的对象属性，可以对查询使用 `select()` 方法。其作用是：选择要返回的字段。
+
+```js
+//将返回仅包含文档的年龄、名称和id属性的所有文档
+await Model.find({}).select('name age')
+```
+
+#### `_id` 属性
+
+默认情况下，MongoDB 包含 `_id`。要在选择字段时排除 `_id`，可以使用 `.find().select({ name: 1, _id: 0 })` 或 `.find().select('name -_id')`。`0` 和 `-` 告诉 Mongoose 和 MongoDB 服务器显式排除 `_id`。
+
+```js
+await Model.find().select({ name: 1, _id: 0 });
+// or
+await Model.find().select({'name -_id'});
+```
+
+#### 按 ID 查找
+
+在 Mongoose 中，[`Model.findById()` 方法](https://mongoosejs.com/docs/api/model.html#model_Model.findById)用于根据文档的 `_id` 查找一个文档。`findById()` 方法接受单个参数，即文档 `id`。如果 MongoDB 找到具有给定 `id` 的文档，则返回解析为 Mongoose 文档的 Promise；如果未找到任何文档，则返回 `null`。
+
+```js
+const schema = new mongoose.Schema({ _id: Number }, { versionKey: false })
+const Model = mongoose.model('MyModel', schema)
+
+await Model.create({ _id: 1 })
+
+await Model.findById(1) // { _id: 1 }
+await Model.findById(2) // null，因为找不到任何文档
+```
+
+当您调用 `findById(_id)` 时，Mongoose 会在后台调用 `findOne({ _id })`。这意味着 `findById()` 触发 `findOne()`中间件。
+
+```js
+const schema = new mongoose.Schema({ _id: Number }, { versionKey: false })
+
+schema.pre('findOne', function () {
+  console.log('调用 findOne()')
+})
+
+const Model = mongoose.model('MyModel', schema)
+await Model.create({ _id: 1 })
+
+// 打印 findOne()，因为 findById() 调用 findOne()
+await Model.findById(1)
+```
+
+Mongoose 会强制转换查询以匹配您的模式，这意味着如果您的 `_id` 是一个 MongoDB ObjectId，可以将 `_id` 作为字符串传递，Mongoose 会将其转换为 ObjectId。
+
+```js
+const _id = '9d641f2ed75f4e2513b90abc'
+const schema = new mongoose.Schema(
+  { _id: mongoose.ObjectId },
+  { versionKey: false }
+)
+const Model = mongoose.model('MyModel', schema)
+
+await Model.create({ _id: new mongoose.Types.ObjectId(_id) })
+
+typeof _id // 'string'
+// { _id: '9d641f2ed75f4e2513b90abc' }
+const doc = await Model.findById(_id)
+
+typeof doc._id // 'object'
+doc._id instanceof mongoose.Types.ObjectId // true
+```
+
+#### 链式
+
+许多 Mongoose 模型函数，例如`find()`返回一个 Mongoose Query。Mongoose Query 类提供了一个用于查找、更新和删除文档的链式接口。
+
+`Model.find()` 的第一个参数称为查询**过滤器**。当您调用 `find()` 时，MongoDB 将返回与查询过滤器匹配的所有文档。您可以使用 Mongoose 的[众多查询](https://mongoosejs.com/docs/api/query.html)来构建查询过滤器。只需确保使用 [`where()`](https://mongoosejs.com/docs/api/query.html#query_Query-where) 指定要添加到过滤器中的属性名即可。
+
+```js
+let docs = await User.find()
+  // where 指定属性的名称，in() 指定 name 必须是数组中的两个值之一
+  .where('name')
+  .in(['D.O', 'O.K'])
+
+// 相同的查询，但过滤器表示为对象，而不是使用链式
+docs = await User.find({
+  name: { $in: ['D.O', 'O.K'] }
+})
+```
+
+可链式操作允许添加到当前查询筛选器。可以使用 `query.getFilter()` 方法获取查询的当前筛选器。
+
+```js
+const query = User.find().where('name').in(['D.O', 'O.K'])
+
+// { name: { $in: ['D.O', 'O.K'] } }
+query.getFilter()
+```
+
+以下是几个有用的查询方法列表：
+
+- `lt(value)` 和 `gt(value)` — 指定一个属性必须小于（`lt()`）或大于（`gt()`）一个值。`value` 可以是数字、字符串或日期。
+- `lte(value), gte(value)` — 指定一个属性必须大于或等于（`gte()`）或小于或等于（`gte()`）一个值。
+- `in(arr)` — 指定一个属性必须等于 `arr` 中指定的值之一
+- `nin(arr)` — 指定一个属性不能等于 `arr` 中指定的任何值
+- `eq(val)` — 指定一个属性必须等于 `val`
+- `ne(val)` — 指定一个属性不能等于 `val`
+- `regex(re)` — 指定一个属性必须是 `re` 匹配的字符串
+
+您可以链式调用任意多个 `where()` 和查询方法来建立查询。
+
+```js
+const docs = await User.find()
+  // name 必须与正则表达式匹配，age 必须在 29 到 59 岁之间
+  .where('name')
+  .regex(/o/i)
+  .where('age')
+  .gte(29)
+  .lte(59)
+
+docs.map((doc) => doc.name) // [ 'D.O', 'O.O', 'O.K' ]
+```
+
+#### 使用 LIKE 查询
+
+使用 SQL LIKE 运算符允许您搜索带有通配符的字符串。MongoDB 没有类似的运算符，`$text` 运算符执行更复杂的文本搜索。但是 MongoDB 确实支持与 LIKE 类似的正则表达式查询。
+
+例如，假设您想要查找 `email` 包含 `gmail` 的所有用户。您可以简单地通过 JavaScript 正则表达式 `/gmail/` 进行搜索：
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    email: String
+  })
+)
+
+await User.create([
+  { email: 'yyds@163.com' },
+  { email: 'tbds@qq.com' },
+  { email: 'test@163.com' },
+  { email: '163@qq.com' }
+])
+
+const docs = await User.find({ email: /163/ })
+docs.length // 3
+docs.map((doc) => doc.email).sort() // ['yyds@163.com', 'test@163.com', '163@qq.com']
+```
+
+同样，您可以使用 `$regex` 运算符。
+
+```js
+const docs = await User.find({ email: { $regex: '163' } })
+```
+
+需要注意的是 mongoose 不会为您转义 regexp 中的特殊字符。如果要对用户输入的数据使用 `$regexp`，应首先使用 [escape-string-regexp](https://www.npmjs.com/package/escape-string-regexp) 或用于转义正则表达式特殊字符的类似库来清理字符串。
+
+```js
+const escapeStringRegexp = require('escape-string-regexp')
+
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    email: String
+  })
+)
+
+await User.create([
+  { email: 'yyds@163.com' },
+  { email: 'tbds@qq.com' },
+  { email: 'test+foo@163.com' }
+])
+
+const $regex = escapeStringRegexp('+foo')
+const docs = await User.find({ email: { $regex } })
+
+docs.length // 1
+docs[0].email // 'test+foo@163.com'
+
+// Throws: MongoError: Regular expression is invalid: nothing to repeat
+await User.find({ email: { $regex: '+foo' } })
+```
+
+#### 查询运算符
+
+在 Mongoose 中，Model.find() 函数是查询数据库的主要工具。find()的第一个参数是一个筛选器对象。MongoDB 将搜索与过滤器匹配的所有文档。如果传入一个空过滤器，MongoDB 将返回所有文档。
+
+我们可以使用 [MongoDB 查询运算符](https://docs.mongodb.com/manual/reference/operator/query/)构造过滤器对象，从而在 Mongoose 中执行常见查询。
+
+#### 相等检查
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String,
+    age: String
+  })
+)
+
+await User.create([
+  { name: 'D.O', age: 30 },
+  { name: 'O.O', age: 29 },
+  { name: 'K.O', age: 18 },
+  { name: 'O.K', age: 40 },
+  { name: 'O.O', age: 22 }
+])
+```
+
+假设您要查找所有 `name` 为 O.O 的用户。可以将 `{ age: 'O.O' }` 作为 `filter` 传递。
+
+```js
+const docs = await User.find({ name: 'O.O' })
+
+// MongoDB 可以按任何顺序返回文档，除非您明确排序
+docs.map((doc) => doc.age).sort() // [29, 22]
+```
+
+你还可以按年龄查询。例如，下面的查询将查找 `age` 为 29 岁的所有字符。
+
+```js
+const docs = await User.find({ age: 29 })
+
+docs.map((doc) => doc.name).sort() // ['O.O', 'O.K']
+```
+
+以上示例不使用任何查询运算符。如果将 `name` 的值设置为具有 [`$eq` 属性](https://docs.mongodb.com/manual/reference/operator/query/eq/#op._S_eq)的对象，则会得到一个等效的查询，但需要使用**查询运算符**。
+
+```js
+const docs = await User.find({ name: { $eq: 'O.O' } })
+
+docs.map((doc) => doc.age).sort() // [29, 22]
+```
+
+#### 比较查询运算符
+
+`$eq` 查询运算符检查完全相等。还有一些[比较查询运算符](https://docs.mongodb.com/manual/reference/operator/query/#comparison)，比如 `$gt` 和 `$lt`。例如，假设您想查找年龄严格小于 29 岁的所有字符。您可以使用 `$lt` 查询运算符，如下所示。
+
+```js
+const docs = await User.find({ age: { $lt: 29 } })
+
+docs.map((doc) => doc.name).sort() // ['K.O', 'O.O']
+```
+
+假设你想找到所有年龄至少为 29 岁的用户。您可以使用 [`$gte` 查询运算符](https://docs.mongodb.com/manual/reference/operator/query/gte/#op._S_gte)。
+
+```js
+const docs = await User.find({ age: { $gte: 29 } })
+
+docs.map((doc) => doc.name).sort() // ['D.O', 'O.K', 'O.O']
+```
+
+比较运算符 `$lt`、[`$gt`](https://docs.mongodb.com/manual/reference/operator/query/gt/#op._S_gt)、[`$lte`](https://docs.mongodb.com/manual/reference/operator/query/lte/#op._S_lte) 和 `$gte` 不仅可以处理数字。您还可以在字符串、日期和其他类型上使用它们。MongoDB 使用 [unicode](https://www.w3.org/TR/xml-entity-names/bycodes.html) 顺序比较字符串。如果该顺序不适用于您，您可以使用 [MongoDB collations](https://thecodebarbarian.com/a-nodejs-perspective-on-mongodb-34-collations) 对其进行配置。
+
+```js
+const docs = await User.find({ name: { $lte: 'K.O' } })
+
+docs.map((doc) => doc.name).sort() // [ 'D.O', 'K.O' ]
+```
+
+#### 正则表达式
+
+假设您要查找 `name` 包含 `K` 的用户。在 SQL 中，可以使用 [`LIKE` 运算符](https://www.w3schools.com/sql/sql_like.asp)。在 Mongoose 中，您可以简单地通过正则表达式进行查询，如下所示。
+
+```js
+const docs = await User.find({ name: /K/ })
+
+docs.map((doc) => doc.name).sort() // ['K.O', 'O.K']
+```
+
+同样，您可以使用 [`$regex` 查询运算符](https://docs.mongodb.com/manual/reference/operator/query/regex/#op._S_regex)。这使您能够将正则表达式作为字符串传递，如果您是从 HTTP 请求中获取查询，这很方便。
+
+```js
+const docs = await User.find({ name: { $regex: 'K' } })
+
+docs.map((doc) => doc.name).sort() // ['K.O', 'O.K']
+```
+
+### 包含 `$and` 和 `$or` 的组合
+
+如果设置了多个 `filter` 属性，MongoDB 将查找与所有过滤器属性匹配的文档。例如，以下的查询将查找 `age` 至少为 29 岁且 `name` 等于 `'K.O'` 的所有用户。
+
+```js
+const docs = await User.find({
+  name: 'K.O',
+  age: { $gte: 29 }
+})
+
+docs.map((doc) => doc.name) // ['O.O']
+```
+
+假设您要查找 `age` 至少为 29 岁或 `name` 等于 `O.O` 的用户 。您需要 [`$or` 查询运算符](https://docs.mongodb.com/manual/reference/operator/query/or/#op._S_or)。
+
+```js
+const docs = await User.find({
+  $or: [{ age: { $gte: 29 } }, { name: 'O.O' }]
+})
+
+docs.map((doc) => doc.name).sort() // [ 'D.O', 'O.O', 'O.K', 'O.O' ]
+```
+
+还有一个 [`$and` 查询运算符](https://docs.mongodb.com/manual/reference/operator/query/and/#op._S_and)。您很少需要使用 `$and` 查询运算符。`$and` 的主要用例是组合多个 `$or` 运算符。例如，假设您要查找满足以下两个条件的字符：
+
+- `age` 至少 29 或 `name` 等于 `'O.O'`
+- `name` 以字母开头，在 `O` 之前或 `O` 之后。
+
+```js
+const docs = await User.find({
+  $and: [
+    {
+      $or: [{ age: { $gte: 29 } }, { rank: 'O.O' }]
+    },
+    {
+      $or: [{ name: { $lte: 'O' } }, { name: { $gte: 'K' } }]
+    }
+  ]
+})
+
+docs.map((doc) => doc.name).sort() // [ 'D.O', 'O.O', 'O.K' ]
+```
+
+
+
 ### 文档插入/更新
 
 ```bash
+Mongoose 有 4 种不同的方式来更新文档。
+	- `Document.save()`
+	- `Model.updateOne()`和 `updateMany()`
+	- `Document.updateOne()`
+	- `Model.findOneAndUpdate()`
+
+
+#### update
 - update()
 		- `Model.update(conditions, doc, [options], [callback])`
 			- conditions：查询条件
@@ -1226,6 +2213,10 @@ stuModel.find({
 - updateOne()：与 update() 的区别是默认更新一个文档，即使设置 {multi:true} 也无法只更新一个文档
 - updateMany()：与 update() 的区别是默认更新多个文档，即使设置{multi:false}也无法只更新一个文档
 
+注意：
+	- `updateOne()` 是原子的。如果使用 `find()` 加载文档，它可能会在 `save()` 之前发生更改。
+	- `updateOne()` 不需要您将文档加载到内存中，如果文档很大，这可能会给您带来更好的性能。
+
 
 
 #### 复杂更新
@@ -1235,6 +2226,16 @@ stuModel.find({
 - fingOneAndUpdate()
 - findByIdAndUpdate()
 ```
+
+通常，除非需要原子更新，否则应该使用 `save()` 更新 Mongoose 中的文档。
+
+|                            | Atomic | 内存中的文档 | 返回更新的文档 | 更改跟踪 |
+| -------------------------- | :----: | :----------: | :------------: | :------: |
+| `Document.save()`          |   ❌    |      ✅       |       ✅        |    ✅     |
+| `Model.updateOne()`        |   ✅    |      ❌       |       ❌        |    ❌     |
+| `Model.updateMany()`       |   ❌    |      ❌       |       ❌        |    ❌     |
+| `Document.updateOne()`     |   ❌    |      ✅       |       ❌        |    ❌     |
+| `Model.findOneAndUpdate()` |   ✅    |      ❌       |       ✅        |    ❌     |
 
 **插入文档**
 
@@ -1400,40 +2401,52 @@ $ db.articles.remove({})
 ### 前后钩子
 
 ```bash
-### 前后钩子
 前后钩子即 pre() 和 post() 方法（中间件）
 中间件在 schema 上指定，类似静态方法或实例方法等。
-- pre()：在执行某些操作前执行。
-- post()：在执行某些操作前后执行，不可以使用 next()。
-
+  - pre()：在执行某些操作前执行。
+  - post()：在执行某些操作前后执行，不可以使用 next()。
+  
+`save()` 中间件是递归的，因此对父文档调用 `save()` 也会触发子文档的 `save()` 中间件。
 ```
 
 ```js
 const mongoose = require("mongoose")
+
 mongoose.connect("mongodb://localhost:27017/student")
+
 const Schema = new mongoose.Schema({
-    name: String,
-    grades: Number,
-    test: { type: Number, default: 0 },
+  name: String,
+  grades: Number,
+  test: { type: Number, default: 0 },
+})
+
+Schema.pre("find", (next) => {
+  console.log("我是pre方法1")
+  next()
 })
 Schema.pre("find", (next) => {
-    console.log("我是pre方法1")
-    next()
+  console.log("我是pre方法2")
+  next()
 })
-Schema.pre("find", (next) => {
-    console.log("我是pre方法2")
-    next()
+Schema.pre("save", (next) => {
+  console.log('保存时间为 ', Date.now() - this.$locals.start, ' ms')
+  next()
+})
+
+Schema.post("find", (docs) => {
+  console.log("我是post方法1")
 })
 Schema.post("find", (docs) => {
-    console.log("我是post方法1")
+  console.log("我是post方法2")
 })
-Schema.post("find", (docs) => {
-    console.log("我是post方法2")
-})
+
 const stuModel = mongoose.model("grades", Schema)
 stuModel.find((err, docs) => {
-    console.log(docs[0])
+  console.log(docs[0])
 })
+
+const doc = new stuModel({ name: 'O.O', grades: 5 })
+await doc.save() // 保存时间为 12 ms
 
 /*
     我是pre方法1
@@ -1442,14 +2455,467 @@ stuModel.find((err, docs) => {
     我是post方法2
     {test: 34, _id: 6017befb5c36d64d08b72576,name: '小明',grades: 78,__v: 0}
 */
-
 ```
+
+```js
+const friendSchema = new mongoose.Schema({ name: String, age: Number, hobby: String })
+friendSchema.pre('save', function () {
+  console.log('Save', this.hobby)
+})
+const schema = new mongoose.Schema({
+  name: String,
+  age: Number,
+  friend: friendSchema
+})
+const Person = mongoose.model('Person', schema)
+
+const doc = new Person({
+  name: 'O.O',
+  age: 18,
+  friend: {
+    name: 'D.O',
+    age: 20,
+    hobby: 'sing'
+  }
+})
+
+// Save sing
+await doc.save()
+
+doc.friend.hobby = 'dance'
+// Save dance
+await doc.save()
+```
+
+
+
+### 引用文档 Populate
+
+`Populate` 允许您引用其他集合中的文档，其类似于 SQL 中的左外部连接，但区别在于 Populate 发生在 Node.js 应用程序中，而不是在数据库服务器上。Mongoose 在引擎下执行单独的查询以加载引用的文档。
+
+#### Populate 基础
+
+假设你有两个 Mongoose 模型：`Movie` 和 `Person`。`Movie` 文档有一个 `director` 和一系列 `actors`。
+
+```js
+const Person = mongoose.model(
+  'Person',
+  new mongoose.Schema({
+    name: String
+  })
+)
+
+// ref 告诉 Mongoose Populate 要查询的模型
+const Movie = mongoose.model(
+  'Movie',
+  new mongoose.Schema({
+    title: String,
+    director: {
+      type: mongoose.ObjectId,
+      ref: 'Person'
+    },
+    actors: [
+      {
+        type: mongoose.ObjectId,
+        ref: 'Person'
+      }
+    ]
+  })
+)
+```
+
+Mongoose 查询有一个`populate()` 方法允许您在一行中加载电影及其相应的 `director` 和 `actors`：
+
+```js
+const people = await Person.create([
+  { name: 'James Cameron' },
+  { name: 'Arnold Schwarzenegger' },
+  { name: 'Linda Hamilton' }
+])
+
+await Movie.create({
+  title: 'Terminator 2',
+  director: people[0]._id,
+  actors: [people[1]._id, people[2]._id]
+})
+
+// 只加载电影导演
+let movie = await Movie.findOne().populate('director')
+console.log(movie.director.name) // 'James Cameron'
+console.log(movie.actors[0].name) // undefined
+
+// 加载导演和演员
+movie = await Movie.findOne().populate(['director', 'actors'])
+
+console.log(movie.director.name) // 'James Cameron'
+console.log(movie.actors[0].name) // 'Arnold Schwarzenegger'
+console.log(movie.actors[1].name) // 'Linda Hamilton'
+```
+
+> **注意**：Mongoose 文档上也有一个 [`populate()` 方法](https://mongoosejs.com/docs/api/document.html#document_Document-populate)，详细可以查看文档。这里需要注意的是，6.x 已移除文档上 [`document.execPopulate()`](https://mongoosejs.com/docs/migrating_to_6.html#removed-execpopulate)。，其不再是可链接。
+
+`populate` 返回一个 Promis，所以以下方法将不在适用：
+
+```js
+movie = await Movie.findOne().populate('director').populate('actors')
+```
+
+您应将旧的链接写法进行替换：
+
+```js
+await doc.populate('path1').populate('path2').execPopulate()
+// 替换为
+await doc.populate(['path1', 'path2'])
+
+await doc
+  .populate('path1', 'select1')
+  .populate('path2', 'select2')
+  .execPopulate()
+// 替换为
+await doc.populate([
+  { path: 'path1', select: 'select1' },
+  { path: 'path2', select: 'select2' }
+])
+```
+
+#### 引用文档不存在
+
+如果您正在 `populate` 单个文档，而引用的文档不存在，Mongoose 会将 populate 的属性设置为 `null`。
+
+```js
+await Person.deleteOne({ name: 'James Cameron' })
+
+const movie = await Movie.findOne().populate('director')
+console.log(movie.director) // null
+```
+
+如果您正在 `populate` 一个数组，而其中一个引用的文档不存在，Mongoose 将在默认情况下从数组中过滤该值，并返回一个较短的数组。您可以使用 `retainNullValues` 选项覆盖此选项。
+
+```js
+await Person.deleteOne({ name: 'Arnold Schwarzenegger' })
+
+let movie = await Movie.findOne().populate('actors')
+console.log(movie.actors.length) // 1
+console.log(movie.actors[0].name) // 'Linda Hamilton'
+
+// 设置 retainNullValues 选项，为数组中缺少的文档插入 null
+movie = await Movie.findOne().populate({
+  path: 'actors',
+  options: { retainNullValues: true }
+})
+
+console.log(movie.actors.length) // 2
+console.log(movie.actors[0]) // null
+console.log(movie.actors[1].name) // 'Linda Hamilton'
+```
+
+
+
+### 查询聚合 aggregate
+
+- Mongoose `aggregate()` 是一个小的包装器，因此任何在 MongoDB shell（`mongo`）中工作的任何聚合查询都应该在 Mongoose 中工作，而不做任何更改。
+- 从语法上讲，聚合框架查询是一个阶段数组。阶段是 MongoDB 应该如何转换进入该阶段的任何文档的对象描述。第一阶段将文档馈送到第二阶段，依此类推，这样您就可以使用阶段组合转换。传递给 `aggregate()` 方法的阶段数组称为聚合管道。
+
+#### `$match` 阶段
+
+`$match` 阶段过滤掉与给定 `filter` 参数不匹配的文档 ，类似于 Mongoose `find()` 方法的过滤器。
+
+```js
+await User.create([
+  { name: 'O.O', age: 18 },
+  { name: 'D.O', age: 19 },
+  { name: 'K.O', age: 31 },
+  { name: 'O.K', age: 19 },
+  { name: 'LAY', age: 28 }
+])
+
+const filter = {
+  age: {
+    $gte: 30
+  }
+}
+
+let docs = await User.aggregate([{ $match: filter }])
+
+console.log(docs.length) // 1
+console.log(docs[0].name) // K.O
+console.log(docs[0].age) // 31
+
+// $match 类似于 find()
+docs = await User.find(filter)
+console.log(docs.length) // 1
+console.log(docs[0].name) // 'K.O'
+console.log(docs[0].age) // 31
+```
+
+#### `$group` 阶段
+
+聚合可以做的不仅仅是过滤文档。您还可以使用聚合框架来转换文档。例如，`$group` 阶段的行为类似于 `reduce()` 方法。例如，`$group` 阶段允许您计算给定 `age` 的用户数量。
+
+```js
+let docs = await User.aggregate([
+  {
+    $group: {
+      // 每个 _id 都必须是唯一的，因此如果有多个文档具有相同的期限，MongoDB 将增加 count。
+      _id: '$age',
+      count: {
+        $sum: 1
+      }
+    }
+  }
+])
+
+console.log(docs.length) // 4
+docs.sort((d1, d2) => d1._id - d2._id)
+console.log(docs[0]) // { _id: 18, count: 1 }
+console.log(docs[1]) // { _id: 19, count: 2 }
+console.log(docs[2]) // { _id: 28, count: 1 }
+console.log(docs[3]) // { _id: 31, count: 1 }
+```
+
+#### 结合多个阶段
+
+聚合管道的优势在于其**可组合性**。例如，结合前两个例子，仅按 `age` 对用户进行分组，条件为 `age < 30`：
+
+```js
+let docs = await User.aggregate([
+  {
+    $match: {
+      age: {
+        $lt: 30
+      }
+    }
+  },
+  {
+    $group: {
+      _id: '$age',
+      count: {
+        $sum: 1
+      }
+    }
+  }
+])
+
+console.log(docs.length) // 3
+docs.sort((d1, d2) => d1._id - d2._id)
+console.log(docs[0]) // { _id: 18, count: 1 }
+console.log(docs[1]) // { _id: 19, count: 2 }
+console.log(docs[2]) // { _id: 28, count: 1 }
+```
+
+#### `Aggregate` 类
+
+Mongoose 的 `aggregate()` 方法返回 Mongoose [`Aggregate` 类](https://mongoosejs.com/docs/api/aggregate.html)的实例 。`Aggregate` 聚合实例是可聚合的，因此您可以将它们与 `await` 和 Promise 链一起使用。
+
+`Aggregate` 类还支持用于构建聚合管道的链接接口。例如，下面的代码显示了另一种用于构建聚合管道的语法，该聚合管道后跟 `$match` 和 `$group`。
+
+```js
+let docs = await User.aggregate()
+  .match({ age: { $lt: 30 } })
+  .group({ _id: '$age', count: { $sum: 1 } })
+
+console.log(docs.length) // 3
+docs.sort((d1, d2) => d1._id - d2._id)
+console.log(docs[0]) // { _id: 18, count: 1 }
+console.log(docs[1]) // { _id: 19, count: 2 }
+console.log(docs[2]) // { _id: 28, count: 1 }
+```
+
+Mongoose 中间件也支持 `pre('aggregate')` 和 `post('aggregate')` 钩子。可以使用聚合中间件来转换聚合管道。
+
+```js
+const userSchema = new mongoose.Schema({ name: String, age: Number })
+userSchema.pre('aggregate', function () {
+  // 将 $match 添加到管道的开头
+  this.pipeline().unshift({ $match: { age: { $lt: 30 } } })
+})
+const User = mongoose.model('User', userSchema)
+
+// pre('aggregate') 向管道中添加一个 $match。
+let docs = await User.aggregate().group({
+  _id: '$age',
+  count: { $sum: 1 }
+})
+
+console.log(docs.length) // 3
+docs.sort((d1, d2) => d1._id - d2._id)
+console.log(docs[0]) // { _id: 18, count: 1 }
+console.log(docs[1]) // { _id: 19, count: 2 }
+console.log(docs[2]) // { _id: 28, count: 1 }
+```
+
+
+
+### 统计信息 Explain
+
+`explain` 命令告诉 MongoDB 服务器返回有关其如何执行查询的统计信息，而不是查询结果。Mongoose 查询有一个 `explain()` 方法，用于将查询转换为 `explain()`。
+
+```js
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String,
+    age: Number
+  })
+)
+
+await User.create([
+  { name: 'O.O', age: 18 },
+  { name: 'D.O', age: 19 },
+  { name: 'K.O', age: 28 },
+  { name: 'O.K', age: 29 },
+  { name: 'LAY', age: 24 }
+])
+
+const explain = await User.find({ name: /Y/ })
+  .explain()
+  .then((res) => res[0])
+
+// 描述 MongoDB 计划如何执行查询
+console.log(explain.queryPlanner) // { ... }
+// 包含有关 MongoDB 如何执行查询的统计信息
+console.log(explain.executionStats) // { ... }
+```
+
+#### 读取 `queryPlanner` 输出
+
+`queryPlanner` 对象包含有关 MongoDB 决定如何执行查询的更详细信息。例如，下面是来自上述 `explain()` 调用的 `queryPlanner` 对象。
+
+```js
+{
+  plannerVersion: 1,
+  namespace: 'test.users',
+  indexFilterSet: false,
+  parsedQuery: { name: { '$regex': 'Y' } },
+  winningPlan: {
+    stage: 'COLLSCAN',
+    filter: { name: { '$regex': 'Y' } },
+    direction: 'forward'
+  },
+  rejectedPlans: []
+}
+```
+
+最重要的信息是 `winningPlan` 属性，它包含有关决定执行查询的 plan MongoDB 的信息。实际上，`winningPlan` 用于检查 MongoDB 是否使用索引进行查询。
+
+查询计划是用于标识与查询匹配的文档的阶段列表。上述计划只有一个阶段 `COLLSCAN`，这意味着 MongoDB 执行了完整的集合扫描来回答查询。集合扫描意味着 MongoDB 搜索 `users` 集合中的每个文档，查看 `name` 是否与给定查询匹配。
+
+当引入索引时，查询计划会变得更加复杂。例如，假设您在 `name` 上添加一个索引，如下所示。
+
+```js
+await User.collection.createIndex({ name: 1 })
+
+const explain = await User.find({ name: 'O.O' })
+  .explain()
+  .then((res) => res[0])
+
+explain.queryPlanner
+```
+
+`queryPlanner` 输出如下所示：
+
+```js
+{
+  plannerVersion: 1,
+  namespace: 'test.users',
+  indexFilterSet: false,
+  parsedQuery: { name: { '$eq': 'O.O' } },
+  winningPlan: {
+    stage: 'FETCH',
+    inputStage: {
+      stage: 'IXSCAN',
+      keyPattern: { name: 1 },
+      indexName: 'name_1',
+      isMultiKey: false,
+      multiKeyPaths: { name: [] },
+      isUnique: false,
+      isSparse: false,
+      isPartial: false,
+      indexVersion: 2,
+      direction: 'forward',
+      indexBounds: { name: [ '["O.O", "O.O"]' ] }
+    }
+  },
+  rejectedPlans: []
+}
+```
+
+`winningPlan` 属性是一个递归结构：`winningPlan` 指向获胜查询计划中的最后一个阶段，每个阶段都有一个描述前一阶段的 `inputStage` 属性。
+
+在上述计划中，有两个阶段：`IXSCAN` 和 `FETCH`。这意味着第一个 MongoDB 使用 `{ name: 1 }` 索引来确定哪些文档与查询匹配，然后获取各个文档。
+
+
+
+#### 读取 `executionStats` 输出
+
+`executionStats` 输出比 `queryPlanner` 更复杂：它包括关于每个阶段花费的时间以及每个阶段扫描的文档数量的统计信息。
+
+例如，下面是简单集合扫描的 `executionStats` 输出：
+
+```js
+{
+  executionSuccess: true,
+  nReturned: 1,
+  executionTimeMillis: 0,
+  totalKeysExamined: 0,
+  totalDocsExamined: 5,
+  executionStages: {
+    stage: 'COLLSCAN',
+    filter: { name: { '$regex': 'Y' } },
+    nReturned: 1,
+    executionTimeMillisEstimate: 0,
+    works: 7,
+    advanced: 1,
+    needTime: 5,
+    needYield: 0,
+    saveState: 0,
+    restoreState: 0,
+    isEOF: 1,
+    direction: 'forward',
+    docsExamined: 5
+  },
+  allPlansExecution: []
+}
+```
+
+这里需要注意的重要细节是顶层 `executionTimeMillis` 和 `TotalDocsChecked` 属性。`executionTimeMillis` 是 MongoDB 执行查询所花费的时间，`TotalDocsDemined` 是 MongoDB 回答查询时必须查看的文档数。
+
+请记住，`executionTimeMillis` 不包括网络延迟或[被阻塞的时间](https://thecodebarbarian.com/slow-trains-in-mongodb-and-nodejs)。仅仅因为 `executionTimeMillis` 很小，并不意味着最终用户可以立即看到结果。
+
+当您有一个索引和多个阶段时，`executionStats` 会分解每个阶段的大致执行时间和扫描的文档数。以下是带有索引的查询的 `executionStats`，为了简洁起见，排除了一些不太重要的细节：
+
+```js
+{
+  executionSuccess: true,
+  nReturned: 1,
+  executionTimeMillis: 2,
+  totalKeysExamined: 1,
+  totalDocsExamined: 1,
+  executionStages: {
+    stage: 'FETCH',
+    nReturned: 1,
+    executionTimeMillisEstimate: 0,
+    // ...
+    docsExamined: 1,
+    // ...
+    inputStage: {
+      stage: 'IXSCAN',
+      nReturned: 1,
+      executionTimeMillisEstimate: 0,
+      // ...
+    }
+  },
+  allPlansExecution: []
+}
+```
+
+上面的 `executionStats` 输出表明有两个阶段：`IXSCAN` 和 `FETCH`。`IXSCAN` 阶段在 0 毫秒内执行并导致一个文档被发送到 `FETCH` 阶段。`FETCH` 阶段检查并返回 1 个文档，这是查询的最终结果。
+
+
 
 ## MySQL关系数据库
 
 ```bash
-## MySQL 关系数据库
-
 ### 关系型数据库与非关系型数据库的区别
 关系型数据库最典型的数据结构是表，由二维表及其之间的联系所组成的一个数据组织。
   优点：
@@ -1699,6 +3165,18 @@ pm2 是 node 进程管理工具，可以利用它来简化很多 node 应用管�
 	- PM2: 网站的访问量比较大，需要完整的监控页面。
 
 
+### PM2 原理
+PM2 有自己的主进程，它会将应用作为子进程再启动，启动子应用的方式有 fork、cluster 两种。
+PM2 的核心是 pm2 本身是一个主进程，它会将应用程序作为子进程启动（fork/cluster模块），然后通过进程通信的方式来实现进程状态的管理。
+
+1. 如何管理进程状态
+进程状态，PM2 通过 fork（或cluster模块）来启动子进程（应用程序）。如果子进程发生错误抛出异常时，会以信号的形式向父进程发送“自杀”消息，发送完成后，会将自身的进程退出，此时父进程会再重新启动一个新的进程。
+
+2. 如何做到负载均衡
+PM2 在启动子进程时，会自行监听 80 端口，当监听的端口接收到消息时，通过向子进程发送消息的方式将监听的句柄发送给子进程，子进程在接收到句柄后，就可以直接处理客户端请求，就好像它们自己在监听 80 端口一样。
+—— 句柄是一种可以用来表示资源的引用，它内部包含了指向对象的文件描述符。
+
+
 
 ### PM2 的特性
   - 内建负载均衡（使用 Node cluster 集群模块）
@@ -1838,9 +3316,229 @@ module.exports = {
 3. 监控
     - 可以使用以下命令，查看当前通过 pm2 运行的进程的状态
     - $ pm2 monit
-
-
 ```
 
 
 
+## 任务调度 `node-cron`
+
+**任务调度**使您能够计划任意代码（方法/函数）和命令在固定日期和时间、重复间隔或指定间隔后执行一次。在 Linux 操作系统中，任务调度通常由诸如 cron 之类的实用程序服务在操作系统级别处理。
+
+在 Node.js 应用程序中，类似于 cron 的功能，我们可以使用 [node-cron](https://github.com/kelektiv/node-cron) 这样的包实现。**[node-cron](https://www.npmjs.com/package/node-cron)** 是基于 GNU crontab 的 node.js 纯 JavaScript 中的微型任务调度器。
+
+crontab 是 Linux 系统的定时任务执行器。cron 的操作由 [crontab](https://www.gnu.org/software/mcron/manual/html_node/Crontab-file.html) 文件驱动，该文件是一个配置文件，其中包含对 cron 守护程序的指令。`node-cron` 模块允许我们使用完整的 crontab 语法在 Node 中调度任务。
+
+crontab 语法如下所示：
+
+```txt
+┌────────────── second (可选)
+│ ┌──────────── 分钟 (minute，0 - 59)
+│ │ ┌────────── 小时 (hour，0 - 23)
+│ │ │ ┌──────── 一个月中的第几天 (day of month，1 - 31)
+│ │ │ │ ┌────── 月份 (month，1 - 12，或月份简写 Jan、Feb...)
+│ │ │ │ │ ┌──── 一个星期中星期几 (day of week，0 - 6) 注意：星期天为 0，或 Jan、Feb...
+│ │ │ │ │ │
+│ │ │ │ │ │
+* * * * * *			
+```
+
+单个星号的行为类似于通配符。这意味着该任务将针对该时间单位的每个实例运行。五个星号（`* * * * *`）表示 crontab 默认每分钟运行一次。
+
+星号处的数字将被视为该时间单位的值。允许您将任务安排为每天、每周或更复杂的时间。
+
+
+
+#### 使用 node-cron
+
+```bash
+安装 node-cron 模块：`$ npm i node-cron`
+语法：`cron.schedule(cronExpression: string, task: Function, options: Object)`
+		- `scheduled`：一个布尔值（`boolean`），用于设置创建的任务是否已安排（默认值为 `true`）
+		- `timezone`：用于任务调度的时区
+		
+
+#### 任务调度技巧
+在某些情况下，您可能需要每两小时、三小时或四小时运行一次任务。可以通过将小时数除以所需的时间间隔来完成此操作。
+	- 例如，每四小时 `*4`，或在上午 12 点到下午 12 点之间每三小时运行 `0-12/3`。
+	- 分钟也可以用同样的方法划分。例如，`minutes` 位置的表达式为 `*/10`，表示每 10 分钟运行一次任务。
+	
+每个季度（1 月、4 月、7 月和 10 月）运行一次数据库备份。crontab 语法没有一个月的最后一天选项，因此可以使用下个月的第一天
+```
+
+```js
+const cron = require('node-cron')
+
+cron.schedule('5 * * * * *', () => {
+  console.log('每分钟在第 5 秒运行任务')
+})
+
+cron.schedule('30 5 * * *', () => {
+  console.log('每天凌晨 5:30 运行任务')
+})
+
+cron.schedule('0 16 * * friday', () => {
+  console.log('每周五下午 16:00 运行任务')
+})
+
+// 每个季度（1 月、4 月、7 月和 10 月）运行一次数据库备份。crontab 语法没有一个月的最后一天选项，因此可以使用下个月的第一天
+cron.schedule('2 3 1 1,4,7,10 *', () => {
+  console.log('在每个季度第一天的 03:02 运行任务')
+})
+
+// 按设定的小时来执行
+cron.schedule('5 10-18 * * *', () => {
+  console.log('从上午 10 点到下午 18 点，每小时第 5 分钟运行任务')
+})
+
+// 按设定分钟间隔来执行
+cron.schedule('*/5 8-18/2 * * *', () => {
+  console.log('从上午 8 点到下午 18 点，每 2 小时后的每 5 分钟运行一次任务')
+})
+```
+
+
+
+#### 定时任务方法
+
+##### 开始任务
+
+将 `scheduled` 选项值设置为 `false` 时，任务将被调度，但无法启动，即使 cron 表达式正在滴答作响。
+
+要启动这样的任务，您需要调用 `start` 方法。
+
+```js
+const cron = require('node-cron')
+
+const task = cron.schedule('*/5 8-18/2 * * *', () => {
+  console.log('从上午 8 点到下午 18 点，每 2 小时后的每 5 分钟运行一次任务')
+})
+
+task.start()
+```
+
+##### 停止任务
+
+如果需要停止任务运行，可以使用 `stop` 方法将 `scheduled` 选项设置为 `false`。除非重新启动，否则不会执行该任务。
+
+```js
+const cron = require('node-cron')
+
+const task = cron.schedule('*/5 8-18/2 * * *', () => {
+  console.log('从上午 8 点到下午 18 点，每 2 小时后的每 5 分钟运行一次任务')
+})
+
+task.stop()
+```
+
+##### 销毁任务
+
+`destroy` 方法停止任务并将其完全销毁。
+
+```js
+const cron = require('node-cron')
+
+const task = cron.schedule('*/5 8-18/2 * * *', () => {
+  console.log('从上午 8 点到下午 18 点，每 2 小时后的每 5 分钟运行一次任务')
+})
+
+task.destroy()
+```
+
+
+
+#### 示例：删除错误日志文件
+
+考虑一个场景，您需要在每个月的第十五天定期从服务器中删除日志文件。
+
+```js
+const cron = require('node-cron')
+const fs = require('fs')
+
+cron.schedule('0 0 15 * *', () => {
+  fs.unlink('./error.log', (err) => {
+    if (err) throw err
+    console.log('错误日志文件已成功删除')
+  })
+})
+```
+
+#### 示例：备份数据库
+
+确保用户数据的保存是任何业务的关键。如果发生意外事件，并且数据库损坏，则需要从备份中恢复数据库。如果您的业务没有任何形式的现有备份，您将面临严重的麻烦。
+
+考虑一个场景，您需要在每天晚上 11:59 例行备份数据库转储。
+
+假设您已经在环境中安装并运行了 SQLite。给定一个名为 `database.sqlite` 的数据库，用于进行数据库备份的 shell 命令可能类似于：
+
+```bash
+sqlite3 database.sqlite .dump > data_dump.sql
+```
+
+为了执行以上命令，需安装 `shelljs` 来运行 shell 命令。
+
+```bash
+pnpm install shelljs
+```
+
+```js
+const cron = require('node-cron')
+const shell = require('shelljs')
+
+// 每天晚上 11:59 备份数据库
+cron.schedule('59 23 * * *', () => {
+  if (shell.exec('sqlite3 database.sqlite .dump > data_dump.sql').code !== 0) {
+    shell.exit(1)
+  } else {
+    shell.echo('数据库备份完成')
+  }
+})
+```
+
+#### 示例：发送预定的电子邮件
+
+发送电子邮件，需要安装 `nodemailer` 包：
+
+```bash
+pnpm i nodemailer
+```
+
+假设我们需要在每周五为公司员工统一发送一封邮件：
+
+```js
+const cron = require('node-cron')
+const nodemailer = require('nodemailer')
+
+// 创建邮件传输器
+let transporter = nodemailer.createTransport({
+  host: 'your_demo_email_smtp_host.example.com',
+  port: your_demo_email_port,
+  auth: {
+    user: 'your_demo_email_address@example.com',
+    pass: 'your_demo_email_password'
+  }
+})
+
+// 每周五发送邮件
+cron.schedule('0 0 * * 5', () => {
+  let messageOptions = {
+    from: 'your_demo_email_address@example.com',
+    to: 'your_demo_email_address@example.com',
+    subject: '预定电子邮件',
+    text: '你好，这封电子邮件是公司自动发送的。'
+  }
+
+  transporter.sendMail(messageOptions, (error, info) => {
+    if (error) {
+      throw error
+    } else {
+      console.log('电子邮件已成功发送！')
+    }
+  })
+})
+```
+
+如果需要测试效果，Nodemailer 支持 [Ethereal Email](https://ethereal.email/) 提供的测试账户。创建一个 Ethereal 帐户并使用为您生成的用户名和密码。
+
+
+
+## 结语

@@ -8,360 +8,6 @@ Description: WEB API
 
 ## WEB API
 
-## HTML5 API
-
-### 地理定位 Geolocation
-
-```bash
-地理定位API(Geolocation API) 可以获取用户的地理位置。
-
-它是基于权限的，要求用户批准在一个网站和一个请求的基础上共享该数据。它还需要 SSL 证书，尽管在本地运行时可以不使用 SSL 证书。
-
-- `Geolocation.getCurrentPosition()` — 返回一个 Position 对象，表示用户的当前位置。
-
-
-- `Geolocation.watchPosition()` — 指定一个监听函数，每当用户的位置发生变化，就执行该监听函数。
-
-
-- `navigator.getCurrentPosition(successCallback, errorCallback, options)` 获取当前地理信息
-- `navigator.watchPosition(successCallback, errorCallback, options) ` 指定一个监听函数，每当用户的位置发生变化，就执行该监听函数。
-- `Geolocation.clearWatch()` — 取消 watchPosition 方法指定的监听函数。
-
-说明：
-- 当成功获取地理信息后，会调用succssCallback，并返回一个包含位置信息的对象`position`
-    - `coords`即坐标
-    - `position.coords.latitude`纬度
-    - `position.coords.longitude`经度
-
-- 当获取地理信息失败后，会调用errorCallback，并返回错误信息error。
-
-- 可选参数 options 对象可以调整位置信息数据收集方式
-    - `enableHighAccuracy` — 是否返回高精度结果。
-    		如果设为 `true`，可能导致响应时间变慢或（移动设备的）功耗增加；
-    		如果设为 `false`，设备可以更快速地响应。
-    		默认值为 `false`。
-    - `timeout` — 正整数，表示等待查询的最长时间，单位为毫秒。默认值为 `Infinity`。
-    - `maximumAge` — 正整数，表示可接受的缓存最长时间，单位为毫秒。
-    		如果设为 `0`，表示不返回缓存值，必须查询当前的实际位置；
-    		如果设为 `Infinity`，必须返回缓存值，不管缓存了多少时间。
-    		默认值为 `0`。
-
-
-
-### Coordinates 对象
-`Position.coords` 属性来使用 `Coordinates` 对象，该坐标接口用于表示设备在地球上的位置和海拔，以及计算这些属性的精确度。
-    - `Coordinates.latitude` — 表示纬度。
-    - `Coordinates.longitude` — 表示经度。
-    - `Coordinates.altitude` — 表示相对于海平面的位置海拔（单位：米）。如果实现无法提供数据，则此值可以为 `null`。
-    - `Coordinates.accuracy` — 表示经度和纬度属性的精度（单位：米）。
-    - `Coordinates.altitudeAccuracy` —表示海拔的精度（单位：米）。此值可以为 `null`。
-    - `Coordinates.speed` — 表示设备的速度（单位：米/秒）。此值可以为 `null`。
-    - `Coordinates.heading` — 表示设备运行的方向（单位：度）。表示设备离正北方向有多远。0 度表示正北，方向是顺时针方向确定的（这意味着东是 90 度，西是 270 度）。如果 `Coordinates.speed` 为 0，`heading` 属性返回 `NaN`。如果设备无法提供标题信息，则此值为 `null`。
-```
-
-```js
-/* 兼容处理;如果支持，获取用户地理信息
-navigator:导航  geolocation:地理定位 */
-if (window.navigator.geolocation) {
-  const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0
-  }
-
-  const success = (pos) => {
-    const crd = pos.coords
-    console.log(`经度：${crd.latitude} 度`)
-    console.log(`纬度：${crd.longitude} 度`)
-    console.log(`海拔：${crd.altitude} 米`)
-    console.log(`经度和纬度属性的精度：${crd.accuracy} 米`)
-    console.log(`海拔的精确度：${crd.altitudeAccuracy} 米`)
-    console.log(`设备的速度：${crd.speed} 米/秒`)
-    console.log(`设备运行的方向：${crd.heading} 度`)
-  }
-
-  const error = (err) => {
-    console.warn(`ERROR(${err.code}): ${err.message}`)
-  }
-  navigator.geolocation.getCurrentPosition(success, error, options)
-} else {
-  console.log('sorry,你的浏览器不支持地理定位');
-}
-```
-
-
-
-### 视频 Viode
-
-```bash
-## <video>标签的属性
-src ：视频的属性
-poster：视频封面，没有播放时显示的图片
-preload：预加载
-autoplay：自动播放
-loop：循环播放
-controls：浏览器自带的控制条
-width：视频宽度
-height：视频高度
-
-
-<video id="media" src="http://www.sundxs.com/test.mp4" controls width="400px" heigt="400px"></video>
-
-### audio和video都可以通过JS获取对象,JS通过id获取video和 audio的对象
-获取video对象
-Media = document.getElementById("media");
-Media方法和属性：
-HTMLVideoElement和HTMLAudioElement 均继承自HTMLMediaElement
-Media.error; //null:正常
-Media.error.code; //1.用户终止 2.网络错误 3.解码错误 4.URL无效
-
-### 网络状态
-- Media.currentSrc; //返回当前资源的URL
-- Media.src = value; //返回或设置当前资源的URL
-- Media.canPlayType(type); //是否能播放某种格式的资源
-- Media.networkState; //0.此元素未初始化 1.正常但没有使用网络 2.正在下载数据 3.没有找到资源
-- Media.load(); //重新加载src指定的资源
-- Media.buffered; //返回已缓冲区域，TimeRanges
-- Media.preload; //none:不预载 metadata:预载资源信息 auto:
-
-### 准备状态
-- Media.readyState;//1:HAVE_NOTHING 2:HAVE_METADATA 3.HAVE_CURRENT_DATA 4.HAVE_FUTURE_DATA 5.HAVE_ENOUGH_DATA
-- Media.seeking; //是否正在seeking
-
-### 回放状态
-Media.currentTime = value; //当前播放的位置，赋值可改变位置
-Media.startTime; //一般为0，如果为流媒体或者不从0开始的资源，则不为0
-Media.duration; //当前资源长度 流返回无限
-Media.paused; //是否暂停
-Media.defaultPlaybackRate = value;//默认的回放速度，可以设置
-Media.playbackRate = value;//当前播放速度，设置后马上改变
-Media.played; //返回已经播放的区域，TimeRanges，关于此对象见下文
-Media.seekable; //返回可以seek的区域 TimeRanges
-Media.ended; //是否结束
-Media.autoPlay; //是否自动播放
-Media.loop; //是否循环播放
-Media.play(); //播放
-Media.pause(); //暂停
-
-
-### 视频控制
-Media.controls;//是否有默认控制条
-Media.volume = value; //音量
-Media.muted = value; //静音
-TimeRanges(区域)对象
-TimeRanges.length; //区域段数
-TimeRanges.start(index) //第index段区域的开始位置
-TimeRanges.end(index) //第index段区域的结束位置
-
-
-### 相关事件
-  var eventTester = function(e){
-     Media.addEventListener(e,function(){
-         console.log((new Date()).getTime(),e)
-     },false);
- }
-eventTester("loadstart"); //客户端开始请求数据
-eventTester("progress"); //客户端正在请求数据
-eventTester("suspend"); //延迟下载
-eventTester("abort"); //客户端主动终止下载（不是因为错误引起）
-eventTester("loadstart"); //客户端开始请求数据
-eventTester("progress"); //客户端正在请求数据
-eventTester("suspend"); //延迟下载
-eventTester("abort"); //客户端主动终止下载（不是因为错误引起），
-eventTester("error"); //请求数据时遇到错误
-eventTester("stalled"); //网速失速
-eventTester("play"); //play()和autoplay开始播放时触发
-eventTester("pause"); //pause()触发
-eventTester("loadedmetadata"); //成功获取资源长度
-eventTester("loadeddata"); //
-eventTester("waiting"); //等待数据，并非错误
-eventTester("playing"); //开始回放
-eventTester("canplay"); //可以播放，但中途可能因为加载而暂停
-eventTester("canplaythrough"); //可以播放，歌曲全部加载完毕
-eventTester("seeking"); //寻找中
-eventTester("seeked"); //寻找完毕
-eventTester("timeupdate"); //播放时间改变
-eventTester("ended"); //播放结束
-eventTester("ratechange"); //播放速率改变
-eventTester("durationchange"); //资源长度改变
-eventTester("volumechange"); //音量改变
-```
-
-
-
-### 全屏 fullScreen
-
-- HTML5规范允许用户自定义网页上任意元素全屏显示
-- 开启全屏显示：`requestFullscreen()`
-- 关闭全屏显示：`cancleFullscreen()`
-- 检测当前是否处于全屏状态：`document.fullScreen`
-
-```js
-// 1. 开启全屏显示
-requestFullscreen()
-webkitRequestFullScreen
-webkitCancleFullScreen
-
-// 2. 关闭全屏下显示
-cancleFullscreen()
-mozRequestFullScreen
-mozCancleFullScreen
-
-// 3. 检测当前是否处于全屏状态
-document.fullScreen
-document.webkitIsFullScreen
-document.mozFullScreen
-
-// 4. 全屏的伪类
-:full-screen {}
-:-webkit-full-screen {}
-:moz-full-screen {}
-```
-
-```html
-<style>
-  .box {
-    width: 250px;
-    height: 250px;
-    background-color: green;
-    margin: 100px auto;
-    border-radius: 50%;
-  }
-
-  /*全屏伪类：当元素处于全屏时，改变元素的背景色*/
-  .box:-webkit-full-screen,
-  .box:-moz-full-screen,
-  .box:-ms-fullscreen {
-    background-color: red;
-  }
-</style>
-
-<script>
-  // 开启全屏显示的兼容写法
-  function launchFullScreen(elem) {
-    if (elem.requestFullScreen) {
-      // 如果支持全屏，那就让元素全屏
-      elem.requestFullScreen()
-    } else if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen()
-    } else if (elem.webkitRequestFullScreen) {
-      elem.webkitRequestFullScreen()
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen()
-    } else {
-      elem.oRequestFullScreen()
-    }
-  }
-
-  document.querySelector('.box').onclick = () => {
-    launchFullScreen(document.querySelector('.box'))
-  }
-</script>
-```
-
-
-
-### Web存储 Storage
-
-> ````bash
-> ## 本地存储
-> - 本地存储`window.localStorage`：保存在浏览器内存或硬盘中
-> - 永久生效，除非手动删除
-> - 可以多窗口共享数据
->
->
-> ## 会话存储
-> - 会话存储`window.sessionStorage`：保存在内存中
-> - 当窗口关闭时销毁数据
-> - 在同一个窗口下可共享数据
->
->
-> ## Web存储特性
-> - 设置、读取方便。
-> - 容量较大，sessionStorage 约5M、localStorage 约20M（`document.cookie`只有4k）
-> - 只能存储字符串，可以将对象 JSON.stringify() 编码后存储。
->
->
-> ## 存储方式
-> 1. 设置存储内容(若存在该则替换内容)：`setItem(key, value);`
-> 2. 读取存储内容：`getItem(key);`
-> 3. 根据键，删除存储内容：`removeItem(key);`
-> 4. 清空所有存储内容：`clear();`
-> 5. 根据索引值来获取存储内容：`key(n);`
-> ````
->
-> #### 使用class设置本地存储过期时间
->
-> ```js
-> class Storage {
->   constructor(time) {
->     this.time = time;
->   }
->   // this.time/1000 秒后清除localhost成功
->   setItems(key, val) {
->     localStorage.setItem(key,val);
->     setTimeout(() => {
->       localStorage.removeItem(key)
->     }, this.time);
->   }
-> }
-> let a = new Storage(5000).setItems('a', 'b');
-> ```
-
-### 网络状态 online/offline
-
-> ```bash
-> - `window.online` ：检测用户当前的网络状况，返回一个布尔值
-> - `window.online`：用户网络连接时被调用
-> - `window.offline`：用户网络断开时被调用（拔掉网线或者禁用以太网）
-> ```
->
-> ```js
-> window.addEventListener('online', function () {
->   alert('网络连接建立！');
-> });
-> window.addEventListener('offline', function () {
->   alert('网络连接断开！');
-> })
-> ```
-
-### 应用缓存 cache
-
-> - 构建一个离线（无网络状态）应用，需要创建 `cache manifest` 缓存清单文件
->     缓存清单文件中列出了浏览器应缓存，以供离线访问的资源。
->     推荐使用 `.appcache`作为后缀名，另外还要添加MIME类型。
-> - 应用缓存的优势
->     - 可配置需要缓存的资源；
->     - 网络无连接应用仍可用；
->     - 本地读取缓存资源，提升访问速度，增强用户体验；
->     - 减少请求，缓解服务器负担。
->
-> - **应用缓存清单内容**
->     1. 顶行写CACHE MANIFEST。
->     2. CACHE: 指定需要缓存的静态资源，如.css、image、js等。
->     3. NETWORK: 指定需要在线访问的资源，可使用通配符（不需缓存、必须在网络下才能访问的资源）。
->     4. FALLBACK: 当被缓存的文件找不到时的备用资源（当访问不到某个资源时，自动由另外一个资源替换）。
->
-> ```appcache
-> CACHE MANIFEST
->
-> #要缓存的文件
-> CACHE:
->     images/img1.jpg
->     images/img2.jpg
->
-> #指定必须联网才能访问的文件
-> NETWORK:
->      images/img3.jpg
->      images/img4.jpg
->
-> #当前页面无法访问是回退的页面
-> FALLBACK:
->     404.html
-> ```
-
-
-
 ## 观察器
 
 ### IntersectionObserver 相交节点观察器
@@ -1057,7 +703,6 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
 ## 类文件对象 Blob
 
 ```bash
-## 类文件对象 Blob
 - Blob 表示二进制类型的大对象，在 JS 中 Blob 类型的对象表示一个不可变的类似文件对象的原始数据。
 - Blob 存储的数据可以按文本或二进制的格式进行读取，也可以转换成 ReadableStream 来用于数据操作。
 
@@ -1098,7 +743,6 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
 - [Blob](https://zh.javascript.info/blob)
 - [你不知道的 Blob](https://juejin.cn/post/6844904178725158926)
 - [《你不知道的 Blob》番外篇](https://juejin.cn/post/6844904183661854727)
-
 ```
 
 ![blob_composition](./image/blob_composition.png)
@@ -1106,7 +750,6 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
 #### 创建 Blob
 
 ```bash
-### 创建 Blob
 #### 创建 Blob 的方式一：使用 Blob 构造函数
 - Blob 由一个可选的字符串 `type`（通常指 MIME 类型）和 `blobParts` 组成。
 - 语法：`const Blob = new Blob(blobParts, options)`
@@ -1119,15 +762,14 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
         	- "native"：代表行结束符会被更改为适合宿主操作系统文件系统的换行符。
         	- "transparent"：代表会保持 blob 中保存的结束符不变。
 
-
 - 例子：
 	- `const data = new Blob(['Test'])`
 	- `const data = new Blob(['Test'], { type: 'text/plain' })`
 
 
+
 #### 创建 Blob 的方式二：从另一个 Blob，使用 `Blob.slice()` 实例方法
 	- 从 aBlob 字节 10 到 20 创建新 blob：`const partialBlob = aBlob.slice(10, 20)`
-
 ```
 
 ```js
@@ -1164,15 +806,12 @@ const blob1 = new Blob(['hello willy'])
 const blob2 = blob1.slice(6)
 const blob2Text = await blob2.text()
 console.log(blob2Text) // 'willy'
-
 ```
 
 #### 读取 Blob 的数据
 
 ```bash
-### 读取 Blob 的数据
 - 无法直接访问 Blob 对象中包含的数据，必须使用 `FileReader` 对象或使用响应对象`Response`。
-
 ```
 
 ```js
@@ -1216,7 +855,6 @@ text // 'Test'
     - 映射在文档卸载时自动清除，因此 Blob 对象随后被释放。但是，如果应用程序寿命很长，那不会很快发生。因此，如果我们创建一个 Blob URL，即使不再需要该 Blob，它也会存在内存中。
 
 - 生成 Blob URL 后，可以通过调用 `URL.revokeObjectURL()` 方法，从内部映射中删除引用，从而允许删除 Blob（如果没有其他引用），并释放内存。
-
 ```
 
 
@@ -1224,8 +862,6 @@ text // 'Test'
 #### Blob 转换为 Base64
 
 ```bash
-### Blob 转换为 Base64
-
 #### Base64
 Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法，它常用于处理文本数据的场合，表示、传输、存储二进制数据(如 MIME 的电子邮件及 XML 的一些复杂数据)。
 
@@ -1244,7 +880,6 @@ mediatype 是一个 MIME 类型的字符串，如 `image/jpeg` 表示 JPEG 图�
 注意：如果图片较大，图片的色彩层次比较丰富，则不适合使用这种方式，因为该图片经过 base64 编码后的字符串非常大，会明显增大 HTML 页面的大小，从而影响加载速度。
 
 对于 FileReader 对象来说，除了支持把 Blob/File 对象转换为 Data URL 之外，还提供了 readAsArrayBuffer() 和 readAsText() 方法，用于把 Blob/File 对象转换为其它的数据格式。
-
 ```
 
 ##### blob 转换为 base64
@@ -1369,17 +1004,11 @@ async function uploadBase64FilePostHandler(req: Request, res: Response) {
 }
 
 router.route('/upload_base64').post(uploadBase64FilePostHandler)
-
 ```
 
 
 
 #### 从本地磁盘加载文件并获取
-
-```bash
-### 从页面上的本地磁盘加载文件并获取
-
-```
 
 ```html
 <!-- 用 input 标签选择图像，一旦选择图像，则删除输入元素并显示图像，然后在完成图像显示后清除 Blob  -->
@@ -1409,10 +1038,8 @@ if (input !== null) {
 #### 图片压缩
 
 ```bash
-### 图片压缩
 一般在上传本地图片时，先对图片进行一定压缩，然后再提交到服务器，从而减少传输的数据量。
 一般前端实现图片压缩，可以利用 Canvas 对象提供的 toDataURL() 方法，该方法接收 type（图片格式）和 encoderOptions（图片质量）两个可选参数。
-
 ```
 
 ```ts
@@ -1476,11 +1103,6 @@ compressImage(
 
 #### 上传 Blob 数据
 
-```bash
-### 上传 Blob 数据
-
-```
-
 ```js
 /**
  * @function uploadBlob 上传Blob 数据
@@ -1496,16 +1118,13 @@ export const uploadBlob = (url, blob, trackProgress) => {
   xhr.send(blob)
   xhr.upload.onprogress = trackProgress
 }
-
 ```
 
 #### 文件分片上传
 
 ```bash
-### 文件分片上传
 File 对象是特殊类型的 Blob，且可以用在任意的 Blob 类型的上下文中。
 所以针对大文件传输的场景，可以使用 Blob 的 slice() 实例方法对大文件进行切割，然后分片进行上传。
-
 ```
 
 ```js
@@ -1533,18 +1152,11 @@ const chunkSize = 4000
 const uploadUrl = 'http://willy.com/api/upload_file/post'
 
 chunkedUpload(file, uploadUrl, chunkSize)
-
 ```
 
 
 
 #### 以 Blob 形式从互联网下载数据
-
-```bash
-### 以 Blob 形式从互联网下载数据
-
-
-```
 
 ```js
 /**
@@ -1585,7 +1197,6 @@ fetch(requestImg)
 
     if (myImage && 'src' in myImage) myImage.src = objectURL
   })
-
 ```
 
 
@@ -1612,7 +1223,6 @@ const downloadBlob = (blob: Blob, fileName: string) => {
   // 及时清除 Blob 对象
   URL.revokeObjectURL(link.href)
 }
-
 ```
 
 
@@ -2700,15 +2310,13 @@ Push API 通过下面的 serviceWorker 事件来监控并响应推送和订阅�
 ##### 浏览器端订阅
 
 ```bash
-浏览器端在订阅 Push Server 时，必须 Notification 是授权的，否则会出现授权窗口，这里的授权交互和 Notification 的授权是一样的。
+浏览器端在订阅 Push Server 时，Notification 必须是授权的，否则会出现授权窗口，这里的授权交互和 Notification 的授权是一样的。
 
 注意：Notificatino 的授权状态手动调整改变后，订阅体将失效，需要重新订阅。
 
 注意：目前大部分国内网络环境无法访问 Chrome 的 FCM 推送服务器，所以在不出海的网络环境下浏览器无法完成订阅。FireFox 的推送服务器不存在此问题，所以可以在 FireFox 下测试此功能。
 
-关于推送请求问题，需要使用 VAPID 协议。
-
-订阅时applicationServerKey 使用 VAPID 公钥作为识别标示，规范中要求公钥需要 UInt8 类型，所以订阅前要进行类型转换。
+关于推送请求问题：订阅时 applicationServerKey 需要使用 VAPID 协议公钥作为识别标示，规范中要求公钥需要 UInt8 类型，所以订阅前要进行类型转换。
 ```
 
 ![image-20240228204948313](./image/image-20240228204948313.png)
@@ -2790,8 +2398,7 @@ self.addEventListener("push", function(event) {
 Authorization 的签名采用 JWT（JSON web token），JWT 是一种向第三方发送消息的方式，三方收到后，获取发送者的公钥进行验证 JWT 的签名。
 Authorization 对 JWT 签名的格式要求：`Authorization: 'WebPush <JWT Info>.<JWT Data>.<Signature>'`
 在签名的前面加上 WebPush 作为 Authorization 头的值发送给推送服务器。
-推送协议同时要求Crypto-Key header 头，用来发送公钥，并需要p256ecdsa=前缀，格式：`Crypto-Key: p256ecdsa=<URL Safe Base64 Public Application Server Key>
-`
+推送协议同时要求Crypto-Key header 头，用来发送公钥，并需要 `p256ecdsa=` 前缀，格式：`Crypto-Key: p256ecdsa=<URL Safe Base64 Public Application Server Key>`
 ```
 
 ##### 关于消息部分的加密
@@ -2957,9 +2564,176 @@ webpush
   });
 ```
 
+
+
+### 显示消息 Notification API
+
+```bash
+Notifications API 是浏览器向开发人员公开的接口，允许在用户允许的情况下向用户显示消息，即使网站/Web 应用未在浏览器中打开。
+这些消息是一致的和原生的，这意味着接收者习惯于它们的 UI 和 UX（用户界面和用户体验），是系统范围的，而不是特定于您的网站。
+	- 与 Push API 相结合，这项技术可以成为提高用户参与度和增强应用功能的成功途径。
+	- Notifications API 与 Service Worker 进行了大量的交互，因为它是推送通知所需要的。您可以使用 Notifications API 而不使用 Push API，但是它的用例是有限的。
+
+在这两种情况下，函数都会被传递一个 `permission` 字符串，该字符串可以具有以下值之一：
+  - `granted` — 用户接受，我们可以显示权限
+  - `denied` — 用户拒绝，我们无法显示任何权限
+	- 也可以通过检查 `Notification.permission` 属性来检索这些值，如果用户已经授予权限，则该属性的计算结果为 `granted` 或 `denied`，但如果您尚未调用 `Notification.requestPermission()`，它将解析为 `default`。
+```
+
+```js
+if (window.Notification && Notification.permission !== 'denied') {
+  const process = (permission) => {
+    // 如果用户接受，状态为 granted
+    if (permission === 'granted') {
+      // 打开通知
+      const n = new Notification('Title', {
+        body: '我是正文内容!',
+        icon: '/path/to/icon.png' // 可选
+      })
+      
+      // 关闭通知
+			setTimeout(n.close(), 1000)
+    }
+  }
+  
+  // 调用请求此权限
+  // 因为过去对 `Notification.requestPermission()` 的不同实现，我们现在必须支持它，因为我们事先不知道浏览器中运行的是哪个版本（是 Promise 还是同步调用回调函数不确定）
+  Notification.requestPermission((status) => {
+    process(status)
+  }).then((permission) => {
+    process(permission)
+  })
+}
+```
+
+
+
+## 通讯 API
+
+### 频道消息 Channel Messaging API
+
+```bash
+Channel Messaging API 可以让两个在附加到同一文档的不同浏览上下文中运行的单独脚本（比如：两个 <iframe> 元素，或者主文档和一个 <iframe>，或者使用同一个 SharedWorker 的两个文档）直接通信，通过两端都有端口的双向频道（或管道）相互传递消息。
+
+调用 `new MessageChannel()` 消息通道被初始化，将获得两个属性：port1 和 port2。
+这些属性是 MessagePort 对象。port1 是创建通道的部分使用的端口，port2 是通道接收器使用的端口（通道是双向的，因此接收器也可以发回消息）
+
+发送的事件由以下属性组成：
+  - data — 从另一个窗口发送的对象
+  - origin — 发送消息的窗口的原始 URI。可以使用 `*` 来允许不太严格的检查，或指定域，或指定 `/` 来设置同域目标，而无需指定它是哪个域。
+  - source — 发送消息的窗口对象
+
+
+消息可以是任何受支持的值：
+    - 所有基本类型，但不包括 `symbol`
+    - 数组
+    - 对象字面量
+    - String、Date 和 RegExp 对象
+    - Blob、File 和 FileList 对象
+    - ArrayBuffer 和 ArrayBufferView 对象
+    - FormData 对象
+    - ImageData 对象
+    - Map 和 Set 对象
+
+
+- [Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API)
+```
+
+**在主页面中创建频道，并接收确认消息**
+
+```js
+const iframe = document.querySelector("iframe");
+const button = document.querySelector("button");
+const input = document.getElementById("message-input");
+const output = document.getElementById("message-output");
+
+iframe.addEventListener("load", () => {
+  const channel = new MessageChannel();
+  const port1 = channel.port1;
+  const port2 = channel.port2;
+
+  // 当按钮点击时，在 port1 上发送一个消息
+  button.addEventListener("click", (e) => {
+    e.preventDefault();
+    port1.postMessage(input.value);
+  });
+
+  // 在 port1 监听消息
+  port1.onmessage = (e) => {
+    output.innerHTML = e.data;
+    input.value = "";
+  };
+
+  // 把 port2 传给 iframe
+  iframe.contentWindow.postMessage("init", "*", [channel.port2]);
+});
+```
+
+**在 IFrame 里接收端口和消息**
+
+```js
+const list = document.querySelector("ul");
+
+// 监听初始的端口传递消息
+window.addEventListener("message", (event) => {
+  let port2 = event.ports[0];
+
+  // 处理 port2 收到的消息
+  port2.onmessage = (e) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = e.data;
+    list.appendChild(listItem);
+    port2.postMessage(`IFrame 收到的消息：“${e.data}”`);
+  };
+});
+```
+
+
+
+### Broadcast Channel API
+
+```bash
+BroadcastChannel API 可以将 1 对 1 消息从浏览器窗口哦发送到 iframe 或 Web Worker 等；也可用于发送 1 对多消息，同时与多个实体通信。
+
+要在频道上发送消息，可以使用 postMessage() 方法，消息可以是以下任何受支持的值：
+    - 所有基本类型，不包括 `Symbol`
+    - 数组
+    - 对象字面量
+    - String、Date、RegExp 对象
+    - Blob、File、FileList 对象
+    - ArrayBuffer、ArrayBufferView 对象
+    - FormData 对象
+    - ImageData 对象
+    - map 和 set 对象
+
+要从频道上接收消息，需要监听 message 事件（此事件会为所有监听器触发，发送消息的监听器除外）：
+	`channel.onmessage = (event) => {}`
+
+要关闭频道，需要使用 close() 方法：
+	`channel.close()`
+```
+
+```js
+const hasSupport = () => Boolean('BroadcastChannel' in window)
+const CHANNEL_NAME = 'web_api_channel'
+
+function run() {
+  const bc = new BroadcastChannel(CHANNEL_NAME)
+  bc.postMessage('I am superman!')
+  bc.onmessage = (event) => {
+    console.log(`在频道 "${event.data}" 上收到消息 "${CHANNEL_NAME}"`)
+
+    const receiver = document.getElementById('broadcast-receiver')
+    receiver.innerText = event.data
+  }
+}
+```
+
+
+
 ## 扩展 API
 
-### Speech Synthesis API
+### 语音 Speech Synthesis API
 
 `SpeechSynthesisUtterance` 代表语音请求
 
@@ -3083,6 +2857,469 @@ const chooseVoice = async () => {
 }
 
 speak('点个关注不迷路')
+```
+
+
+
+### 访问网络摄像头 MediaDevices API
+
+```bash
+MediaDevices API 接口提供访问连接媒体输入的设备，如照相机和麦克风，以及屏幕共享等。它可以使你取得任何硬件资源的媒体数据。
+注意：MediaDevices API 只有通过 HTTPS 提供内容时才能访问网络摄像头。该 API 基于 Promise 规范。
+```
+
+```html
+<button id="start-webcam-btn" onclick="start()">开启摄像头</button>
+<button id="stop-webcam-btn" onclick="stop()">停止摄像头</button>
+<video autoplay="true" id="videoElement" style="width: 500px; height: 500px"></video>
+
+<script>
+  const video = document.querySelector('#videoElement')
+
+  /** 开启摄像头 */
+  const start = () => {
+    if (navigator.mediaDevices.getUserMedia) {
+      const constraints = {
+        video: {
+          aspectRatio: 16 / 9,
+        },
+        audio: {
+          echoCancellation: true,
+          sampleRate: 44100,
+        },
+      }
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+        video.srcObject = stream
+      })
+        .catch((err) => {
+        console.log('ERROR: ', err)
+      })
+    }
+  }
+
+  /** 关闭摄像头 */
+  const stop = () => {
+    const stream = video.srcObject
+    const tracks = stream.getTracks()
+
+    for (i = 0; i < tracks.length; i++) {
+      tracks[i].stop()
+    }
+
+    video.srcObject = null
+  }
+</script>
+```
+
+![允许或者禁止浏览器使用您的摄像头](image/image-20240911153218289.png)
+
+#### constraints 参数
+
+`mediaDevices.getUserMedia(constraints)`中的 `constraints` 指定了请求的媒体类型和相对应的参数。
+
+以下同时请求不带任何参数的音频和视频：
+
+```js
+const constraints = {
+  audio: true,
+  video: true
+}
+```
+
+如果为某种媒体类型设置了 `true` ，得到的结果的流中就需要有此种类型的轨道。
+
+如果其中一个由于某种原因无法获得，`getUserMedia()` 将会产生一个错误。
+
+当由于隐私保护的原因，无法访问用户的摄像头和麦克风信息时，应用可以使用额外的 `constraints` 参数请求它所需要或者想要的摄像头和麦克风能力。
+
+浏览器会试着满足这个请求参数，但是如果无法准确满足此请求中参数要求或者用户选择覆盖了请求中的参数时，有可能返回其它的分辨率。
+
+```js
+// 使用 `1280 x 720` 的摄像头分辨率
+const constraints = {
+  audio: true,
+  video: { width: 1280, height: 720 }
+}
+```
+
+强制要求获取特定的尺寸时，可以使用关键字 `min`，`max` 或者 `exact`（就是 `min == max`）。
+
+```js
+// 获取最低为 `1280 x 720` 的分辨率
+const constraints = {
+  audio: true,
+  video: {
+    width: { min: 1280 },
+    height: { min: 720 }
+  }
+}
+```
+
+如果摄像头不支持请求的或者更高的分辨率，返回的 `Promise` 会处于 `rejected` 状态，而且用户将不会得到要求授权的提示。
+
+造成不同表现的原因是，相对于简单的请求值和 `ideal` 关键字而言，关键字 `min`，`max` 和 `exact` 有着内在关联的强制性
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    width: { 
+      min: 1024, ideal: 1280, max: 1920 },
+    height: { min: 776, ideal: 720, max: 1080 }
+  }
+}
+```
+
+当请求包含一个 `ideal`（应用最理想的）值时，这个值有着更高的权重，意味着浏览器会先尝试找到最接近指定的理想值的设定或者摄像头（如果设备拥有不止一个摄像头）。
+
+简单的请求值也可以理解为是应用理想的值，因此我们的第一个指定分辨率的请求也可以写成如下：
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    width: { ideal: 1280 },
+    height: { ideal: 720 }
+  }
+}
+```
+
+在移动设备上，表示优先使用前置摄像头（如果有的话）：
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    facingMode: 'user'
+  }
+}
+```
+
+强制使用后置摄像头，可以使用：
+
+```js
+const constraints = {
+  audio: true,
+  video: {
+    facingMode: {
+      exact: 'environment'
+    }
+  }
+}
+```
+
+在某些情况下，比如 WebRTC 上使用受限带宽传输时，低帧率可能更适宜。
+
+```js
+const constraints = {
+  video: {
+    frameRate: {
+      ideal: 10,
+      max: 15
+    }
+  }
+}
+```
+
+
+
+### 浏览器中截屏
+
+#### html2canvas
+
+使用 `html2canvas` 库在浏览器中使用 JS 截取屏幕截图，它可以将 DOM 转换成 `canvas`。
+
+```html
+<button onclick="report()">截图</button>
+<div id="capture" style="padding: 10px; background: #f5da55">
+  <h4 style="color: #000">Hello world!</h4>
+</div>
+<img width="100%" class="screen" />
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+```
+
+```js
+function report() {
+  html2canvas(document.body).then((canvas) => {
+    let pngUrl = canvas.toDataURL() // dataURL 格式的 PNG
+    let img = document.querySelector('.screen')
+    img.src = pngUrl
+
+    // 其他操作...
+  })
+}
+```
+
+
+
+#### 截屏 screen Capture API
+
+使用原生的 screen Capture API 进行屏幕捕获，使用 `getDisplayMedia()` 方法，以 `canvas` 或 `Blob` 等形式获取屏幕截图。
+
+```html
+<button onclick="report()">截图</button>
+<div id="capture" style="padding: 10px; background: #f5da55">
+  <h4 style="color: #000">Hello world!</h4>
+</div>
+<canvas id="canvas" style="width: 300px"></canvas>
+<img width="300" class="screen" />
+```
+
+```js
+const canvas = document.getElementById('canvas')
+const img = document.querySelector('.screen')
+
+function report() {
+  navigator.mediaDevices
+    .getDisplayMedia()
+    .then((stream) => {
+    let track = stream.getTracks()[0]
+    let capture = new ImageCapture(track)
+    capture.grabFrame().then((bitmap) => {
+      // 停止共享
+      track.stop()
+      console.log(bitmap)
+      // 将 bitmap 绘制到 canvas
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      canvas.getContext('2d').drawImage(bitmap, 0, 0)
+      canvas.toBlob(
+        (blob) => {
+          console.log('output blob:', blob)
+          const screenshotJpegBlob = URL.createObjectURL(blob)
+          img.src = screenshotJpegBlob
+        },
+        'image/jpeg',
+        0.95
+      )
+    })
+  })
+    .catch((e) => console.log(e))
+}
+```
+
+
+
+### 分享  Web Share API
+
+```bash
+运作机制：Web Share API 借助浏览器原生的能力，为网页提供系统级别的分享入口。当用户触发分享操作时，网站能直接调用底层操作系统的分享功能，把网页中的指定内容，像链接、文本、图片等发送倒其他应用里。诸如社交媒体应用、电子邮件、即时消息、以及本地系统安装的、且接受分享的应用，都会出现在系统的分享弹窗，这对手机网页尤其有用。
+
+注意：Web Share API 只有通过 HTTPS 提供内容时才能使用。
+
+支持分享多种格式的数据：
+    - url —— 要分享的 URL
+    - text —— 要分享的文本内容
+    - title —— 要分享的标题
+    - files —— 要分享的文件
+          - 在分享文件之前，还需要使用 `navigator.canShare()` 方法，判断这个文件是可以否被分享。
+          - 因为不是所有文件都允许分享的，目前只有图像，视频，音频和文本文件可以分享。
+          - 如果 `navigator.canShare()` 调用成功，将返回一个布尔值 `true`，表示该文件可以被分享。
+
+
+[Web Share API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share)
+```
+
+**分享文本**
+
+```js
+const shareText = {
+  title: document.title, // 获取当前标题
+  url: document.querySelector('link[rel=canonical]')
+  ? document.querySelector('link[rel=canonical]').href
+  : document.location.href, // 获取当前网站
+  text: 'Hello World',
+}
+
+shareBtn.addEventListener('click', async () => {
+  const isSupportShare = 'navigator.share' in window
+  if (!isSupportShare) {
+    console.log('浏览器不支持，建议用户或采用备用分享方案')
+    return
+  }
+
+  try {
+    await navigator.share(shareText)
+    console.log('已成功分享数据')
+  } catch (err) {
+    console.error('分享失败：', err.message)
+  }
+})
+```
+
+**分享文件**
+
+```js
+const text = {
+  files: filesArray,
+  title: 'Picture',
+  text: 'I am Superman'
+}
+
+if (navigator.canShare && navigator.canShare({ files: filesArray })) {
+  navigator
+    .share(text)
+    .then(() => console.log('分享成功'))
+    .catch((err) => console.log('分享失败', err))
+} else {
+  console.log('您的系统不支持共享文件。')
+}
+```
+
+
+
+### 震动 Web Vibration API
+
+```bash
+Web Vibration API 是一个允许网页在支持的浏览器和设备上触发设备振动的 JavaScript API，它为网页增添了一种触觉反馈的交互方式。
+```
+
+#### 检测支持性
+
+```js
+if ('navigator.vibrate' in window) {
+  // Web Vibration API 支持，可以进行后续操作
+} else {
+  // 不支持，可考虑给用户提示，告知该功能不可用
+}
+```
+
+#### 一次振动
+
+可以通过指定单个值或仅由一个值组成的数组来一次振荡振动硬件：
+
+```js
+const oneVibrate = () => navigator.vibrate(200)
+// or
+const oneVibrate = () => navigator.vibrate([200])
+```
+
+以上两个例子都可以使设备振动 200 ms。
+
+#### 复杂振动模式
+
+你可以给定一组数组来描述设备振动和不振动的交替时间段。例如：
+
+```js
+const vibratePart = () => navigator.vibrate([500, 250, 500, 250, 500])
+```
+
+这会使设备振动 500 ms，然后暂停 250 ms，然后再次振动设备 500 ms。
+
+**注意**：由于振动在每个振动周期结束时自动停止，因此您不必提供最后一个值去暂停，换句话说，数组长度只需要设置奇数个。
+
+#### 停止振动
+
+当值为 0、空数组或数组元素全为 0 时，调用 `navigator.vibrate()`将取消当前正在进行的任何振动模式。
+
+````js
+if ('navigator.vibrate' in window) {
+  // 先触发振动
+  const vibration = navigator.vibrate(500);
+  // 假设过一段时间后要停止振动
+  setTimeout(() => {
+    navigator.vibrate(0); 
+  }, 300);
+}
+````
+
+#### 持续振动
+
+一些基于 `setInterval` 和 `clearInterval` 操作将允许您创建持续的振动：
+
+```js
+var vibrateInterval
+
+// 在传递水平开始振动
+const startVibrate = (duration) => navigator.vibrate(duration)
+
+// 停止振动
+const stopVibrate = () => {
+  // 清除间隔并停止持续振动
+  if (vibrateInterval) clearInterval(vibrateInterval)
+  navigator.vibrate(0)
+}
+
+// 在给定的持续时间和间隔内开始持续振动
+// 假设给定了一个数值
+const startPeristentVibrate = (duration, interval) => {
+  vibrateInterval = setInterval(function () {
+    startVibrate(duration)
+  }, interval)
+}
+```
+
+当然上面的代码片段没有考虑到振动参数为数组情况；基于数组的持久性振动将需要计算数组项的和，并基于该数量创建周期（可能具有额外的延迟）。
+
+### 画中画 Picture in Picture
+
+```bash
+Picture in Picture（画中画）功能允许用户在一个小的叠加窗口中弹出网页中播放的视频，用于在浮动窗口上显示内容。它允许用户在与背景页面和其他网站交互时继续查看内容。
+ 
+
+- 进入画中画: `videoEle.requestPictureInPicture()`，异步API，返回Promise
+- 退出画中画: `document.exitPictureInPicture()`，异步API，返回Promise
+- 画中画生效的 video 元素: `document.pictureInPictureElement`，如果没有开启画中画，那么返回值是 `null`
+
+ 
+ [Picture-in-picture](https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API)
+```
+
+
+
+```html
+<video id="video" src="video.mp4" controls autoplay />
+<button id="toggle">toggle</button>
+
+<script>
+  const button = document.getElementById('toggle')
+  const video = document.getElementById('video')
+
+  const hasSupport = () => Boolean('pictureInPictureEnabled' in document)
+
+  async function handleToggle() {
+    try {
+      if (video !== document.pictureInPictureElement) {
+        await video.requestPictureInPicture()
+      } else {
+        await document.exitPictureInPicture()
+      }
+    } catch (error) {
+      console.log('您的浏览器不支持画中画 API')
+    }
+  }
+
+  function run() {
+    if (document.pictureInPictureElement) {
+      // 退出画中画
+      document.exitPictureInPicture()
+    } else if (document.pictureInPictureEnabled) {
+      // 进入画中画
+      video.requestPictureInPicture()
+    }
+
+    video.addEventListener('enterpictureinpicture', () => {
+      button.textContent = '退出画中画模式'
+    })
+
+    video.addEventListener('leavepictureinpicture', () => {
+      button.textContent = '进入画中画模式'
+    })
+
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      console.log('上一曲')
+    })
+
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      console.log('下一曲')
+    })
+  }
+
+  run()
+  button.addEventListener('click', handleToggle)
+</script>
 ```
 
 

@@ -9,9 +9,19 @@ Description: HTML 与 CSS
 ## HTML
 
 ```bash
-### DTD
-- DTD（Document Type Definition 文档类型定义）是一组机器可读的规则，它们定义 XML 或 HTML 的特定版本中所有允许元素及它们的属性和层次关系的定义。在解析网页时，浏览器将使用这些规则检查页面的有效性并且采取相应的措施。
-- DTD 是对 HTML 文档的声明，还会影响浏览器的渲染模式（工作模式）
+WEB 标准可分为结构、表现和行为。
+	- 结构层（structural layer）：主要由 HTML 或 XHTML 之类的标记语言负责创建。在页面 body 中写入的标签都是为了页面结构，对网页内容的语义含义做出了描述。
+	- 表示层（presentation layer）： 由 CSS 样式表负责创建，通过 CSS 可以使页面结构标签更具美感。
+	- 行为层（behaviorlayer）：指页面和用户具有一定的交互，同时页面结构或者表现发生变化，主要由 js 组成。
+
+W3C 的代码规范
+	- 书写标签必须闭合、标签小写、不乱嵌套，标签规范可以提高搜索引擎对页面的抓取效率，对 SEO 有帮助。
+	- 建议使用外链 CSS 和 JS，从而达到结构、表现与行为的分离，提高页面的渲染速度，提高用户体验。
+	- 样式与标签的分离，更合理的语义化标签，使内容能被更多的用户所访问、内容能被更广泛的设备所访问、更少的代码和组件，从而降低维护成本、改版方便。
+	- 不需要变动页面内容，便可提供打印版本而不需要复制内容，提高网站易用性。
+	- 遵循 W3C 指定的 WEB 标准，能够使用户浏览者更方便阅读，使网页开发者之间更好地交流。
+
+
 
 
 
@@ -49,13 +59,47 @@ HTML 是网页的基础，是指超文本标记语言。
 ### DOCTYPE
 
 ```bash
-## DOCTYPE
-`<!DOCTYPE>` 声明位于 HTML 文档中的第一行，处于 `<html>` 标签之前。告知浏览器的解析器使用标准模式渲染文档。DOCTYPE 不存在或格式不正确会导致文档以兼容模式呈现。
+### DTD
+- DTD（Document Type Definition 文档类型定义）是一组机器可读的规则，它们定义 XML 或 HTML 的特定版本中所有允许元素及它们的属性和层次关系的定义。在解析网页时，浏览器将使用这些规则检查页面的有效性并且采取相应的措施。
+- DTD 是对 HTML 文档的声明，还会影响浏览器的渲染模式（工作模式）
 
-### HTML 混乱模式
-- 网站设置 `<!DOCTYPE html>` 是为了防止浏览器在渲染文档时，使用一个不符合规范的渲染模式。
-- 在严格模式下，浏览器根据 W3C 标准进行解析并渲染，而在混杂模式下浏览器会用自己的渲染方式解析并渲染。
-- 混杂模式的存在是为了在没有 W3C 标准时间段写的旧网页可以顺利地加载出来。
+
+
+- `<!DOCTYPE>` 声明位于 HTML 文档中的第一行，处于 `<html>` 标签之前。
+- 网站设置 `<!DOCTYPE html>` 是为了告知浏览器的解析器使用标准模式渲染文档。防止浏览器在渲染文档时，使用一个不符合规范的渲染模式。
+- `DOCTYPE` 不存在或格式不正确会导致文档以混杂模式呈现。
+
+
+1. 标准模式：又称严格模式，是指浏览器按照 W3C 标准解析代码。
+	- 在标准模式下，浏览器根据 W3C 标准进行解析并渲染，页面的排版和 JS 运作模式是以该浏览器支持的最高标准运行。
+
+2. 兼容模式：又称怪异模式或混杂模式，是指浏览器用自己的解析方式解析并渲染。
+	- 在兼容模式下，页面以宽松的向后兼容的方式显示。模式老式浏览器的行为以防站点无法工作。
+	- 兼容模式的存在是为了在没有 W3C 标准时间段写的旧网页可以顺利地加载出来。
+
+3. 如何区分
+- 在 HTML4.01 标准中，浏览器解析时到底使用标准模式还是兼容模式，与网页中的 DTD 直接相关，因为 HTML4.01 基于 SGML，DTD 规定了标记语言的规则，这样浏览器才能正确呈现。
+- HTML5 不基于 SGML，因此不需要对 DTD 进行引用，只需要在顶部声明 `<!DOCTYPE html>`
+
+
+
+### Doctype 文档类型
+该标签可声明三种 DTD 类型，分别表示严格版本、过渡版本以及基于框架的 HTML 文档。
+HTML 4.01 规定三种文档类型：Strict、Transitional、Frameset。
+XHTML 1.0 规定三种XML文档类型：Strict、Transitional、Frameset。
+Stamdards（标准）模式（严格呈现模式）用于呈现遵循最新标准的网页，而 Quirks（包容）模式（松散呈现模式/兼容模式/混乱模式）用于呈现传统浏览器而设计的网页。
+
+
+
+### HTML 与 XHTML 的区别
+1. 所有的标记都必须要有一个相应的结束标记
+2. 所有标签的元素和属性的名字都必须使用小写
+3. 所有的XML标记都必须合理嵌套
+4. 所有的属性必须用引号 `""` 括起来
+5. 把所有 `<` 和 `&` 特殊符号用编码表示
+6. 给所有属性赋一个值
+7. 不要在注释内容中使 `--`
+8. 图片必须有说明文字
 ```
 
 
@@ -91,61 +135,573 @@ HTML 是网页的基础，是指超文本标记语言。
 > </section>
 > ```
 
-### html 防止浏览器要求翻译
+### 辅助标签 meta
 
-> ```bash
-> ## html 防止浏览器要求翻译
-> 如果一个网站的内容是用一种特定的语言编写，那么访问者在使用某些浏览器时可能会被提示将其翻译成另一种语言(如谷歌浏览器)。
-> 此时可通过为整个文档设置 `translate` 属性来防止这种情况发生。
-> 		`<html translate="no"></html>`
->
-> translate 属性对某些翻译工具(如 Google translate) 有影响。
-> 此外，它是一个全局属性，意味着我们可以对任何元素使用它。
-> 如果我们不想翻译一个特定的标题，即使页面已翻译，它也非常有用。
-> 	`<h1 translate="no">Title</h1>`
-> ```
 
-### meta
+```bash
+- `<meta>`标签是HTML语言头部的一个辅助性标签
+- 作用：
+		- 可以定义页面编码语言、搜索引擎优化、自动刷新并指向新的页面、控制页面缓冲、响应式视窗等
+		- 可用于包含描述 HTML 文档属性的名称/值对，如作者，字符编号，关键字列表，文档作者等信息
+- 注意：该标签中的关键字不是给用户看的
 
-> 语法：`<meta charset="utf-8"> `防止页面乱码           charset:字符集    utf-8:编码格式
->
-> 作用：是HTML语言头部的一个辅助性标签，我们可以定义页面编码语言、搜索引擎优化、自动刷新并指向新的页面、控制页面缓冲、响应式视窗等
->
-> 注意：该标签中的关键字不是给用户看的
 
-### 外链link
 
-> 1. 链接外部文件，比如css文件
-> 2. 设置网页图标
+#### meta 标签包含属性
+属性								值									描述
+charset( H5 New)	character_set				定义文档的字符编码。
+content						text								定义与 http-equiv 或 name 属性相关的元信息。
+http-equiv				content-type				属性关联到 HTTP 头部。
+									default-style
+									refresh	把 content
+name							application-name		把content 属性关联到一个名称。
+									author
+									description
+									generator
+									keywords
+scheme(H5 删除)		format/URI					HTML5不支持。 定义用于翻译 content 属性值的格式。
 
-### 列表 ul、ol、il
+整体来看，HTML5之前，meta标签只有两个主要属性，分别是 name 属性和 http-equiv 属性。 HTML5新添加"charset".
+```
 
-> ```bash
-> ## 列表类型
-> - 有序列表：ol > li
-> - 无序列表：ul > li
-> - 自定义列表：dl > dt > dd   (dt中只能包含行内元素span/a)
->
->
-> ## 列表属性
-> - 列表项的标志类型：list-style-type: decimal;
-> - 列表标志位置：list-style-position: inside;//包含向右缩进到文本内部
-> - 列表项图像：list-style-image: url(arr.gif);
->
->
-> ## 创造编号项目的降序列表
->   默认情况下，有序列表元素（`ol` 标签）将按升序显示每个项目的编号。第一项显示为数字 1。第二项是数字 2，依此类推
->   有些情况下，我们希望颠倒数字的顺序，但保留实际项目。如前 5 部电影、前 10 首歌曲等是该用例的最佳示例。
->   为此只需添加 reversed 属性
->   还可使用 start 属性来指示开始编号
->
->   <ol reversed start="5">
->     <li>........</li>
->     <li>........</li>
->     <li>........</li>
->     <li>........</li>
->   </ol>
-> ```
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- 推荐 Meta Tags -->
+    <meta charset="utf-8" />
+    <meta name="language" content="english" />
+    <meta http-equiv="content-type" content="text/html" />
+    <meta name="author" content="Author Name" />
+    <meta name="designer" content="Designer Name" />
+    <meta name="publisher" content="Publisher Name" />
+    <meta name="no-email-collection" content="name@email.com" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- 搜索引擎优化 Meta Tags -->
+    <meta name="description" content="Project Description" />
+    <meta name="keywords" content="Software Engineer,Product Manager,Project Manager,Data Scientist" />
+    <meta name="robots" content="index,follow" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="web" />
+    <meta name="robots" content="noodp" />
+
+    <!-- 可选 Meta Tags-->
+    <meta name="distribution" content="web" />
+    <meta name="web_author" content="" />
+    <meta name="rating" content="" />
+    <meta name="subject" content="Personal" />
+    <meta name="title" content=" - Official Website." />
+    <meta name="copyright" content="Copyright 2020" />
+    <meta name="reply-to" content="" />
+    <meta name="abstract" content="" />
+    <meta name="city" content="Bangalore" />
+    <meta name="country" content="INDIA" />
+    <meta name="distribution" content="" />
+    <meta name="classification" content="" />
+
+    <!-- 移动设备上 HTML 页面的 Meta Tgas -->
+    <meta name="format-detection" content="telephone=yes" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- http-equiv Tags -->
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+
+    <title>HTML5 Meta Tags</title>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
+#### name
+
+name属性主要用于描述网页，对应属性是 content ，以便于搜索引擎机器人查找、分类（目前几乎所有的搜索引擎都使用网上机器人自动查找meta值来给网页分类）。
+
+```html
+<meta name="参数" content="参数值" />
+```
+
+1.Keywords（为搜索引擎提供的关键字列表）
+
+```html
+<meta name="keywords" content="程序员,程序猿,攻城狮"/>
+```
+
+2.Description（告诉搜索引擎你的网站主要内容）
+
+```html
+<meta name="description" content="meta标签是HTML中的一个重要标签，位于HTML文档头部的<HEAD>标签和<title>标签间"/>
+```
+
+3.robots（机器人向导）
+
+```bash
+说明：robots用来告诉搜索机器人哪些页面需要索引，哪些页面不需要索引。
+语法：<meta name="robots" content=""/>
+
+content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 all。
+    all：文件将被检索，且页面上的链接可以被查询；
+    none：文件将不被检索，且页面上的链接不可以被查询；
+    index：文件将被检索；
+    follow：页面上的链接可以被查询；
+    noindex：文件将不被检索，但页面上的链接可以被查询；
+    nofollow：文件将被检索，但页面上的链接不可以被查询；
+```
+
+4.author（标注网页的作者）
+
+```html
+<meta name="author" content="willy,willysliang@qq.com"/>
+```
+
+5.copyright（标注版权）
+
+```html
+<meta name="copyright" content="本网站版权归 willysliang@qq.com 所有"/>
+```
+
+6.generator（说明网站采用什么编辑器制作）
+
+```html
+<meta name="generator" content="你所用的编辑器"/>
+```
+
+7.revisit-after（网站重访）
+
+```html
+<meta name="revisit-after" content="7days"/>
+```
+
+#### http-equiv
+
+​	http-equiv类似于HTTP的头部协议，它回应给浏览器一些有用的信息，以帮助正确和精确地显示网页内容。
+​	与之对应的属性值为content，content中的内容其实就是各个参数的变量值。
+
+```html
+语法：<meta http-equiv="参数"  content="参数值"/>
+```
+
+**参数说明：**
+	1.Expires（期限）
+
+````html
+说明：指定网页在缓存中的过期时间，一旦网页过期，必须到服务器上重新传输。
+语法：<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+
+注意：必须使用GMT的时间格式，或者直接设为0（数字表示多久后过期
+````
+
+2.Pragma（cache模式）
+
+```
+说明：禁止浏览器从本地计算机的缓存中访问页面内容。
+语法：<meta http-equiv="Pragma" content="no-cache"/>
+
+注意：网页不保存在缓存中，每次访问都刷新页面。这样设定，访问者将无法脱机浏览。
+```
+
+3.Refresh（自动刷新并指向新页面）
+
+```
+<meta http-equiv="refresh"content="5; url=http://www.baidu.com/"/>
+	其中的5表示5秒后自动刷新并调整到URL新页面。
+```
+
+4.Set-Cookie（cookie设定）
+
+```
+说明：浏览器访问某个页面时会将它存在缓存中，下次再次访问时就可从缓存中读取，以提高速度。
+当你希望访问者每次都刷新你广告的图标，或每次都刷新你的计数器，就要禁用缓存了。
+如果网页过期，那么存盘的cookie将被删除。
+
+语法：<meta http-equiv="Set-Cookie"  content="cookievalue=xxx; expires=Wednesday,21-Oct-98 16:14:21 GMT; path=/">
+
+注意：必须使用GMT的时间格式
+```
+
+5.Window-target（显示窗口的设定）
+
+```
+说明：强制页面在当前窗口以独立页面显示
+语法：<meta http-equiv="Window-target" content="_top"/>
+可以用来防止别人在框架里调用你的页面。
+```
+
+6.content-Type（显示设定页面使用的字符集）
+
+```
+<meta http-equiv="content-Type" content="text/html;charset=utf-8"/>
+
+其他参数值：
+	GB2312				简体中文
+	BIG5					繁体中文
+	iso-2022-jp		日文
+	ks_c_5601			韩文
+	ISO-8859-1		英文
+	UTF-8					世界通用的语言编码；
+在HTML5中，我们一般都是：<meta charset="utf-8"/>
+```
+
+7.content-Language（显示语言的设定）
+
+```
+<meta http-equiv="Content-Language" content="zh-cn"/>
+```
+
+8.http-equiv="imagetoolbar"
+
+```
+<meta http-equiv="imagetoolbar" content="false"/>
+指定是否显示图片工具栏，当为false代表不显示，当为true代表显示。
+```
+
+
+
+#### name
+
+##### viewport（屏幕的缩放）
+
+```bash
+说明：能优化移动浏览器的显示（屏幕的缩放）
+
+meta viewport 标签的作用是让当前 viewport 的宽度等于设备的宽度，同时当设置 `user-scalbale="no"` 时不允许用户进行手动缩放。
+viewport 的原理：移动端浏览器通常都会在一个比移动端屏幕更宽的虚拟窗口中渲染页面，这个虚拟窗口就是 viewport；目的是正常展示没有做移动端适配的网页，让他们完整的展示给用户；
+
+语法：<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
+
+
+
+#### 参数值
+| 属性          | 描述                                                         |
+| ------------- | ------------------------------------------------------------ |
+| width         | [device-width、pixel_value] 设备的虚拟视口(viewport)的宽度，width如果直接设置pixel_value数值，大部分的安卓手机不支持，但是ios支持； |
+| height        | 设备的虚拟视口(viewport)的高度（范围从 223 到 10,000 ）      |
+| device-width  | 设备屏幕的物理宽度。                                         |
+| device-height | 设备屏幕的物理高度。                                         |
+| initial-scale | [数值] 初始化比例（范围从 > 0 到 10）                        |
+| user-scalable | [yes、no] 是否允许缩放                                       |
+| minimum-scale | [数值] 允许缩放的最小比例值，1.0 表无法缩放。                |
+| maximum-scale | [数值] 允许缩放的最大比例值，1.0 表无法缩放。                |
+```
+
+
+
+##### format-detection（忽略电话号码和邮箱）
+
+```
+语法：
+<meta name="format-detection" content="telephone=no">//忽略页面中的数字识别为电话号码
+<meta name="format-detection" content="email=no"/>//忽略页面中的邮箱格式识别为邮箱
+也可以写成：
+<meta name="format-detection" content="telphone=no, email=no"/>
+```
+
+##### 浏览器内核控制
+
+国内浏览器很多都是双内核（webkit和Trident），webkit内核高速浏览，IE内核兼容网页和旧版网站。而添加meta标签的网站可以控制浏览器选择何种内核渲染。（仅限360浏览器）
+
+```
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+若页面需默认用极速核，增加标签：<meta name="renderer" content="webkit">
+若页面需默认用ie兼容内核，增加标签：<meta name="renderer" content="ie-comp">
+若页面需默认用ie标准内核，增加标签：<meta name="renderer" content="ie-stand">
+```
+
+```
+各渲染内核的技术细节
+内核			   			Webkit	  	IE兼容	  IE标准
+内核版本		  		Chrome45   	IE6/7	  	IE9/IE10/IE11(取决于用户的IE)
+HTML5支持		    	YES	       	NO	    	YES
+ActiveX控件支持	   NO		 			YES	   		YES
+```
+
+##### WebApp全屏模式
+
+```
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<!-- 启用 WebApp 全屏模式 -->
+```
+
+##### 隐藏状态栏/设置状态栏颜色
+
+只有在开启WebApp全屏模式时才生效。content的值为default | black | black-translucent 。
+
+```
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+```
+
+##### 不同浏览器
+
+```html
+<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+<meta name="HandheldFriendly" content="true">
+
+<!-- 微软的老式浏览器 -->
+<meta name="MobileOptimized" content="320">
+
+<!-- uc强制竖屏 -->
+<meta name="screen-orientation" content="portrait">
+
+<!-- QQ强制竖屏 -->
+<meta name="x5-orientation" content="portrait">
+
+<!-- UC强制全屏 -->
+<meta name="full-screen" content="yes">
+
+<!-- QQ强制全屏 -->
+<meta name="x5-fullscreen" content="true">
+
+<!-- UC应用模式 -->
+<meta name="browsermode" content="application">
+
+<!-- QQ应用模式 -->
+<meta name="x5-page-mode" content="app">
+
+<!-- windows phone 点击无高光 -->
+<meta name="msapplication-tap-highlight" content="no">
+```
+
+#### http-equiv
+
+```html
+1、优先使用 IE 最新版本和 Chrome
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<!-- 关于X-UA-Compatible -->
+<meta http-equiv="X-UA-Compatible" content="IE=6" ><!-- 使用IE6 -->
+<meta http-equiv="X-UA-Compatible" content="IE=7" ><!-- 用于在IE8版本浏览器中使用IE7渲染来避免出错 -->
+<meta http-equiv="X-UA-Compatible" content="IE=8" ><!-- 使用IE8 -->
+
+
+2、转码申明：用百度打开网页可能会对其进行转码（比如贴广告），避免转码可添加如下meta
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+```
+
+#### 字符编码设置 charset
+
+```html
+字符编码是一种将字节转换为字符的方法。为了正确地验证或显示 HTML 文档，程序必须选择适当的字符编码。这是在标签中指定的。
+
+在HTML5中，一般使用：<meta charset="UTF-8">
+
+UTF-8：Unicode 转换格式，以 8 位为单位，即以字节为单位。UTF8 中的字符长度可以从 1 到 4 个字节，从而使 UTF8 的宽度可变。
+
+其他参数值：
+GB2312				简体中文
+BIG5					繁体中文
+iso-2022-jp		日文
+ks_c_5601			韩文
+ISO-8859-1		英文
+UTF-8					世界通用的语言编码
+```
+
+
+
+### 外链 link
+
+```bash
+1. 链接外部文件，比如css文件
+2. 设置网页图标
+```
+
+#### 预加载
+
+```bash
+预取 CSS 文件，预渲染整个页面或提前解析域
+
+
+1. 资源预加载：preload
+- 使用 preload 作为 rel 属性的属性值，还需要通过 href 和 as 属性指定需要被预加载资源的资源路径及类型。
+- 使用 as 来指定要预加载的内容的类型，将使得浏览器能够：
+    - 更精确地优化资源加载优先级。
+    - 匹配未来的加载需求，在适当情况下，重复利用同一资源。
+    - 为资源应用正确的内容安全策略。
+    - 为资源设置正确的 Accept 请求头。
+
+[内容安全策略](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
+[`Accept`请求头](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) 
+[preload中as的完整列表](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/rel/preload)
+
+
+
+2. 资源预下载：prefetch
+- `<link rel="prefetch">` 要求浏览器在后台下载并缓存资源（JS/CSS）。下载优先级较低，因此不会干扰更重要的资源。当下一个页面需要该资源，并且想要提前对其进行缓存时，这将很有帮助。
+- 下载资源后，浏览器不执行任何操作。不执行JS，不应用 CSS。它只是被缓存，因此当其他需求时，它立即可用。
+
+
+3. 提前连接：preconnent
+- `<link rel="preconnent">` 要求浏览器提前执行到域的连接。
+
+
+4. DNS资源的域名预解析：dns-prefetch
+- dns-prefetch（DNS预获取）是尝试在请求资源之前解析域名。这可能是后面要加载的文件，也可能是用户尝试打开的链接目标。
+- 链接预加载的注意事项：
+		- 预加载可以跨域进行，当然请求时 cookie 等信息也会被发送。
+		- 预加载可能破坏网站统计数据，而用户并没有实际访问。
+		- 浏览器兼容性不好。
+
+
+5. 资源预渲染：prerender
+- `<link rel="prerender">` 要求浏览器加载 URL 并将其呈现在不可见的标签中。当用户单击指向该 URL 的链接时，应立即呈现该页面。当您确实确定用户接下来访问特定页面并且想要更快地呈现它时，这将很有帮助。
+- 当您确定大多数用户将导航到特定页面，您也希望加快速度，那么可以使用它。
+
+
+6. 模块预加载：modulepreload
+- `<link rel="modulepreload">` 告诉浏览器尽快下载、缓存和编译 JS 模块脚本。
+- 使用它可以更快加载 ES 模块应用程序，此标签仅使用于预加载 ES 模块。即通过 `import ...` 或导入的模块 `<script type="module">`。
+```
+
+```html
+<link rel="prefetch" href="/index.css" as="style" />
+<link rel="preload" href="/index.css" as="style" />
+<link rel="preconnect" href="https://example.com" />
+<link rel="dns-prefetch" href="https://example.com" />
+<link rel="prerender" href="https://example.com/about.html" />
+<link rel="modulepreload" href="/index.js" />
+
+
+<!-- 预加载整个页面 -->
+<link rel="prefetch" href="https://juejin.cn/user/96412754251390" />
+<!-- 预加载一个图片 -->
+<link rel="prefetch" href="https://images.pexels.com/photos/918281/pexels-photo-918281.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
+```
+
+
+
+#### link标签跟CSS的`@import`区别
+
+```bash
+- link 属于 XHTML 标签，除了加载 CSS 外，还能用于定义 RSS、定义 rel 连接属性等作用；而 `@import` 是 CSS 提供，只能用于加载 CSS。
+- 页面被加载时，link 的样式会同时被加载，而 `@import` 引用的 CSS 会等到页面加载完再加载。
+- `@import` 是 CSS2.1 提出，只能再 IE5 以上才能识别，而 link 是 XHTML 标签，无兼容问题。
+- link 方式的样式权重高于 `@import` 的权重。
+```
+
+#### 为什么最好把 link 标签放在 head 标签之中？
+
+```bash
+- 把 link 标签放在 `<head></head>` 之间是规范要求的内容，此外这种做法可以让页面逐步呈现，提高用户体验。
+- 将样式表放在文档底部附近，会使得许多浏览器不能逐步呈现（因为样式表的变更导致许多样式触发重绘重排）
+- 一些浏览器会阻止渲染，以避免在页面样式发生变化时，重新绘制页面中的元素。
+- 这种做法可以防止呈现给用户空白的页面或没有正确样式的内容。
+```
+
+#### 什么是 FOUC（无样式内容闪烁）？你如何来避免 FOUC？
+
+```bash
+FOUC（Flash of Unstyled Content）是指在网页加载过程中，由于样式表加载的延迟或者顺序问题，导致用户先看到没有应用样式的网页内容，然后在样式表加载完成后，内容才突然应用样式，从而出现闪烁的现象。这种闪烁可能会让用户体验变差，尤其是在页面布局和外观突然改变时。
+例如，当浏览器开始加载 HTML 文档时，它会尽快解析并显示内容。如果 CSS 样式表加载较慢，在样式表加载之前，文本可能会以浏览器默认的字体和布局显示，等 CSS 加载完成后，字体、颜色、间距等样式才突然生效，就会出现明显的闪烁。
+
+避免 FOUC 的方法
+  - 将样式表放在文档头部用 `link` 标签或者 `style` 标签加载样式。
+  - 使用内联样式（容易产生样式权重问题，应避免使用）
+  - 确保样式表尽快加载
+      - 优化 CSS 文件大小和加载顺序：尽量减小 CSS 文件的大小，避免过多的嵌套和复杂的选择器
+      - 使用 CDN 或缓存
+  - 避免使用@import导入样式表（@import会导致样式表的加载顺序变为顺序加载，而且可能会延迟样式的应用）
+```
+
+
+
+### 超链接 a
+
+```bash
+## 锚链接 a
+- 给超链接起一个名字，作用是 在本页面或者其他页面的的不同位置进行跳转。
+- 比如说，在网页底部有一个向上箭头，点击箭头后回到顶部，这个就可以利用锚链接。
+
+
+### 属性说明
+- `href`：目标URL
+- `title`：悬停文本。
+- `name`：主要用于设置一个锚点的名称。
+- `target`：告诉浏览器用什么方式来打开目标页面。
+    - `_self`：在同一个网页中显示（默认值）
+    - `_blank`：**在新的窗口中打开**。
+    - `_parent`：在父窗口中显示
+    - `_top`：在顶级窗口中显示
+
+
+### 返回页面顶部示例
+首先我们要创建一个锚点 ，即是使用`name`属性或者`id`属性给那个特定的位置起个名字。
+`<a href="a.html#name1">回到顶部</a>`
+```
+
+
+
+#### 所有链接都在新标签打开
+
+```bash
+### 所有链接都在新标签打开
+将 `target="_blank"` 属性设置为单个链接将在新选项卡中打开它。
+在一个真实的用例中，您希望在一个新选项卡中打开页面上的所有链接，这是很少见的。一个只收集外部资源链接的网站可能就是一个例子。
+在这种情况下，您只需将其设置为 `base` 标签，而不是将属性添加到所有链接：
+注意:就像我们说的那样，链接会在新窗口中打开，即使链接中没有 `target="_blank"` 属性。这是因为 `base` 元素的 `target` 属性已经被设置为 `"_blank"`。
+你还可以为所有 `a` 标签上 `href` 属性为空的链接添加一个 URL 指向。
+```
+
+```html
+<head>
+  <base href="https://www.baidu.com" />
+  <base target="_blank" />
+</head>
+<body>
+  <a href="https://www.baidu.com">百度一下，你就知道</a>
+</body>
+```
+
+
+
+#### 使用 a 标签下载文件，浏览器会直接打开的解决方案
+
+```bash
+- 问题描述：使用 a 标签打开一个如 excel 的文件地址，浏览器会下载文件，但如图片的链接就不会下载。
+- 在使用 a 标签进行下载文件时，chrome 浏览器是会打开支持预览的文件（如 txt、json 等），而不是下载文件到本地。
+
+
+### 1. 使用a标签 + download属性
+如 `<a href="/user/test/xxx.txt">点击下载</a>` 把文件路径给 a 标签的 href 属性，这样当用户点开链接时就会直接下载文件。
+但如 txt、png、jpg 等这些浏览器支持直接打开的文件是不会执行下载任务的，而是会直接打开文件，这时就需要给 a 标签添加一个 download 属性，如 `<a href="/user/test/xxx.txt" download="文件名.txt">点击下载</a>`。
+
+
+### 2. 即使使用a标签的download属性，浏览器仍然会打开文件
+原因：服务器端返回的response中，content-type为text/plain，即数据以纯文本形式(text/json/xml/html)进行编码，其中不含任何控件或格式字符。chrome浏览器直接打开了该文本，并没有下载。
+解决方案：浏览器对 txt、json 等文件直接打开是因为浏览器对这些类型的文件支持阅览，可以设置 `Content-type:application/octet-stream` 来告知浏览器这是一个字节流，浏览器处理字节流的默认方式就是下载。
+		- Content-Type设置为application/octet-stream是二进制的下载流，导致强制下载。
+如果是公共读类型的文件也可以直接在链接后面加上，比如：`window.open('https://xxx.json?response-content-type=application%2Foctet-stream')`。
+```
+
+
+
+#### 限制打开链接 `rel="noopener"`
+
+```bash
+- `rel="noopener"` 是 `<a>` 标签的一个属性。他可以禁止打开的新页面中使用 `window.opener` 属性，这样一来打开的新页面就不能通过 `window.opener` 去操作你的页面。
+- 新页面可以通过 `window.opener.location = newURL` 将你的页面导航至任何网址。
+
+- 如果正在使用带有 `target ="_ blank"` 的外部链接，则链接应具有 `rel="noopener"` 属性，以防止标签被挪用。如果需要支持旧版本的 Firefox，使用 `rel="noopener noreferrer"`
+
+- 总结：`rel="noopener"` 应用于超链接，防止打开的链接操纵源页面
+```
+
+```html
+<!-- home.html -->
+<a href="./home.html" target="_blank">home</a>
+<!-- <a href="./home.html" target="_blank" rel="noopener">home</a> -->
+
+<!-- details.html -->
+<h1>点关注 不迷路！</h1>
+<script>
+  window.opener.location = 'https://juejin.cn/user/96412754251390'
+</script>
+```
+
+
 
 ### 图片 img
 
@@ -204,7 +760,6 @@ HTML 是网页的基础，是指超文本标记语言。
 #### app内嵌H5，禁止图片长按保存
 
 ```bash
-### app 内嵌 H5 禁止图片长按保存
 1. css 禁止点击图片事件
 img {  pointer-events:none; }
 缺点：会禁止图片的点击事件。所以当图片有点击事件时，给有点击事件的图片设置 `pointer-events:auto;`，那么则合格图片又可以长按保存。
@@ -237,13 +792,14 @@ img {
 
 ```bash
 ### alt 和 title 的区别
-- `alt` 属性是当元素不能正常呈现时用作元素内容的替代文本。img 标签是使用 `alt` 属性的最常用标签。当无法加载图像时，浏览器将在其位置显示 `alt` 文本，以便用户了解包含图像的含义。
+- `alt` 属性是当元素不能正常呈现时用作元素内容的替代文本。
+		- img 标签是使用 `alt` 属性的最常用标签。当无法加载图像时，浏览器将在其位置显示 `alt` 文本，以便用户了解包含图像的含义。
 - `title` 属性是将鼠标悬停在元素上时看到的工具提示文本，是对图片的描述和进一步的说明。
 
 注意：浏览器并非总是会显示图像。当有下列情况时，`alt` 属性可以为图像提供替代的信息：
 	- 非可视化浏览器（Non-visual browsers）（比如有视力障碍的人使用的音频浏览器）
 	- 用户选择不显示图像（比如为了节省带宽，或出于隐私等考虑不加载包括图片在内的第三方资源文件）
-	- 图像文件无效，或是使用了[不支持的格式](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/img#Supported_image_formats)
+	- 图像文件无效，或是使用了不支持的格式
 	- 浏览器禁用图像等
 
 推荐做法: 始终为 `<img>` 标签使用 `alt` 属性，以提供一些有用的信息。
@@ -256,6 +812,30 @@ img {
 img:not([alt]), img[alt=''] { outline: 8px solid red; }
 
 ```
+
+```html
+<!-- × -->
+<img src="wenhao.jpg" alt="图片" />
+
+<!-- √ -->
+<img src="wenhao.jpg" alt="满脸问号的男人" />
+```
+
+
+
+#### src 和 href 的区别
+
+```bash
+- src 用于引用资源，替换当前元素；href 用于在当前文档和引用资源之间确立联系。
+- href（hyperReference）即超文本引用：浏览器遇到href时会并行下载资源，不阻塞页面解析，与 link 引入 css 一样，浏览器并行下载 css 不阻塞页面解析。
+		- href 是指网络资源所在位置，建立和当前元素（锚点）或当前文档（链接）之间的链接，用于超链接。
+- src（resource）即资源：当浏览器遇到src时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签放底部的原因。
+		- src 是指外部资源的位置，指向的内容将会嵌入到文档中当前标签所在位置；
+		- 在请求src资源时会将其指向的资源下载并应用到文档内，例如js脚本、img图片和 frame 等元素。
+		- 当浏览器解析到该元素时，会暂停其他资源的下载和处理，直到将该资源加载、编译、执行完毕，图片和框架等元素也如此，类似于将所指向资源嵌入当前标签内，这也是为什么将 js 脚本引入放在底部而不是头部的原因。
+```
+
+
 
 
 
@@ -293,6 +873,35 @@ location ~* .*\.(gif|jpg|jpeg|png) {
 
 
 
+#### 响应式图像
+
+```bash
+### 为什么在 img 标签中使用 srcset 属性？请描述浏览器遇到该属性后的处理过程。
+为了设计响应式图片。可以使用两个新的属性 `srcset` 和 `sizes` 来提供更多额外的资源图像和提示，帮助浏览器选择正确的一个资源。
+  - srcset：定义允许浏览器选择的图像集，以及每个图像的大小。
+  - sizes：定义一组媒体条件（例如屏幕宽度）并且指明当某些媒体条件为真时，什么样的图片尺寸是最佳选择。
+
+处理过程：
+  - 查看设备宽度
+  - 检查 sizes 列表中哪个媒体条件是第一个为真
+  - 查看给予该媒体查询的槽大小
+  - 加载 srcset 列表中引用的最接近所选的槽大小的图像
+ 
+ 
+- [响应式图像：如果您只是在更改分辨率，请使用 srcset](https://css-tricks.com/responsive-images-youre-just-changing-resolutions-use-srcset/)
+- [响应式图像教程](http://www.ruanyifeng.com/blog/2019/06/responsive-images.html)
+```
+
+```html
+<img
+  srcset="small.jpg 500w, medium.jpg 1000w, large.jpg 2000w"
+  src="..."
+  alt=""
+/>
+```
+
+
+
 ### 表格table
 
 > - cellspacing 设置td与td之间的距离
@@ -315,19 +924,35 @@ location ~* .*\.(gif|jpg|jpeg|png) {
 >
 > ![表格、输入框总结](./image/table_input.png)
 
+
+
 ### 表单form
 
-> - 作用：收集用户数据
->
-> - 组成：提示信息 | 表单控件    | 表单域
->
-> **1、表单域：<form></form>**
->
-> - action : 设置后台处理数据的后台程序
-> - method：提交数据给后台程序的方式
-> - get提交数据： 会将数据显示在地址栏中
-> - post提交数据： 会通过后台提交数据（安全性）
->
+```bash
+- 作用：收集用户数据
+- 组成：提示信息 | 表单控件    | 表单域
+
+1. 表单域：`<form></form>`
+  - action: 设置后台处理数据的后台程序
+  - method：提交数据给后台程序的方式
+  - get提交数据：会将数据显示在地址栏中
+  - post提交数据：会通过后台提交数据（安全性）
+  
+
+
+#### form 里 action 方法的 Get 和 Post 有什么区别
+- Get：Form 的默认方法。
+- Get 是用来从服务器上获得数据。Post 是用来向服务器上传递数据
+- Get 将表单中数据的按照 name=value 的形式，添加到 action 所指向的 URL 后面，并且两者使用 "?" 连接，而各个变量之间使用 "&" 连接。Post 是将表单中的数据放在 form 的数据体中，按照变量和值相对应的方式，传递到 action 所指向 URL
+- Get 是不安全的，因为在传输过程，数据被放在请求的 URL 中。Post 的所有操作对用户来说都是不可见的，其放置 request body 中
+- Get 传输的数据量小，这主要是因为受 URL 长度限制。Post 可以传输大量的数据，所以在上传文件只能使用 Post
+- Get 限制 Form 表单的数据集的值必须为 ASCII 字符。Post 支持整个 ISO10646 字符集
+- Get 请求浏览器会主动 cache。Post 支持不会
+- Get 请求参数会被完整保留在浏览历史记录中。Post 中的参数不会被保留。
+- GET 和 POST 本质上就是 TCP 链接，并无差别。但是由于 HTTP 的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。
+- GET 产生一个 TCP 数据包；POST 产生两个 TCP 数据包。
+```
+
 > 2、**表单控件**
 >
 > ![image-20200919201520926](./image/image-20200919201520926.png)
@@ -337,30 +962,91 @@ location ~* .*\.(gif|jpg|jpeg|png) {
 > ![image-20200919201642575](./image/image-20200919201642575.png)
 >
 
+### 列表 ul、ol、il
+
+```bash
+### 列表类型
+- 有序列表：ol > li
+- 无序列表：ul > li
+- 自定义列表：dl > dt > dd   (dt中只能包含行内元素span/a)
+
+
+### 列表属性
+- 列表项的标志类型：list-style-type: decimal;
+- 列表标志位置：list-style-position: inside;//包含向右缩进到文本内部
+- 列表项图像：list-style-image: url(arr.gif);
+
+
+### 创造编号项目的降序列表
+  默认情况下，有序列表元素（`ol` 标签）将按升序显示每个项目的编号。第一项显示为数字 1。第二项是数字 2，依此类推
+  有些情况下，我们希望颠倒数字的顺序，但保留实际项目。如前 5 部电影、前 10 首歌曲等是该用例的最佳示例。
+  为此只需添加 reversed 属性
+  还可使用 start 属性来指示开始编号
+
+  <ol reversed start="5">
+    <li>........</li>
+    <li>........</li>
+    <li>........</li>
+    <li>........</li>
+  </ol>
+```
+
+
+
+### 关联 label
+
+```bash
+label 标签定义表单控件的关系，当用户选择该标签时，浏览器会自动将焦点转到和标签相关的表单控件上。
+有两种 HTML 原生方法可以将 label 元素与 input 元素连接起来。
+	1. id 绑定；
+	2. 嵌套。
+
+注意：点击 label 时，事件冒泡一次，label 会触发关联 input 的 click 事件，导致事件再次触发事件。
+```
+
+```html
+<label for="select">爱我</label>
+<input type="radio" id="select" name="love" value="love" />
+
+<!-- 用 label 包装 input 元素 -->
+<label>
+  恨我
+  <input type="radio" name="hate" value="hate" />
+</label>
+```
+
+
+
 ### 内联框架 iframe
 
 ```bash
-## 内联框架 iframe
 iframe 标签允许我们将来自其他来源（其他网站）的内容嵌入到我们的网页中。
 从技术上讲，iframe 创建了一个新的嵌套浏览上下文。这意味着 iframe 中的任何内容都不会干扰父页面，反之亦然。JavaScript 和 CSS 不会泄漏到 iframe 或从 iframe 中泄漏。
 
-注意：HTML5 不再支持使用 frame, iframe 只有 src 属性。
+注意：
+	- HTML5 不再支持使用 frame, iframe 只有 src 属性。
+	- 可以将提示文字放在 `<iframe>提示文字</iframe>` 中，来提示某些不支持 iframe 的浏览器。	
 
 iframe 的优点：
 	1. 程序调入静态页面比较方便。
-	2. 页面和程序分离。
+	2. 页面和程序分离，便于修改。
+	3. 并行加载脚本
+	4. security sandbox（安全沙盒）
+	5. 解决加载缓慢的第三方内容（如图标和广告等的加载问题）
 
 iframe 的缺点：
 	1. 样式/脚本需要额外链入，会增加请求（加载JS会具备安全隐患）。
-	2. 搜索引擎对 iframe 不友好，如果是动态网页可使用 include，但必须去除它的 `<html><head><title><body>` 标签。
+	2. 没有语义，搜索引擎无法解读这种页面，不利于 SEO
+			搜索引擎对 iframe 不友好，如果是动态网页可使用 include，但必须去除它的 `<html><head><title><body>` 标签。
 	3. iframe 的框架结构可能会导致页面混杂（如产生滚动条）
-	4.  iframe 会阻塞主页面加载
+	4. iframe 会阻塞主页面加载
     	window 的 onload 事件需要在所有 iframe 加载完毕后(包含里面的元素)才会触发。
     	但在 Safari 和 Chrome 中可通过 JS 动态设置的 iframe 的 `src` 属性上所绑定的链接来避免这种阻塞情况。
+    	即使 iframe 种内容为空，加载也需要时间
 	5. iframe 和主页面共享连接池
     	浏览器只能开少量的连接到 web 服务器（http只能同时发送6个请求），但因为主页面和其中的 iframe 是共享这些连接的。
     	这意味着 iframe 在加载资源时可能用光所有的可用连接，从而阻塞了主页面资源的加载。
-    	但可通过在主页面上的重要的元素加载完毕后，在动态设置 iframe 的 src 属性上所绑定的链接来优化这个问题。
+    	但可通过在主页面上的重要的元素加载完毕后，在 JS 动态设置 iframe 的 src 属性上所绑定的链接来优化这个问题。
 
 
 
@@ -497,78 +1183,161 @@ iframe 的缺点：
 > &sup3;		立方（上标3）
 > ```
 
-### 超链接 a
+
+
+## 标签统合说明
+
+### 替换元素与非替换元素
 
 ```bash
-## 锚链接 a
-- 给超链接起一个名字，作用是 在本页面或者其他页面的的不同位置进行跳转。
-- 比如说，在网页底部有一个向上箭头，点击箭头后回到顶部，这个就可以利用锚链接。
+1. 替换元素
+浏览器根据其标签的元素属性来判断显示具体内容的元素，且元素一般拥有固定的尺寸（宽高或宽高比）。
+在 html 中替换元素有 `img、input、textarea、select、object`，这些元素都没有实际的内容。
 
+2. 非替换元素
+html 中大多数都是非替换元素，它们直接将内容告诉浏览器，直接显示出来。
+如 p 标签，浏览器会直接显示 p 标签中的内容。
 
-### 属性说明
-- `href`：目标URL
-- `title`：悬停文本。
-- `name`：主要用于设置一个锚点的名称。
-- `target`：告诉浏览器用什么方式来打开目标页面。
-    - `_self`：在同一个网页中显示（默认值）
-    - `_blank`：**在新的窗口中打开**。
-    - `_parent`：在父窗口中显示
-    - `_top`：在顶级窗口中显示
-
-
-### 返回页面顶部示例
-首先我们要创建一个锚点 ，即是使用`name`属性或者`id`属性给那个特定的位置起个名字。
-`<a href="a.html#name1">回到顶部</a>`
+tips：替换元素和非替换元素不仅是在行内元素中有，块级元素也有替换和非替换元素之分。比如嵌入的文档 `iframe、audio、canvas` 在某些情况下也为替换元素。
 ```
 
 
 
-#### 所有链接都在新标签打开
+### 块级元素与行内元素
+
+- HTML4.01 中，元素被分成两大类：inlink（行内元素）与 block（块级元素）。
+- 默认情况下是这样，但可以利用 `display` 来修改其为块级还是行内元素。
+
+| 块级元素                       | 行内元素                                                     |
+| ------------------------------ | ------------------------------------------------------------ |
+| 独占一行                       | 不独占一行                                                   |
+| 可以设置宽高（盒模型）         | 不可以设置宽高，宽高由元素内部的内容决定，`padding` 和 `margin` 的 `top/bottom` 不会对元素生效 |
+| 可以包含行内元素和其他块级元素 | 行内元素只能包含文本和其他行内元素。                         |
+
+**块级元素和行内元素分别有哪些？ 空（void）元素有哪些？**
+
+- CSS 规范规定，每个元素都有 `display` 属性，每个元素都有默认的 `display` 值。例如：
+  - div 默认`display` 属性值为 `block`，为块级元素；
+  - span 默认 `display` 属性值为 `inline`，为行内元素。
+- 块级元素：
+  - `<h1>-<h6>`、`<p>`、`<div>`、`<ul>`、`<ol>`、`<form>`、`<table>`、`<address>`、`<blockquote>`、`<center>`、`<dir>`、`<dl>`、`<fieldset>`、`<hr>`、`<menu>`、`<noscript>`、`<pre>`、`<noframes>`、`<isindex>`
+  - 当元素的 `display` 属性为 `block`、`list-item` 或 `table` 时，该元素将成为 “块级元素”。
+- 行内元素：
+  - `<a>`、`<img>`、`<input>`、`<span>`、`<textarea>`、`<label>`、`<select>`、`<abbr>`、`<acronym>`、`<b>`、`<bdo>`、`<big>`、`<br>`、`<cite>`、`<code>`、`<dfn>`、`<em>`、`<font>`、`<i>`、`<kbd>`、`<q>`、`<s>`、`<samp>`、`<small>`、`<strike>`、`<strong>`、`<sub>`、`<sup>`、`<tt>`、`<u>`
+  - 当元素的 `display` 属性为 `inline`、`inline-block` 或 `inline-table` 时，该元素将成为 “行内元素”
+- 常见的空元素：标签内没有内容的 HTML 标签被称为空元素。
+  - `<br>`、`<hr>`、`<img>`、`<input>`、`<link>`、`<meta>`
+- 不常见的空元素：`<area>`、`<base>`、`<col>`、`<command>`、`<embed>`、`<keygen>`、`<param>`、`<source>` `<track>`、`<wbr>`
+
+
+
+### 可选标签
 
 ```bash
-### 所有链接都在新标签打开
-将 `target="_blank"` 属性设置为单个链接将在新选项卡中打开它。
-在一个真实的用例中，您希望在一个新选项卡中打开页面上的所有链接，这是很少见的。一个只收集外部资源链接的网站可能就是一个例子。
-在这种情况下，您只需将其设置为 `base` 标签，而不是将属性添加到所有链接：
-注意:就像我们说的那样，链接会在新窗口中打开，即使链接中没有 `target="_blank"` 属性。这是因为 `base` 元素的 `target` 属性已经被设置为 `"_blank"`。
-你还可以为所有 `a` 标签上 `href` 属性为空的链接添加一个 URL 指向。
+- 在 HTML 中，某些元素具有可选标签。实际上，即使元素本身是必需的，也可以从 HTML 文档中完全删除某些元素的开始和结束标签。
+- 如 `p`，`li`，`td`，`tr`，`th`，`html`，`head`，`body` 等。
+- 可选标签可以节省一些字节并减少需要在 html 文件中下载的字节。但为了便于阅读，当您的标签内有内容/文本时，带上结束标签。
 ```
 
 ```html
-<head>
-  <base href="https://www.baidu.com" />
-  <base target="_blank" />
-</head>
-<body>
-  <a href="https://www.baidu.com">百度一下，你就知道</a>
-</body>
+<p>Paragraph one.</p>
+<p>Paragraph two.</p>
+<p>Paragraph three.</p>
 ```
 
 
 
-#### 使用 a 标签下载文件，浏览器会直接打开的解决方案
+## SEO
+
+#### SEO的TDK
 
 ```bash
-## 使用 a 标签下载文件，浏览器会直接打开的解决方案
-- 问题描述：使用 a 标签打开一个如 excel 的文件地址，浏览器会下载文件，但如图片的链接就不会下载。
-- 在使用 a 标签进行下载文件时，chrome 浏览器是会打开支持预览的文件（如 txt、json 等），而不是下载文件到本地。
+在 SEO 中，所谓的 TDK 其实就是 `title`、`description`、`keywords` 这三个标签
+  - `title` 标题标签
+  - `description` 描述标签
+  - `keywords` 关键词标签
+```
 
+#### `<title>` 与 `<h1>` 的区别
 
-### 1. 使用a标签 + download属性
-如 `<a href="/user/test/xxx.txt">点击下载</a>` 把文件路径给 a 标签的 href 属性，这样当用户点开链接时就会直接下载文件。
-但如 txt、png、jpg 等这些浏览器支持直接打开的文件是不会执行下载任务的，而是会直接打开文件，这时就需要给 a 标签添加一个 download 属性，如 `<a href="/user/test/xxx.txt" download="文件名.txt">点击下载</a>`。
+```bash
+- `<title>` 用于网站信息标题，一个网站可以有多个 `title`，seo 权重高于 `h1`；
+- `<h1>` 概括的是文章主题，一个页面最好只用一个 `h1`，seo 权重低于 `title`。
+```
 
+#### div+css 的布局较 table 布局有什么优点？
 
-### 2. 即使使用a标签的download属性，浏览器仍然会打开文件
-原因：服务器端返回的response中，content-type为text/plain，即数据以纯文本形式(text/json/xml/html)进行编码，其中不含任何控件或格式字符。chrome浏览器直接打开了该文本，并没有下载。
-解决方案：浏览器对 txt、json 等文件直接打开是因为浏览器对这些类型的文件支持阅览，可以设置 `Content-type:application/octet-stream` 来告知浏览器这是一个字节流，浏览器处理字节流的默认方式就是下载。
-		- Content-Type设置为application/octet-stream是二进制的下载流，导致强制下载。
-如果是公共读类型的文件也可以直接在链接后面加上，比如：`window.open('https://xxx.json?response-content-type=application%2Foctet-stream')`。
+```bash
+分离方便、改版快、清晰简洁、seo
+  - 表现与结构相分离。
+  - 改版的时候更方便，只要改 css 文件。
+  - 页面加载速度更快、结构化清晰、页面显示简洁。
+  - 易于优化（seo）搜索引擎更友好，排名更容易靠前。
+```
+
+#### 微格式
+
+```bash
+### 什么是微格式？在前端构建中应该考虑微格式吗？
+- 微格式（Microformats）是一种让机器可读的语义化 XHTML 词汇的集合，是结构化数据的开放标准。是为特殊应用而制定的特殊格式。
+- 优点：将智能数据添加到网页上，让网站内容在搜索引擎结果界面可以显示额外的提示。（如：豆瓣，有兴趣自行 google）
+
+要创建一个微格式对象，需要在 class 属性中使用 h-* 类名。
+要给对象添加属性，需要在对象的后代元素上使用 p-*、u-*、dt-*、e-* 类名。
+
+- [Microformats](https://developer.mozilla.org/en-US/docs/Web/HTML/microformats)
+```
+
+```html
+<p class="h-card">
+  <img class="u-photo" src="https://example.org/photo.png" alt="" />
+  <a class="p-name u-url" href="https://example.org">Joe Bloggs</a>
+  <a class="u-email" href="mailto:jbloggs@example.com">jbloggs@example.com</a>,
+  <span class="p-street-address">17 Austerstræti</span>
+  <span class="p-locality">Reykjavík</span>
+  <span class="p-country-name">Iceland</span>
+</p>
 ```
 
 
 
-## 通用 HTML 属性
+## HTML 全局属性（global attribute）
+
+```bash
+- `accesskey`：设置快捷键，提供快速访问元素
+- `class`：为元素设置类标识，多个类名用空格分开，CSS 和 JavaScript 可通过 class 属性获取元素
+- `contenteditable`：指定元素内容是否可编辑
+- `contextmenu`：自定义鼠标右键弹出菜单内容
+- `data-*`：为元素增加自定义属性
+- `dir`：设置元素文本方向
+- `draggable`：设置元素是否可拖拽
+- `dropzone`：设置元素拖放类型： copy，move，link
+- `hidden`：表示一个元素是否与文档。样式上会导致元素不显示，但是不能用这个属性实现样式效果
+- `id`：元素 id，文档内唯一
+- `lang`：元素内容的的语言
+- `spellcheck`：是否启动拼写和语法检查
+- `style`：行内 CSS 样式
+- `tabindex`：设置元素可以获得焦点，通过 tab 可以导航
+- `title`：元素相关的建议信息
+- `translate`：元素和子孙节点内容是否需要本地化
+```
+
+
+
+### html 防止浏览器要求翻译
+
+```bash
+如果一个网站的内容是用一种特定的语言编写，那么访问者在使用某些浏览器时可能会被提示将其翻译成另一种语言(如谷歌浏览器)。
+此时可通过为整个文档设置 `translate` 属性来防止这种情况发生。
+		`<html translate="no"></html>`
+
+translate 属性对某些翻译工具(如 Google translate) 有影响。
+此外，它是一个全局属性，意味着我们可以对任何元素使用它。
+如果我们不想翻译一个特定的标题，即使页面已翻译，它也非常有用。
+	`<h1 translate="no">Title</h1>`
+```
+
+
 
 ### 省略的HTML布尔属性的值
 
@@ -601,7 +1370,6 @@ iframe 的缺点：
 ### 语言属性 lang
 
 ```bash
-## 语言属性 lang
 HTML 文档的内容可以是多种不同的语言。为了指定文档的主要语言，我们可以在根元素上使用 `lang` 属性。
 我们还可以在页面中使用 `lang` 属性来划分与文档主语言不同语言的特定元素或部分。
 对于特定于语言的样式，在 lang 属性选择器上使用 lang 伪类。
@@ -691,6 +1459,23 @@ HTML 文档的内容可以是多种不同的语言。为了指定文档的主要
 
 
 
+#### accessKey
+
+```bash
+- `accessKey` 属性规定激活（使元素获得焦点）元素的快捷键。
+- 不同浏览器使用的快捷键方法不同：
+  - IE，Chrome，Safari，Opera 15+：`[ALT] + accesskey`
+  - Opera prior version 15：`[SHIFT] [ESC] + accesskey`
+  - Firefox：`[ALT] [SHIFT] + accesskey`
+```
+
+```html
+<input accesskey="b" />
+<a href="https://www.baidu.com/" accesskey="c">百度一下，你就知道</a>
+```
+
+
+
 ### data 标签
 
 - `data` 元素表示其内容，以及值属性中这些内容的机器可读形式。Edge、Firefox 和 Safari 都支持 `<data>` 元素。
@@ -716,17 +1501,32 @@ HTML 文档的内容可以是多种不同的语言。为了指定文档的主要
     </ul>
   </body>
 </html>
+```
 
+
+
+### 自定义数据 `data-*`属性
+
+```bash
+- 自定义数据属性以 data 开始，并将根据您的需求进行命名
+- 可以使用 JavaScript 获得这些属性的值
+
+- 在 JavaScript 框架变得流行之前，前端开发者经常使用 `data-*` 属性，把额外数据存储在 DOM 自身中，而当时没有其他 Hack 手段（比如使用非标准属性或 DOM 上额外属性）。它用于存储页面或应用程序专用的自定义数据，对于这些数据，没有更合适的属性或元素。
+- 而现在，不鼓励使用 `data-*` 属性。原因：
+  - 用户可以通过在浏览器中利用检查元素，轻松地修改属性值，借此修改数据
+  - 数据模型最好存储在 JavaScript 本身中，并利用框架提供的数据绑定，使之与 DOM 保持更新
 ```
 
 
 
 ### 内容可编辑 contenteditable
 
-`contenteditable` 表示元素内容是否可被用户编辑。它可以有以下值：
+```bash
+contenteditable 表示元素内容是否可被用户编辑（可以像 input 或 textare 那样编辑），可应用于任何 HTML 元素
     - `true` 或者空字符串，表示元素是可被编辑的；
     - `false` 表示元素不可被编辑。
     - `inherit` 表示元素继承其父元素的可编辑状态
+```
 
 ```html
 <div contenteditable="true">
@@ -745,12 +1545,32 @@ HTML 文档的内容可以是多种不同的语言。为了指定文档的主要
 
 
 
+#### tableIndex
+
+```bash
+- `tabindex` 属性规定当使用 "tab" 键进行导航时元素的顺序。
+- 在 HTML4.01 中，tabindex 属性可用于：`<a>`，`<area>`，`<button>`，`<input>`，`<object>`，`<select>` 和 `<textarea>`。
+- 在 HTML5 中，`tabindex` 属性可用于任何的 HTML 元素（它会验证任何 HTML 元素。但不一定是有用）
+```
+
+```html
+<ul>
+  <li tabindex="2">HTML</li>
+  <li tabindex="1">CSS</li>
+  <li tabindex="3">JAVASCRIPT</li>
+</ul>
+```
+
+
+
 ### 内容的文本方向 dir
 
-`dir` 属性规定元素内容的文本方向。它的取值如下：
+```bash
+dir 属性规定元素内容的文本方向
     - `ltr` —— 默认。从左向右的文本方向。常用于那种从左向右书写的语言（比如英语）；
     - `rtl` —— 从右向左的文本方向。常用于那种从右向左书写的语言（比如阿拉伯语）；
     - `auto` —— 让浏览器根据内容来判断文本方向。它在解析元素中字符时会运用一个基本算法，直到发现一个具有强方向性的字符，然后将这一方向应用于整个元素。仅在文本方向未知时推荐使用。
+```
 
 ```html
 <p dir="rtl">This paragraph is in English but incorrectly goes right to left.</p>
@@ -761,7 +1581,7 @@ HTML 文档的内容可以是多种不同的语言。为了指定文档的主要
 
 
 
-### hidden
+### 元素隐藏 hidden
 
 `hidden` 布尔属性表示该元素尚未或不再相关。
 可以配合 JS 来改变其值为 `true` 或 `false`，使浏览器是否需要渲染此类元素。例如，它可用于隐藏在登录过程完成之前无法使用的页面元素。
@@ -774,7 +1594,7 @@ HTML 文档的内容可以是多种不同的语言。为了指定文档的主要
 
 
 
-### title
+### 提示文本 title
 
 `title` 包含表示与其所属元素相关的建议信息的文本。也就是指定元素的提示文本。
 当鼠标移动到带有 `title` 属性的元素上时，提示文本将作为工具提示（tooltip）显示出来。可以说，`title` 是对该元素的描述和进一步的说明。
@@ -801,7 +1621,7 @@ HTML 文档的内容可以是多种不同的语言。为了指定文档的主要
 
 
 
-### tabindex
+### 元素排序 tabindex
 
 - `tabindex` 属性规定当使用键盘上的 `tab` 键进行导航时元素的顺序。
 - 在 HTML4.01 中，`tabindex` 属性可用于：`<a>`，`<area>`，`<button>`，`<input>`，`<object>`，`<select>` 和 `<textarea>`。
@@ -817,15 +1637,21 @@ HTML 文档的内容可以是多种不同的语言。为了指定文档的主要
 
 
 
-### Download
+### 下载属性 Download
 
-在锚定上使用时，`Download` 属性表示浏览器应下载锚定指向的资源，而不是导航到该资源。
+```bash
+- 锚点标签的默认设置是导航链接，它将转到您在 `href` 属性中指定的链接。
+
+`download` 属性表示浏览器应下载锚定指向的资源，而不是导航到该资源。
+- 在锚点标签上添加 `download` 属性时，它将变成一个下载链接，提示您要下载的文件。下载的文件将具有与原始文件名相同的名称，但也可以通过将值传递给 `download` 属性来设置自定义文件名。
+- `download` 属性仅适用于同源 URL。如果的 `href` 来源与网站的来源不同，那么它将无法正常工作。
+```
 
 ```html
-<a href="/logo.png" download></a>
-<!-- 下载的文件名为 'logo' -->
+<a href="/logo.png" download>使用原始文件名下载本地文件</a>
 
-<a href="/logo.png" download="logo">logo</a>
+<!-- 下载的文件名为 'logo' -->
+<a href="/logo.png" download="logo">使用自定义文件名下载 logo.png</a>
 ```
 
 
@@ -1274,55 +2100,473 @@ HTML `reversed` 属性可以帮助我们创建一个降序的编号列表。此�
 >
 > 但是这种写法写法是错误的，因为**空格是Emmet停止缩写解析的标识符**。
 
+
+
 ## Html5
 
-> ```bash
-> ## HTML5
-> ### HTML5 新特性
->     - 8 个语义元素header section footer aside nav main article figure
->     - 内容元素 mark 高亮 progress 进度
->     - 新的表单控件 calander date time email url search
->     - 新的 input 类型color date datetime datetime-local email
->     - 移除过时标签 big font frame frameset
->     - canvas 绘图，支持内联SVG。支持MathML
->     - 多媒体 audio video source embed track
->     - 本地离线存储，把需要离线存储在本地的文件列在一个manifest 配置文件
->     - web 存储：localStorage、SessionStorage
-> ```
+```bash
+- HTML5 文档类型：`<!DOCTYPE html>`
+- HTML5 字符集编码：`<meta charset="UTF-8" />`
+
+
+### HTML5 新特性
+HTML5 现在已经不是 SGML 的子集，主要是关于图像，位置，存储，多任务等功能的增加。
+    - 8个语义元素（header、section、footer、aside、nav、main、article、figure）
+    - 内容元素 mark 高亮 progress 进度
+    - 新的表单控件（calendar、date、time、email、url、search）
+    - 新的 input 类型（color date datetime datetime-local email）
+    - 移除过时标签 big font frame frameset
+    - 画布：canvas绘图，支持内联SVG。支持MathML
+    - 多媒体 audio video source embed track
+    - 本地离线存储，把需要离线存储在本地的文件列在一个manifest 配置文件
+    - web 存储：localStorage、SessionStorage
+    - 拖拽释放(Drag and drop) API
+    - 地理(Geolocation) API
+
+
+
+### HTML5移除的元素
+- 纯表现的元素：basefont，big，center，font, s，strike，tt，u；
+- 对可用性产生负面影响的元素：frame，frameset，noframes；
+```
+
+
 
 ### html5新标签
 
 #### 语义化标签
 
-> ```bash
-> ## 标签语义化
-> 概念：根据内容的结构化（内容语义化），选择合适的标签（代码语义化），合理正确地使用语义化的标签来创建页面结构。
-> 语义化的标签：h1~h5、p、strong、em、button、header、nav、article、aside、section、footer 等。
+```bash
+Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含了 HTML 标签的语义化和 CSS 命名的语义化。
+	- HTML标签的语义化：通过使用包含语义的标签（如 h1~h6）恰当地表示文档结构。
+	- CSS命名的语义化：为HTML标签添加有意义的 class、id 来补充未表达的语义，如 Microformat 通过添加符合规则的 class 描述信息。
+
+
+
+### 标签语义化
+概念：根据内容的结构化（内容语义化），选择合适的标签（代码语义化），合理正确地使用语义化的标签来创建页面结构。
+语义化的标签：h1~h5、p、strong、em、button、header、nav、article、aside、section、footer 等。
+
+作用：
+    1. HTML标签语义化让页面的内容结构化，在没有 css 样式的情况下， 页面整体也会呈现很好的结构效果。
+    2. 有利于浏览器、搜索引擎解析（SEO）优化： 搜索引擎的爬虫依赖于标签来确定上下文和各个关键字的权重，良好的结构和语义利于 SEO。
+    3. 方便其他设备解析，根据语义渲染页面（如屏幕阅读器、盲人阅读器、移动设备）
+    4. 代码结构清晰，易于阅读，便于团队开发和维护。
+    5. 提升用户体验，比如title、alt。
+
+注意事项：
+    1. 尽可能少使用无语义化的标签，如 div 和 span。
+    2. 在语义不明显时，既可使用 div 或 p 时，尽量使用 p，要使用有语义的标签。
+    3. 不要使用春样式标签，如：b、font、u 等，应该改用 css 设置。
+    4. 需要强调的文本，可以包含在 strong 或 em 标签中；strong 默认样式是加粗（不要用b），em 是斜体（不要用 i）。
+
+
+
+### HTML5 新增的语义化标签
+    - 头部标签：header
+    - 导航标签：nav
+    - 内容标签：article
+    - 文档区域：section
+    - 侧边栏标签：aside
+    - 尾部标签：footer
+
+- `<header>` 用于包含有关页面某个部分的介绍性和导航信息。这可以包括章节标题、作者姓名、出版时间和日期、目录或其他导航信息。
+- `<article>` 是用来存放一个自成体系的作文，在逻辑上可以在页面之外独立地重新创建，而不会失去它的意义。个人博客文章或新闻故事就是很好的例子。
+- `<section>` 是一个灵活的容器，用于保存共享公共信息主题或目的的内容。
+- `<footer>` 用于保存应该出现在内容节末尾的信息，并包含有关该节的附加信息。作者姓名、版权信息和相关链接是此类内容的典型示例。
+- `<main>` 元素表示 `body` 文档的主要内容。主要内容区域由与文档的中心主题或应用程序的中心功能直接相关或扩展的内容组成。
+```
+
+![image-20211213232009261](./image/image-20211213232009261.png)
+
+```html
+<!-- 机器：这种结构看起来可能是导航元素？ -->
+<div class="some-meaningless-class"><ul><li><a href="internal_link">...</div>
+
+<!-- 机器: 这是导航元素！ -->
+<nav class="some-meaningless-class"><ul><li><a>...</nav>
+```
+
+> #### 新语义和结构元素
 >
-> 作用：
->     1. HTML标签语义化让页面的内容结构化，在没有 css 样式的情况下，页面整体也会呈现很好的结构效果。
->     2. 有利于浏览器、搜索引擎解析（SEO）优化：搜索引擎爬虫会根据不同的标签来赋予不同的权重。和搜索引擎建立良好沟通，有了良好的结构和语义，网页内容自然容易被搜索引擎抓取到。
->     3. 方便其他设备解析，根据语义渲染页面（如屏幕阅读器、盲人阅读器、移动设备）
->     4. 代码结构清晰，易于阅读，便于团队开发和维护。
->     5. 提升用户体验，比如title、alt。
+> - `canvas` 标签定义图形，比如图表和其他图像。该标签基于 JavaScript 的绘图 API
 >
-> 注意事项：
->     1. 尽可能少使用无语义化的标签，如 div 和 span。
->     2. 在语义不明显时，既可使用 div 或 p 时，尽量使用 p，要使用有语义的标签。
->     3. 不要使用春样式标签，如：b、font、u 等，应该改用 css 设置。
->     4. 需要强调的文本，可以包含在 strong 或 em 标签中；strong 默认样式是加粗（不要用b），em 是斜体（不要用 i）。
->
->
-> ### HTML5 新增的语义化标签
->     - 头部标签：header
->     - 导航标签：nav
->     - 内容标签：article
->     - 文档区域：section
->     - 侧边栏标签：aside
->     - 尾部标签：footer
+> ```html
+> <canvas width="300" height="300"> 抱歉，您的浏览器不支持canvas元素 </canvas>
 > ```
 >
-> ![image-20211213232009261](./image/image-20211213232009261.png)
+> - `figure` 是当您想要显示带有标题的图像时经常使用的语义标签。经常与 `img` 和 `figcaption` 标签配合使用。
+> - `figcaption` 标签包含标题文本。
+>
+> ```html
+> <style>
+>   figure {
+>     border: thin #c0c0c0 solid;
+>     display: flex;
+>     flex-flow: column;
+>     padding: 5px;
+>     max-width: 220px;
+>     margin: auto;
+>   }
+> 
+>   img {
+>     max-width: 220px;
+>     max-height: 150px;
+>   }
+> 
+>   figcaption {
+>     background-color: #222;
+>     color: #fff;
+>     font: italic smaller sans-serif;
+>     padding: 3px;
+>     text-align: center;
+>   }
+> </style>
+> 
+> <figure>
+>   <img src="avatar.jpg" alt="D.O" />
+>   <figcaption>An elephant at sunset</figcaption>
+> </figure>
+> ```
+>
+> - `summary` 利用了一个 `details` 元素的一个内容的摘要，标题或图例。
+> - `details` 可创建一个挂件，仅在被切换成展开状态时，它才会显示内含的信息。
+>   - 标签用于描述文档或文档某个部分的细节。
+>
+> ```html
+> <style>
+>   details {
+>     border: 1px solid #aaa;
+>     border-radius: 4px;
+>     padding: 0.5em 0.5em 0;
+>   }
+>   summary {
+>     font-weight: bold;
+>     margin: -0.5em -0.5em 0;
+>     padding: 0.5em;
+>   }
+>   details[open] {
+>     padding: 0.5em;
+>   }
+>   details[open] summary {
+>     border-bottom: 1px solid #aaa;
+>     margin-bottom: 0.5em;
+>   }
+> </style>
+> 
+> <details>
+>   <summary>Details</summary>
+>   Something small enough to escape casual notice.
+> </details>
+> ```
+>
+> - `header`、`nav`、`main`、`footer`、`section`、`article`
+>
+> ```html
+> <section>
+>   <header></header>
+>   <main>
+>     <nav></nav>
+>   </main>
+>   <footer></footer>
+> </section>
+> <article></article>
+> ```
+>
+> - `map` 定义一个客户端图像映射。图像映射（image-map）指带有可点击区域的一幅图像
+>   - area 元素永远嵌套在 map 元素内部。area 元素可定义图像映射中的区域。
+>
+> ```html
+> <div>
+>   <img
+>     src="../img/cs.jpg"
+>     width="500"
+>     height="500"
+>     alt="pic"
+>     usemap="#circusmap"
+>   />
+>   <map name="circusmap">
+>     <area shape="rect" coords="90,18,202,186" href="https://www.baidu.com/" />
+>     <area
+>       shape="rect"
+>       coords="222,141,318, 256"
+>       href="https://www.baidu.com/"
+>     />
+>     <area
+>       shape="circle"
+>       coords="343,111,455, 267"
+>       href="https://www.baidu.com/"
+>     />
+>     <area shape="rect" coords="35,328,143,500" href="https://www.baidu.com/" />
+>   </map>
+> </div>
+> ```
+>
+> - `mark` 突出显示 html 中的文本。在这个标签出现之前，常使用使用 `em` 或 `strong` 赋予突出显示的内容一些语义。现在不推荐了。如果需要突出显示，请使用此标签
+>
+> ```html
+> <p><mark>Lio</mark></p>
+> ```
+>
+> 默认背景颜色 `<mark>` 是黄色
+>
+> ```css
+> /* default style */
+> mark {
+>   background: yellow;
+>   color: black;
+> }
+> ```
+>
+> 可以使用 CSS 自定义样式
+>
+> ```css
+> mark {
+>   background: red;
+>   color: white;
+> }
+> ```
+>
+> - `meter` 标签定义已知范围或分数值内的标量测量，也被称为 gauge（尺度）。它不应用于指示进度（在进度条中）。如果标记进度条，请使用 `progress` 标签。
+>
+> ```html
+> <div>
+>   <meter value="4" min="0" max="10">4/10</meter><br />
+>   <meter value="0.6">60%</meter>
+> </div>
+> ```
+>
+> - `progress` 标签标示任务的进度（进程）。
+>
+> ```html
+> <label for="file">Downloading progress:</label>
+> <progress id="file" value="32" max="100">32%</progress>
+> ```
+>
+> - `time` 定义日期或时间。Edge、Firefox 和 Safari 都支持 `<time>` 元素。
+>   - `datetime` 属性可用于提供机器可读的日期、时间、时区偏移量或持续时间形式。HTML 标准列出了这个属性的有效语法。几个例子：
+>
+> ```html
+> <time datetime="2011-11">November, 2011</time>
+> <time datetime="2009-08-29">two days ago</time>
+> <time datetime="2011-11-18T15:00-08:00">3pm</time>
+> ```
+>
+> - `bdi` 允许您设置一段文本，使其脱离其父元素的文本方向设置。
+>
+> ```html
+> <p dir="ltr">Lorem ipsum <bdi>dolor</bdi> sit amet.</p>
+> ```
+>
+> - `dialog` 标签定义一个对话框、确认框或窗口。
+>
+> ```html
+> <dialog open>
+>   <p>Greetings, one and all!</p>
+> </dialog>
+> ```
+>
+> #### 新多媒体元素
+>
+> - `source` 定义视频源 `<video>` 和 `<audio>`
+> - `track` 定义文本轨道
+> - `video` 定义视频元素
+>   - HTML5 支持 mp4、webm 和 ogg 格式的视频。其中 Ogg 格式在 IE 中不受任何方式的支持
+>   - `src` 指定视频的来源。
+>   - 当不给 `video` 设置高度和宽度时，浏览器不知道视频的大小，当视频加载时，页面将发生变化或闪烁
+>
+> ```html
+> <!-- 1. 用 src 属性定义 -->
+> <video src="video.mp4" controls></video>
+> 
+> <!-- 2. 定义 source 标签 -->
+> <video controls>
+>   <source src="video.mp4" type="video/mp4" />
+>   你的浏览器不支持 HTML5 viedo 标签。
+> </video>
+> ```
+>
+> - `embed` 将外部内容嵌入文档中的指定位置。
+>
+> ```html
+> <embed src="https://juejin.cn/user/96412754251390" height="700" width="100%" />
+> 
+> <embed
+>   type="video/webm"
+>   src="/media/cc0-videos/flower.mp4"
+>   height="700"
+>   width="100%"
+> />
+> ```
+>
+> - `audio` 定义音频内容
+>   - HTML5 支持 MP3、Wav 和 Ogg 格式的音频。
+>
+> ```html
+> <audio controls>
+>   <source src="sound.ogg" type="audio/ogg" />
+>   <source src="sound.mp3" type="audio/mpeg" />
+>   您的浏览器不支持 HTML5 audio 标签。
+> </audio>
+> ```
+>
+> #### 新表单元素
+>
+> - `datalist`
+>   - `<datalist>` 标签定义选项列表。与 input 元素配合使用该元素，来定义 input 可能的值。
+>   - datalist 及其选项不会被显示出来，它仅仅是合法的输入值列表。
+>   - 使用 input 元素的 list 属性来绑定 datalist
+>
+> ```html
+> <label for="course">选择学习课程：</label>
+> <input list="target" name="course" id="course" />
+> <datalist id="target">
+>   <option value="HTML"></option>
+>   <option value="CSS"></option>
+>   <option value="JavaScript"></option>
+>   <option value="Node"></option>
+>   <option value="Vue"></option>
+>   <option value="React"></option>
+>   <option value="Webpack"></option>
+> </datalist>
+> ```
+>
+> - `keygen` 该元素有助于生成密钥和通过表单提交。
+>
+>   - `keygen` 必须在表单内使用。
+>   - `keygen` 已经从 Web 标准中删除，请使用 JavaScript 生成密钥
+>   - [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/keygen)
+>
+> - `output` 标签定义不同类型的输出，比如脚本的输出。
+>
+> ```html
+> <form oninput="x.value=parseInt(a.value) * parseInt(b.value)">
+>   0 <input type="range" id="a" value="50" /> 100 *
+>   <input type="number" id="b" value="1" /> =
+>   <output name="x" for="a b"></output>
+> </form>
+> ```
+>
+> #### HTML5 之前的一些元素
+>
+> - `pre` 标签可定义预格式化的文本。被包围在 `<pre>` 标签中的文本通常会保留空格和换行符。而文本也会呈现为等宽字体。
+> - `strong` 用于指示比周围文本更重要的文本，例如警告或错误。从语义上讲，它的重要性。它显示为粗体
+> - `b` 与 `strong` 非常相似，因为它也显示为粗体。然而，与它不同的是，它并没有真正传达出任何重要性，它更像是一种文体而非语义。
+> - `em` 用于强调某个词。它显示为斜体
+>
+> ```html
+> <strong>lorem</strong>
+> <b>lorem</b>
+> <em>lorem</em>
+> ```
+>
+> - `q` 和 `blockquote`
+>   - `q` 引号
+>   - `blockquote` 块引号
+>
+> ```html
+> <q>lorem</q>
+> <blockquote>lorem</blockquote>
+> ```
+>
+> - `bdo` 可以更改 HTML 文本的方向。
+>   - `rtl`：从右到左。`ltr`：从左到右。
+>
+> ```html
+> <p><bdo dir="rtl">This text will go right to left.</bdo></p>
+> ```
+>
+> - 使用 `abbr` 标签缩写您的代码，当你传递一个标题时，它将创建一个工具提示
+>   - `<abbr>` 不同浏览器的默认样式有些不同。在 Chrome 和 Firefox 中，它将带有下划线，并且在悬停时将带有 `title` 传递的值的工具提示。如果在 Safari 上打开此页面，则不会出现下划线。此外，仅当您具有 `title` 属性时才显示下划线。
+>   - 由于跨浏览器的差异，建议为 `<abbr>` 代码加上自定义样式。这样，您将在浏览器之间拥有一致的外观
+>
+> 定义术语时，可以与 `dfn` 混合使用
+>
+> ```html
+> <dfn> <abbr title="Today I learned">TIL</abbr> something awesome! </dfn>
+> ```
+>
+> 指示的非缩写词并将其输出到页面上的括号中
+>
+> ```css
+> abbr[title]::after {
+>   content: ' (' attr(title) ')';
+> }
+> ```
+>
+> 利用 `hover` 状态仅在点击时显示非缩写词
+>
+> ```css
+> abbr[title]:hover::after {
+>   content: ' (' attr(title) ')';
+> }
+> ```
+>
+> 使用 `abbr` 标签来指示在顺序键盘导航中是可聚焦的 `tabindex="0"`，然后在聚焦时触发我们的非缩写内容。
+>
+> ```html
+> <abbr title="Today I learned" tabindex="0">TIL</abbr>
+> ```
+>
+> ```css
+> abbr[title]:focus::after {
+>   content: ' (' attr(title) ')';
+> }
+> ```
+>
+> - `kbd` 和 `code`
+>   - `kbd`：表示用户从键盘、语音输入或任何其他文本输入设备输入的文本。
+>   - `code`：表示计算机代码的简短片段的文本。
+>   - 两者使用同样的 `monospace` 字体。但是在语义上它们是不同的。最好使用 `kbd` 代替 `code`
+>
+> ```html
+> <kbd>Ctrl</kbd> + <kbd>C</kbd> <code>Ctrl</code> + <code>C</code>
+> ```
+>
+> ```css
+> /* Default Style */
+> kbd {
+>   font-family: monospace;
+> }
+> 
+> kbd,
+> code {
+>   border: 1px solid gray;
+>   border-radius: 5px;
+>   padding: 5px;
+> }
+> ```
+>
+> - `s` 和 `del` 删除线
+>   - `s` 当您尝试表示不再相关或不再准确的事物时，使用它。
+>   - `del` 当您要指示某些内容已从文档中删除时，使用它。
+>   - 它们都是删除线。但是，它们传达了关于内容的不同含义。
+>
+> ```html
+> <s>Lorem ipsum dolor sit amet.</s>
+> 
+> <!-- 常使用于商品价格折扣 -->
+> <span><s>$1999</s></span>
+> <span style="color: red;">$99</span>
+> 
+> <del>Lorem ipsum dolor sit amet.</del>
+> 
+> <!-- 常使用于待办事项清单 -->
+> <ul>
+>   <li><del>打卡</del></li>
+>   <li>喝杯咖啡</li>
+> </ul>
+> ```
+>
+> - `ins`
+>
+> ```html
+> <p>
+>   Lorem ipsum
+>   <ins>dolor sit amet consectetur adipisicing elit.</ins> Perferendis, rem.
+> </p>
+> ```
+>
 
 #### 多媒体标签
 
@@ -1348,12 +2592,98 @@ HTML `reversed` 属性可以帮助我们创建一个降序的编号列表。此�
 
 #### 新增input类型
 
-> ![image-20211213233922374](./image/image-20211213233922374.png)
+```bash
+新输入类型（type 13 种）：`date`、`month`、`week`、`time`、`number`、`range`、`email`、`url`、`color`、`datatime-local`、`datetime`、`search`、`tel`
+    - `search`：用于搜索域，比如站点搜索或 Google 搜索，域显示为常规的文本域。
+    - `url` ：用于应该包含 URL 地址的输入域在提交表单时，会自动验证 url 域的值。
+    - `email`：用于应该包含 e-mail 地址的输入域，在提交表单时，会自动验证 email 域的值。
+    - `datetime`：选取时间、日、月、年（UTC 时间）
+    - `date`：选取日、月、年
+    - `month`：选取月、年
+    - `week`：选取周和年
+    - `time`：选取时间（小时和分钟）
+    - `datetime-local`：选取时间、日、月、年（本地时间）
+    - `number`：用于应该包含数值的输入域，您还能够设定对所接受的数字的限定。
+    - `range`：用于应该包含一定范围内数字值的输入域，类型显示为滑动条。
+    - `color`：定义拾色器。
+    - `tel`：定义用于输入电话号码的字段。
+
+其中 `datetime` 不再被推荐使用，转而使用 `datatime-local`
+```
+
+```html
+<!-- url -->
+<input type="url" />
+
+<!-- tel -->
+<input type="tel" name="tel" />
+
+<!-- search -->
+<input type="search" />
+
+<!-- email -->
+<form action="/">
+  <input type="email" />
+  <input type="submit" value="提交" />
+</form>
+
+<!-- date -->
+<input type="date" value="2020-06-01" min="2020-01-01" max="2022-01-01" />
+
+<!-- time -->
+<input type="time" value="12:00" />
+
+<!-- datetime -->
+<input type="datetime" value="2020-09-12T23:00Z" />
+
+<!-- week -->
+<input type="week" />
+
+<!-- month -->
+<input type="month" value="2020-06-01" />
+
+<!-- datetime-local -->
+<input type="datetime-local" value="2020-09-06T23:00" />
+
+<!-- number -->
+<input type="number" name="number" min="2" max="10" value="3" />
+
+<!-- color -->
+<input type="color" onchange="showColor(event)" />
+
+<!-- range -->
+<input type="range" name="range" min="0" max="100" step="1" value="" />
+```
+
+
 
 #### 新增表单属性
 
-> ![image-20211213234815669](./image/image-20211213234815669.png)
->
+```bash
+- `required` 必须输入内容。
+- `autofocus` 属性能够让 `button`，`input` 或 `textarea` 元素在页面加载完成时自动成为页面焦点
+- `pattern` 用正则表达式验证
+
+```
+
+```html
+<!-- required -->
+<input type="text" id="username1" name="username" required />
+
+<!-- autofocus -->
+<input type="text" id="username2" name="username" />
+
+<!-- pattern -->
+<input
+  type="password"
+  name="password"
+  placeholder="请输入密码"
+  pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$"
+  required
+/>
+```
+
+![image-20211213234815669](./image/image-20211213234815669.png)
 
 
 
@@ -1425,39 +2755,83 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 
 
 
-### SVG
-
-> ```bash
-> ## SVG
-> 可以使用内联 CSS、嵌入式 CSS 部分或外部 CSS 文件对形状进行着色（包括指定对象上的属性）。在网上大部分 SVG 使用的是内联 CSS，不过每个类型都有优点和缺点。
->
-> 通过设置fill和stroke属性，可以完成基本着色操作。fill可以设置内部的颜色，stroke可以设置周围绘制的线条的颜色。你可以使用与HTML中使用的 CSS 颜色命名方案相同的 CSS 颜色命名方案：颜色名称（即red）、RGB 值（即rgb(255,0,0)）、十六进制值、RGBA 值等等。
-> ```
->
-> ```html
-> <rect
->   x="10"
->   y="10"
->   width="100"
->   height="100"
->   stroke="blue"
->   fill="purple"
->   fill-opacity="0.5"
->   stroke-opacity="0.8" />
-> ```
-
 ### 媒体查询 @media
 
-> ```bash
-> ## 媒体查询 @media
-> - `all` 适用于所有设备。
-> - `print` 为了加载合适的文档到当前使用的可视窗口. 需要提前咨询 paged media（媒体屏幕尺寸）, 以满足个别设备网页尺寸不匹配等问题。
-> - `screen` 主要适用于彩色的电脑屏幕
-> - `speech` 解析 speech 这个合成器. 注意: CSS2 已经有一个相似的媒体类型叫 aural.
-> ```
->
+```bash
+## 媒体查询 @media
+- `all` 适用于所有设备。
+- `print` 为了加载合适的文档到当前使用的可视窗口. 需要提前咨询 paged media（媒体屏幕尺寸）, 以满足个别设备网页尺寸不匹配等问题。
+- `screen` 主要适用于彩色的电脑屏幕
+- `speech` 解析 speech 这个合成器. 注意: CSS2 已经有一个相似的媒体类型叫 aural.
+```
+
+
+
+### SVG
+
+```bash
+SVG 意为可缩放矢量图形（Scalable Vector Graphics）是一种基于 XML 的图像格式，用于为 web 定义基于向量的二维图形。与光栅图像（例如 .jpg、.gif、.png 等）不同，矢量图像可以在不损失图像质量的情况下进行任何程度的放大或缩小。
+
+可以使用内联 CSS、嵌入式 CSS 部分或外部 CSS 文件对形状进行着色（包括指定对象上的属性）。在网上大部分 SVG 使用的是内联 CSS，不过每个类型都有优点和缺点。
+
+通过设置fill和stroke属性，可以完成基本着色操作。fill可以设置内部的颜色，stroke可以设置周围绘制的线条的颜色。
+可以使用与HTML中使用的 CSS 颜色命名方案相同的 CSS 颜色命名方案：颜色名称（即red）、RGB 值（即rgb(255,0,0)）、十六进制值、RGBA 值等等。
+```
+
+```html
+<rect
+  x="10"
+  y="10"
+  width="100"
+  height="100"
+  stroke="blue"
+  fill="purple"
+  fill-opacity="0.5"
+  stroke-opacity="0.8"
+/>
+```
+
+```svg
+<!-- SVG 是矢量和声明性的 -->
+<svg viewBox="0 0 200 200">
+  <circle cx="10" cy="10" r="10" />
+</svg>
+```
+
+#### Canvas 和 SVG 的区别
+
+| Canvas                                             | SVG                                                      |
+| -------------------------------------------------- | -------------------------------------------------------- |
+| 基于栅格（由像素组成）                             | 基于矢量（由形状组成），非常适合 UI/UX 动画              |
+| 依赖分辨率                                         | 不依赖分辨率                                             |
+| 不支持事件处理器                                   | 支持事件处理器                                           |
+| 文本渲染能力差                                     | 良好的文字渲染功能                                       |
+| 使用更多的对象或更小的曲面或两者都提供更好的性能   | 复杂度高会减慢渲染速度（任何过度使用 DOM 的应用都不快）  |
+| 最适合图像密集型的游戏，其中的许多对象会被频繁重绘 | 不适合游戏应用                                           |
+| 仅通过脚本修改                                     | 通过脚本和 CSS 修改                                      |
+| 能够以 .png 或 .jpg 格式保存结果图像               | 多个图形元素，成为页面 DOM 树的一部分                    |
+| 可伸缩性差。不适合以较高分辨率打印。可能发生像素化 | 更好的可扩展性。可以任何分辨率高质量打印。不会发生像素化 |
+
+
 
 ### 画布 canvas
+
+```bash
+Canvas 是一个 HTML5 元素，用于在网页上绘制图形。它是一个带有 "立即模式" 图形应用程序编程接口（API）的位图，用于在其上绘图。
+
+`<canvas>` 元素只是图形的容器，提供了一个空白绘图区域，可通过JS画布或WebGL API绘制图形及图形动画
+    - 通过 JavaScript 来绘制 2D 图形
+    - 是逐像素进行渲染的
+    - 其位置发生改变，会重新进行绘制
+
+
+#### 您如何为您的网站选择 svg 或 canvas？
+- 如果需要矢量艺术，则选择 SVG。与 JPG 之类的栅格图形相比，矢量艺术在视觉上是清晰的，并且文件大小通常较小。
+- 像一个小的平面颜色图标，这显然是 SVG 的领域。
+- 像互动游戏，那显然是 Canvas。
+```
+
+
 
 > rect(上,右,下,左) 裁剪
 >
@@ -1492,7 +2866,7 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 > context.fillRect(0,0,800,600);
 > ```
 
-#### canvas
+#### Data URL
 
 > ```bash
 > ## Data URL 的语法：
@@ -1517,44 +2891,32 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 
 #### 使用canvas
 
-> `canvas` 是 HTML5 新增的标签，它就像一块幕布，可以用 JavaScript 在上面绘制各种图表、动画、游戏画面、数据可视化、图片编辑以及实时视频处理等方面。
+> `canvas` 就像一块幕布，可以用 JavaScript 在上面绘制各种图表、动画、游戏画面、数据可视化、图片编辑以及实时视频处理等方面。
 >
 > ```html
 > <canvas>您的浏览器不支持 Canvas</canvas>
 > ```
 >
-> `canvas` 默认是看不见的，为了帮助我们可视化 `canvas` 元素，我们为它添加一个边框：
+> ### 调整 `canvas` 元素
 >
-> ```css
-> canvas {
-> border: #333 10px solid;
-> }
-> ```
->
-> 效果如下：
->
-> ![为 canvas 添加边框](./image/18281896-3dc8cffdcdbd92fa.png)
->
-> ### 调整我们的 `canvas` 元素
->
-> 默认情况下，`canvas` 元素是宽 300 像素和高 150 像素，如果您需要更改 `canvas` 的大小，可以使用 `width` 和 `height` 属性，推荐使用`style="width: 550px;height:150px"`的方式
->
+> 默认情况下，`canvas` 元素是宽 300 像素和高 150 像素，可以使用 `width` 和 `height` 属性来更改 `canvas` 的大小，推荐使用`style="width: 550px;height:150px"`的方式
+> 
 > ```html
 > <canvas width="550" height="350"></canvas>
 > ```
 >
 > ### 绘制线条
 >
-> 首先，我们为 `canvas` 添加一个 `id`，方便我们使用 JS 去操作它：
+> 首先为 `canvas` 添加一个 `id`，方便使用 JS 去操作它：
 >
 > ```html
-> <canvas id="myCanvas" width="550" height="350"></canvas>
+><canvas id="myCanvas" width="550" height="350"></canvas>
 > ```
 >
 > 访问 `canvas` 元素：
->
+> 
 > ```js
-> const canvas = document.querySelector('#myCanvas')
+>const canvas = document.querySelector('#myCanvas')
 > ```
 >
 > 获取渲染上下文：
@@ -1570,24 +2932,24 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 > context.lineTo(450, 300)
 >
 > // 绘制完后，关闭路径
-> context.closePath()
+>context.closePath()
 > ```
->
-> 指定了绘制的线的厚度和颜色：
+> 
+> 指定绘制的线的厚度和颜色：
 >
 > ```js
-> context.lineWidth = 20
+>context.lineWidth = 20
 > context.strokeStyle = 'plum'
 > ```
->
-> 最后，将线绘制在 `canvas` 上：
->
+> 
+>最后，将线绘制在 `canvas` 上：
+> 
 > ```js
 > context.stroke()
-> ```
->
-> 最终效果如下：
->
+>```
+> 
+>最终效果如下：
+> 
 > ![使用 Canvas API 画一条直线](./image/18281896-e56812325cfd2c46.png)
 
 #### 将文本写入 HTML
@@ -1677,6 +3039,527 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 > // ...
 > const imageHTML = `<img src="${canvas.toDataURL()}" />`
 > ```
+
+
+
+### 地理定位 Geolocation
+
+```bash
+地理定位API(Geolocation API) 可以获取用户的地理位置。
+
+它是基于权限的，要求用户批准在一个网站和一个请求的基础上共享该数据。它还需要 SSL 证书，尽管在本地运行时可以不使用 SSL 证书。
+
+- `Geolocation.getCurrentPosition()` — 返回一个 Position 对象，表示用户的当前位置。
+
+
+- `Geolocation.watchPosition()` — 指定一个监听函数，每当用户的位置发生变化，就执行该监听函数。
+
+
+- `navigator.getCurrentPosition(successCallback, errorCallback, options)` 获取当前地理信息
+- `navigator.watchPosition(successCallback, errorCallback, options) ` 指定一个监听函数，每当用户的位置发生变化，就执行该监听函数。
+- `Geolocation.clearWatch()` — 取消 watchPosition 方法指定的监听函数。
+
+说明：
+- 当成功获取地理信息后，会调用succssCallback，并返回一个包含位置信息的对象`position`
+    - `coords`即坐标
+    - `position.coords.latitude`纬度
+    - `position.coords.longitude`经度
+
+- 当获取地理信息失败后，会调用errorCallback，并返回错误信息error。
+
+- 可选参数 options 对象可以调整位置信息数据收集方式
+    - `enableHighAccuracy` — 是否返回高精度结果。
+    		如果设为 `true`，可能导致响应时间变慢或（移动设备的）功耗增加；
+    		如果设为 `false`，设备可以更快速地响应。
+    		默认值为 `false`。
+    - `timeout` — 正整数，表示等待查询的最长时间，单位为毫秒。默认值为 `Infinity`。
+    - `maximumAge` — 正整数，表示可接受的缓存最长时间，单位为毫秒。
+    		如果设为 `0`，表示不返回缓存值，必须查询当前的实际位置；
+    		如果设为 `Infinity`，必须返回缓存值，不管缓存了多少时间。
+    		默认值为 `0`。
+
+
+
+### Coordinates 对象
+`Position.coords` 属性来使用 `Coordinates` 对象，该坐标接口用于表示设备在地球上的位置和海拔，以及计算这些属性的精确度。
+    - `Coordinates.latitude` — 表示纬度。
+    - `Coordinates.longitude` — 表示经度。
+    - `Coordinates.altitude` — 表示相对于海平面的位置海拔（单位：米）。如果实现无法提供数据，则此值可以为 `null`。
+    - `Coordinates.accuracy` — 表示经度和纬度属性的精度（单位：米）。
+    - `Coordinates.altitudeAccuracy` —表示海拔的精度（单位：米）。此值可以为 `null`。
+    - `Coordinates.speed` — 表示设备的速度（单位：米/秒）。此值可以为 `null`。
+    - `Coordinates.heading` — 表示设备运行的方向（单位：度）。表示设备离正北方向有多远。0 度表示正北，方向是顺时针方向确定的（这意味着东是 90 度，西是 270 度）。如果 `Coordinates.speed` 为 0，`heading` 属性返回 `NaN`。如果设备无法提供标题信息，则此值为 `null`。
+```
+
+```js
+/* 兼容处理;如果支持，获取用户地理信息
+navigator:导航  geolocation:地理定位 */
+if (window.navigator.geolocation) {
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+  }
+
+  const success = (pos) => {
+    const crd = pos.coords
+    console.log(`经度：${crd.latitude} 度`)
+    console.log(`纬度：${crd.longitude} 度`)
+    console.log(`海拔：${crd.altitude} 米`)
+    console.log(`经度和纬度属性的精度：${crd.accuracy} 米`)
+    console.log(`海拔的精确度：${crd.altitudeAccuracy} 米`)
+    console.log(`设备的速度：${crd.speed} 米/秒`)
+    console.log(`设备运行的方向：${crd.heading} 度`)
+  }
+
+  const error = (err) => {
+    console.warn(`ERROR(${err.code}): ${err.message}`)
+  }
+  navigator.geolocation.getCurrentPosition(success, error, options)
+} else {
+  console.log('sorry,你的浏览器不支持地理定位');
+}
+```
+
+
+
+### 视频 Viode
+
+```bash
+## <video>标签的属性
+src ：视频的属性
+poster：视频封面，没有播放时显示的图片
+preload：预加载
+autoplay：自动播放
+loop：循环播放
+controls：浏览器自带的控制条
+width：视频宽度
+height：视频高度
+
+
+<video id="media" src="http://www.sundxs.com/test.mp4" controls width="400px" heigt="400px"></video>
+
+### audio和video都可以通过JS获取对象,JS通过id获取video和 audio的对象
+获取video对象
+Media = document.getElementById("media");
+Media方法和属性：
+HTMLVideoElement和HTMLAudioElement 均继承自HTMLMediaElement
+Media.error; //null:正常
+Media.error.code; //1.用户终止 2.网络错误 3.解码错误 4.URL无效
+
+### 网络状态
+- Media.currentSrc; //返回当前资源的URL
+- Media.src = value; //返回或设置当前资源的URL
+- Media.canPlayType(type); //是否能播放某种格式的资源
+- Media.networkState; //0.此元素未初始化 1.正常但没有使用网络 2.正在下载数据 3.没有找到资源
+- Media.load(); //重新加载src指定的资源
+- Media.buffered; //返回已缓冲区域，TimeRanges
+- Media.preload; //none:不预载 metadata:预载资源信息 auto:
+
+### 准备状态
+- Media.readyState;//1:HAVE_NOTHING 2:HAVE_METADATA 3.HAVE_CURRENT_DATA 4.HAVE_FUTURE_DATA 5.HAVE_ENOUGH_DATA
+- Media.seeking; //是否正在seeking
+
+### 回放状态
+Media.currentTime = value; //当前播放的位置，赋值可改变位置
+Media.startTime; //一般为0，如果为流媒体或者不从0开始的资源，则不为0
+Media.duration; //当前资源长度 流返回无限
+Media.paused; //是否暂停
+Media.defaultPlaybackRate = value;//默认的回放速度，可以设置
+Media.playbackRate = value;//当前播放速度，设置后马上改变
+Media.played; //返回已经播放的区域，TimeRanges，关于此对象见下文
+Media.seekable; //返回可以seek的区域 TimeRanges
+Media.ended; //是否结束
+Media.autoPlay; //是否自动播放
+Media.loop; //是否循环播放
+Media.play(); //播放
+Media.pause(); //暂停
+
+
+### 视频控制
+Media.controls;//是否有默认控制条
+Media.volume = value; //音量
+Media.muted = value; //静音
+TimeRanges(区域)对象
+TimeRanges.length; //区域段数
+TimeRanges.start(index) //第index段区域的开始位置
+TimeRanges.end(index) //第index段区域的结束位置
+
+
+### 相关事件
+  var eventTester = function(e){
+     Media.addEventListener(e,function(){
+         console.log((new Date()).getTime(),e)
+     },false);
+ }
+eventTester("loadstart"); //客户端开始请求数据
+eventTester("progress"); //客户端正在请求数据
+eventTester("suspend"); //延迟下载
+eventTester("abort"); //客户端主动终止下载（不是因为错误引起）
+eventTester("loadstart"); //客户端开始请求数据
+eventTester("progress"); //客户端正在请求数据
+eventTester("suspend"); //延迟下载
+eventTester("abort"); //客户端主动终止下载（不是因为错误引起），
+eventTester("error"); //请求数据时遇到错误
+eventTester("stalled"); //网速失速
+eventTester("play"); //play()和autoplay开始播放时触发
+eventTester("pause"); //pause()触发
+eventTester("loadedmetadata"); //成功获取资源长度
+eventTester("loadeddata"); //
+eventTester("waiting"); //等待数据，并非错误
+eventTester("playing"); //开始回放
+eventTester("canplay"); //可以播放，但中途可能因为加载而暂停
+eventTester("canplaythrough"); //可以播放，歌曲全部加载完毕
+eventTester("seeking"); //寻找中
+eventTester("seeked"); //寻找完毕
+eventTester("timeupdate"); //播放时间改变
+eventTester("ended"); //播放结束
+eventTester("ratechange"); //播放速率改变
+eventTester("durationchange"); //资源长度改变
+eventTester("volumechange"); //音量改变
+```
+
+
+
+### 全屏 fullScreen
+
+- HTML5规范允许用户自定义网页上任意元素全屏显示
+- 开启全屏显示：`requestFullscreen()`
+- 关闭全屏显示：`cancleFullscreen()`
+- 检测当前是否处于全屏状态：`document.fullScreen`
+
+```js
+// 1. 开启全屏显示
+requestFullscreen()
+webkitRequestFullScreen
+webkitCancleFullScreen
+
+// 2. 关闭全屏下显示
+cancleFullscreen()
+mozRequestFullScreen
+mozCancleFullScreen
+
+// 3. 检测当前是否处于全屏状态
+document.fullScreen
+document.webkitIsFullScreen
+document.mozFullScreen
+
+// 4. 全屏的伪类
+:full-screen {}
+:-webkit-full-screen {}
+:moz-full-screen {}
+```
+
+```html
+<style>
+  .box {
+    width: 250px;
+    height: 250px;
+    background-color: green;
+    margin: 100px auto;
+    border-radius: 50%;
+  }
+
+  /*全屏伪类：当元素处于全屏时，改变元素的背景色*/
+  .box:-webkit-full-screen,
+  .box:-moz-full-screen,
+  .box:-ms-fullscreen {
+    background-color: red;
+  }
+</style>
+
+<script>
+  // 开启全屏显示的兼容写法
+  function launchFullScreen(elem) {
+    if (elem.requestFullScreen) {
+      // 如果支持全屏，那就让元素全屏
+      elem.requestFullScreen()
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen()
+    } else if (elem.webkitRequestFullScreen) {
+      elem.webkitRequestFullScreen()
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen()
+    } else {
+      elem.oRequestFullScreen()
+    }
+  }
+
+  document.querySelector('.box').onclick = () => {
+    launchFullScreen(document.querySelector('.box'))
+  }
+</script>
+```
+
+
+
+### Web 存储 Storage
+
+```bash
+## Web 存储特性
+- 设置、读取方便。
+- 容量较大，sessionStorage 约5M、localStorage 约20M（`document.cookie`只有4k）
+- 只能存储字符串，可以将对象 JSON.stringify() 编码后存储。
+
+
+
+### 持久化的本地存储 localStorage
+- 本地存储 `window.localStorage`：保存在浏览器内存或硬盘中，永久生效，除非手动删除(通过JS删除，或者清除浏览器缓存)
+- html5 修订 localStorage 取代 globalStorage
+- 在同源的所有标签页和窗口之间共享数据
+- 数据仅保存在客户端，不与服务器进行通信，对数据的操作是同步的
+- 大小限制为 5M，但实际 JS 中的字符串为 UTF-16，因此每个字符需要两个字节的内存，这意味着尽管许多浏览器的限制为 5MB，但只能存储 2.5MB 个字节。
+- 浏览器的支持情况：IE7及以下版本不支持 Web Storage，但在 IE5-7 中有 userData 也是用于本地存储。
+
+
+
+### 会话存储 sessionStorage
+- 会话存储`window.sessionStorage`：保存在内存中
+- 在同一个窗口下(同一个窗口)可共享数据，当窗口关闭时销毁数据
+- 跟 localStorage 一样大小限制最多为 5MB。
+- 对数据的操作是同步的。
+
+
+
+### 存储方式
+1. 设置存储内容(若存在该则替换内容)：`setItem(key, value);`
+2. 读取存储内容：`getItem(key);`
+3. 根据键，删除存储内容：`removeItem(key);`
+4. 清空所有存储内容：`clear();`
+5. 根据索引值来获取存储内容：`key(n);`
+```
+
+#### 使用class设置本地存储过期时间
+
+```js
+class Storage {
+  constructor(time) {
+    this.time = time;
+  }
+  // this.time/1000 秒后清除localhost成功
+  setItems(key, val) {
+    localStorage.setItem(key,val);
+    setTimeout(() => {
+      localStorage.removeItem(key)
+    }, this.time);
+  }
+}
+const a = new Storage(5000).setItems('a', 'b');
+```
+
+
+
+#### IndexedDB
+
+```bash
+### WebSQL
+- WebSQL 是使用 SQL 的客户端（浏览器）的数据库 API。
+- WebSQL 数据库 API 并不是 HTML5 规范的一部分，它是一个独立的规范，引入一组使用 SQL 操作客户端数据库的 APIs。
+- 并非所有浏览器都支持 WebSQL。
+- 现在不推荐使用 WebSQL，而是使用 IndexedDB 代替它。
+
+
+
+### IndexedDB
+- IndexedDB 是一种底层异步 API，浏览器内置的数据库，用于在客户端存储大量的结构化数据（也包括文件、二进制大型文件(blobs)）
+- IndexedDB 将数据存储为键值对的形式。
+- 大多数浏览器都支持 IndexedDB。
+- 使用 IndexedDB 代替 WebSQL 的原因：IndexedDB 像一个 NoSQL 数据库，而 WebSQL 像关系型数据库，使用 SQL 查询数据。W3C WebSQL 已经不再支持这种技术。
+```
+
+
+
+#### Web Workers
+
+```bash
+- Web Workers 帮助我们在后台运行 JavaScript 代码，而不会阻止应用程序。
+- Web Workers 在一个隔离的（新的）线程中运行，用于执行 JavaScript 代码，并且通过 postMessage 将结果回传到主线程。这样就不会阻塞主线程的运行。
+- Web Workers 通常用于大型任务。
+- Web Workers 需要一个单独的文件来存储我们的 JavaScript 代码。
+- Web Workers 文件是异步下载的。
+```
+
+客户端 js：
+
+```js
+var myWebWorker = new Worker('task.js') // 创建 worker
+
+// 监听 task.js worker 消息
+worker.addEventListener(
+  'message',
+  function (event) {
+    console.log('Worker said: ', event.data)
+  },
+  false
+)
+
+// 启动工作程序
+worker.postMessage('From web worker file')
+```
+
+task.js（工作文件）文件：
+
+```js
+// 监听客户端 JS 文件发布消息
+self.addEventListener(
+  'message',
+  function (event) {
+    // 处理后的数据发送到客户端监听 JS 文件
+    self.postMessage(event.data)
+  },
+  false
+)
+```
+
+
+
+#### WebSocket
+
+```bash
+- WebSocket 是 HTML5 开始提供的一种在单个 TCP 连接上进行全双工通讯的协议。
+- WebSocket 是一种在客户端与服务器之间保持TCP长连接的网络协议，可以随时进行信息交换。
+- WebSocket 使用 ws 或 wss 的统一资源标志符，类似于 HTTPS，其中 wss 表示在 TLS 之上的 Websocket。
+- 默认情况下，Websocket 协议使用 80 端口；运行在 TLS 之上时，默认使用 443 端口。
+
+
+#### websocket 与 socket 的区别
+Socket 是传输控制层协议，WebSocket 是应用层协议。
+
+
+
+#### WebSocket 如何兼容低浏览器？
+- Adobe Flash Socket
+- ActiveX HTMLFile（IE）
+- 基于 multipart 编码发送 XHR
+- 基于长轮询的 XHR
+```
+
+
+
+### 应用程序缓存（Application Cache）
+
+````bash
+通过离线存储，我们可以通过把需要离线存储在本地的文件列在一个 manifest 缓存清单配置文件中，这样即使在离线(非联网)状态下，用户也能正常使用 App。
+
+- 构建一个离线（无网络状态）应用，需要创建 `cache manifest` 缓存清单文件
+  缓存清单文件中列出了浏览器应缓存，以供离线访问的资源。
+  推荐使用 `.appcache`作为后缀名，另外还要添加 MIME 类型。
+
+- 应用缓存的优势
+  - 可配置需要缓存的资源；
+  - 网络无连接应用仍可用；
+  - 本地读取缓存资源，提升访问速度，增强用户体验；
+  - 减少请求，缓解服务器负担。
+
+
+
+#### 应用缓存清单配置文件(.manifest)组成部分：
+1. 顶行写CACHE MANIFEST。
+2. CACHE: 指定需要缓存的静态资源，如.css、image、js等。
+		- 由于包含 manifest 文件的页面将自动离线存储，所以不需要把页面自身也列出来。
+3. NETWORK: 指定需要在线访问的资源，可使用通配符（不需缓存、必须在网络下才能访问的资源）。
+		- 列出的资源不会被离线存储。如果在 CACHE 和 NETWORK 中有一个相同的资源，这个资源还是会被离线存储，即 CACHE 优先级更高。
+4. FALLBACK: 当被缓存的文件找不到时的备用资源（当访问不到某个资源时，自动由另外一个资源替换）。
+
+
+#### 离线事件的触发
+1. oncached: 当离线资源存储完成之后触发
+2. onchecking: 当浏览器对离线存储资源进行更新检查时触发
+3. ondownloading: 当浏览器开始下载离线资源时触发
+4. onprogress: 当浏览器在下载每一个资源时触发，每下载一个资源就会触发一次。
+5. onupdateready: 当浏览器对离线资源更新完成之后触发
+6. onnoupdate: 当浏览器检查更新之后发现没有资源更新时触发
+````
+
+```html
+<!DOCTYPE HTML>
+<html manifest="cache.manifest">
+...
+</html>
+```
+
+```cache.manifest
+CACHE MANIFEST
+
+#要缓存的文件
+CACHE:
+    images/img1.jpg
+    images/img2.jpg
+
+#指定必须联网才能访问的文件
+NETWORK:
+     images/img3.jpg
+     images/img4.jpg
+
+#当前页面无法访问是回退的页面
+FALLBACK:
+    404.html
+```
+
+
+
+### 网络状态 online/offline
+
+```bash
+- `window.online` ：检测用户当前的网络状况，返回一个布尔值
+- `window.online`：用户网络连接时被调用
+- `window.offline`：用户网络断开时被调用（拔掉网线或者禁用以太网）
+```
+
+```js
+window.addEventListener('online', function () {
+  alert('网络连接建立！');
+});
+window.addEventListener('offline', function () {
+  alert('网络连接断开！');
+})
+```
+
+
+
+### 页面可见性 API
+
+```bash
+- 使用选项卡式浏览，任何给定网页都有可能在后台，因此对用户不可见。页面可见性(Page Visibility) API 提供可以观察的事件，以便了解文档何时可见或隐藏，以及查看页面当前可见性状态的功能。
+页面可见性 API 对于节省资源和提高性能特别有用，它使页面在文档不可见时避免执行不必要的任务。- 
+
+- document.hidden 返回一个布尔值。
+    - true 表示页面可见，false 则表示页面隐藏。
+    - 不同页面之间来回切换，将触发 visibilitychange 事件。
+
+- document.visibilityState：表示页面所处的状态，当前页面的可见性，有四个取值
+    - visible：页面彻底不可见。
+    - hidden：页面至少一部分可见。
+    - prerender：页面即将或正在渲染，处于不可见状态。
+    - unloaded：已被废弃，不在使用。
+- 只要 document.visibilityState 属性发生变化，就会触发 visibilitychange 事件
+
+
+应用场景：
+  - 动画，视频，音频都可以在页面显示时打开，在页面隐藏时关闭
+  - 完成登陆后，无刷新自动同步其他页面的登录状态
+```
+
+```js
+// 打开新的页面，来回切换标签页，观察页面标题的变化
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'hidden') {
+    document.title = '页面显示'
+  } else {
+    document.title = '页面隐藏'
+  }
+})
+
+
+// 视频暂停或播放
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'hidden') {
+    video.pause()
+  } else if (document.visibilityState === 'visible') {
+    video.play()
+  }
+})
+```
 
 
 
@@ -1786,50 +3669,48 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 >         height: 1px;
 >         background: linear-gradient(0deg, #fff, #000);
 >       }
->
-> ```
->
-> ```css
+>```
+> 
+>```css
 > li{
 >   position: relative;
->   border:none;
-> }
+>     border:none;
+>   }
 > li::after {
 >   content: '';
->   position: absolute;
->   left: 0;
->   bottom: 0;
->   background: #cccccc;
->   width: 100%;
->   height: 1px;
->   -webkit-transform: scaleY(0.5);
->   transform: scaleY(0.5);
->   -webkit-transform-origin: 0 0;
->   transform-origin: 0 0;
-> }
+>     position: absolute;
+>     left: 0;
+>     bottom: 0;
+>     background: #cccccc;
+>     width: 100%;
+>     height: 1px;
+>     -webkit-transform: scaleY(0.5);
+>     transform: scaleY(0.5);
+>     -webkit-transform-origin: 0 0;
+>     transform-origin: 0 0;
+>   }
 > ```
->
-> #### 不可行的假设方案
->
-> ```bash
+> 
+>#### 不可行的假设方案
+> 
+>```bash
 > ## 实现移动端 0.5 px 的不可行方案
 > ### 1. 直接设置 0.5 px（主要是安卓浏览器不兼容）
 > 理论上 px 的最小单位是 1，但高清屏的显示是一个特例。高清屏可以绘画 0.5 px。但在不同浏览器中会出现差异现象。
 > 其中Chrome把0.5px四舍五入变成了1px，而firefox/safari能够画出半个像素的边，并且Chrome会把小于0.5px的当成0，而Firefox会把不小于0.55px当成1px，Safari是把不小于0.75px当成1px，进一步在手机上观察IOS的Chrome会画出0.5px的边，而安卓(5.0)原生浏览器是不行的。所以直接设置0.5px不同浏览器的差异比较大，并且我们看到不同系统的不同浏览器对小数点的px有不同的处理。所以如果我们把单位设置成小数的px包括宽高等，其实不太可靠，因为不同浏览器表现不一样。
+> 
 >
->
-> ### 2. svg（火狐不支持多色号）
+>### 2. svg（火狐不支持多色号）
 > 利用SVG的描边等属性的1px还是物理像素的1px，而不是高清屏的1px。
 > 使用svg的line元素画线，stroke表示描边颜色，默认描边宽度stroke-width="1"，由于svg的描边等属性的1px是物理像素的1px，相当于高清屏的0.5px，另外还可以使用svg的rect等元素进行绘制。
 > 但因为firefox的background-image如果是svg的话只支持命名的颜色，如"black"、"red"等，如果把上面代码的svg里面的#000改成black的话就可以显示出来，但是这样就很不灵活了。
->     .div {
+>  .div {
 >       background: none;
 >       height: 1px;
 >       background: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='1px'><line x1='0' y1='0' x2='100%' y2='0' stroke='#000'></line></svg>");
 >     }
-> ```
->
->
+>    ```
+> 
 
 ### css样式优惠券
 
@@ -1860,293 +3741,4 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 > ```
 >
 > ![image-20210811173917357](./image/image-20210811173917357.png)
-
-## meta标签详解
-
-### HTML5前
-
-- `<meta>`标签是HTML语言头部的一个辅助性标签
-- 作用：可以定义页面编码语言、搜索引擎优化、自动刷新并指向新的页面、控制页面缓冲、响应式视窗等
-
-
-```bash
-### HTML5 前的 meta
-
-
-属性								值									描述
-charset( H5 New)	character_set				定义文档的字符编码。
-content						text								定义与 http-equiv 或 name 属性相关的元信息。
-http-equiv				content-type				属性关联到 HTTP 头部。
-									default-style
-									refresh	把 content
-name							application-name		把content 属性关联到一个名称。
-									author
-									description
-									generator
-									keywords
-scheme(H5 删除)		format/URI					HTML5不支持。 定义用于翻译 content 属性值的格式。
-
-整体来看，HTML5之前，meta标签只有两个主要属性，分别是 name 属性和 http-equiv 属性。 HTML5新添加"charset".
-```
-
-#### name
-
-name属性主要用于描述网页，对应属性是 content ，以便于搜索引擎机器人查找、分类（目前几乎所有的搜索引擎都使用网上机器人自动查找meta值来给网页分类）。
-
-```html
-<meta name="参数" content="参数值" />
-```
-
-1.Keywords（为搜索引擎提供的关键字列表）
-
-```html
-<meta name="keywords" content="程序员,程序猿,攻城狮"/>
-```
-
-2.Description（告诉搜索引擎你的网站主要内容）
-
-```html
-<meta name="description" content="meta标签是HTML中的一个重要标签，位于HTML文档头部的<HEAD>标签和<title>标签间"/>
-```
-
-3.robots（机器人向导）
-
-```bash
-说明：robots用来告诉搜索机器人哪些页面需要索引，哪些页面不需要索引。
-语法：<meta name="robots" content=""/>
-
-content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 all。
-    all：文件将被检索，且页面上的链接可以被查询；
-    none：文件将不被检索，且页面上的链接不可以被查询；
-    index：文件将被检索；
-    follow：页面上的链接可以被查询；
-    noindex：文件将不被检索，但页面上的链接可以被查询；
-    nofollow：文件将被检索，但页面上的链接不可以被查询；
-```
-
-4.author（标注网页的作者）
-
-```html
-<meta name="author" content="willy,willysliang@qq.com"/>
-```
-
-5.copyright（标注版权）
-
-```html
-<meta name="copyright" content="本网站版权归 willysliang@qq.com 所有"/>
-```
-
-6.generator（说明网站采用什么编辑器制作）
-
-```html
-<meta name="generator" content="你所用的编辑器"/>
-```
-
-7.revisit-after（网站重访）
-
-```html
-<meta name="revisit-after" content="7days"/>
-```
-
-#### http-equiv
-
-​	http-equiv类似于HTTP的头部协议，它回应给浏览器一些有用的信息，以帮助正确和精确地显示网页内容。
-​	与之对应的属性值为content，content中的内容其实就是各个参数的变量值。
-
-```html
-语法：<meta http-equiv="参数"  content="参数值"/>
-```
-
-**参数说明：**
-	1.Expires（期限）
-
-````html
-说明：指定网页在缓存中的过期时间，一旦网页过期，必须到服务器上重新传输。
-语法：<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
-
-注意：必须使用GMT的时间格式，或者直接设为0（数字表示多久后过期
-````
-
-2.Pragma（cache模式）
-
-```
-说明：禁止浏览器从本地计算机的缓存中访问页面内容。
-语法：<meta http-equiv="Pragma" content="no-cache"/>
-
-注意：网页不保存在缓存中，每次访问都刷新页面。这样设定，访问者将无法脱机浏览。
-```
-
-3.Refresh（自动刷新并指向新页面）
-
-```
-<meta http-equiv="refresh"content="5; url=http://www.baidu.com/"/>
-	其中的5表示5秒后自动刷新并调整到URL新页面。
-```
-
-4.Set-Cookie（cookie设定）
-
-```
-说明：浏览器访问某个页面时会将它存在缓存中，下次再次访问时就可从缓存中读取，以提高速度。
-当你希望访问者每次都刷新你广告的图标，或每次都刷新你的计数器，就要禁用缓存了。
-如果网页过期，那么存盘的cookie将被删除。
-
-语法：<meta http-equiv="Set-Cookie"  content="cookievalue=xxx; expires=Wednesday,21-Oct-98 16:14:21 GMT; path=/">
-
-注意：必须使用GMT的时间格式
-```
-
-5.Window-target（显示窗口的设定）
-
-```
-说明：强制页面在当前窗口以独立页面显示
-语法：<meta http-equiv="Window-target" content="_top"/>
-可以用来防止别人在框架里调用你的页面。
-```
-
-6.content-Type（显示设定页面使用的字符集）
-
-```
-<meta http-equiv="content-Type" content="text/html;charset=utf-8"/>
-
-其他参数值：
-	GB2312				简体中文
-	BIG5					繁体中文
-	iso-2022-jp		日文
-	ks_c_5601			韩文
-	ISO-8859-1		英文
-	UTF-8					世界通用的语言编码；
-在HTML5中，我们一般都是：<meta charset="utf-8"/>
-```
-
-7.content-Language（显示语言的设定）
-
-```
-<meta http-equiv="Content-Language" content="zh-cn"/>
-```
-
-8.http-equiv="imagetoolbar"
-
-```
-<meta http-equiv="imagetoolbar" content="false"/>
-指定是否显示图片工具栏，当为false代表不显示，当为true代表显示。
-```
-
-### HTML 5新增
-
-#### name
-
-1.viewport（屏幕的缩放）
-
-```
-说明：能优化移动浏览器的显示（屏幕的缩放）
-
-语法：<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
-
-参数值：
-width viewport的宽度[device-width | pixel_value]width如果直接设置pixel_value数值，大部分的安卓手机不支持，但是ios支持；
-height – viewport 的高度 （范围从 223 到 10,000 ）
-user-scalable [yes | no]是否允许缩放
-initial-scale [数值] 初始化比例（范围从 > 0 到 10）
-minimum-scale [数值] 允许缩放的最小比例
-maximum-scale [数值] 允许缩放的最大比例
-```
-
-2.format-detection（忽略电话号码和邮箱）
-
-```
-语法：
-<meta name="format-detection" content="telephone=no">//忽略页面中的数字识别为电话号码
-<meta name="format-detection" content="email=no"/>//忽略页面中的邮箱格式识别为邮箱
-也可以写成：
-<meta name="format-detection" content="telphone=no, email=no"/>
-```
-
-3、浏览器内核控制：国内浏览器很多都是双内核（webkit和Trident），webkit内核高速浏览，IE内核兼容网页和旧版网站。而添加meta标签的网站可以控制浏览器选择何种内核渲染。（仅限360浏览器）
-
-```
-<meta name="renderer" content="webkit|ie-comp|ie-stand">
-若页面需默认用极速核，增加标签：<meta name="renderer" content="webkit">
-若页面需默认用ie兼容内核，增加标签：<meta name="renderer" content="ie-comp">
-若页面需默认用ie标准内核，增加标签：<meta name="renderer" content="ie-stand">
-```
-
-```
-各渲染内核的技术细节
-内核			   			Webkit	  	IE兼容	  IE标准
-内核版本		  		Chrome45   	IE6/7	  	IE9/IE10/IE11(取决于用户的IE)
-HTML5支持		    	YES	       	NO	    	YES
-ActiveX控件支持	   NO		 			YES	   		YES
-```
-
-4、WebApp全屏模式
-
-```
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<!-- 启用 WebApp 全屏模式 -->
-```
-
-5、隐藏状态栏/设置状态栏颜色：只有在开启WebApp全屏模式时才生效。content的值为default | black | black-translucent 。
-
-```
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-```
-
-6、不同浏览器
-
-```html
-<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
-<meta name="HandheldFriendly" content="true">
-
-<!-- 微软的老式浏览器 -->
-<meta name="MobileOptimized" content="320">
-
-<!-- uc强制竖屏 -->
-<meta name="screen-orientation" content="portrait">
-
-<!-- QQ强制竖屏 -->
-<meta name="x5-orientation" content="portrait">
-
-<!-- UC强制全屏 -->
-<meta name="full-screen" content="yes">
-
-<!-- QQ强制全屏 -->
-<meta name="x5-fullscreen" content="true">
-
-<!-- UC应用模式 -->
-<meta name="browsermode" content="application">
-
-<!-- QQ应用模式 -->
-<meta name="x5-page-mode" content="app">
-
-<!-- windows phone 点击无高光 -->
-<meta name="msapplication-tap-highlight" content="no">
-```
-
-#### http-equiv
-
-```html
-1、优先使用 IE 最新版本和 Chrome
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
-<!-- 关于X-UA-Compatible -->
-<meta http-equiv="X-UA-Compatible" content="IE=6" ><!-- 使用IE6 -->
-<meta http-equiv="X-UA-Compatible" content="IE=7" ><!-- 用于在IE8版本浏览器中使用IE7渲染来避免出错 -->
-<meta http-equiv="X-UA-Compatible" content="IE=8" ><!-- 使用IE8 -->
-
-
-2、转码申明：用百度打开网页可能会对其进行转码（比如贴广告），避免转码可添加如下meta
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-```
-
-#### charset
-
-	<meta charset="UTF-8">
-	其他参数值：
-	GB2312				简体中文
-	BIG5					繁体中文
-	iso-2022-jp		日文
-	ks_c_5601			韩文
-	ISO-8859-1		英文
-	UTF-8					世界通用的语言编码；
-	在HTML5中，我们一般都是：<meta charset="utf-8"/>
 
