@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-01-03 16:18:29
+ * @ ModifierTime: 2025-01-03 16:28:53
  * @ Description: 导航栏
  */
 
@@ -27,7 +27,7 @@ const getDirectoryPathFileNames = (
   const result: (string | Record<string, string>)[] = []
 
   // 忽略的文件夹
-  const ignoreDirectoryList = ['.vuepress', 'node_modules']
+  const ignoreDirectoryList = ['.vuepress', 'node_modules', 'images']
 
   // 忽略的md名单 （只要 md 文件名存在这个名，则忽略这个文件的构建）
   const ignoreMdList = ['前端面试', '杂记']
