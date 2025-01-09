@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-01-03 16:28:53
+ * @ ModifierTime: 2025-01-09 10:13:34
  * @ Description: 导航栏
  */
 
@@ -127,7 +127,7 @@ const allNavs = getAllNav(allFile)
 // 分享的导航栏
 const shareNavs = [
   {
-    text: 'HOME',
+    text: '关联',
     children: [
       { text: '记录', link: '/RECORD' },
       { text: '案例系统', link: 'https://willysliang.github.io/core' },
@@ -139,6 +139,14 @@ const shareNavs = [
       {
         text: '提交日志',
         link: 'https://api.github.com/repos/willysliang/core/commits',
+      },
+      {
+        text: 'CORE',
+        link: 'https://willysliang.github.io/core/',
+      },
+      {
+        text: 'PM_TOOLS',
+        link: 'https://willysliang.github.io/pm-tools/',
       },
     ],
   },
