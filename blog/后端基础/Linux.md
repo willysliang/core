@@ -807,6 +807,7 @@ server {
 ```bash
 参考文献：
 1. 入门概念：https://zhuanlan.zhihu.com/p/187505981
+2. 官网API文档：https://docs.docker.com/reference/cli/docker/
 
 
 docker 常用场景
@@ -976,6 +977,45 @@ $ docker rmi <镜像ID>
 
 
 
+#### 用 Dockerfile 构建镜像
+
+1. 创建 `Dockerfile`：
+
+   ```dockerfile
+   # 基础镜像
+   FROM ubuntu:20.04
+   # 安装依赖
+   RUN apt-get update && apt-get install -y python3
+   # 复制文件到镜像
+   COPY app.py /app/
+   # 设置工作目录
+   WORKDIR /app
+   # 启动命令
+   CMD ["python3", "app.py"]
+   ```
+
+2. 构建镜像：
+
+   ```bash
+   docker build -t my-python-app .
+   ```
+
+3. 运行容器：
+
+   ```bash
+   docker run my-python-app
+   ```
+
+
+
+#### 分享镜像
+
+![image-20250107231715345](image/image-20250107231715345.png)
+
+![image-20250107231750938](image/image-20250107231750938.png)
+
+
+
 ### 容器操作
 
 ```bash
@@ -1001,13 +1041,9 @@ $ docker exec -it <容器ID> /bin/bash
 $ docker rm <容器ID>
 ```
 
-![image-20241123114407420](./image/image-20241123114407420.png)
-
-
-
-#### run 的细节
-
 ![image-20250107231849187](./image/image-20250107231849187.png)
+
+![image-20241123114407420](./image/image-20241123114407420.png)
 
 ```bash
 1. 容器运行模式：前台/后台运行
@@ -1022,21 +1058,6 @@ $ docker rm <容器ID>
 - 内存：
 		- `-m` 或 `--memory=<value>`: 限制内存（如 `-m 512m`）
 		- `--memory-swap=<value>`: 内存 + Swap 的总限制
-
-
-3. 网络配置
-- 端口映射：`-p` 或 `--publish`
-		- 将容器内部的端口映射到宿主机的端口，格式为 `宿主机端口:容器端口`。
-		- 如 `docker run -p 8080:80 -d nginx` 将容器的 80 端口映射到宿主机的 8080 端口
-- 网络模式: `--network=<mode>`
-		- 指定网络模式（mode 有 bridge、host、none 或自定义网络）
-
-
-4. 数据存储管理
-- 挂载卷
-		- `-v` 或 `--volume`: 将宿主机的目录或文件挂载到容器内部，实现数据的持久化和共享。格式为 `宿主机路径:容器路径`（如 `docker run -v /host/data:/container/data -d ubuntu`）
-		- `-mount type=bind|volume|tmpfs`: 更灵活的挂载方式
-- 挂载临时内存文件系统：`tmpfs=/path`
 
 
 5. 环境变量设置: `-e KEY=VALUE` 或 `--env-file=<file>`
@@ -1098,68 +1119,63 @@ docker run --name my-mysql \
 
 
 
-#### 端口映射
+#### 网络配置
 
-![image-20250107221147089](./image/image-20250107221147089.png)
+##### 端口映射
+
+```bash
+每一个正常启动的容器都是独立的容器（都拥有自己的文件系统），是在内部容器中启动的，所以需要使用容器映射
+
+
+端口映射：`-p` 或 `--publish`
+- 将容器内部的端口映射到宿主机的端口。
+- 格式: `docker run -p [宿主机 IP 地址:]宿主机端口:容器端口 [其他选项] 镜像名 [容器内执行的命令]`
+- 如 `docker run -p 8080:80 -d nginx` 将容器的 80 端口映射到宿主机的 8080 端口
+
+
+
+注意：
+1. 端口冲突：宿主机端口和容器端口不能重复使用
+宿主机上用于映射的端口必须是空闲的，否则会导致端口映射失败，容器无法正常启动。在映射端口前，要确保所选的宿主机端口未被其他服务占用。
+
+2. 安全性：
+端口映射会将容器内的服务暴露到宿主机网络中，因此需要谨慎选择要映射的端口，避免将敏感服务端口直接暴露给外部网络。可以结合防火墙等安全措施来增强安全性。
+```
 
 ![image-20250107223017902](./image/image-20250107223017902.png)
 
-### 外部容器启动
+
+
+##### 网络模式
 
 ```bash
-每一个正常启动的容器都是独立的容器，是在内部容器中启动的，所以需要使用容器映射
+指定网络模式: `--network=<mode>`（mode 有 bridge、host、none 或自定义网络）
+
+
+1. 查看网络列表：
+$ docker network ls
+
+2. 创建自定义网络：
+$ docker network create my-network
+
+3. 运行容器并指定网络：
+$ docker run --network my-network my-app
 ```
 
-![image-20241123114915660](./image/image-20241123114915660.png)
-
-#### 容器有自己的文件系统
-
-![image-20250107223017902](./image/image-20250107223017902-1738721041887.png) 
 
 
+#### 数据存储
 
-### 用 Dockerfile 构建镜像
-
-1. 创建 `Dockerfile`：
-
-   ```dockerfile
-   # 基础镜像
-   FROM ubuntu:20.04
-   # 安装依赖
-   RUN apt-get update && apt-get install -y python3
-   # 复制文件到镜像
-   COPY app.py /app/
-   # 设置工作目录
-   WORKDIR /app
-   # 启动命令
-   CMD ["python3", "app.py"]
-   ```
-
-2. 构建镜像：
-
-   ```bash
-   docker build -t my-python-app .
-   ```
-
-3. 运行容器：
-
-   ```bash
-   docker run my-python-app
-   ```
+```bash
+挂载卷
+- `-v` 或 `--volume`: 将宿主机的目录或文件挂载到容器内部，实现数据的持久化和共享。格式为 `宿主机路径:容器路径`（如 `docker run -v /host/data:/container/data -d ubuntu`）
+- `-mount type=bind|volume|tmpfs`: 更灵活的挂载方式
 
 
+挂载临时内存文件系统：`tmpfs=/path`
+```
 
-### 分享镜像
-
-![image-20250107231715345](image/image-20250107231715345.png)
-
-![image-20250107231750938](image/image-20250107231750938.png)
-
-
-
-### 数据存储
-
-#### 目录挂载（Bind Mount）
+##### 目录挂载（Bind Mount）
 
 ```bash
 ## 查看所有容器
@@ -1197,7 +1213,7 @@ docker run --mount type=bind,source=/host/data,target=/container/data my_image
 
 
 
-#### 卷映射（Volume Mount）
+##### 卷映射（Volume Mount）
 
 ```bash
 1. 挂载本地目录到容器：
@@ -1230,7 +1246,7 @@ docker run --mount type=volume,source=my_volume,target=/container/data my_image
 
 
 
-#### 目录挂载跟卷映射的区别
+##### 目录挂载跟卷映射的区别
 
 | **特性**         | **目录挂载（Bind Mount）**                               | **卷映射（Volume Mount）**                                   |
 | :--------------- | :------------------------------------------------------- | :----------------------------------------------------------- |
@@ -1293,22 +1309,7 @@ docker run --mount type=volume,source=my_volume,target=/container/data my_image
 
 
 
-### 网络配置
-
-```bash
-1. 查看网络列表：
-$ docker network ls
-
-2. 创建自定义网络：
-$ docker network create my-network
-
-3. 运行容器并指定网络：
-$ docker run --network my-network my-app
-```
-
-
-
-### Docker Compose（多容器编排）
+#### Docker Compose（多容器编排）
 
 1. 安装 Docker Compose：
 
@@ -1338,8 +1339,6 @@ $ docker run --network my-network my-app
    ```bash
    docker-compose up -d
    ```
-
-
 
 
 
