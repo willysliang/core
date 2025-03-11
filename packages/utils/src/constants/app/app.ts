@@ -1,14 +1,14 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-23 14:48:40
- * @ Modifier: willy
- * @ ModifierTime: 2024-02-27 20:46:58
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-03-11 15:10:27
  * @ Description: app 相关
  */
 
 /** -------------------通用常量------------------------- */
 /** 博客地址 */
-export const BLOG_URL = 'https://willysliang.github.io/static_blog'
+export const BLOG_URL = 'https://willysliang.github.io/blog'
 /** HOME地址 */
 export const HOME_URL = 'https://willysliang.github.io/core'
 

@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:19:37
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-01-03 16:10:39
+ * @ ModifierTime: 2025-03-11 15:10:08
  * @ Description: 配置文件
  */
 
@@ -10,7 +10,7 @@ import { viteBundler } from '@vuepress/bundler-vite'
 import { defineUserConfig } from 'vuepress'
 import theme from './theme/defaultTheme'
 
-const BASEURL = '/static_blog/'
+const BASEURL = '/blog/'
 
 export default defineUserConfig({
   head: [
