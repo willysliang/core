@@ -16,6 +16,13 @@
   transition: transform 0.3s ease;
 }
 
+@media (min-width: 720px) {
+  .home .feature {
+    flex: 0 1 45% !important;
+    max-width: 45% !important;
+  }
+}
+
 .home .feature p {
   font-size: 0.9rem;
   color: #666;
@@ -58,11 +65,4 @@
 .home .feature:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-@media (min-width: 720px) {
-.home .feature {
-  flex: 0 1 45%;
-  max-width: 45%;
-}
 }
