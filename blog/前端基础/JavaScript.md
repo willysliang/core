@@ -1484,6 +1484,44 @@ getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav,
 
 
 
+#### 如果存在子元素，则替换，否则添加
+
+判断父元素是否存在 `firstChild` ，若存在则进行替换操作，若不存在则进行添加操作。
+
+```html
+<!-- 第一个父元素，存在子元素 -->
+<div id="parent1">
+  <p>这是第一个父元素的子元素。</p>
+</div>
+
+<!-- 第二个父元素，不存在子元素 -->
+<div id="parent2"></div>
+
+<button onclick="handleNode()">执行操作</button>
+
+<script>
+  function handleNodeForParent(parent) {
+    const newNode = document.createElement('span');
+    newNode.textContent = '这是新创建的节点。';
+    
+    if (parent.firstChild) {
+      parent.replaceChild(newNode, parent.firstChild);
+    } else {
+      parent.appendChild(newNode);
+    }
+  }
+
+  function handleNode() {
+    const parent1 = document.getElementById('parent1');
+    const parent2 = document.getElementById('parent2');
+    handleNodeForParent(parent1);
+    handleNodeForParent(parent2);
+  }
+</script>
+```
+
+
+
 ### DOM修改（操作样式）
 
 ```bash
