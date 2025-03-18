@@ -3,16 +3,19 @@ home: true
 heroImage: /hero.png
 heroText: Willy’s Blog
 tagline: 落叶缤纷诉秋意，风雪飘摇牵梅舞
-actionText: 快速上手 →
-actionLink: /前端基础/HTML与CSS
+actions: 
+- text: 快速上手 →
+  link: /
 features:
-- title: 简洁至上
-  details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
-- title: Vue 驱动
-  details: 享受 Vue + webpack 的开发体验，在 Markdown 中使用 Vue 组件，同时可以使用 Vue 来开发自定义主题。
-- title: 高性能
-  details: VuePress 会为每个页面生成预渲染的静态 HTML，同时在页面被加载的时候，将作为 SPA 运行。
-footer: MIT Licensed | Copyright ©2024 willysliang@qq.com
+- title: 🌱 春华 ❖ 寸阴尺璧
+  details: "读书不觉已春深，一寸光阴一寸金"  # 王贞白《白鹿洞》· 惜时
+- title: 🔥 夏茂 ❖ 炽志砺行
+  details: "炎天炙背耕书海，汗雨浇身诵典章"  # 夏日苦读白描
+- title: 🍂 秋实 ❖ 腹笥五车
+  details: "粗缯大布裹生涯，腹有诗书气自华"  # 苏轼《和董传留别》· 积淀
+- title: ❄️ 冬藏 ❖ 十年一剑
+  details: "十年磨剑心未冷，三更灯火墨犹温"  # 贾岛《剑客》· 蓄势 + 颜真卿融合句 
+footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 ---
 
 
@@ -92,6 +95,7 @@ html(5)/css(3)，前端页面相关技术
 ## 2025年3月18日
   - docs(前端基础): [JavaScript] 对父元素判断是否存在子节点，并替换/添加第一个节点
   - docs: 更新词牌
+  - perf(blog): 优化首页样式
 
 ## 2025年3月17日
   - docs(前端进阶): [面试] 问题整理

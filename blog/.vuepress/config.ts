@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:19:37
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-03-11 15:10:08
+ * @ ModifierTime: 2025-03-18 17:02:50
  * @ Description: 配置文件
  */
 
@@ -16,6 +16,10 @@ export default defineUserConfig({
   head: [
     // 引入你的图标文件
     ['link', { rel: 'icon', href: `${BASEURL}logo__icon--default.png` }],
+    [
+      'link',
+      { rel: 'stylesheet', type: 'text/css', href: `${BASEURL}styles.css` },
+    ],
   ],
 
   bundler: viteBundler({
