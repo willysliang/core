@@ -98,6 +98,7 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 ## 2025年3月25日
   - perf(blog): 优化首页样式
+  - docs: 删减非必要记录
 
 ## 2025年3月18日
   - docs(前端基础): [JavaScript] 对父元素判断是否存在子节点，并替换/添加第一个节点
