@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:19:37
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-03-18 17:02:50
+ * @ ModifierTime: 2025-03-25 09:22:58
  * @ Description: 配置文件
  */
 
@@ -32,6 +32,6 @@ export default defineUserConfig({
   port: 8080,
 
   lang: 'zh-CN',
-  title: 'Mr.Willy',
+  title: 'willy',
   description: 'This is willysliang blog site.',
 })

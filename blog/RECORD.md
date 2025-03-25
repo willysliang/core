@@ -1,10 +1,10 @@
 ---
 home: true
-heroImage: /hero.png
-heroText: Willy’s Blog
+heroText: 岁序叩梅帖
 tagline: 落叶缤纷诉秋意，风雪飘摇牵梅舞
+title: RECORD
 actions: 
-- text: 快速上手 →
+- text: ← 主页 →
   link: /
 features:
 - title: 🌱 春华 ❖ 寸阴尺璧
@@ -35,35 +35,39 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 ::: code-group-item 技术
 
 ::: tip 技术
-技术文档、教程、技巧、总结等文章
-<img src="/feature_other.png" alt="" style="width: 100%; margin: 0 auto;">
+<div style="display: flex; align-items: center; margin-top: 10px;">
+  <img src="/feature_other.png" alt="" style="height: 30px; margin-right: 5px;">
+  <span>技术文档、教程、技巧、总结等文章</span>
+</div>
 
 ::: details
-<img src="/cover1.jpg" alt="" style="width: 100%; margin: 0 auto;">
+<img src="/cover1.jpg" alt="" style="height: 100%; margin: 0 auto;">
 :::
 :::
 :::
-
 
 ::: code-group-item 前端
 ::: warning 前端
-JavaScript、ES6、Vue框架等前端技术
-<img src="/feature_web.png" alt="" style="width: 100%; margin: 0 auto;">
+<div style="display: flex; align-items: center; margin-top: 10px;">
+  <img src="/feature_web.png" alt="" style="height: 30px; margin-right: 5px;">
+  <span>JavaScript、ES6、Vue框架等前端技术</span>
+</div>
 
 ::: details
-<img src="/cover2.jpg" alt="" style="width: 100%; margin: 0 auto;">
+<img src="/cover2.jpg" alt="" style="height: 100%; margin: 0 auto;">
 :::
 :::
 :::
-
 
 ::: code-group-item 页面
 ::: danger 页面
-html(5)/css(3)，前端页面相关技术
-<img src="/feature_ui.png" alt="" style="width: 100%; margin: 0 auto;">
+<div style="display: flex; align-items: center; margin-top: 10px;">
+  <img src="/feature_ui.png" alt="" style="height: 30px; margin-right: 5px;">
+  <span>html(5)/css(3)，前端页面相关技术</span>
+</div>
 
 ::: details
-<img src="/cover3.jpg" alt="" style="width: 100%; margin: 0 auto;">
+<img src="/cover3.jpg" alt="" style="height: 100%; margin: 0 auto;">
 :::
 :::
 :::
@@ -91,6 +95,9 @@ html(5)/css(3)，前端页面相关技术
 
 
 # 2025
+
+## 2025年3月25日
+  - perf(blog): 优化首页样式
 
 ## 2025年3月18日
   - docs(前端基础): [JavaScript] 对父元素判断是否存在子节点，并替换/添加第一个节点
