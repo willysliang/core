@@ -1,14 +1,15 @@
 <!--
  * @ Author: willysliang
- * @ Create Time: 2022-12-10 07:59:28
- * @ Modified by: willysliang
- * @ Modified time: 2023-01-05 18:05:08
+ * @ CreateTime: 2022-12-10 07:59:28
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-04-03 19:30:21
  * @ Description: 组件通信
  -->
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { ChildA, ChildB } from './'
+import ChildA from './ChildA.vue'
+import ChildB from './ChildB.vue'
 
 onMounted(() => {
   // 主线程

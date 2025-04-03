@@ -17,7 +17,6 @@ import systemNotfoundCloud from './systemNotfoundCloud.png'
 /**
  * @description demo
  */
-import demoVideo from './demo/demo.mp4'
 import demoJpg from './demo/demo.jpg'
 import demoLotteryItem1 from './demo/lottery-item1.png'
 import demoLotteryItem2 from './demo/lottery-item2.png'
@@ -44,7 +43,6 @@ export {
   code,
   systemNotfound,
   systemNotfoundCloud,
-  demoVideo,
   demoJpg,
   demoLotteryItem1,
   demoLotteryItem2,

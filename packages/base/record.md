@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年4月3日
+  - perf(demo): 优化demo组件引入
+
 ## 2024年9月19日
   - feat(layout): 当前路由的标题显示到头部导航栏中
   - feat(demo): [CssEffects] 萤火虫特效
