@@ -29,6 +29,7 @@ Description: 日志记录
 
 ## 2025年4月3日
   - perf(demo): 优化demo组件引入
+  - feat(demo): [views/demo/Barrage] 视频黑屏检测
 
 ## 2024年9月19日
   - feat(layout): 当前路由的标题显示到头部导航栏中
