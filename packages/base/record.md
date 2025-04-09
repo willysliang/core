@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年4月9日
+  - style(demo): [views/demo/AudioVideo] Barrage 更名为 AudioVideo
+
 ## 2025年4月3日
   - perf(demo): 优化demo组件引入
   - feat(demo): [views/demo/Barrage] 视频黑屏检测

@@ -2,8 +2,8 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-12-02 15:40:08
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-04-03 19:42:23
- * @ Description: 视频 & 弹幕组件
+ * @ ModifierTime: 2025-04-09 16:40:51
+ * @ Description: 音视频组件
  -->
 
 <script lang="ts" setup>
@@ -12,7 +12,7 @@ import BlackScreenDetector from './BlackScreenDetector.vue'
 import { demoPages } from '../constant'
 
 defineOptions({
-  name: demoPages.BARRAGE.name,
+  name: demoPages.AUDIO_VIDEO.name,
   inheritAttrs: false,
 })
 
