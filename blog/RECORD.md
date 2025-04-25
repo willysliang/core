@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年4月25日
+  - docs(前端框架): [移动开发] 移动端适配
+
 ## 2025年4月24日
   - docs(前端算法): [leetCode] 88.合并两个有序数组
 
