@@ -24,6 +24,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年4月26日
+  - fix(ci/cd): 修复 ci/cd static.yml 因为 unbuntu 版本不稳定导致部署异常问题
+
 ## 2024年9月5日
   - fix: pnpm patch-remove 移除修改 node_modules 的内容
 
