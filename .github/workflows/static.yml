@@ -4,7 +4,7 @@ name: Deploy static content to Pages
 on:
   # 仅在推送到默认分支时运行。
   push:
-    branches: ['master', 'hotfix/ci-cd']
+    branches: ['master']
 
   # 这个选项可以使你手动在 Action tab 页面触发工作流
   workflow_dispatch:
@@ -26,19 +26,17 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-22.04  # 当前稳定版 LTS
-    # 或使用带明确镜像版本号的格式（需确认可用性）
-    # runs-on: ubuntu-24.04-2024.04.1
+    runs-on: ubuntu-22.04  # 当前稳定版 LTS runs-on: ubuntu-24.04-2024.04.1
     steps:
-      - name: Clear Cache
-        uses: actions/cache@v2
+      - name: Restore pnpm cache
+        uses: actions/cache@v3
         with:
           path: /path/to/cache # 指定要清除的缓存路径
           key: ${{ runner.os }}-cache # 缓存的键，用于标识不同的缓存
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
       - name: pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -79,11 +77,11 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
