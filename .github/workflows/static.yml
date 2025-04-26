@@ -42,7 +42,7 @@ jobs:
         with:
           version: 9
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18.19
           cache: 'pnpm'
@@ -77,9 +77,9 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v3
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v2
         with:
           path: './dist'
       - name: Deploy to GitHub Pages
