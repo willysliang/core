@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:19:37
  * @ Modifier: willysliang
- * @ ModifierTime: 2024-03-12 23:02:57
+ * @ ModifierTime: 2025-03-25 09:22:58
  * @ Description: 配置文件
  */
 
@@ -10,10 +10,16 @@ import { viteBundler } from '@vuepress/bundler-vite'
 import { defineUserConfig } from 'vuepress'
 import theme from './theme/defaultTheme'
 
+const BASEURL = '/blog/'
+
 export default defineUserConfig({
   head: [
     // 引入你的图标文件
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+    ['link', { rel: 'icon', href: `${BASEURL}logo__icon--default.png` }],
+    [
+      'link',
+      { rel: 'stylesheet', type: 'text/css', href: `${BASEURL}styles.css` },
+    ],
   ],
 
   bundler: viteBundler({
@@ -22,10 +28,10 @@ export default defineUserConfig({
   }),
   theme,
 
-  base: '/static_blog/',
+  base: BASEURL,
   port: 8080,
 
   lang: 'zh-CN',
-  title: 'Mr.Willy',
+  title: 'willy',
   description: 'This is willysliang blog site.',
 })

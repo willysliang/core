@@ -1,8 +1,8 @@
 <!--
  * @ Author: willysliang
- * @ Create Time: 2022-12-02 15:34:44
- * @ Modified by: willysliang
- * @ Modified time: 2022-12-02 15:35:06
+ * @ CreateTime: 2022-12-02 15:34:44
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-04-03 19:40:03
  * @ Description: 视频播放插件
  -->
 
@@ -10,15 +10,15 @@
 import { reactive } from 'vue'
 import VideoPlay from 'vue3-video-play' // 引入组件
 import 'vue3-video-play/dist/style.css' // 引入css
-import { demoVideo, demoJpg } from '@/assets/images'
+import { demoJpg } from '@/assets/images'
 
 const options = reactive({
-  width: '80%', // 播放器高度
+  width: '100%', // 播放器高度
   height: '70%', // 播放器高度
   color: '#409eff', // 主题色
   title: '仙剑奇侠传三', // 视频名称
   type: 'video/mp4',
-  src: demoVideo, // 视频源
+  src: '/video/demo.mp4', // 视频源
   muted: false, // 静音
   webFullScreen: false,
   speedRate: ['2.0', '1.25', '1.5', '1.0', '0.75', '0.5'], // 播放倍速

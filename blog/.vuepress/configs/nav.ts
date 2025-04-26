@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
  * @ Modifier: willysliang
- * @ ModifierTime: 2024-06-10 22:58:58
+ * @ ModifierTime: 2025-01-09 10:13:34
  * @ Description: 导航栏
  */
 
@@ -26,16 +26,8 @@ const getDirectoryPathFileNames = (
   const files = fs.readdirSync(directoryPath)
   const result: (string | Record<string, string>)[] = []
 
-  const directoryPathList = [
-    '前端基础',
-    '前端框架',
-    '前端算法',
-    '前端进阶',
-    '后端基础',
-    '构建工具',
-    '计算机网络',
-    '学海无涯',
-  ]
+  // 忽略的文件夹
+  const ignoreDirectoryList = ['.vuepress', 'node_modules', 'images']
 
   // 忽略的md名单 （只要 md 文件名存在这个名，则忽略这个文件的构建）
   const ignoreMdList = ['前端面试', '杂记']
@@ -47,7 +39,7 @@ const getDirectoryPathFileNames = (
 
     // 如果是目录，并且在规定的文件目录下，则插入结果
     if (stats.isDirectory()) {
-      if (!isGetFile && directoryPathList.includes(file)) result.push(file)
+      if (!isGetFile && !ignoreDirectoryList.includes(file)) result.push(file)
     } else if (isGetFile) {
       // 如果是文件，并且文件名以 md 结尾，则插入结果
       const curFileNames = file.split('.')
@@ -135,9 +127,9 @@ const allNavs = getAllNav(allFile)
 // 分享的导航栏
 const shareNavs = [
   {
-    text: 'HOME',
+    text: '关联',
     children: [
-      // { text: '记录', link: '/RECORD' },
+      { text: '记录', link: '/RECORD' },
       { text: '案例系统', link: 'https://willysliang.github.io/core' },
       { text: '旧版仓库', link: 'https://github.com/willysliang/portfolio' },
       {
@@ -147,6 +139,14 @@ const shareNavs = [
       {
         text: '提交日志',
         link: 'https://api.github.com/repos/willysliang/core/commits',
+      },
+      {
+        text: 'CORE',
+        link: 'https://willysliang.github.io/core/',
+      },
+      {
+        text: 'PM_TOOLS',
+        link: 'https://willysliang.github.io/pm-tools/',
       },
     ],
   },

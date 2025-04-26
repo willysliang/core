@@ -1,0 +1,68 @@
+/* 季节配色变量 */
+:root {
+  /* 春 - 新绿 */
+  --spring: #4abf8a;
+  /* 夏 - 炽红 */
+  --summer: #ff6b6b;
+  /* 秋 - 灿金 */
+  --autumn: #ff922b;
+  /* 冬 - 寒蓝 */
+  --winter: #4dabf7;
+}
+
+.home .feature {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+@media (min-width: 720px) {
+  .home .feature {
+    flex: 0 1 45% !important;
+    max-width: 45% !important;
+  }
+}
+
+.home .feature p {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.home .feature:nth-child(1) {
+  background: linear-gradient(to right, rgba(74, 191, 138, 0.1) 0%, transparent 50%);
+  margin-bottom: 1rem;
+}
+
+.home .feature:nth-child(1) h2 {
+  border-left: 3px solid var(--spring);
+}
+
+.home .feature:nth-child(2) {
+  background: linear-gradient(to right, rgba(255, 107, 107, 0.1) 0%, transparent 50%);
+  margin-bottom: 1rem;
+}
+
+.home .feature:nth-child(2) h2 {
+  border-left: 3px solid var(--summer);
+}
+
+.home .feature:nth-child(3) {
+  background: linear-gradient(to right, rgba(255, 146, 43, 0.1) 0%, transparent 50%);
+}
+
+.home .feature:nth-child(3) h2 {
+  border-left: 3px solid var(--autumn);
+}
+
+.home .feature:nth-child(4) {
+  background: linear-gradient(to right, rgba(77, 171, 247, 0.1) 0%, transparent 50%);
+}
+
+.home .feature:nth-child(4) h2 {
+  border-left: 3px solid var(--winter);
+}
+
+.home .feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}

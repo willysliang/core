@@ -3501,18 +3501,18 @@ FALLBACK:
 ### 网络状态 online/offline
 
 ```bash
-- `window.online` ：检测用户当前的网络状况，返回一个布尔值
-- `window.online`：用户网络连接时被调用
-- `window.offline`：用户网络断开时被调用（拔掉网线或者禁用以太网）
+online 和 offline 事件：检测用户当前的网络状况
+	- online 事件在设备网络连接恢复时触发
+	- offline 事件则在网络连接断开时触发（拔掉网线或者禁用以太网）
 ```
 
 ```js
-window.addEventListener('online', function () {
-  alert('网络连接建立！');
+window.addEventListener('online', function() {
+  console.log('网络已连接，重新发起失败的数据请求');
 });
-window.addEventListener('offline', function () {
-  alert('网络连接断开！');
-})
+window.addEventListener('offline', function() {
+  console.log('网络已断开，暂停数据请求');
+});
 ```
 
 
@@ -3543,10 +3543,10 @@ window.addEventListener('offline', function () {
 ```js
 // 打开新的页面，来回切换标签页，观察页面标题的变化
 document.addEventListener('visibilitychange', function () {
-  if (document.visibilityState === 'hidden') {
-    document.title = '页面显示'
+  if (document.visibilityState === 'visible') {
+    console.log('页面可见，可恢复动画、更新数据等操作');
   } else {
-    document.title = '页面隐藏'
+    console.log('页面不可见，暂停动画、节省资源');
   }
 })
 

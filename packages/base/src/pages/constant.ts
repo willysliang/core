@@ -1,8 +1,8 @@
 /**
  * @ Author: willysliang
- * @ Create Time: 2022-11-15 09:25:16
- * @ Modified by: willysliang
- * @ Modified time: 2023-03-10 10:03:06
+ * @ CreateTime: 2022-11-15 09:25:16
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-04-09 16:56:02
  * @ Description: 路由配置 & 常量设定
  */
 
@@ -14,7 +14,6 @@ import {
   PayCodeOne,
   Tailoring,
   HandDrag,
-  Comments,
   Editor,
   WinkingFaceWithOpenEyes,
   DashboardCar,
@@ -28,6 +27,7 @@ import {
   InboxOut,
   Form,
   NotebookAndPen,
+  Video,
 } from '@icon-park/vue-next'
 
 export const demoPages = {
@@ -46,6 +46,14 @@ export const demoPages = {
     title: '自定义组件',
     icon: NotebookAndPen,
     component: () => import('./CustomComponent/index.vue'),
+  },
+  AUDIO_VIDEO: {
+    path: 'AudioVideo',
+    key: 'AudioVideo',
+    name: 'AudioVideo',
+    title: '音视频',
+    icon: Video,
+    component: () => import('./AudioVideo/index.vue'),
   },
   EXCEL: {
     path: 'demoExcel',
@@ -198,13 +206,5 @@ export const demoPages = {
     title: '富文本编辑器',
     icon: Editor,
     component: () => import('./Editor/index.vue'),
-  },
-  BARRAGE: {
-    path: 'Barrage',
-    key: 'Barrage',
-    name: 'Barrage',
-    title: '视频 & 弹幕',
-    icon: Comments,
-    component: () => import('./Barrage/index.vue'),
   },
 } as const

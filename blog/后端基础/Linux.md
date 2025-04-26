@@ -807,6 +807,19 @@ server {
 ```bash
 参考文献：
 1. 入门概念：https://zhuanlan.zhihu.com/p/187505981
+2. 官网API文档：https://docs.docker.com/reference/cli/docker/
+
+
+docker 常用场景
+- 部署Web应用: Nginx、NodeJS、Python Flask 等
+- 数据库容器化: MySQL、Redis、MongoDB
+- 微服务架构: 通过 Docker Compose 编排多个服务
+
+常见问题
+- 权限问题：Linux 需要 sudo 或将用户加入 docker 组。
+- 端口冲突：检查宿主机端口是否被占用。
+- 镜像加速：国内可使用阿里云或中科大镜像源。
+
 ```
 
 
@@ -854,9 +867,10 @@ docker 可快速部署：容器的启动速度非常快速，只要确保一个�
 
 ### 如何使用 docker？
 docker 中存在的概念：
-	- dockerfile：为image镜像的源代码
-	- image：dockerfile执行后的编译结果，可执行程序
-	- container：运行起来的进程
+	- 容器（Container）：轻量化的独立运行环境，包含应用及其依赖。运行起来的进程
+	- 镜像（Image）：容器的静态模板，通过镜像创建容器。dockerfile执行后的编译结果，可执行程序
+	- dockerfile：定义镜像构建步骤的配置文件，是image镜像的源代码
+	- 仓库（Registry）：存储镜像的地方（如 Docker Hub）
 
 1. 先在 dockerfile 中设定配置项：指定需要哪些程序、什么样的依赖；
 2. 然后把 dockerfile 交给编译器进行编译（`docker build`命令），生成的可执行程序就是 image；
@@ -943,7 +957,388 @@ sudo systemctl restart docker
 
 
 
-### 指令
+### 镜像操作
+
+```bash
+1. 拉取镜像（从仓库下载）
+$ docker pull ubuntu:20.04
+
+2. 查看本地镜像
+$ docker images
+
+3. 删除镜像
+$ docker rmi <镜像ID>
+
+
+镜像集合官网：https://hub.docker.com
+```
+
+![image-20241123113826696](./image/image-20241123113826696.png)
+
+
+
+#### 用 Dockerfile 构建镜像
+
+1. 创建 `Dockerfile`：
+
+   ```dockerfile
+   # 基础镜像
+   FROM ubuntu:20.04
+   # 安装依赖
+   RUN apt-get update && apt-get install -y python3
+   # 复制文件到镜像
+   COPY app.py /app/
+   # 设置工作目录
+   WORKDIR /app
+   # 启动命令
+   CMD ["python3", "app.py"]
+   ```
+
+2. 构建镜像：
+
+   ```bash
+   docker build -t my-python-app .
+   ```
+
+3. 运行容器：
+
+   ```bash
+   docker run my-python-app
+   ```
+
+
+
+#### 分享镜像
+
+![image-20250107231715345](image/image-20250107231715345.png)
+
+![image-20250107231750938](image/image-20250107231750938.png)
+
+
+
+### 容器操作
+
+```bash
+1. 启动新容器
+$ docker run -it --name my_container ubuntu:20.04 /bin/bash
+	- `-it`：交互式终端
+	- `--name`： 指定容器名称
+	
+2. 查看运行中的容器
+$ docker ps
+
+3. 查看所有容器（包括已停止的）
+$ docker ps -a
+
+4. 启动/停止容器
+$ docker start <容器ID>
+$ docker stop <容器ID>
+
+5. 进入运行中的容器
+$ docker exec -it <容器ID> /bin/bash
+
+6. 删除容器
+$ docker rm <容器ID>
+```
+
+![image-20250107231849187](./image/image-20250107231849187.png)
+
+![image-20241123114407420](./image/image-20241123114407420.png)
+
+```bash
+1. 容器运行模式：前台/后台运行
+		- `-d` 或 `--detach`：以守护进程模式运行容器，即容器在后台运行。
+		- `-it`：分配交互式终端（组合使用 `-i`保持标准输入打开、`-t`分配一个伪终端，用于交互式运行容器，例如进入容器的命令行）
+
+
+2. 资源限制
+- CPU：
+		- `--cpus=<value>`: 限制容器使用的 CPU 核心数（如 `--cpus=1.5`）
+    - `--cpu-shares=<value>`: 设置 CPU 权重（默认 1024，相对比例）
+- 内存：
+		- `-m` 或 `--memory=<value>`: 限制内存（如 `-m 512m`）
+		- `--memory-swap=<value>`: 内存 + Swap 的总限制
+
+
+5. 环境变量设置: `-e KEY=VALUE` 或 `--env-file=<file>`
+		- 为容器设置环境变量或从文件读取
+		- `docker run -e MYSQL_ROOT_PASSWORD=123456 -d mysql`
+
+
+6. 容器命名与标识
+`--name=<name>`: 为容器指定唯一名称。
+`--hostname=<name>`: 设置容器内部的主机名。
+
+7 用户与权限
+`-u` 或 `--user=<user[:group]>`: 指定运行用户（如 `-u 1000:1000`）。
+`--cap-add/--cap-drop`: 添加或删除 Linux 权能（增强安全性）。
+
+8 命令覆盖
+[COMMAND]: 覆盖镜像中的 CMD 指令。
+`--entrypoint="<command>"`: 覆盖镜像的 ENTRYPOINT。
+
+9 自动重启策略
+`--restart=<policy>`:
+	no（默认）: 不重启。
+	on-failure[:max-retries]: 非零退出时重启。
+	always: 总是重启。
+	unless-stopped: 除非手动停止。
+
+10 健康检查
+`--health-cmd=<command>`: 定义健康检查命令。
+`--health-interval=<duration>`: 检查间隔（如 5s）。
+
+11 日志管理
+`--log-driver=<driver>`: 指定日志驱动（如 json-file、syslog）。
+`--log-opt=<option>`: 日志选项（如 --log-opt max-size=10m）。
+
+12 安全设置
+`--read-only`: 容器文件系统只读（需配合 --tmpfs 使用可写临时目录）。
+`--security-opt=<options>`: 配置 SELinux 或 AppArmor。
+
+13 其他实用选项
+`--rm`: 容器退出后自动删除（不可与 --restart 共用）。
+`--expose=<port>`: 暴露容器端口（不映射到主机）。
+`-e "VAR=value"`: 设置环境变量。
+```
+
+```bash
+docker run --name my-mysql \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -p 3306:3306 \
+  -v /host/mysql-data:/var/lib/mysql \
+  -d mysql:8.0
+```
+
+- --name my-mysql：为容器指定名称为 my-mysql。
+- -e MYSQL_ROOT_PASSWORD=root：设置 MySQL 的 root 用户密码为 root。
+- -p 3306:3306：将容器的 3306 端口映射到宿主机的 3306 端口。
+- -v /host/mysql-data:/var/lib/mysql：将宿主机的 /host/mysql-data 目录挂载到容器的 /var/lib/mysql 目录，用于持久化存储 MySQL 数据。
+- -d：以守护进程模式运行容器。
+- mysql:8.0：使用 MySQL 8.0 版本的镜像。
+
+
+
+#### 网络配置
+
+##### 端口映射
+
+```bash
+每一个正常启动的容器都是独立的容器（都拥有自己的文件系统），是在内部容器中启动的，所以需要使用容器映射
+
+
+端口映射：`-p` 或 `--publish`
+- 将容器内部的端口映射到宿主机的端口。
+- 格式: `docker run -p [宿主机 IP 地址:]宿主机端口:容器端口 [其他选项] 镜像名 [容器内执行的命令]`
+- 如 `docker run -p 8080:80 -d nginx` 将容器的 80 端口映射到宿主机的 8080 端口
+
+
+
+注意：
+1. 端口冲突：宿主机端口和容器端口不能重复使用
+宿主机上用于映射的端口必须是空闲的，否则会导致端口映射失败，容器无法正常启动。在映射端口前，要确保所选的宿主机端口未被其他服务占用。
+
+2. 安全性：
+端口映射会将容器内的服务暴露到宿主机网络中，因此需要谨慎选择要映射的端口，避免将敏感服务端口直接暴露给外部网络。可以结合防火墙等安全措施来增强安全性。
+```
+
+![image-20250107223017902](./image/image-20250107223017902.png)
+
+
+
+##### 网络模式
+
+```bash
+指定网络模式: `--network=<mode>`（mode 有 bridge、host、none 或自定义网络）
+
+
+1. 查看网络列表：
+$ docker network ls
+
+2. 创建自定义网络：
+$ docker network create my-network
+
+3. 运行容器并指定网络：
+$ docker run --network my-network my-app
+```
+
+
+
+#### 数据存储
+
+```bash
+挂载卷
+- `-v` 或 `--volume`: 将宿主机的目录或文件挂载到容器内部，实现数据的持久化和共享。格式为 `宿主机路径:容器路径`（如 `docker run -v /host/data:/container/data -d ubuntu`）
+- `-mount type=bind|volume|tmpfs`: 更灵活的挂载方式
+
+
+挂载临时内存文件系统：`tmpfs=/path`
+```
+
+##### 目录挂载（Bind Mount）
+
+```bash
+## 查看所有容器
+docker ps -aq
+
+
+## 批量删除所有容器（强制删除，因为可能存在有些容器还在运行中）
+docker rm -f $(docker ps -aq)
+
+
+删除原来的容器后，用相同的命令创建新的容器数据会存在丢失
+    容器只要一启动，相当于启动自己的空间和文件系统。
+    容器一旦销毁，它的文件系统里所有的内容都会被销毁。
+    因而会产生数据丢失问题
+
+启动一个目录挂载，相当于插U盘，电脑一插上就会显示U盘里的内容，U盘移除则内容也会丢失
+将外部容器挂载到内部容器
+```
+
+```bash
+# 将主机的 /host/data 挂载到容器的 /container/data
+docker run -v /host/data:/container/data my_image
+
+# 或使用 --mount 语法（更明确的参数）
+docker run --mount type=bind,source=/host/data,target=/container/data my_image
+```
+
+![image-20250107235829915](./image/image-20250107235829915.png)
+
+![image-20250108001459557](./image/image-20250108001459557.png)
+
+外部修改容器，内部可以发生变化
+
+![image-20250108001943241](./image/image-20250108001943241.png)
+
+
+
+##### 卷映射（Volume Mount）
+
+```bash
+1. 挂载本地目录到容器：
+$ docker run -v /宿主机路径:/容器路径 ubuntu
+
+2. 创建匿名卷：
+$ docker run -v /容器路径 ubuntu
+
+
+### 查看 ngconf 所在位置
+docker volume ls
+docker volume inspect ngconf
+```
+
+```bash
+# 使用自动创建的匿名卷（匿名卷随容器删除）
+docker run -v /container/data my_image
+
+# 使用具名卷（推荐生产环境）
+docker volume create my_volume
+docker run -v my_volume:/container/data my_image
+
+# 或使用 --mount 语法
+docker run --mount type=volume,source=my_volume,target=/container/data my_image
+```
+
+![image-20250108204002479](./image/image-20250108204002479.png)
+
+![image-20250108213227603](./image/image-20250108213227603.png)
+
+
+
+##### 目录挂载跟卷映射的区别
+
+| **特性**         | **目录挂载（Bind Mount）**                               | **卷映射（Volume Mount）**                                   |
+| :--------------- | :------------------------------------------------------- | :----------------------------------------------------------- |
+| **定义**         | 将主机上的**具体目录或文件**直接挂载到容器中。           | 使用 Docker **管理的存储卷**挂载到容器中。                   |
+| **数据存储位置** | 主机的**任意路径**（如 `/home/user/data`）。             | Docker 管理的存储区域（默认在 `/var/lib/docker/volumes/`）。 |
+| **生命周期**     | 与主机目录绑定，**依赖主机文件系统**。                   | **独立于容器**，由 Docker 管理，可手动或自动清理。           |
+| **创建方式**     | 直接指定主机路径（无需预先创建）。                       | 需先通过 `docker volume create` 创建，或由 Docker 自动生成。 |
+| **适用性**       | 灵活直接，适合开发调试或需与主机深度交互（挂载配置文件） | 安全可控，适合生产环境或需 Docker 托管数据（卷存储数据）     |
+
+```bash
+1. 数据管理
+目录挂载
+	- 直接绑定主机目录，容器内的修改会实时反映到主机目录，反之亦然。
+	- 适用场景：开发调试时挂载代码目录（如将本地的 /app/src 挂载到容器的 /user/src/app），方便实时同步修改。
+	- 风险：若容器意外修改或删除主机目录内容，可能导致主机数据损坏。
+卷映射
+	- Docker托管存储：数据存储在 Docker 的专用区域，与主机文件系统隔离。
+	- 适用场景：生产环境数据持久化（如数据库文件、日志），跨容器共享数据。
+	- 安全优势：通过 Docker 控制权限，避免直接操作主机敏感目录。
+
+
+2. 权限与所有权
+目录挂载
+	- 容器内进程的权限与主机目录的权限直接关联。
+	- 若容器用户与主机用户权限不匹配，可能导致读写失败（需通过 -u 指定用户或调整主机目录权限）。
+卷映射
+	- Docker自动处理卷的权限，默认以容器内用户权限访问。
+	- 可通过 docker volume create 时指定驱动选项（如 --opt o=uid=1000）定制权限。
+
+
+3. 性能
+目录挂载
+	- 直接依赖主机文件系统性能（如磁盘 I/O）。
+	- 在 macOS/Windows 的 Docker Desktop 中，由于虚拟化层，性能可能较差。
+卷映射
+	- 部分存储驱动（如 overlay2）对卷有优化，性能更高。
+	- 在跨平台环境中表现更稳定。
+
+
+4 备份与迁移
+目录挂载
+	- 直接备份主机目录即可，但需注意路径依赖（迁移时需确保主机路径一致）。
+卷映射
+	- 迁移时只需复制卷数据，与主机路径无关。
+	- 支持通过 docker volume 命令备份（如 docker run --rm -v volume_name:/data -v $(pwd):/backup alpine tar cvf /backup/volume.tar /data）。
+
+
+5. 注意事项
+- 目录挂载的路径必须存在，否则 Docker 会将其视为目录并自动创建（可能会导致权限问题）
+- 卷映射的匿名卷会在容器删除时遗留，需定期清理（docker volume prune）
+- 在 Kubernetes 等编排工具中，通常使用 PersistentVolume(PV) 和 PersistentVolumeClaim(PVC) 替代 Docker 卷
+```
+
+| **场景**               | **推荐方式**     | **理由**                                                     |
+| :--------------------- | :--------------- | :----------------------------------------------------------- |
+| **开发环境代码热更新** | 目录挂载         | 实时同步代码修改，无需重建镜像。                             |
+| **生产环境数据库存储** | 卷映射           | 数据独立管理，避免主机路径依赖，支持备份和迁移。             |
+| **跨容器共享数据**     | 卷映射           | 多个容器可挂载同一卷，实现数据共享（如 Nginx 与 App 共享静态资源）。 |
+| **敏感配置文件**       | 目录挂载（只读） | 挂载主机配置文件到容器（如 `-v /etc/config:/app/config:ro`），防止误修改。 |
+
+
+
+#### Docker Compose（多容器编排）
+
+1. 安装 Docker Compose：
+
+   ```bash
+   # Linux
+   sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   sudo chmod +x /usr/local/bin/docker-compose
+   ```
+
+2. 编写 `docker-compose.yml`：
+
+   ```yaml
+   version: '3'
+   services:
+     web:
+       image: nginx
+       ports:
+         - "80:80"
+     db:
+       image: mysql
+       environment:
+         MYSQL_ROOT_PASSWORD: 123456
+   ```
+
+3. 启动服务：
+
+   ```bash
+   docker-compose up -d
+   ```
 
 
 
