@@ -26,30 +26,28 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-22.04  # 当前稳定版 LTS runs-on: ubuntu-24.04-2024.04.1
+    runs-on: ubuntu-22.04-2024.04.1
     steps:
-      - name: Restore pnpm cache
-        uses: actions/cache@v3
+      - name: Clear Cache
+        uses: actions/cache@v2
         with:
-          path: |
-            ~/.pnpm-store
-            node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+          path: /path/to/cache # 指定要清除的缓存路径
+          key: ${{ runner.os }}-cache # 缓存的键，用于标识不同的缓存
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
       - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x  # 升级到LTS版本
-          cache: 'pnpm'
-      - name: Install pnpm
+        uses: actions/setup-node@v3
+      - name: pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.19
+          cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile && pnpm install
       - name: Install requests package
         run: pnpm install
       - name: Build
@@ -80,17 +78,10 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - name: Setup Pages
         uses: actions/configure-pages@v3
-      - name: Upload Pages Artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: './dist'
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4  # 显式使用最新版
-        with:
-          name: build-output
-          path: |
-            dist/
-            *.log
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@v2
