@@ -31,8 +31,12 @@ jobs:
       - name: Restore pnpm cache
         uses: actions/cache@v3
         with:
-          path: /path/to/cache # 指定要清除的缓存路径
-          key: ${{ runner.os }}-cache # 缓存的键，用于标识不同的缓存
+          path: |
+            ~/.pnpm-store
+            node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Node
@@ -47,7 +51,7 @@ jobs:
           node-version: 18.19
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile && pnpm install
+        run: pnpm install --frozen-lockfile
       - name: Install requests package
         run: pnpm install
       - name: Build
@@ -78,10 +82,17 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - name: Setup Pages
         uses: actions/configure-pages@v3
-      - name: Upload artifact
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: './dist'
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4  # 显式使用最新版
+        with:
+          name: build-output
+          path: |
+            dist/
+            *.log
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
