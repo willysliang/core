@@ -4,7 +4,7 @@ name: Deploy static content to Pages
 on:
   # 仅在推送到默认分支时运行。
   push:
-    branches: ['master']
+    branches: ['master', 'hotfix/ci-cd']
 
   # 这个选项可以使你手动在 Action tab 页面触发工作流
   workflow_dispatch:
@@ -26,7 +26,9 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # 当前稳定版 LTS
+    # 或使用带明确镜像版本号的格式（需确认可用性）
+    # runs-on: ubuntu-24.04-2024.04.1
     steps:
       - name: Clear Cache
         uses: actions/cache@v2
