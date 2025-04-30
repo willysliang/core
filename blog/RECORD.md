@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年4月30日
+  - docs(前端进阶): [前端性能优化] 时间分片加载、请求队列聚合方案
+
 ## 2025年4月25日
   - docs(前端框架): [移动开发] 移动端适配
 
