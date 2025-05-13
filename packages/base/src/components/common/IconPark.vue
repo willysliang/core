@@ -1,8 +1,8 @@
 <!--
  * @ Author: willysliang
- * @ Create Time: 2023-03-08 14:44:35
- * @ Modified by: willysliang
- * @ Modified time: 2023-03-22 11:00:27
+ * @ CreateTime: 2023-03-08 14:44:35
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-05-13 15:09:52
  * @ Description: IconPark 图标
  -->
 
@@ -20,9 +20,9 @@ interface IIconPark {
   strokeWidth?: number // 线段粗细
 }
 
-// defineOptions({
-//   name: 'IconPark',
-// })
+defineOptions({
+  name: 'IconPark',
+})
 
 defineProps<IIconPark>()
 </script>

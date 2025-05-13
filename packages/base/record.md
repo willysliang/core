@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年5月13日
+  - perf(layout): 优化页面警告
+
 ## 2025年4月9日
   - style(demo): [views/demo/AudioVideo] Barrage 更名为 AudioVideo
 

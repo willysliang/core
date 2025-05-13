@@ -1,8 +1,8 @@
 <!--
  * @ Author: willysliang
- * @ Create Time: 2023-03-21 23:34:10
- * @ Modified by: willysliang
- * @ Modified time: 2023-04-10 18:11:01
+ * @ CreateTime: 2023-03-21 23:34:10
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-05-13 16:16:34
  * @ Description: 页面主入口
  -->
 
@@ -29,8 +29,8 @@ const { getElLocale } = useLocaleHook()
 // eslint-disable-next-line no-new
 new Tracker({
   requestUrl: 'http://localhost:9000/tracker',
-  historyTracker: true, // 开启监听页面的前进与回退的触发
-  domTracker: true, // 开启监听 dom事件触发上报
+  // historyTracker: true, // 开启监听页面的前进与回退的触发
+  // domTracker: true, // 开启监听 dom事件触发上报
   // jsError: true, // 开启监听js错误上报
   // behaviorTracker: true, // 开启用户行为上报
   // performanceTracker: true, // 开启页面性能监控上报
