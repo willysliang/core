@@ -2865,7 +2865,37 @@ speak('点个关注不迷路')
 
 ```bash
 MediaDevices API 接口提供访问连接媒体输入的设备，如照相机和麦克风，以及屏幕共享等。它可以使你取得任何硬件资源的媒体数据。
-注意：MediaDevices API 只有通过 HTTPS 提供内容时才能访问网络摄像头。该 API 基于 Promise 规范。
+
+把获取到的摄像头内容显示到页面中
+	使用 getUserMedia 获取 mediaStream，接着将获取到的 mediaStream 设置到需要显示的 video 标签中。
+	页面上 video 正常显示摄像头捕获到的画面是左右镜像的（摄像头捕获的文本字体是反向的），此时可以使用 CSS 将 video 镜像翻转。
+
+
+
+#### MediaDevices 的限制
+注意：MediaDevices API 基于 Promise 规范，只有通过 HTTPS 提供内容时才能访问网络摄像头。
+通过 MediaDevices API 只能工作于以下三种环境：
+	- localhost 域
+	- 开启 HTTPS 的域
+	- 使用 `file:///` 协议打开的本地文件
+其他情况下，比如在一个 HTTP 站点上，navigator.mediaDevices 的值为 undefined
+
+
+
+#### 在 HTTP 中也能开始设备访问
+如果想要在 HTTP 环境下也能使用和调试 MediaDevices API，可通过开始 Chorme 的相应参数。
+
+1. 通过相应参数启动 Chrome
+传递相应参数来启动 Chrome，以 http://example.com 为例：
+`--unsafely-treat-insecure-origin-as-secure="http://example.com"`
+`open -n /Applications/Google\ Chrome.app/ --args --unsafely-treat-insecure-origin-as-secure="http://example.com"`
+
+2. 开启相应 flag
+通过传递相应参数来启动 Chrome Insecure origins treated as secure flag 并填入相应白名单。
+浏览器打开 `chrome://flags/#unsafely-treat-insecure-origin-as-secure`
+将该 flag 切换成 enable 状态
+输入框中填写需要开启的域名，譬如 http://example.com，多个以英文逗号分隔。
+重启浏览器后生效。
 ```
 
 ```html
@@ -2874,42 +2904,60 @@ MediaDevices API 接口提供访问连接媒体输入的设备，如照相机和
 <video autoplay="true" id="videoElement" style="width: 500px; height: 500px"></video>
 
 <script>
-  const video = document.querySelector('#videoElement')
+const video = document.querySelector('#videoElement')
 
-  /** 开启摄像头 */
-  const start = () => {
-    if (navigator.mediaDevices.getUserMedia) {
-      const constraints = {
-        video: {
-          aspectRatio: 16 / 9,
-        },
-        audio: {
-          echoCancellation: true,
-          sampleRate: 44100,
-        },
-      }
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then((stream) => {
-        video.srcObject = stream
+/** 开启摄像头 */
+const start = () => {
+  if (navigator.mediaDevices.getUserMedia) {
+    const constraints = {
+      video: {
+        aspectRatio: 16 / 9,
+      },
+      audio: {
+        echoCancellation: true,
+        sampleRate: 44100,
+      },
+    }
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then((mediaStream) => {
+        if ('srcObject' in video) {
+          // 旧的浏览器可能没有 srcObject
+          // HTMLMediaElement 接口的 srcObject 属性设定或返回一个对象
+          // 这个对象提供了一个与HTMLMediaElement关联的媒体源，这个对象通常是 MediaStream
+          // 也可以是 MediaSource， Blob 或者 File
+          video.srcObject = mediaStream
+        } else {
+          // 防止在新的浏览器里使用它，因为它已经不再支持了
+          // URL.createObjectURL() 静态方法会创建一个 DOMString
+          // 其中包含一个表示参数中给出的对象的 URL
+          // 这个 URL 的生命周期和创建它的窗口中的 document 绑定
+          // 这个新的 URL 对象表示指定的 File 对象或 Blob 对象。
+          // 这里是创建一个关于 MediaStream 的对象 URL
+          video.src = window.URL.createObjectURL(mediaStream)
+        }
+
+        video.onloadedmetadata = (e) => {
+          video.play()
+        }
       })
-        .catch((err) => {
+      .catch((err) => {
         console.log('ERROR: ', err)
       })
-    }
+  }
+}
+
+/** 关闭摄像头 */
+const stop = () => {
+  const stream = video.srcObject
+  const tracks = stream.getTracks()
+
+  for (i = 0; i < tracks.length; i++) {
+    tracks[i].stop()
   }
 
-  /** 关闭摄像头 */
-  const stop = () => {
-    const stream = video.srcObject
-    const tracks = stream.getTracks()
-
-    for (i = 0; i < tracks.length; i++) {
-      tracks[i].stop()
-    }
-
-    video.srcObject = null
-  }
+  video.srcObject = null
+}
 </script>
 ```
 

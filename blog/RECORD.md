@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年5月14日
+  - docs(前端进阶): [功能记录本] 人脸识别
+
 ## 2025年5月13日
   - style(学海无涯): [格物致知] 文件命名不可见空格
 
