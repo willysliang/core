@@ -29,6 +29,7 @@ Description: 日志记录
 
 ## 2025年5月14日
   - feat(demo): [FaceRecognition] 人脸识别身份验证(face-api.js)
+  - feat(demo): [AudioVideo] AudioVisualizer 音视频声波图
 
 ## 2025年5月13日
   - perf(layout): 优化页面警告

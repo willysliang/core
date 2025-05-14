@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-04-03 19:32:07
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-04-03 21:58:39
+ * @ ModifierTime: 2025-04-10 11:21:55
  * @ Description: 黑屏检测
  -->
 
@@ -95,37 +95,35 @@ const handleCheck2 = async () => {
 </script>
 
 <template>
-  <div>
-    <video ref="videoRef" controls class="mb-2"></video>
-    <el-button round plain type="primary" @click="handleSelectFile">
-      选择文件
-    </el-button>
-    <span>➡</span>
-    <el-button
-      round
-      plain
-      type="success"
-      :loading="checkLoading"
-      @click="handleCheck1"
+  <video ref="videoRef" controls class="mb-2"></video>
+  <el-button round plain type="primary" @click="handleSelectFile">
+    选择文件
+  </el-button>
+  <span>➡</span>
+  <el-button
+    round
+    plain
+    type="success"
+    :loading="checkLoading"
+    @click="handleCheck1"
+  >
+    黑屏检测(起始帧按1s一次检测)
+  </el-button>
+  <span>➡</span>
+  <el-button
+    round
+    plain
+    type="success"
+    :loading="checkLoading"
+    @click="handleCheck2"
+  >
+    全视频检测(根据视频时长按间隔检测)
+  </el-button>
+  <div v-if="!checkLoading" class="w-full mt-4">
+    <span class="text-red-500"
+      >检测结果: {{ isBlack ? '' : ' 不' }}存在黑频</span
     >
-      黑屏检测(起始帧按1s一次检测)
-    </el-button>
-    <span>➡</span>
-    <el-button
-      round
-      plain
-      type="success"
-      :loading="checkLoading"
-      @click="handleCheck2"
-    >
-      全视频检测(根据视频时长按间隔检测)
-    </el-button>
-    <div v-if="!checkLoading" class="w-full mt-4">
-      <span class="text-red-500"
-        >检测结果: {{ isBlack ? '' : ' 不' }}存在黑频</span
-      >
-      <br />
-      <span v-html="checkResult"></span>
-    </div>
+    <br />
+    <span v-html="checkResult"></span>
   </div>
 </template>
