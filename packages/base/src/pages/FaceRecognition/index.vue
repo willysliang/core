@@ -2,12 +2,13 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-05-12 17:03:55
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-14 11:26:34
+ * @ ModifierTime: 2025-05-15 19:24:25
  * @ Description: FaceRecognition 人脸识别
  -->
 
 <script lang="ts" setup>
 import FaceApi from './faceApi.vue'
+import FaceComparison from './FaceComparison.vue'
 import { demoPages } from '../constant'
 
 defineOptions({
@@ -16,7 +17,16 @@ defineOptions({
 })
 
 const list = [
-  { title: '人脸识别身份验证(face-api.js)', components: FaceApi, span: 22 },
+  {
+    title: '人脸识别身份验证(face-api.js)',
+    components: FaceApi,
+    span: 22,
+  },
+  {
+    title: '多图片人脸比对',
+    components: FaceComparison,
+    span: 22,
+  },
 ]
 </script>
 

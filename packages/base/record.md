@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年5月15日
+ - feat(demo): [FaceRecognition/FaceComparison] 多图片人脸比对
+
 ## 2025年5月14日
   - feat(demo): [FaceRecognition] 人脸识别身份验证(face-api.js)
   - feat(demo): [AudioVideo] AudioVisualizer 音视频声波图
