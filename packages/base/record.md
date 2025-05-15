@@ -29,6 +29,7 @@ Description: 日志记录
 
 ## 2025年5月15日
  - feat(demo): [FaceRecognition/FaceComparison] 多图片人脸比对
+ - perf(demo): [FaceRecognition/faceApi] 优化人脸识别步骤-可立即/延迟识别
 
 ## 2025年5月14日
   - feat(demo): [FaceRecognition] 人脸识别身份验证(face-api.js)

@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-05-13 14:11:56
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-14 16:37:51
+ * @ ModifierTime: 2025-05-15 19:31:01
  * @ Description: 人脸识别
  */
 
@@ -21,6 +21,8 @@ interface IOptions {
   showMark: boolean
   /** 人脸识别成功的回调 */
   successCallback: () => void
+  /** 是否立即检测 */
+  immediate: boolean
 }
 
 export class FaceDetection {
@@ -55,6 +57,7 @@ export class FaceDetection {
         },
         matchedScore: 0.9,
         showMark: false,
+        immediate: true,
         successCallback: () => {},
       },
       options,
@@ -165,14 +168,14 @@ export class FaceDetection {
       })
 
       // 开始检测
-      this.onPlay()
+      this.options.immediate && this.onPlay()
     } catch (error) {
       this.errorInfo(error)
     }
   }
 
   /** 循环监听扫描视频流中的人脸特征 */
-  private async onPlay() {
+  public async onPlay() {
     // 判断视频对象是否暂停结束
     if (this.videoEl.paused || this.videoEl.ended) {
       this.timer = setTimeout(() => this.onPlay(), 100)
