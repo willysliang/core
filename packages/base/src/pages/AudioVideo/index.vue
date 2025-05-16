@@ -2,13 +2,13 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-12-02 15:40:08
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-04-10 11:23:02
+ * @ ModifierTime: 2025-05-16 17:19:43
  * @ Description: 音视频组件
  -->
 
 <script lang="ts" setup>
 import VideosPlay from './VideosPlay.vue'
-import BlackScreenDetector from './BlackScreenDetector.vue'
+import VideoRecord from './VideoRecord.vue'
 import AudioVisualizer from './AudioVisualizer.vue'
 import { demoPages } from '../constant'
 
@@ -19,7 +19,7 @@ defineOptions({
 
 const list = [
   { title: '声波图', components: AudioVisualizer, span: 22 },
-  { title: '黑屏检测', components: BlackScreenDetector, span: 22 },
+  { title: '视频录制 & 黑屏检测', components: VideoRecord, span: 22 },
   { title: '视频播放', components: VideosPlay, span: 22 },
 ]
 </script>
