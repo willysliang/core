@@ -2,13 +2,16 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-05-13 14:11:56
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-15 19:31:01
+ * @ ModifierTime: 2025-05-16 14:28:10
  * @ Description: 人脸识别
  */
 
 import * as faceapi from 'face-api.js'
 import markImg from '@/assets/images/default.png'
 
+/**
+ * 人脸识别参数
+ */
 interface IOptions {
   /** 视频区域的宽高配置 */
   mediaSize: {
@@ -25,6 +28,19 @@ interface IOptions {
   immediate: boolean
 }
 
+/**
+ * @class FaceDetection 人脸识别
+ * @description 基于face-api.js实现的人脸识别
+ *
+ * @memberof FaceDetection#onPlay 循环监听扫描视频流中的人脸特征
+ * @memberof FaceDetection#destroy 销毁实例
+ *
+ * @memberof FaceDetection#loadModels 加载所需模型
+ * @memberof FaceDetection#initDetection 初始化人脸识别
+ * @memberof FaceDetection#detectFace 检测人脸
+ * @memberof FaceDetection#drawFaceBox 人脸框绘制
+ * @memberof FaceDetection#clearFaceBox 清除人脸框绘制
+ */
 export class FaceDetection {
   /** 模型的配置参数 */
   options: IOptions
@@ -190,7 +206,7 @@ export class FaceDetection {
     })
   }
 
-  /** 检测人脸并绘制 */
+  /** 检测人脸并调用绘制 */
   private async detectFace() {
     try {
       // 设置 TinyFaceDetector 模型参数

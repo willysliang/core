@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-12-02 15:34:44
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-04-03 19:40:03
+ * @ ModifierTime: 2025-05-15 21:26:31
  * @ Description: 视频播放插件
  -->
 
@@ -18,7 +18,7 @@ const options = reactive({
   color: '#409eff', // 主题色
   title: '仙剑奇侠传三', // 视频名称
   type: 'video/mp4',
-  src: '/video/demo.mp4', // 视频源
+  src: './video/demo.mp4', // 视频源
   muted: false, // 静音
   webFullScreen: false,
   speedRate: ['2.0', '1.25', '1.5', '1.0', '0.75', '0.5'], // 播放倍速

@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-05-12 17:04:56
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-15 19:32:06
+ * @ ModifierTime: 2025-05-16 14:08:26
  * @ Description: 人脸识别身份验证(face-api.js)
  -->
 
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { FaceDetection } from './faceDetection'
 
 const wraperRef = ref<HTMLElement>()
@@ -54,23 +54,20 @@ const renderCanvas = () => {
 /**
  * 加载模型
  */
-const faceDetection = ref<FaceDetection>()
-onMounted(async () => {
-  faceDetection.value = new FaceDetection(
+const handleStartDetection = () => {
+  const faceDetection = new FaceDetection(
     {
       showMark: false,
       immediate: false,
       successCallback: () => {
-        detectedFaces.value = faceDetection.value!.detectedFaces
-        faceImages.value = faceDetection.value!.faceImages
+        detectedFaces.value = faceDetection.detectedFaces
+        faceImages.value = faceDetection.faceImages
         renderCanvas()
       },
     },
     wraperRef.value,
   )
-})
-const handleStartDetection = () => {
-  faceDetection.value!.onPlay()
+  faceDetection.onPlay()
 }
 </script>
 
