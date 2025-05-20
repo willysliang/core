@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年5月20日
+  - docs(前端基础): [WEB_API] Blob的生命周期
+
 ## 2025年5月14日
   - docs(前端进阶): [功能记录本] 人脸识别
 

@@ -735,6 +735,23 @@ Web Component 允许内部代码隐藏起来，这叫做 Shadow DOM。即这部�
 
 
 
+### Blob 的生命周期
+1. 内存中的 Blob
+- 未通过URL引用的Blob：如果 Blob 仅存在于 JS 变量中（未被其他对象引用），当变量被销毁或超出作用域时，垃圾回收机制会自动释放内存。
+- 通过 URL.createObjectURL() 引用的Blob：生成的  Blob URL 会隐式引用 Blob，必须手动调用 URL.revokeObject.URL(url) 才能立即释放内存，否则 Blob 会持续占用内存，直到页面关闭或浏览器进程结束。
+
+2. 磁盘中的 Blob（持久化存储）
+- IndexedDB：Blob 会一直存在，直到被显示删除或数据库被清除
+- Cache Storage（Service Worker缓存）：Blob会保留，直到缓存被清理（如调用 caches.delete() 或浏览器清除缓存）
+- File System Access API：用户明确授权保存的文件会持久化存储，需手动删除
+
+3. Blob 的自动清理场景
+- 页面关闭：所有未持久化的 Blob 和未撤销的 Blob URL 占用的内存会被释放
+- 浏览器进程崩溃/重启：所有临时 Blob 数据会被清除
+- 内存压力：浏览器可能在内存不足时主动清理未引用的 Blob
+
+
+
 ### 关联/参考地址
 - [Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API)
 - [ArrayBuffer](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
