@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-04-03 19:41:23
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-04-03 20:14:53
+ * @ ModifierTime: 2025-05-19 11:41:52
  * @ Description: 获取视频 dom 实时帧率来判断是否为黑屏(所以需要播放视频来处理)
  */
 
@@ -95,7 +95,7 @@ export class CheckBlackVideo {
           `黑色像素比: ${(blackPixels * 4) / data.length}, 次数: ${count}`,
         )
 
-        // 大于基准值，则认为是黑屏，少于则不是
+        // 大于基准值，则认为是黑屏，少于则不是（黑屏的点在数据总数中超出基准值）
         if ((blackPixels * 4) / data.length > blackScreenParam) {
           // 只要有一次黑屏，则认为黑屏
           resolve(true)
