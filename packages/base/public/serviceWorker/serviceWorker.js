@@ -1,8 +1,8 @@
 /**
  * @ Author: willy
  * @ CreateTime: 2024-02-19 14:12:05
- * @ Modifier: willy
- * @ ModifierTime: 2024-02-19 14:38:11
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-05-16 14:17:56
  * @ Description: serviceWorker 网络请求拦截中转
  */
 
@@ -17,10 +17,10 @@ this.addEventListener('install', (event) => {
     caches.open('v1').then((cache) => {
       // 指定要缓存的内容，地址为相对于跟域名的访问路径
       return cache.addAll([
-        '../vite.svg',
-        './serviceWorkerLoad.js',
-        './serviceWorkerLoad.html',
-        './serviceWorkerLoad.css',
+        './vite.svg',
+        './serviceWorker/serviceWorkerLoad.js',
+        './serviceWorker/serviceWorkerLoad.html',
+        './serviceWorker/serviceWorkerLoad.css',
       ])
     }),
   )
@@ -45,8 +45,8 @@ self.addEventListener('push', (event) => {
   const title = pushData.title || '新消息'
   const options = {
     body: pushData.body,
-    icon: '../vite.svg',
-    badge: '../vite.svg',
+    icon: './vite.svg',
+    badge: './vite.svg',
   }
 
   event.waitUntil(self.registration.showNotification(title, options))

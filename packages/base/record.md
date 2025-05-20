@@ -27,6 +27,24 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年5月20日
+  - feat(demo): [AudioVideo/VideoRecord] 视频录制 & 绘制频谱声波图 & 视频水印
+
+## 2025年5月16日
+  - fix(demo): [public/serviceWorker & AudioVideo & FaceRecognition] 修复打包后全局静态资源地址路径引用异常 & 添加注释说明
+  - feat(demo): [AudioVideo/VideoRecord] 视频录制&黑屏检测
+
+## 2025年5月15日
+ - feat(demo): [FaceRecognition/FaceComparison] 多图片人脸比对
+ - perf(demo): [FaceRecognition/faceApi] 优化人脸识别步骤-可立即/延迟识别
+
+## 2025年5月14日
+  - feat(demo): [FaceRecognition] 人脸识别身份验证(face-api.js)
+  - feat(demo): [AudioVideo] AudioVisualizer 音视频声波图
+
+## 2025年5月13日
+  - perf(layout): 优化页面警告
+
 ## 2025年4月9日
   - style(demo): [views/demo/AudioVideo] Barrage 更名为 AudioVideo
 

@@ -1152,14 +1152,37 @@ docker run --name my-mysql \
 指定网络模式: `--network=<mode>`（mode 有 bridge、host、none 或自定义网络）
 
 
-1. 查看网络列表：
+### 自定义网络
+优势：
+	- 容器间通信便利：在自定义网络中，容器可以通过容器名直接进行通信，无需知道对方 IP 地址
+	- 网络隔离：不同的自定义网络相互隔离，增强了容器的安全性和独立性
+	- 灵活配置：可根据需求自定义网络的参数，如子网、网关等。
+```
+
+```bash
+# 创建 bridge 类型的自定义网络（`--driver bridge` 指定网络驱动为 bridge）
+$ docker network create --driver bridge my-custom-network
+
+
+# 查看网络列表
 $ docker network ls
 
-2. 创建自定义网络：
-$ docker network create my-network
 
-3. 运行容器并指定网络：
-$ docker run --network my-network my-app
+# 查看自定义网络的详细信息（输出结果包含网络的各种配置信息，如子网、网关）
+$ docker network inspect my-custom-network
+
+
+# 运行容器并指定网络（启动名为 container1 和 container2 的Nginx容器，并将它们连接到 my-custom-network 网络中）
+$ docker run -d --name container1 --network my-custom-network nginx
+$ docker run -d --name container2 --network my-custom-network nginx
+
+
+# 容器间通信（测试连通性）
+$ docker exec -it container1 ping container2
+
+
+# 删除自定义网络
+$ docker network rm my-custom-network
 ```
 
 
@@ -1186,13 +1209,12 @@ docker ps -aq
 docker rm -f $(docker ps -aq)
 
 
-删除原来的容器后，用相同的命令创建新的容器数据会存在丢失
+删除原来的容器后，用相同的命令创建新的容器数据会存在丢失。
     容器只要一启动，相当于启动自己的空间和文件系统。
     容器一旦销毁，它的文件系统里所有的内容都会被销毁。
     因而会产生数据丢失问题
-
-启动一个目录挂载，相当于插U盘，电脑一插上就会显示U盘里的内容，U盘移除则内容也会丢失
-将外部容器挂载到内部容器
+目录挂载是将外部容器挂载到内部容器。
+		启动一个目录挂载，相当于插U盘，电脑一插上就会显示U盘里的内容，U盘移除则内容也会丢失。
 ```
 
 ```bash
@@ -1309,7 +1331,7 @@ docker run --mount type=volume,source=my_volume,target=/container/data my_image
 
 
 
-#### Docker Compose（多容器编排）
+### Docker Compose（多容器编排）
 
 1. 安装 Docker Compose：
 
@@ -1343,3 +1365,19 @@ docker run --mount type=volume,source=my_volume,target=/container/data my_image
 
 
 ## 结语
+
+```bash
+
+16.网络-Redis主从集群
+17.最佳实践
+18.Docker Compose-安装wordpress
+19.Docker Compose-语法
+20.Docker Compose-其他
+21.Dockerfile-制作镜像
+22.Dockerfile-镜像分层机制
+23.超酷 --键启动所有中间件
+24.超酷-访问测试全部通过
+25.销毁实例
+26.结束语
+```
+

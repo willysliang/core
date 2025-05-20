@@ -1,8 +1,8 @@
 <!--
  * @ Author: willysliang
- * @ Create Time: 2022-10-10 09:05:41
- * @ Modified by: willysliang
- * @ Modified time: 2022-11-23 09:45:39
+ * @ CreateTime: 2022-10-10 09:05:41
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-05-13 15:20:52
  * @ Description: 页面布局头部
  -->
 
@@ -85,7 +85,7 @@ const menuConfig = computed(() => {
       v-if="appConfig?.routeInfo"
       class="flex items-center text-gray-400 hover-text"
     >
-      <IconPark :icon="appConfig.routeInfo.icon" :size="16" :stroke-width="4" />
+      <!-- <IconPark :icon="appConfig.routeInfo.icon" :size="16" :stroke-width="4" /> -->
       <span class="text-base ml-px cursor-pointer">{{
         appConfig.routeInfo.title
       }}</span>

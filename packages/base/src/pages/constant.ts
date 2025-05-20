@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-11-15 09:25:16
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-04-09 16:56:02
+ * @ ModifierTime: 2025-05-12 17:08:12
  * @ Description: 路由配置 & 常量设定
  */
 
@@ -28,6 +28,7 @@ import {
   Form,
   NotebookAndPen,
   Video,
+  FaceRecognition,
 } from '@icon-park/vue-next'
 
 export const demoPages = {
@@ -54,6 +55,14 @@ export const demoPages = {
     title: '音视频',
     icon: Video,
     component: () => import('./AudioVideo/index.vue'),
+  },
+  FACE_RECOGNITION: {
+    path: 'FaceRecognition',
+    key: 'FaceRecognition',
+    name: 'FaceRecognition',
+    title: '人脸识别',
+    icon: FaceRecognition,
+    component: () => import('./FaceRecognition/index.vue'),
   },
   EXCEL: {
     path: 'demoExcel',
