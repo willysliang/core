@@ -2,50 +2,11 @@
 Author: willy
 CreateTime: 2023-08-24 16:42:38
 Modifier: willysliang
-ModifiedTime: 2023-11-27 20:09:45
+ModifiedTime: 2025-05-21 14:51:21
 Description: NodeJS 进阶
 ---
 
 ## NodeJS 进阶
-
-```bash
-## NodeJS 进阶
-1. Node与工程化开发
-阻塞非阻塞
-触发器events与path模块
-Buffer对象
-
-
-2. Node框架
-数据脚本
-CORS配置
-错误处理
-校验封装
-nodemoon管理
-MORGAN日志处理
-查询正则捕获
-文件流上传下载
-
-
-3. 前后端数据交互
-报文流
-测试监听抓包
-TCP/IP握手机制
-网络业务模型
-代理
-网关
-隧道等概念
-代理服务器跨域处理
-拦截
-合并
-通信加密策略
-数据对称加密
-数据非对称加密
-RSA加密实践
-MD5加密实践
-```
-
-
 
 ### 原生路由
 

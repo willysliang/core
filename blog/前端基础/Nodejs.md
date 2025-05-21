@@ -2800,24 +2800,43 @@ const newURL = {
 ## 操作路径 path
 
 ```bash
-`const path = require(node:path)`
-
-常用API
-    - 拼接规范的绝对路径：`path.resolve`
-    - 获取操作系统的路径分隔符：`path.sep`
-    - 解析路径并返回对象：`path.parse`
-    - 获取路径的基础名称：`path.basename`
-    - 获取路径的目录名：`path.dirname`
-    - 获取路径的扩展名：`path.extname`
-
+const path = require(node:path)
 
 
 ### __dirname
-`__dirname` 表示当前模块所在的目录的绝对路径。
-`__dirname` 是每个模块独有的局部变量（不是一个全局变量），因此在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
-例如，一个 Node.js 模块位于 `C:\myapp\index.js`，那么在该模块中访问 __dirname 变量的值为 `C:\myapp`。
-`__dirname` 变量可以确保路径的正确性，避免出现相对路径错误，常用于构建文件路径，比如读取文件、写入文件、加载模块等。
+`__dirname` 表示当前模块所在的目录的绝对路径
+`__dirname` 是每个模块独有的局部变量（不是一个全局变量），因此在模块中使用 `__dirname` 时不需要使用 `global` 对象或 `require()` 方法进行导入
+`__dirname` 变量可以确保路径的正确性，避免出现相对路径错误，常用于构建文件路径，比如读取文件、写入文件、加载模块等
+例如 Node.js 模块位于 C:\myapp\index.js，那么在该模块中访问 `__dirname` 变量的值为 C:\myapp。
+
+
+
+### 跨平台处理
+路径分隔符：
+	Windows：\，POSIX（Linux/macOS）：/
+	可使用 path.sep 获取当前平台分隔符。
+
+
+
+### 常用API
+- 拼接规范的绝对路径：`path.resolve`
+- 获取操作系统的路径分隔符：`path.sep`
+- 解析路径并返回对象：`path.parse`
+- 获取路径的基础名称：`path.basename`
+- 获取路径的目录名：`path.dirname`
+- 获取路径的扩展名：`path.extname`
 ```
+
+|        方法        |             作用             |                     示例（输入 → 输出）                      |
+| :----------------: | :--------------------------: | :----------------------------------------------------------: |
+|   `path.join()`    |         安全拼接路径         |            `join('/tmp', 'a', '../b')` → `/tmp/b`            |
+|  `path.resolve()`  | 解析绝对路径（从右向左处理） |   `resolve('src', '/img')` → `/img` (若当前目录是 `/home`)   |
+| `path.normalize()` |  规范路径（处理 `.`和`..`）  |         `normalize('/foo/../bar//baz')` → `/bar/baz`         |
+| `path.basename()`  |    获取文件名（含扩展名）    |           `basename('/tmp/file.txt')` → `file.txt`           |
+|  `path.dirname()`  |         获取目录路径         |             `dirname('/tmp/file.txt')` → `/tmp`              |
+|  `path.extname()`  |        获取文件扩展名        |              `extname('index.html')` → `.html`               |
+|   `path.parse()`   |        分解路径为对象        | `parse('/tmp/file.txt')` → `{ root: '/', dir: '/tmp', base: 'file.txt', ... }` |
+|  `path.format()`   |        从对象生成路径        | `format({ dir: '/tmp', base: 'file.txt' })` → `/tmp/file.txt` |
 
 ```js
 const path = require('path')
@@ -2828,13 +2847,18 @@ const p2 = path.resolve(__dirname, 'index.js')
 const p3 = path.resolve(__dirname, '/index.js') // 这会回到根目录下
 console.log(p1, p2, p3)
 
+
 /** sep 分隔符 */
 console.log(path.sep)   // window下为 \，Linux下为 /
+// 强制使用 POSIX 风格路径（如 Web 配置）
+const posixPath = path.posix.join('src', 'images', 'logo.png'); // → 'src/images/logo.png'
+// 强制使用 Windows 风格路径
+const winPath = path.win32.join('C:', 'tmp', 'file.txt'); // → 'C:\\tmp\\file.txt'
 
-const pathStr = 'C:\\Users\\OP0213\\Desktop\\core\\index.js'
 
 /** 文件分隔符：parse */
 console.log(path.parse(pathStr))
+
 
 /** 文件基础名称：basename */
 path.basename(pathStr) // index.js
@@ -2941,6 +2965,34 @@ export const syncStaticDir = (): void => {
 ```
 
 
+
+### 【文件监控与路径处理】
+
+```js
+const fs = require('fs')
+const path = require('path')
+const EventEmitter = require('events')
+
+class FileWatcher extends EventEmitter {
+  constructor(dir) {
+    super()
+    this.dir = path.resolve(dir) // 确保绝对路径
+  }
+
+  watch() {
+    fs.watch(this.dir, (eventType, filename) => {
+      const fullPath = path.join(this.dir, filename)
+      this.emit('change', fullPath, eventType) // 触发事件
+    })
+  }
+}
+
+const watcher = new FileWatcher('./logs')
+watcher.on('change', (filepath) => {
+  console.log(`文件修改：${path.basename(filepath)}`)
+})
+watcher.watch()
+```
 
 
 
@@ -4136,10 +4188,231 @@ client.on('end', () => {
 
 
 
+## 事件触发器 events
+
+```bash
+nodejs 存在许多内置的事件，可通过引入 events 模块并通过实例化 EventEmitter 类来绑定和监听事件
+
+
+### EventEmmiter
+EventEmitter 的每个事件由一个事件名和若干个参数组成，事件名是一个字符串，而对于每个事件，EventEmitter 支持若干个事件监听器。
+当事件触发时，注册到这个事件的事件监听器被依次调用，事件参数作为回调函数参数传递
+```
+
+```js
+// 引入 events 模块
+const EventEmitter = require("events")
+
+// 创建 eventEmitter 对象
+const events = new EventEmitter()
+
+events.on("someEvent", function (arg1, arg2) {
+    console.log("listener1", arg1, arg2)
+})
+events.on("someEvent", function (arg1, arg2) {
+    console.log("listener2", arg1, arg2)
+})
+
+events.emit("someEvent", "arg1 参数", "arg2 参数")
+
+/**
+ * 输出
+ * listener1 arg1 参数 arg2 参数
+    listener2 arg1 参数 arg2 参数
+ */
+```
+
+
+
+## 缓存区 Buffer类
+
+```bash
+#### 概念
+1. 二进制代码：
+因为计算机处理器由晶体管组成，靠开（0）和关（1）信号激活。为了让计算机能理解、处理和存储数据，必须将数据转换为二进制代码。
+发送到计算机的每一条数据在处理和输出结果之前，首先由微处理器转换成二进制，因此需要区分不同的数据类型。而计算机通过对不同的数据类型进行不同的编码，以区分不同类型的数据。
+
+2. 缓冲区：
+二进制流是大量二进制数据的集合，由于二进制流庞大，因而不会被一起发送，需要在发送之前分解成更小部分再进行发送。
+当数据处理单元不能接收更多数据流时，多余的数据将存储在缓冲区中，直到数据处理单元准备好接收更多数据。
+
+3. NodeJS 中的缓冲区类
+NodeJS 中的 Buffer 类用于处理二进制数据，它是 NodeJS 在处理TCP流、文件系统操作、加密算法等方面的核心模块之一。
+	- 读写文件系统（文件存储在二进制文件中）
+	- 处理 TCP 流，它们在以小块形式发送二进制数据之前保护与接收器的连接。发送到接收器的数据流需要存储在缓冲区，直到接收器准备好接收更多数据块进行处理为止。
+注意：
+	- Buffer 是 V8 堆外分配的一段固定长度的连续内存，用于直接操作二进制数据流。与普通数组不同，Buffer 内存分配不经过 V8 引擎，避免了垃圾回收的延迟。
+	- Buffer 对象在创建时需指定其大小(以字节为单位)，且创建后无法改变。在使用Buffer时需要注意内存泄漏、安全及避免缓冲区溢出问题。
+	- Buffer 类可以方便地进行二进制数据的拼接、切片等操作，提高对二进制数据的处理效率。
+	
+
+
+#### Buffer 的作用
+1. 存储二进制数据：可存储二进制数据，包括字节、位、16进制、ASCII等。
+2. 处理网络流数据：可用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
+3. 处理文件系统操作：可用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
+4. 实现加密算法：可用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
+5. 处理数据传输：可用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
+6. 支持转换编码：可将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
+```
+
+#### 属性和方法
+
+```bash
+- `Buffer.alloc()` 创建指定长度的缓冲区对象。以字节为单位分配缓冲区的大小
+- `Buffer.from()` 从对象（字符串/数组/缓冲区）创建缓冲区对象
+- `Buffer.compare()` 比较两个缓冲区对象
+- `Buffer.concat()` 将缓冲区对象数组连接到一个缓冲区对象中
+- `Buffer.fill()` 用指定的值填充缓冲区对象
+- `Buffer.byteLength()` 返回指定对象中的字节数
+- `Buffer.isEncoding()` 检查缓冲区对象是否支持指定的编码
+
+- `buf.entries()` 返回缓冲区对象的 index、byte 对的迭代器
+- `buf.includes()` 检查缓冲区对象是否包含指定的值。如果存在匹配项，则返回`true`，否则返回 `false`
+- `buf.slice()` 将一个缓冲区对象分割成一个新的缓冲区对象，从指定的位置开始和结束。
+- `buf.readInt8()` 从缓冲区对象读取 8 位整数
+- `buf.writeFloatBE()` 使用 big-endian 将指定的字节写入缓冲区对象。字节应为 32 位浮点。
+- `buf.length` 返回缓冲区对象的长度，以字节为单位
+
+
+
+#### 创建 Buffer
+在 Node V6.0 前，要创建新的 Buffer，只需要使用 `new` 关键字调用构造函数：
+		`const newBuffer = new Buffer('new String')`
+在 Node V6.0 后，`new Buffer()`构造函数已被弃用，并被 `Buffer.from()、Buffer.alloc()、Buffer.allocUnsafe()` 方法替换
+
+类方法：Buffer.from(buffer)
+  - Buffer.from()方法用于创建包含指定字符串，数组或缓冲区的新缓冲区
+  - `Buffer.from( object, encoding)`
+      - object：此参数可以包含字符串，缓冲区，数组或arrayBuffer。
+      - encoding：如果对象是字符串，则用于指定其编码。它是可选参数。其默认值为utf8
+  - 创建新的 Buffer 实例：`const newBuffer = Buffer.from('new String')`
+
+
+#### buffer 与字符串的转换
+- 转换为buffer：`Buffer.from()`
+- 转换为字符串：`Buffer.toString()`，默认情况下，它会转换为 utf-8 格式字符串
+注意：一个 buffer 位只能存储最高二进制值为256的数值，超出256的数值会在转换为二进制后进行高位舍弃
+
+const buf1 = Buffer.from('hi, willy')
+const buf2 = Buffer.from([105, 108, 111, 118, 101, 121, 111, 117])
+const str1 = buf2.toString() // iloveyou
+console.log(buf1, buf2, str1)
+```
+
+#### Buffer 的创建
+
+```js
+// 创建长度为15的空Buffer（填充 0）
+const buf1 = Buffer.alloc(15) // <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
+buf1.length // 15
+
+// 创建并初始化 Buffer（填充指定值）
+const buf2 = Buffer.alloc(10, 0x41) // 填充 ASCII 'A'
+
+// 从数组创建
+const buf3 = Buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f]) // 'hello'
+
+// 从字符串创建（自动编码）
+const buf4 = Buffer.from('Hello Node.js', 'utf8')
+```
+
+
+
+#### Buffer 转换为 JSON 和 `utf-8` 字符串
+
+```js
+const bufferOne = Buffer.from('iloveyou')
+console.log(bufferOne) // // <Buffer 69 6c 6f 76 65 79 6f 75>
+
+
+/** 将 Buffer 转换为 JSON */
+const json = JSON.stringify(bufferOne, null, 2)
+console.log(json)
+/**
+{
+  "type": "Buffer",
+  "data": [105, 108, 111, 118, 101, 121, 111, 117],
+}
+ */
+
+
+/** 将 JSON 转换为 Buffer */
+const bufferOriginal = Buffer.from(JSON.parse(json).data)
+console.log(bufferOriginal) // <Buffer 69 6c 6f 76 65 79 6f 75>
+
+
+/** 将 Buffer 转换为 UTF-8 字符串 */
+console.log(bufferOriginal.toString('utf8')) // iloveyou
+```
+
+#### 文件读写
+
+```js
+const fs = require('fs')
+
+// 读取图片文件并转换为 Base64
+const imageBuffer = fs.readFileSync('logo.png')
+const base64Image = imageBuffer.toString('base64')
+
+// 写入二进制数据
+const data = Buffer.from('0101', 'hex')
+fs.writeFileSync('binary.dat', data)
+```
+
+#### 网络通信
+
+```js
+const net = require('net')
+
+const server = net.createServer((socket) => {
+  socket.on('data', (buffer) => {
+    // 解析二进制协议头（如前4字节为长度）
+    const length = buffer.readUInt32BE(0)
+    const payload = buffer.slice(4)
+    console.log('Received:', payload.toString())
+  })
+})
+server.listen(3000)
+```
+
+#### 加密与哈希
+
+```js
+const crypto = require('crypto')
+
+// 未指定编码，可能按 UTF-8 处理，但若环境默认编码不同（如 latin1）会出错
+const input = Buffer.from('secret data')
+
+// 计算 SHA-256 哈希
+const hash = crypto.createHash('sha256').update(input).digest('hex')
+
+// AES 加密
+const key = Buffer.from('32bytes-long-secret-key-1234567890ab')
+const iv = crypto.randomBytes(16) // 初始化向量
+const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+const encrypted = Buffer.concat([iv, cipher.update(input), cipher.final()]) 
+```
+
+
+
 ## 数据加密 crypto
 
 ```bash
 crypto 模块的目的是为了提供通用的加密和哈希算法。
+
+
+#### 加密的本质是二进制操作（为什么加密需要使用Buffer）
+加密算法（如AES、SHA-256）的底层实现基于字节级运算，而非字节编码
+	- 哈希函数：将输入视为二进制流，逐字节计算摘要
+	- 对称加密：对字节进行异或、置换等数学操作
+
+任何涉及加密、哈希、数字签名的操作，都应优先使用 Buffer 而非字符串。直接操作字符串会导致以下问题：
+	- 二进制完整性：加密要求输入数据完全精确，字符串隐式转换会破坏数据完整性
+	- 编码一致性：字符串默认使用 UTF-8/UTF-16 编码，不同编码的字符表示不同
+			const str = '加密'
+      const bufUtf8 = Buffer.from(str, 'utf8') // <Buffer e5 8a a0 e5 af 86>
+      const bufHex = Buffer.from(str, 'hex')   // 若 str 是十六进制字符串则正确
 ```
 
 ```js
@@ -4155,7 +4428,6 @@ const data = "hello world" // 要加密的数据
  * 创建加密器
  */
 const cipher = cryptos.createCipheriv(algorithm, key, iv)
-
 let encrypted = cipher.update(data, "utf8", "hex")
 encrypted += cipher.final("hex")
 console.log("encrypted:", encrypted) // encrypted: e221f586cf104b2d0d5d58166a8cfe69
@@ -4164,12 +4436,12 @@ console.log("encrypted:", encrypted) // encrypted: e221f586cf104b2d0d5d58166a8cf
  * 创建解密器
  */
 const decipher = cryptos.createDecipheriv(algorithm, key, iv)
-
 let decrypted = decipher.update(encrypted, "hex", "utf8")
 decrypted += decipher.final("utf8")
 console.log("decrypted:", decrypted) // decrypted: hello world
-
 ```
+
+
 
 ### 计算摘要 hash
 
@@ -4190,7 +4462,6 @@ console.log("decrypted:", decrypted) // decrypted: hello world
 		encoding 可以是 hex、latin1 或者 base64。
 	如果声明了 encoding，那么返回字符串。否则，返回Buffer实例。
 	注意：调用 hash.digest() 后，hash 对象就作废了，再次调用就会出错。
-
 
 2. hash.update(data[, input_encoding])：
 		input_encoding 可以是 utf8、ascii 或者 latin1。
@@ -4213,20 +4484,19 @@ hash.update(data)
 const digest = hash.digest("hex")
 
 console.log(digest) // 5412b888d0f63cc2269dab76826196fb5f37cd4253f081ff0fa9def0c3e4f1b4
-
 ```
+
+
 
 ### 消息认证 HMAC
 
 ```bash
-## 消息认证 HMAC
-HMAC（Hash-base Message Authentication Code）是一种基于哈希函数和密钥的消息认证算法，它可以用于验证消息的完整性和真实性。
+HMAC（Hash-base Message Authentication Code）是一种基于哈希函数和密钥的消息认证算法，可用于验证消息的完整性和真实性
 
 在 crypto 模块中，可以使用 `crypto.createHmac(algorithm, key)` 方法创建一个 HMAC 对象。
-	`algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
-	key 参数指定用于计算 HMAC 的密钥。
+	- `algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
+	- key 参数指定用于计算 HMAC 的密钥。
 	可以使用 `crypto.getHashes()` 方法获取支持的哈希算法列表。
-
 ```
 
 ```js
@@ -4245,13 +4515,11 @@ hmac.update(data)
 const digest = hmac.digest("hex")
 
 console.log(digest) // ff21d18da8f432e60025a04db1eccdc39b1574edb5e5ae49d3ad8d1509335cfe
-
 ```
 
 ### 散列函数 md5
 
 ```bash
-## 散列函数 md5
 MD5（Message-Digest Algorithm）是计算机安全领域广泛使用的散列函数（又称哈希算法、摘要算法），主要用来确保消息的完整和一致性。
 
 
@@ -4295,208 +4563,43 @@ console.log(cryptoPwd(password)) // e10adc3949ba59abbe56e057f20f883e
 
 // 他人恶意暴力破解
 console.log(cryptoPwd("123456")) // e10adc3949ba59abbe56e057f20f883e
-
 ```
 
 ### 盐值加密
 
 ```js
-const cryptos = require("crypto")
+const cryptos = require('crypto')
 
 /** 密码盐值加密 */
-const cryptoPwd = (password, savedSalt = "") => {
-    // 生成随机的盐值
-    const salt = cryptos.randomBytes(16).toString("hex")
+const cryptoPwd = (password, savedSalt = '') => {
+  // 生成随机的盐值
+  const salt = cryptos.randomBytes(16).toString('hex')
 
-    // 对密码进行哈希处理（如果为用户注册时则使用随机生成的盐值，如果用户登录时则拿用户注册的盐值进行校验）
-    const hash = cryptos
-        .pbkdf2Sync(password, savedSalt || salt, 1000, 64, "sha512")
-        .toString("hex")
+  // 对密码进行哈希处理（如果为用户注册时则使用随机生成的盐值，如果用户登录时则拿用户注册的盐值进行校验）
+  const hash = cryptos
+    .pbkdf2Sync(password, savedSalt || salt, 1000, 64, 'sha512')
+    .toString('hex')
 
-    // 将盐值和哈希值保存到数据库中
-    const savedPassword = {
-        salt,
-        hash,
-    }
-
-    return savedPassword
+  // 将盐值和哈希值保存到数据库中
+  const savedPassword = { salt, hash }
+  return savedPassword
 }
 
 // 当用户注册时时，获取保存的盐值和哈希值
-const password = "willy" // 假设用户输入的密码为 "password"
+const password = 'willy' // 假设用户输入的密码为 "password"
 const savedPassword = cryptoPwd(password)
 const savedSalt = savedPassword.salt
 const savedHash = savedPassword.hash
 
 // 对用户输入的密码进行哈希处理，并与保存的哈希值进行比较
-const loginPassword = cryptoPwd("willy", savedSalt)
+const loginPassword = cryptoPwd('willy', savedSalt)
 const loginHash = loginPassword.hash
 
 if (loginHash === savedHash) {
-    console.log("密码正确", loginHash)
+  console.log('密码正确', loginHash)
 } else {
-    console.log("密码错误", loginHash, savedHash)
+  console.log('密码错误', loginHash, savedHash)
 }
-
-```
-
-
-
-## 缓存区 Buffer类
-
-```bash
-#### Buffer 的作用：
-1. 存储二进制数据：可存储二进制数据，包括字节、位、16进制、ASCII等。
-2. 处理网络流数据：可用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
-3. 处理文件系统操作：可用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
-4. 实现加密算法：可用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
-5. 处理数据传输：可用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
-6. 支持转换编码：可将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
-
-
-
-#### 概念
-1. 二进制代码：
-因为计算机处理器由晶体管组成，靠开（0）和关（1）信号激活。为了让计算机能理解、处理和存储数据，必须将数据转换为二进制代码。
-发送到计算机的每一条数据在处理和输出结果之前，首先由微处理器转换成二进制，因此需要区分不同的数据类型。而计算机通过对不同的数据类型进行不同的编码，以区分不同类型的数据。
-
-2. 缓冲区：
-二进制流是大量二进制数据的集合，由于二进制流庞大，因而不会被一起发送，需要在发送之前分解成更小部分再进行发送。
-当数据处理单元不能接收更多数据流时，多余的数据将存储在缓冲区中，直到数据处理单元准备好接收更多数据。
-
-3. Node.js 中的缓冲区类
-Node.js 中的 Buffer 类用于处理二进制数据，它是 Node.js 在处理 TCP 流、文件系统操作、加密算法等方面的核心模块之一。
-	- 读写文件系统（文件存储在二进制文件中）
-	- 处理 TCP 流，它们在以小块形式发送二进制数据之前保护与接收器的连接。发送到接收器的数据流需要存储在缓冲区，直到接收器准备好接收更多数据块进行处理为止。
-注意：
-	- Buffer 类在 V8 引擎之外处理二进制数据分配存储。
-	- Buffer 对象在创建时需指定其大小（以字节为单位），且创建后无法改变。在使用Buffer时需要注意内存泄漏、安全及避免缓冲区溢出问题。
-	- Buffer 类可以方便地进行二进制数据的拼接、切片等操作，提高对二进制数据的处理效率。
-```
-
-#### 属性和方法
-
-```bash
-- `Buffer.alloc()` 创建指定长度的缓冲区对象。它以字节为单位分配缓冲区的大小。
-- `Buffer.byteLength()` 返回指定对象中的字节数
-- `Buffer.compare()` 比较两个缓冲区对象
-- `Buffer.concat()` 将缓冲区对象数组连接到一个缓冲区对象中
-- `Buffer.fill()` 用指定的值填充缓冲区对象
-- `Buffer.from()` 从对象（字符串/数组/缓冲区）创建缓冲区对象
-- `Buffer.isEncoding()` 检查缓冲区对象是否支持指定的编码
-
-- `buf.entries()` 返回缓冲区对象的 index、byte 对的迭代器
-- `buf.includes()` 检查缓冲区对象是否包含指定的值。如果存在匹配项，则返回`true`，否则返回 `false`
-- `buf.slice()` 将一个缓冲区对象分割成一个新的缓冲区对象，从指定的位置开始和结束。
-- `buf.readInt8()` 从缓冲区对象读取 8 位整数
-- `buf.writeFloatBE()` 使用 big-endian 将指定的字节写入缓冲区对象。字节应为 32 位浮点。
-- `buf.length` 返回缓冲区对象的长度，以字节为单位
-
-
-
-#### 创建 Buffer
-在 Node V6.0 之前，要创建新的 Buffer，只需要使用 `new` 关键字调用构造函数：
-		`const newBuffer = new Buffer('new String')`
-在 Node V6.0 之后，`new Buffer()` 构造函数已被弃用，并被单独的 `Buffer.from()`、`Buffer.alloc()` 和 `Buffer.allocUnsafe()` 方法替换。要创建新的 Buffer 实例：
-		`const newBuffer = Buffer.from('new String')`
-
-const buf = Buffer.alloc(15) // 创建长度为15的空Buffer
-buf // <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
-buf.length // 15
-
-
-
-#### 类方法：Buffer.from(buffer)
-- Buffer.from()方法用于创建包含指定字符串，数组或缓冲区的新缓冲区。
-- `Buffer.from( object, encoding)`
-    - object：此参数可以包含字符串，缓冲区，数组或arrayBuffer。
-    - encoding：如果对象是字符串，则用于指定其编码。它是可选参数。其默认值为utf8。
-
-
-
-#### buffer 与字符串的转换
-- 转换为buffer：`Buffer.from()`
-- 转换为字符串：`Buffer.toString()`，默认情况下，它会转换为 utf-8 格式字符串。
-注意：一个 buffer 位只能存储最高二进制值为256的数值，超出256的数值会在转换为二进制后进行高位舍弃。
-
-const buf1 = Buffer.from('hi, willy')
-const buf2 = Buffer.from([105, 108, 111, 118, 101, 121, 111, 117])
-const str1 = buf2.toString() // iloveyou
-console.log(buf1, buf2, str1)
-```
-
-#### Buffer 转换为 JSON 和 `utf-8` 字符串
-
-```js
-const bufferOne = Buffer.from('iloveyou')
-console.log(bufferOne) // // <Buffer 69 6c 6f 76 65 79 6f 75>
-
-
-/** 将 Buffer 转换为 JSON */
-const json = JSON.stringify(bufferOne, null, 2)
-console.log(json)
-/**
- {
-  "type": "Buffer",
-  "data": [
-    105,
-    108,
-    111,
-    118,
-    101,
-    121,
-    111,
-    117
-  ]
-}
- */
-
-
-/** 将 JSON 转换为 Buffer */
-const bufferOriginal = Buffer.from(JSON.parse(json).data)
-console.log(bufferOriginal) // <Buffer 69 6c 6f 76 65 79 6f 75>
-
-
-/** 将 Buffer 转换为 UTF-8 字符串 */
-console.log(bufferOriginal.toString('utf8')) // iloveyou
-```
-
-
-
-## 事件机制模块 events
-
-```bash
-## 事件机制模块 events
-nodejs 存在许多内置的事件，可通过引入 events 模块并通过实例化 EventEmitter 类来绑定和监听事件。
-
-
-### EventEmmiter
-EventEmitter 的每个事件由一个事件名和若干个参数组成，事件名是一个字符串，而对于每个事件，EventEmitter 支持若干个事件监听器。
-当事件触发时，注册到这个事件的事件监听器被依次调用，事件参数作为回调函数参数传递。
-
-```
-
-```js
-// 引入 events 模块
-const EventEmitter = require("events")
-
-// 创建 eventEmitter 对象
-const events = new EventEmitter()
-
-events.on("someEvent", function (arg1, arg2) {
-    console.log("listener1", arg1, arg2)
-})
-events.on("someEvent", function (arg1, arg2) {
-    console.log("listener2", arg1, arg2)
-})
-
-events.emit("someEvent", "arg1 参数", "arg2 参数")
-
-/**
- * 输出
- * listener1 arg1 参数 arg2 参数
-    listener2 arg1 参数 arg2 参数
- */
 ```
 
 

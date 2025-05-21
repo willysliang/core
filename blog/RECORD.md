@@ -98,6 +98,7 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 ## 2025年5月21日
   - docs(前端进阶): [功能记录本] RBAC权限系统
+  - docs(前端基础): [Nodejs] 缓存区Buffer类
 
 ## 2025年5月20日
   - docs(前端基础): [WEB_API] Blob的生命周期
