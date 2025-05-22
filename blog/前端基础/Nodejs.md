@@ -4399,46 +4399,195 @@ const encrypted = Buffer.concat([iv, cipher.update(input), cipher.final()])
 ## 数据加密 crypto
 
 ```bash
-crypto 模块的目的是为了提供通用的加密和哈希算法。
+crypto 模块提供了通用的加密和哈希算法。
 
 
-#### 加密的本质是二进制操作（为什么加密需要使用Buffer）
-加密算法（如AES、SHA-256）的底层实现基于字节级运算，而非字节编码
+### 加密类别
+1. 对称加密技术：加密系统的加密密钥和解密密钥相同，或者虽然不同，但可以轻松从一个密钥推导出另外的一个密钥。
+		- 破解方案1：明文+密钥=密文，这个公式只要知道任何两个，就可以推导出第三个
+		- 破解方案2：在已知明文和对应密文的情况下，通过穷举和暴力破解可以破解 DES。
+适用场景：
+    - 数据传输加密（如 https 内容加密）
+    - 本地存储加密（用户敏感信息存储）
+    - 文件/数据库加密（静态数据保护）
+
+2. 非对称加密技术：与对称加密技术相反
+
+
+
+#### 加密的本质是二进制操作（Nodejs 加密为什么需要使用Buffer）
+加密算法（如AES、SHA-256）的底层实现基于字节级运算(二进制数据)，而非字节编码(字符串)，所以必须要将输入先转换成二进制
 	- 哈希函数：将输入视为二进制流，逐字节计算摘要
 	- 对称加密：对字节进行异或、置换等数学操作
 
 任何涉及加密、哈希、数字签名的操作，都应优先使用 Buffer 而非字符串。直接操作字符串会导致以下问题：
 	- 二进制完整性：加密要求输入数据完全精确，字符串隐式转换会破坏数据完整性
 	- 编码一致性：字符串默认使用 UTF-8/UTF-16 编码，不同编码的字符表示不同
-			const str = '加密'
-      const bufUtf8 = Buffer.from(str, 'utf8') // <Buffer e5 8a a0 e5 af 86>
-      const bufHex = Buffer.from(str, 'hex')   // 若 str 是十六进制字符串则正确
+		- utf8：将字符串 ↔ 字节互相转换
+		- hex/base64：将字节 ↔ 文本互相转换，便于传输或存储
+
+加密过程：字符串 → utf8 编码为字节 → 加密 → 字节 → hex/base64 编码为文本
+    "hello world" (字符串) 
+    → utf8编码 → 二进制数据 (字节) 
+    → 加密 → 加密后的二进制 (字节) 
+    → hex编码 → "e221f586cf104b2d0d5d58166a8cfe69" (可传输的字符串)
+
+解密过程：文本 → hex/base64 解码为字节 → 解密 → 字节 → utf8 解码为字符串
+    "e221f586cf104b2d0d5d58166a8cfe69" (hex字符串) 
+    → hex解码 → 加密后的二进制 (字节) 
+    → 解密 → 原始二进制 (字节) 
+    → utf8解码 → "hello world" (字符串)
+
+示例1：
+    const str = '加密'
+    const bufUtf8 = Buffer.from(str, 'utf8') // <Buffer e5 8a a0 e5 af 86>
+    const bufHex = Buffer.from(str, 'hex')   // 若 str 是十六进制字符串则正确
+
+示例2：
+    let encrypted = cipher.update(data, "utf8", "base64") // 加密时使用 base64
+    encrypted += cipher.final("base64")
+
+    let decrypted = decipher.update(encrypted, "base64", "utf8") // 解密时使用 base64
+    decrypted += decipher.final("utf8")
+
+
+
+#### 主流的加密方式
+- aes：高级加密标准（Advanced Encryption Standard），对称加密
+- des：数据加密标准（Data Encryption Standard）
+- md5：MD5信息摘要算法（Message-Digest Algorithm）
+- sha-256：安全哈希算法256位
+- dsa：数字签名算法（Digital Signature Algorithm）
+- ecdsa：椭圆曲线数字签名算法
+- elliptic：椭圆曲线密码体制
+- hmac：密钥相关的哈希运算消息认证码（Hash-based Message Authentication Code）
+- rand：随机数生成
+- rc4：Ron Rivest设计的流密码
+- rsa：一种非对称加密算法（RSA 是三位创造者的首字母缩写）
+- cipher：密码
+
+
+场景使用方案
+- 大数据加密（文件/数据库）：对称加密（AES-256-GCM）
+- 安全通信初始握手：非对称加密（ECDH/RSA）交换对称密钥
+- 用户身份认证：非对称签名算法（Ed25519）
+- 移动端低性能设备：对称加密（ChaCha20-Poly1305） + 非对称加密（X25519）
+
+安全防御
+- 密钥泄漏：定期轮换密钥，使用 HSM/KMS 硬件保护
+- 中间人攻击：证书校验（TLS）、数字签名验证
+- 随机数质量：使用 crypto.randomBytes() 而非 Math.random()
+- 算法过时：禁用 DES/RC4，优先选择 AES-256 和 ECC
 ```
 
-```js
-const cryptos = require("crypto")
+|    **特性**    |       **对称加密**       |              **非对称加密**              |
+| :------------: | :----------------------: | :--------------------------------------: |
+|  **密钥数量**  | 单一密钥（加密解密共用） |          密钥对（公钥 + 私钥）           |
+|  **算法速度**  |    快（适合大数据量）    |        慢（适合小数据或密钥交换）        |
+|  **典型算法**  |    AES-256、ChaCha20     |     RSA、ECC（椭圆曲线加密）、EdDSA      |
+| **安全性基础** |        密钥保密性        | 数学难题（如大数分解、椭圆曲线离散对数） |
+|  **适用场景**  |  数据加密（传输/存储）   |       密钥交换、数字签名、身份认证       |
 
-const algorithm = "aes-256-cbc" // 加密算法
-const key = cryptos.randomBytes(32) // 根据加密算法生成一个32字节的密钥
-const iv = cryptos.randomBytes(16) // 生成长度为 16 字节的随机数作为 iv
+### 主流加密方式详解
 
-const data = "hello world" // 要加密的数据
+```bash
+1. AES（高级加密标准）
+特点：
+  - 对称加密算法，加密和解密使用相同的密钥。密钥长度可以是128位、192位或256位，安全性高。
+  - 基于字节替换、行移位、列混合和轮密钥加等操作，通过多轮加密来混淆和扩散明文信息。如 AES-128 的加密轮数是10轮，能有效抵抗各种密码分析攻击。
+应用场景：
+  - 广泛用于网络通信加密，如SSL/TLS协议中部分加密环节。当用户访问安全网站（https开头）时，数据传输可能采用AES加密，防止数据被窃取或篡改。
+  - 用于文件加密和数据库加密，如操作系统中的加密文件系统，企业存储敏感数据（用户密码、财务数据等）也常用AES加密。
 
-/**
- * 创建加密器
- */
-const cipher = cryptos.createCipheriv(algorithm, key, iv)
-let encrypted = cipher.update(data, "utf8", "hex")
-encrypted += cipher.final("hex")
-console.log("encrypted:", encrypted) // encrypted: e221f586cf104b2d0d5d58166a8cfe69
 
-/**
- * 创建解密器
- */
-const decipher = cryptos.createDecipheriv(algorithm, key, iv)
-let decrypted = decipher.update(encrypted, "hex", "utf8")
-decrypted += decipher.final("utf8")
-console.log("decrypted:", decrypted) // decrypted: hello world
+2. DES（数据加密标准）
+特点：
+  - 对称加密算法，密钥长度64位，其中有效位56位。采用Feistel网络结构，将明文分组后进行16轮加密。
+  - 由于密钥长度较短，随着计算能力提升，安全性逐渐降低。
+应用场景：
+	- 早期广泛应用在金融领域（银行系统间资金转账、账户余额查询等数据传输）和企业内部（保护商业文件），现因安全性问题逐渐被替代，但在一些兼容旧系统场景下仍可能出现。
+
+
+3. MD5（MD5信息摘要算法）
+特点：
+  - 产生128位的消息摘要，主要用于验证数据完整性。它是一种哈希函数，将任意长度的数据转换为固定长度的哈希值。
+  - 算法速度快，但安全性有缺陷，容易出现碰撞（不同的数据产生相同的哈希值）。
+应用场景：
+	- 曾经用于密码存储，但由于安全性差，现在不建议用于密码验证。可用于简单的数据完整性检查，如文件下载时检查文件是否被篡改。
+
+
+4. SHA-256（安全哈希算法256位）
+特点：
+  - 属于SHA-2系列哈希算法，产生256位的哈希值。比MD5更安全，抗碰撞能力强。
+  - 计算过程复杂，通过一系列的位运算和逻辑运算对输入数据进行处理。
+应用场景：
+  - 用于数字货币（如比特币）的挖矿过程和区块链技术中，确保交易信息完整性和不可篡改性。
+  - 在安全认证和数字签名等场景也广泛应用。
+
+
+5. DSA（数字签名算法）
+特点：
+  - 用于数字签名，是一种非对称加密算法。包括私钥和公钥，私钥用于签名，公钥用于验证签名。
+  - 基于离散对数问题的数学难题，保证签名的安全性和不可否认性。
+应用场景：
+	- 电子政务、电子商务等领域，用于签署电子合同、电子文件等，确保文件的来源真实性和完整性。
+
+
+6. ECDSA（椭圆曲线数字签名算法）
+特点：
+  - 基于椭圆曲线密码体制的数字签名算法，相比DSA，它在相同安全强度下密钥长度更短，效率更高。
+  - 利用椭圆曲线上的点运算来实现签名和验证功能。
+应用场景：
+	- 广泛应用于区块链技术、移动设备安全（如移动支付签名）和物联网安全等领域。
+
+
+7. Elliptic（椭圆曲线密码体制）
+特点：
+  - 基于椭圆曲线的数学理论构建密码系统，除了数字签名（如ECDSA），还可用于密钥交换和加密。
+  - 提供与传统密码体制（如RSA）相当的安全性，但密钥长度更短，计算资源需求可能更低。
+应用场景：
+	- 在资源受限的设备（如物联网设备）和对安全要求较高的移动应用中有很好的应用前景。
+
+
+8. HMAC（密钥相关的哈希运算消息认证码）
+特点：
+  - 结合了哈希函数和密钥，用于验证消息的完整性和真实性。它可以使用不同的哈希函数（如SHA-1、SHA-256等）作为基础。
+  - 计算方式是将密钥和消息通过特定的算法组合后进行哈希运算，接收方使用相同的密钥和算法进行验证。
+应用场景：
+	- 在网络通信中，用于验证消息在传输过程中是否被篡改，如在IPsec协议中用于数据完整性验证。
+
+
+9. Rand（随机数生成）
+特点：
+  - 用于生成随机数，在密码学中，高质量的随机数对于密钥生成等操作至关重要。真正的随机数应该是不可预测的。
+  - 分为伪随机数和真随机数，伪随机数是通过算法生成的看似随机的序列，真随机数通常依赖于物理现象（如热噪声）生成。
+应用场景：
+	- 用于生成加密密钥、初始化向量（IV）等，在各种加密算法和安全协议中都有应用。
+
+
+10. RC4（Ron Rivest设计的流密码）
+特点：
+  - 对称加密算法，属于流密码。加密和解密速度快，以字节为单位进行加密操作。
+  - 密钥长度可变，但安全性存在一定问题，容易受到攻击。
+应用场景：
+	- 曾广泛用于网络协议（如SSL早期版本）的加密，但由于发现安全漏洞，现在使用较少。
+
+
+11. RSA（非对称加密算法）
+特点：
+  - 基于大整数分解和欧拉定理，使用一对密钥（公钥和私钥）。公钥用于加密，私钥用于解密，或者私钥用于签名，公钥用于验证签名。
+  - 安全性基于数学难题，密钥长度较长，计算开销相对较大。
+应用场景：
+	- 用于安全通信中的密钥交换，如在SSL/TLS协议中，先使用RSA交换AES等对称加密算法的密钥。
+	- 也用于数字签名，确保文件的真实性和不可否认性。
+
+
+12. Cipher（密码）
+特点：
+  - 这是一个比较宽泛的概念，涵盖了各种加密和解密算法、技术和工具。
+  - 不同的密码系统有不同的特点，包括对称和非对称加密、分组密码和流密码等多种类型。
+应用场景：
+	- 根据具体的密码类型（如AES、RSA等）应用于不同的安全领域，从网络安全到数据存储安全等各个方面。
 ```
 
 
@@ -4446,15 +4595,14 @@ console.log("decrypted:", decrypted) // decrypted: hello world
 ### 计算摘要 hash
 
 ```bash
-在 crypto 模块中，Hash 是一种用于计算数据摘要的算法，它可以将任意长度的数据映射为固定长度的哈希值。
-哈希值通常用于验证数据完整性、数据签名和密码存储等场景。
-
-注意：Hash 对象是单向的，不能从哈希值中恢复原始数据。因此 Hash 算法通常用于验证数据完整性和密码存储等场景。
+Hash 是一种用于计算数据摘要的算法，它可以将任意长度的数据映射为固定长度的哈希值。
+Hash 对象是单向的，不能从哈希值中恢复原始数据。因此 Hash 算法通常用于验证数据完整性、数据签名和密码存储等场景。
 在密码场景中，通常将密码的哈希值存储在数据库中，而不是存储密码本身，以提高安全性。当用户登录时，将输入的密码进行哈希计算，然后将计算得到的哈希值与数据库中存储的哈希值进行比较，以验证密码是否正确。
 
 在 crypto 模块中，可以使用 `const hash = crypto.createHash(algorithm)` 方法创建一个 Hash 对象。
 `algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
 可以使用 `crypto.getHashes()` 方法获取支持的哈希算法列表。
+
 
 
 ### hash 对象实例方法
@@ -4491,7 +4639,15 @@ console.log(digest) // 5412b888d0f63cc2269dab76826196fb5f37cd4253f081ff0fa9def0c
 ### 消息认证 HMAC
 
 ```bash
-HMAC（Hash-base Message Authentication Code）是一种基于哈希函数和密钥的消息认证算法，可用于验证消息的完整性和真实性
+HMAC（Hash-base Message Authentication Code）是一种基于哈希函数和密钥的消息认证算法，可用于验证消息的完整性和真实性。
+HMAC 是使用 key 标记信息的加密hash（加密哈希信息认证码），接收者使用相同的key逆运算来认证hash。
+hmac 主要应用在身份验证中，认证流程如下：
+	1. 客户端发出登录请求（假设是浏览器的GET请求）
+	2. 服务器返回一个随机值，并在会话中记录这个随机值
+	3. 客户端将该随机值作为密钥，用户密码进行hmac运算，然后提交给服务器
+	4. 服务器读取用户数据库中的用户密码和步骤2中发送的随机值做与客户端一样的hmac运算，然后与用户发送的结果比较，如果结果一致则验证用户合法。
+
+
 
 在 crypto 模块中，可以使用 `crypto.createHmac(algorithm, key)` 方法创建一个 HMAC 对象。
 	- `algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
@@ -4517,6 +4673,8 @@ const digest = hmac.digest("hex")
 console.log(digest) // ff21d18da8f432e60025a04db1eccdc39b1574edb5e5ae49d3ad8d1509335cfe
 ```
 
+
+
 ### 散列函数 md5
 
 ```bash
@@ -4538,9 +4696,8 @@ MD5（Message-Digest Algorithm）是计算机安全领域广泛使用的散列�
 
 
 ### 单纯 md5 加密的缺陷
-因为相同的明文密码 md5 值也是相同的。即当攻击者知道算法是 md5 且数据库里存储的密码值时，理论上可以猜测出用户的明文密码。
-
-事实上，彩虹表也是这么暴力破解的：事先将常见明文密码的 md5 值运算好存储起来，然后跟网站数据库里存储的密码进行匹配就能快速找到用户的明文密码。（此时可以使用 "密码加盐" 来进一步提升安全性）
+因为相同的明文密码 md5 值也相同，所以当攻击者知道加密算法是 md5，且知道数据库里存储的密码值时，理论上可推测出用户的明文密码。
+事实上，彩虹表也是这么暴力破解的：事先将常见明文密码的 md5 值运算好存储起来，然后跟网站数据库里存储的密码进行匹配就能快速找到用户的明文密码（此时可以使用 "密码加盐" 来进一步提升安全性）
 
 
 
@@ -4564,6 +4721,8 @@ console.log(cryptoPwd(password)) // e10adc3949ba59abbe56e057f20f883e
 // 他人恶意暴力破解
 console.log(cryptoPwd("123456")) // e10adc3949ba59abbe56e057f20f883e
 ```
+
+
 
 ### 盐值加密
 
@@ -4600,6 +4759,304 @@ if (loginHash === savedHash) {
 } else {
   console.log('密码错误', loginHash, savedHash)
 }
+```
+
+
+
+### RSA
+
+```bash
+攻击防御方案
+- 使用短密钥(如512位) - 易被暴力破解：强制密钥长度 ≥ 2048 位
+- 重用同一密钥对 - 增加侧信道攻击风险：定期轮换密钥（每 1-2 年）
+- 明文存储私钥 - 私钥泄露导致系统崩溃：加密存储 + 访问控制
+- 忽略填充验证 - 填充 Oracle 攻击：使用标准库而非手动实现加密逻辑
+```
+
+```js
+const crypto = require('crypto')
+
+// 1. 生成密钥对
+const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+  modulusLength: 2048,
+  publicKeyEncoding: { type: 'spki', format: 'pem' },
+  privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+})
+
+// 2. 加密
+const encrypt = (plaintext) => {
+  return crypto.publicEncrypt(
+    {
+      key: publicKey,
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      oaepHash: 'sha256',
+    },
+    Buffer.from(plaintext),
+  )
+}
+
+// 3. 解密
+const decrypt = (ciphertext) => {
+  return crypto.privateDecrypt(
+    {
+      key: privateKey,
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      oaepHash: 'sha256',
+    },
+    ciphertext,
+  )
+}
+
+// 使用示例
+const message = 'Data to encrypt'
+const encrypted = encrypt(message)
+console.log('加密结果:', encrypted.toString('base64'))
+console.log('解密结果:', decrypt(encrypted).toString())
+```
+
+
+
+### DES
+
+```bash
+对称加密技术 - DES（数据加密标准）算法主要采用替换和移位的方式进行加密，它用56位（64位密钥只有56位有效）对64位二进制数据块进行加密，每次加密对64位的输入数据进行16轮编码，经过一系列替换和移位后，输入的64位原数据转换成完全不同的64位输出数据。
+
+DES算法的入口参数有三个：Key、Data、Mode。
+	- Key为8个字节共64位，是DES算法的工作密钥；
+	- Data也为8个字节64位，是要被加密或被解密的数据；
+	- Mode为DES的工作方式，有两种：加密或解密。
+
+DES算法具有极高安全性，到目前为止，除了用穷举搜索法对DES算法进行攻击外，还没有发现更有效的办法。而56位长的密钥的穷举空间为256，这意味着如果一台计算机的速度是每一秒种检测一百万个密钥，则它搜索完全部密钥就需要将近2285年的时间。而以现代计算能力24小时内即可被破解，可考虑把DES密钥的长度再增长一些，以此来达到更高的保密程度。
+
+DES算法中只用到64位密钥中的其中56位，而第8、16、24、......64位8个位（奇偶校验位）并未参与DES运算，这一点，向我们提出了一个应用上的要求，即DES的安全性是基于除了8，16，24，......64位外的其余56位的组合变化256才得以保证的。因此，在实际应用中，我们应避开使用第8，16，24，......64位作为有效数据位，而使用其它的56位作为有效数据位，才能保证DES算法安全可靠地发挥作用。如果不了解这一点，把密钥Key的8，16，24，..... .64位作为有效数据使用，将不能保证DES加密数据的安全性，对运用DES来达到保密作用的系统产生数据被破译的危险，这正是DES算法在应用上的误区，留下了被人攻击、被人破译的极大隐患。
+```
+
+**DES加解密(web版)**
+
+```ts
+import * as CryptoJS from 'crypto-js'
+
+/** 加密 */
+const encryptDES = (message: string, key: string): string => {
+  const keyHex = CryptoJS.enc.Utf8.parse(key)
+  const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7,
+  })
+  return encrypted.toString()
+}
+
+/** 解密 */
+const decryptDES = (encryptedMessage: string, key: string): string => {
+  const keyHex = CryptoJS.enc.Utf8.parse(key)
+  const decrypted = CryptoJS.DES.decrypt(encryptedMessage, keyHex, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7,
+  })
+  return decrypted.toString(CryptoJS.enc.Utf8)
+}
+
+/** DES - CBC（密码分组链接）模式加密 */
+const encryptDESWebCrypto = async (
+  message: string,
+  key: string,
+): Promise<string> => {
+  // 将消息和密钥转换为字节数组
+  const encoder: TextEncoder = new TextEncoder()
+  const data: Uint8Array = encoder.encode(message)
+  const keyBuffer: Uint8Array = encoder.encode(key)
+
+  const cryptoKey = await CryptoJS.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'DES - CBC', length: 64 },
+    false,
+    ['encrypt'],
+  )
+  const iv: Uint8Array = CryptoJS.getRandomValues(new Uint8Array(8))
+  const encryptedData = await CryptoJS.subtle.encrypt(
+    { name: 'DES - CBC', iv },
+    cryptoKey,
+    data,
+  )
+
+  const encryptedArray: Uint8Array = new Uint8Array(encryptedData)
+  const combined: Uint8Array = new Uint8Array(iv.length + encryptedArray.length)
+  combined.set(iv)
+  combined.set(encryptedArray, iv.length)
+  return btoa(String.fromCharCode.apply(null, Array.from(combined)))
+}
+
+/* DES - CBC（密码分组链接）模式解密 */
+const decryptDESWebCrypto = async (
+  encryptedMessage: string,
+  key: string,
+): Promise<string> => {
+  const decoder: TextDecoder = new TextDecoder()
+  const encryptedArray: Uint8Array = new Uint8Array(
+    atob(encryptedMessage)
+      .split('')
+      .map((c) => c.charCodeAt(0)),
+  )
+  const iv: Uint8Array = encryptedArray.slice(0, 8)
+  const encryptedData: Uint8Array = encryptedArray.slice(8)
+  const keyBuffer: Uint8Array = new TextEncoder().encode(key)
+  const cryptoKey = await CryptoJS.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'DES - CBC', length: 64 },
+    false,
+    ['decrypt'],
+  )
+  const decryptedData = await CryptoJS.subtle.decrypt(
+    { name: 'DES - CBC', iv },
+    cryptoKey,
+    encryptedData,
+  )
+  return decoder.decode(decryptedData)
+}
+
+const message: string = 'This is a secret message'
+const key: string = 'mysecretkey'
+
+const encryptedMessage = encryptDES(message, key)
+console.log('加密消息:', encryptedMessage)
+const decryptedMessage = decryptDES(encryptedMessage, key)
+console.log('解密消息:', decryptedMessage)
+
+encryptDESWebCrypto(message, key).then((encryptedMessageRes) => {
+  console.log(encryptedMessageRes)
+
+  decryptDESWebCrypto(encryptedMessageRes, key).then((result) => {
+    console.log(result)
+  })
+})
+```
+
+### AES
+
+```bash
+1. 密钥长度和安全性
+1.1 密钥长度
+DES：DES（数据加密标准）的密钥长度是 64 位，但其中有 8 位用于奇偶校验，所以实际有效密钥长度为 56 位。这种相对较短的密钥长度在现代计算环境下安全性较低。
+AES：AES（高级加密标准）支持多种密钥长度，包括 128 位、192 位和 256 位。较长的密钥长度使得 AES 能够抵抗更强大的暴力破解攻击，提供更高的安全性。例如，使用暴力破解方法破解 AES-256 加密的数据，在目前的计算技术下几乎是不可行的。
+
+1.2 安全性对比
+DES 的安全性问题：56位的密钥长度已不足以保证数据的安全性，以目前计算机算力，可通过大规模的并行计算在合理的时间内破解 DES 加密的数据。
+AES 的安全性优势：AES 的设计结构和密钥长度使其在理论和实践中都具有很高的安全性。其采用的分组密码体制和复杂的轮函数变换，在多轮加密过程中有效地混淆和扩散了明文信息，从而抵抗各种密码分析攻击。
+
+
+2. 加密算法结构和轮数
+2.1 算法结构
+DES：DES 采用 Feistel 网络结构。它将64位的明文分组分为左右两部分（各32位），在每一轮加密中，右半部分通过一个函数（涉及子密钥）变换后与左半部分进行异或操作，然后左右部分交换，重复 16 轮这样的操作。最后通过逆初始置换得到密文。
+AES：AES 的结构基于字节替换、行移位、列混合和轮密钥加等操作。它以 128 位（16字节）为一个分组，根据密钥长度的不同（128/192/256 位），加密轮数分别为 10 轮、12 轮或 14 轮。例如，在 AES-128 中，128 位的明文分组在 10 轮的加密过程中，每一轮都进行字节替换（通过 S - 盒）、行移位、列混合和轮密钥加操作，使得明文信息充分混淆。
+
+2.2 轮数影响
+DES 轮数固定为 16 轮：16 轮的 Feistel 网络结构在当时的设计中有其合理性，但随着密码分析技术的发展，这种固定轮数和相对简单的结构（相比 AES）使得 DES 更容易被分析和攻击。
+AES 轮数根据密钥长度变化：AES 的轮数根据密钥长度而变化，更多的轮数意味着更高的安全性，但也会带来一定的计算开销。且现代计算机硬件能够较好地处理 AES 加密所需的计算量。
+
+
+3. 工作模式和应用场景
+3.1 工作模式
+DES 工作模式：DES 常见的工作模式有电子密码本（ECB）模式和密码分组链接（CBC）模式。
+		ECB 模式是将明文分组直接加密，但这种模式可能会出现相同明文分组加密后得到相同密文分组的情况，存在安全隐患。
+		CBC 模式通过将前一个密文分组与当前明文分组进行异或操作后再加密，一定程度上增强了安全性。
+AES 工作模式：AES 除 ECB 和 CBC 模式外，还有计数器（CTR）模式、伽罗瓦/计数器（GCM）模式等。
+		CTR 模式将计数器的值与密钥进行加密后与明文进行异或操作，它在加密和解密过程中可以并行处理，效率较高。
+		GCM 模式则结合了加密和认证功能，在安全性要求较高的场景中广泛应用。
+
+3.2 应用场景
+DES 早期广泛应用在金融领域（银行系统间资金转账、账户余额查询等数据传输）和企业内部（保护商业文件），现因安全性问题逐渐被替代，但在一些兼容旧系统场景下仍可能出现。
+AES 由于其高安全性和灵活性，被广泛应用在网络通信加密（如 SSL/TLS 协议）、文件加密（操作系统的加密文件系统）、数据库加密、移动设备加密等场景。
+
+
+4. 攻击防御方案
+- 重放攻击：在加密数据中添加时间戳 + 序列号
+- Padding Oracle：适用认证加密（如GCM）替代 CBC
+- 密钥泄露：实施密钥分层（主密钥 → 数据密钥） + 硬件隔离
+```
+
+**AES-256-CBC 加/解密(NodeJS版)**
+
+```js
+const cryptos = require("crypto")
+
+const algorithm = "aes-256-cbc" // 加密算法
+const key = cryptos.randomBytes(32) // 根据加密算法生成一个32字节的密钥
+const iv = cryptos.randomBytes(16) // 生成长度为 16 字节的随机数作为 iv
+
+const data = "hello world" // 要加密的数据
+
+/** 创建加密器 */
+const cipher = cryptos.createCipheriv(algorithm, key, iv)
+let encrypted = cipher.update(data, "utf8", "hex")
+encrypted += cipher.final("hex")
+console.log("encrypted:", encrypted) // encrypted: e221f586cf104b2d0d5d58166a8cfe69
+
+/** 创建解密器 */
+const decipher = cryptos.createDecipheriv(algorithm, key, iv)
+let decrypted = decipher.update(encrypted, "hex", "utf8")
+decrypted += decipher.final("utf8")
+console.log("decrypted:", decrypted) // decrypted: hello world
+```
+
+
+
+**AES-256-GCM 加/解密(NodeJS版)**
+
+```js
+const crypto = require('crypto')
+
+// 加密
+function encrypt(plaintext, key) {
+  const iv = crypto.randomBytes(12) // GCM 推荐 12 字节 IV
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
+  const encrypted = Buffer.concat([
+    cipher.update(plaintext, 'utf8'),
+    cipher.final(),
+  ])
+  const authTag = cipher.getAuthTag()
+  return {
+    iv: iv.toString('hex'),
+    encrypted: encrypted.toString('hex'),
+    authTag: authTag.toString('hex'),
+  }
+}
+
+// 解密
+function decrypt(encryptedData, key) {
+  const iv = Buffer.from(encryptedData.iv, 'hex')
+  const encrypted = Buffer.from(encryptedData.encrypted, 'hex')
+  const authTag = Buffer.from(encryptedData.authTag, 'hex')
+
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
+  decipher.setAuthTag(authTag)
+
+  return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString(
+    'utf8',
+  )
+}
+
+// 使用示例
+const key = crypto.randomBytes(32)
+const original = '敏感数据'
+
+const encrypted = encrypt(original, key)
+console.log('加密结果:', encrypted)
+
+const decrypted = decrypt(encrypted, key)
+console.log('解密结果:', decrypted) // 应与 original 相同
+// 加密结果: { iv: 'a1b2c3d4e5f6g7h8i9j0', encrypted: 'a1b2c3d4e5f6g7h8i9j0', authTag: 'a1b2c3d4e5f6g7h8i9j0' }
+```
+
+
+
+### SM4
+
+```bsh
+SM4 是中国国家密码管理局 (GM/T) 发布的商用分组密码标准，属于对称加密算法，适用于物联网、金融等领域的数据加密需求。
+对标国际算法：AES-128（但设计结构不同）
+合规要求：中国金融、政务系统强制使用 SM 系列算法
 ```
 
 
