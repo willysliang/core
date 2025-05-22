@@ -892,14 +892,15 @@ $ git cherry-pick x # chergit cherry-pick <HashA> <HashB>ry-pick对应的提交�
 
 4. 删除标签
 - 删除本地特定标签：`git tag -d <tag_name>`
-- 删除远程特定标签：`git push -d origin :refs/tags/<tag_name>`
+- 删除远程特定标签：
+		- `git push origin --delete tag <标签名>`
+		- `git push origin :refs/tags/<标签名>`
 
 
 5. 检查标签
 - 检查标签是否仅在本地可用：`git push --tags --dry-run`
 		- `--dry-run` 选项总结了下一次提交中将包含的内容。
 		- 如果上述命令的输出状态为 ‘Everything up-to-date’，则表示没有可推送的标签
-		-
 ```
 
 ```bash

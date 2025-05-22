@@ -69,12 +69,12 @@ module.exports = { use, start }
  */
 
 /** 接口调用中转处理 */
-const render = (res, path, type = "", code = 200) => {
-    res.writeHead(code, {
-        "Content-Type": `${type || "text/html"};charset=utf8`,
-    })
-    res.write(fs.readFileSync(path), "utf-8")
-    res.end()
+const render = (res, path, type = '', code = 200) => {
+  res.writeHead(code, {
+    'Content-Type': `${type || 'text/html'};charset=utf8`,
+  })
+  res.write(fs.readFileSync(path), 'utf-8')
+  res.end()
 }
 
 module.exports = { render }
@@ -85,30 +85,30 @@ module.exports = { render }
  * @file route.ts 路由表
  */
 
-const fs = require("fs")
-const path = require("path")
-//根据文件后缀名自动获取响应头中content-type
-const mime = require("mime")
-const { render: routeRender } = require("./utils")
+const fs = require('fs')
+const path = require('path')
+// 根据文件后缀名自动获取响应头中content-type
+const mime = require('mime')
+const { render: routeRender } = require('./utils')
 
 /** 路由表 */
 const routes = {
-    "/login"(req, res) {
-        routeRender(res, "./static/login.html")
-    },
-    "/home"(req, res) {
-        routeRender(res, "./static/home.html")
-    },
-    "/404"(req, res) {
-        const url = new URL(req.url, "http://127.0.0.1")
-        /*
-         <link href='/css/index.css'></link>根路径访问，就等于127.0.0.1:3000/css/index.css。
-         这里将项目文件夹F://项目+static+/css/index.css合并成文件路径，如果存在就读取该文件返回
-         */
-        let pathname = path.join(__dirname, "static", url.pathname)
-        if (fs.readStaticFile(res, pathname)) return
-        routeRender(res, "./static/404.html")
-    },
+  '/login'(req, res) {
+    routeRender(res, './static/login.html')
+  },
+  '/home'(req, res) {
+    routeRender(res, './static/home.html')
+  },
+  '/404'(req, res) {
+    const url = new URL(req.url, 'http://127.0.0.1')
+    /*
+      <link href='/css/index.css'></link>根路径访问，就等于127.0.0.1:3000/css/index.css。
+    	这里将项目文件夹F://项目+static+/css/index.css合并成文件路径，如果存在就读取该文件返回
+    */
+    const pathname = path.join(__dirname, 'static', url.pathname)
+    if (fs.readStaticFile(res, pathname)) return
+    routeRender(res, './static/404.html')
+  },
 }
 
 module.exports = routes
@@ -119,40 +119,40 @@ module.exports = routes
  * @file api.ts 接口
  */
 
-const { render: apiRender } = require("./utils")
+const { render: apiRender } = require('./utils')
 
 const api = {
-    //get请求
-    "/api/login"(req, res) {
-        const url = new URL(req.url, "http://127.0.0.1")
-        const data = {}
-        let username = url.searchParams.get("username")
-        let password = url.searchParams.get("password")
-        if (username === "ds" && password === "123") {
-            Object.assign(data, { ok: 1 })
-        } else {
-            Object.assign(data, { ok: 0 })
-        }
-        apiRender(res, JSON.stringify(data))
-    },
+  // get请求
+  '/api/login'(req, res) {
+    const url = new URL(req.url, 'http://127.0.0.1')
+    const data = {}
+    const username = url.searchParams.get('username')
+    const password = url.searchParams.get('password')
+    if (username === 'ds' && password === '123') {
+      Object.assign(data, { ok: 1 })
+    } else {
+      Object.assign(data, { ok: 0 })
+    }
+    apiRender(res, JSON.stringify(data))
+  },
 
-    //post请求
-    "/api/loginpost"(req, res) {
-        let data: any = ""
-        //这里使用最原始的方法获取post请求参数, 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
-        req.on("data", (chunk) => {
-            data += chunk
-        })
-        // 在end事件触发后，通过querystring.parse将post解析为真正的POST请求格式，然后向客户端返回。
-        req.on("end", () => {
-            data = JSON.parse(data)
-            if (data.username === "ds" && data.password === "123") {
-                apiRender(res, JSON.stringify({ ok: 1 }))
-            } else {
-                apiRender(res, JSON.stringify({ ok: 0 }))
-            }
-        })
-    },
+  // post请求
+  '/api/loginpost'(req, res) {
+    let data: any = ''
+    // 这里使用最原始的方法获取post请求参数, 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
+    req.on('data', (chunk) => {
+      data += chunk
+    })
+    // 在end事件触发后，通过querystring.parse将post解析为真正的POST请求格式，然后向客户端返回。
+    req.on('end', () => {
+      data = JSON.parse(data)
+      if (data.username === 'ds' && data.password === '123') {
+        apiRender(res, JSON.stringify({ ok: 1 }))
+      } else {
+        apiRender(res, JSON.stringify({ ok: 0 }))
+      }
+    })
+  },
 }
 
 module.exports = api
@@ -168,23 +168,23 @@ const password = 123456
 
 // get请求
 fetch(`/api/login?username=${username}&password=${password}`)
-    .then((res) => res.text())
-    .then((res) => {
-        console.log(res)
-    })
+  .then((res) => res.text())
+  .then((res) => {
+    console.log(res)
+  })
 
 // post请求
 fetch(`/api/loginpost`, {
-    method: "POST",
-    body: JSON.stringify({ username, password }),
-    headers: {
-        "Content-Type": "application/json",
-    },
+  method: 'POST',
+  body: JSON.stringify({ username, password }),
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
-    .then((res) => res.text())
-    .then((res) => {
-        console.log(res)
-    })
+  .then((res) => res.text())
+  .then((res) => {
+    console.log(res)
+  })
 ```
 
 
@@ -614,6 +614,73 @@ app.get('500', (_, response) => {
   response.sendFile("/path/to/willy.mp4")
 })
 ```
+
+### CORS 配置
+
+```js
+const express = require('express')
+const cors = require('cors')
+const app = express()
+
+// 全局默认不启用
+app.use(cors({ origin: false }))
+
+// 为特定路由启用
+app.get(
+  '/public-api',
+  cors({
+    origin: 'https://trusted-domain.com',
+  }),
+  (req, res) => {
+    res.json({ data: '受保护数据' })
+  },
+)
+
+// 允许所有来源的跨域请求
+app.use(cors())
+
+// 或者配置选项
+app.use(
+  cors({
+    origin: '*', // 允许所有源（生产环境慎用）
+    methods: 'GET,POST', // 允许的 HTTP 方法
+    allowedHeaders: 'Content-Type,Authorization', // 允许的请求头
+  }),
+)
+
+// 生产环境推荐配置
+app.use(
+  cors({
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
+    exposedHeaders: ['Content-Range', 'X-Items-Count'],
+    credentials: true, // 允许发送 cookies
+    maxAge: 86400, // 预检请求缓存时间（秒）
+    optionsSuccessStatus: 200, // 兼容旧浏览器
+    // origin: ['https://your-domain.com', 'https://cdn.your-domain.com'],
+    origin: (origin, callback) => {
+      const whitelist = new Set([
+        'https://your-domain.com',
+        'https://cdn.your-domain.com',
+        'http://localhost:3000',
+      ])
+      if (whitelist.has(origin) || !origin) {
+        callback(null, true)
+      } else {
+        callback(new Error('未允许的跨域请求'))
+      }
+    },
+  }),
+)
+
+app.get('/api', (req, res) => {
+  res.json({ message: 'CORS 已启用' })
+})
+
+app.listen(3000)
+```
+
+
 
 ### Express 中间件
 
@@ -3501,5 +3568,3 @@ cron.schedule('0 0 * * 5', () => {
 如果需要测试效果，Nodemailer 支持 [Ethereal Email](https://ethereal.email/) 提供的测试账户。创建一个 Ethereal 帐户并使用为您生成的用户名和密码。
 
 
-
-## 结语

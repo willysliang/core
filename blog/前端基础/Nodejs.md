@@ -3007,40 +3007,41 @@ fs 模块可以执行以下操作：
 
 
 ### 同步与异步的取舍
-- 由于 Node 环境执行的JS代码一般作为服务端的代码运行，且其绝大部分需要在服务器运行期反复执行业务逻辑的代码，所以必须使用异步代码，否则，同步代码在执行时期，服务器将会因为同步错误而停止响应（因为JavaScript只有一个执行线程，产生同步错误会跳出异常并停止运行）。
-- 服务器启动时，如果需要读取配置文件，或者结束时需要写入到状态文件时，可以使用同步代码，因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。
+- 由于 Node 环境执行的JS代码一般作为服务端的代码运行，且其绝大部分需要在服务器运行期反复执行业务逻辑的代码，所以必须使用异步代码，否则，同步代码在执行时期，服务器将会因为同步错误而停止响应（因为 JS 只有一个执行线程，产生同步错误会跳出异常并停止运行）
+- 服务器启动时，如果需要读取配置文件，或者结束时需要写入到状态文件时，可以使用同步代码。因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。
 
 
 同步方法有两个缺点：
-	1. 同步方法同步的执行代码，因此它们阻塞了主线程。例如：我使用 `fs.readdirSync` 同步读取目录下的所有文件，它将阻塞后面代码的运行，直到读取目录完成。阻塞 Node.js 中的主线程被认为是不好的做法，我们不应该这么做
+	1. 同步方法同步执行代码，因此会阻塞主线程。例如使用 `fs.readdirSync` 同步读取目录下的所有文件，它将阻塞后面代码的运行，直到读取目录完成。
 	2. 同步代码需要使用 `try...catch` 捕获错误
 
-因此，以下都使用文件系统模块中的异步方法。
+因此推荐使用文件系统模块中的异步方法。
 ```
 
-### 文件读取 readFile
+
+
+### 文件读写 readFile/writeFile
+
+#### 文件读取 readFile
 
 ```bash
-## 文件读取
 标准读取文件，是采取异步的方式读取的。
 同步读取的函数和异步函数相比，函数需要加`Sync`后缀，并且不接收回调函数，函数直接返回结果。
 并且如果同步读取文件发生错误，需要用`try...catch`捕获错误。
 
+文件读取方法
+  1. 异步读取：`fs.readFile(path[, options], callback)`
+  2. 同步读取：readFileSync
+  3. 流式读取：createReadStream
 
-### 文件读取方法
-1. 异步读取：`fs.readFile(path[, options], callback)`
-2. 同步读取：readFileSync
-3. 流式读取：createReadStream
-
-
-### 读取文件应用场景
-- 电脑开机
-- 程序运行
-- 编辑器打开文件
-- 查看图片、聊天记录
-- 播放视频、音乐
-- 上传文件
-- 查看 Git 提交记录
+读取文件应用场景
+  - 电脑开机
+  - 程序运行
+  - 编辑器打开文件
+  - 查看图片、聊天记录
+  - 播放视频、音乐
+  - 上传文件
+  - 查看 Git 提交记录
 ```
 
 ```js
@@ -3065,62 +3066,36 @@ try {
 }
 ```
 
-### 文件写入 writeFile
+
+
+#### 文件写入 writeFile
 
 ```bash
-## 文件写入
-将数据写入文件是通过 `fs.writeFile()` 函数实现；同步写文件则是`writeFileSync()`函数。
-`writeFile()`的参数依次为文件名、数据和回调函数。如果传入的数据是String，默认按UTF-8编码写入文本文件，如果传入的参数是`Buffer`，则写入的是二进制文件。回调函数由于只关心成功与否，因此只需要一个`err`参数。
+`fs.writeFile(filePath, data[, options], callback)` 可将数据写入文件
+    - 如果传入的数据是String，默认按UTF-8编码写入文本文件
+    - 如果传入的参数是Buffer，则写入的是二进制文件
+    - callback 回调函数由于只关心成功与否，因此只需要一个 err 参数
+实现在文件内追加内容：fs.writeFile('/path', '追加的内容', { flag: 'a' })
 
 
-### 文件写入的方法
+文件写入的方法
     1. 异步写入：writeFile
     2. 同步写入：writeFileSync
     3. 追加写入：appendFile、appendFileSync
     4. 流式写入：createWriteStram
 
-
-### 写入文件的场景：（当需要持久化保存数据时，应该想到文件写入）
+写入文件的场景：（当需要持久化保存数据时，应该想到文件写入）
     - 下载文件
     - 安装软件
     - 保存程序日志，如 Git
     - 编辑器保存文件
     - 视频录制
-
-
-### 追加内容：appendFile
-- `fs.appendFile(file, data[, options], callback)`
-
-fs.appendFile('example.txt', 'Hello, world!\n', (err) => {
-  if (err) throw err;
-  console.log('内容已追加到文件');
-});
-
-
-### 写入内容：writeFile
-- 实现在文件内追加内容：fs.writeFile('/path', '追加的内容', { flag: 'a' })
-- `fs.writeFile(file, data[, options], callback)`
-
-fs.writeFile('example.txt', 'Hello, world!', (err) => {
-  if (err) throw err;
-  console.log('内容已写入文件');
-});
-
-
-### 流式写入：createWriteStream
-注意：程序打开一个文件是需要消耗资源的，流失写入可以减少打开关闭文件的次数。
-流式写入方式适用于大文件写入或者频繁写入的场景，writeFile 适用于写入频率较低的场景。
-`fs.createWriteStream(path[, options])`
-
-const ws = fs.createWriteStream('./willy.txt')
-ws.write('昨日晴空万里\r\n')
-ws.write('今天依旧晴朗，风和日丽\r\n')
 ```
 
 ```js
-let fs = require('fs')
+const fs = require('fs')
 
-let data = 'Hello, Node.js'
+const data = 'Hello, Node.js'
 
 fs.writeFile('test.txt', data, function (err) {
   if (err) {
@@ -3133,16 +3108,287 @@ fs.writeFile('test.txt', data, function (err) {
 fs.writeFileSync('test.txt', data)
 ```
 
+
+
+#### 文件追加内容 appendFile
+
+```bash
+使用文件系统模块，可以使用 `appendFile` 方法向现有文件添加新内容
+- `fs.appendFile(file, data[, options], callback)`
+```
+
+```js
+const fs = require('fs')
+
+fs.appendFile('example.txt', 'Hello, world!\n', (err) => {
+  if (err) throw err
+  console.log('内容已追加到文件')
+})
+```
+
+
+
+#### 【读取/写入本地文件】
+
+```js
+const fs = require('fs').promises
+const path = require('path')
+
+// 读取 JSON 文件
+async function readJSON(filePath) {
+  const rawData = await fs.readFile(path.resolve(__dirname, filePath))
+  return JSON.parse(rawData)
+}
+
+// 写入 JSON 文件
+async function writeJSON(data, outputPath) {
+  await fs.writeFile(
+    path.resolve(__dirname, outputPath),
+    JSON.stringify(data, null, 2),
+  )
+}
+
+// 使用示例
+;(async () => {
+  const data = await readJSON('input.json')
+  data.push({ id: 100, name: 'New Item' })
+  await writeJSON(data, 'output.json')
+})()
+```
+
+
+
+### stream 流
+
+```bash
+- stream 是 nodejs 提供的又一个仅在服务区端可用的模块，目的是支持 “流” 这种数据结构。
+- 流的特点是数据有序，而且必须依次读取，或依次写入，不能像 Array 那样随机定位（类似堆栈）
+- 所有可以读取数据的流都继承自 stream.Readable，所有可以写入的流都继承自 stream.Writable
+
+- 流也是一个对象，存在三个响应流的事件：
+    1. `data`事件表示流的数据已经读取；
+    2. `end`事件表示这个流已经到末尾，没有数据可以再读取；
+    3. `error`事件表示出错了。
+- 注意：`data` 事件可能会有多次，每次传递的 `chunk` 是流的一部分数据。
+
+
+
+#### 流式写入：createWriteStream
+注意：程序打开一个文件是需要消耗资源的，流失写入可以减少打开关闭文件的次数。
+流式写入方式适用于大文件写入或者频繁写入的场景，writeFile 适用于写入频率较低的场景。
+`fs.createWriteStream(path[, options])`
+
+
+
+#### readFile() 与 createReadStream() 的区别
+- `readFile` 方法异步读取文件的全部内容，并存储在内存中，然后再传递给用户
+- `createReadStream` 使用一个可读的流，逐块读取文件，而不是全部存储在内存中
+
+与 `readFile` 相比，`createReadStream` 使用更少的内存和更快的速度来优化文件读取操作。如果文件相当大，用户不必等待很长时间直到读取整个内容，因为读取时会先向用户发送小块内容。
+```
+
+```js
+const fs = require("fs")
+
+/** 创建读取流 */
+const rs = fs.createReadStream("./package.json", "utf-8")
+
+rs.on("open", () => {
+    console.log("读取的文件已打开")
+})
+    .on("close", () => {
+        console.log("读取流结束")
+    })
+    .on("error", (err) => {})
+    .on("error", (err) => {
+        console.log("ERROR: ", err)
+    })
+    .on("end", () => {
+        console.log("END")
+    })
+    .on("data", (chunk) => {
+        console.log("单批数据流入: ", chunk.length, chunk)
+    })
+```
+
+```js
+const fs = require("fs")
+
+/** 创建写入流 */
+const ws = fs.createWriteStream("./willy.txt", "utf-8")
+
+ws.on("open", () => {
+  console.log("文件打开")
+})
+ws.on("close", () => {
+  console.log("文件写入完成，关闭")
+})
+
+//文件流式写入
+ws.write("helloworld1!", (err) => {
+  if (err) {
+    console.log(err)
+    return
+  }
+  console.log("内容1流入完成")
+})
+ws.write('昨日晴空万里\r\n')
+ws.write('今天依旧晴朗，风和日丽\r\n')
+
+
+ws.end(() => { console.log("文件写入关闭") })
+```
+
+- 要以流的形式写入文件，只需要不断调用`write()`方法，最后以`end()`结束
+
+```js
+const fs = require("fs")
+
+const ws1 = fs.createWriteStream("./temp/test1.js", "utf-8")
+ws1.write("使用Stream写入文本数据...\n")
+ws1.write("END.")
+ws1.end()
+
+const ws2 = fs.createWriteStream("./temp/test2.js")
+ws2.write(Buffer.from("使用Stream写入二进制数据...\n", "utf-8"))
+ws2.write(Buffer.from("END.", "utf-8"))
+ws2.end()
+```
+
+
+
+#### pipe 读写流
+
+```bash
+一个 Readable 流和一个 Writable 流串起来后，所有的数据自动从 Readable 流进入 Writable 流，这种操作叫 pipe。
+通过 pipe() 把一个文件流和另一个文件流串联，这样源文件的所有数据就自动写入到目标文件中(实际是复制文件的过程)
+
+默认情况下，当读取流的数据的`end`事件触发后，将自动关闭写入流。而限制写入流的自动关闭，则需要传入参数：`readable.pipe(writable, { end: false })`
+```
+
+```js
+const fs = require("fs")
+
+const rs = fs.createReadStream("test1.txt")
+const ws = fs.createWriteStream("test2.txt")
+
+rs.on("close", () => {
+    console.log("读取流结束")
+})
+
+rs.pipe(ws, { end: false }) // 限制管理写入流
+```
+
+#### pipe原理
+
+```js
+const fs = require("fs")
+
+//创建读取流
+const rs = fs.createReadStream("video.mp4")
+const ws = fs.createWriteStream("b.mp4")
+
+rs.on("close", () => {
+    ws.end()
+    console.log("读取流结束")
+})
+
+//每一批数据流入完成
+rs.on("data", (chunk) => {
+    console.log("单批数据流入:" + chunk.length)
+    ws.write(chunk, () => {
+        console.log("单批输入流入完成")
+    })
+})
+```
+
+#### 【1. 流式处理大文件】
+
+```js
+const fs = require('fs')
+const csv = require('csv-parser')
+
+const results = []
+
+// 处理 CSV 文件
+fs.createReadStream('./input.csv')
+  .pipe(csv())
+  .on('data', (row) => {
+    // 转换数据类型示例
+    row.price = parseFloat(row.price)
+    results.push(row)
+  })
+  .on('end', async () => {
+    console.log('CSV 处理完成，共', results.length, '条记录')
+    // 可在此处进行数据保存或其他操作
+  })
+```
+
+#### 【2. 流处理大文件-避免内存溢出】
+
+```js
+const { pipeline } = require('stream/promises')
+const { Transform } = require('stream')
+
+// 创建转换流处理 CSV
+const transformer = new Transform({
+  objectMode: true,
+  transform(row, encoding, callback) {
+    // 在此处处理每行数据
+    this.push(processRow(row))
+    callback()
+  },
+})
+
+await pipeline(
+  fs.createReadStream('bigfile.csv'),
+  csv(),
+  transformer,
+  fs.createWriteStream('output.ndjson'),
+)
+```
+
+#### 【3. CSV 转 JSON 并保存】
+
+```js
+const fs = require('fs')
+const csv = require('csv-parser')
+const { Transform } = require('stream')
+
+// 创建转换流处理 CSV
+const transformer = new Transform({
+  objectMode: true,
+  transform: (row, _, done) => {
+    // 数据清洗：去除空值，转换数字
+    const cleaned = {
+      id: parseInt(row.id, 10),
+      name: row.name.trim(),
+      value: row.value ? parseFloat(row.value) : 0,
+    }
+    done(null, JSON.stringify(cleaned) + '\n')
+  },
+})
+
+// 创建处理管道
+fs.createReadStream('input.csv')
+  .pipe(csv())
+  .pipe(transformer)
+  .pipe(fs.createWriteStream('output.ndjson'))
+  .on('finish', () => console.log('转换完成！'))
+```
+
+
+
 ### 文件信息状态 stat
 
 ```bash
-`fs.stat()` 或 `fs.statSync()` 可以获取文件大小，创建时间等信息，它返回一个`Stat`对象，里面包含文件或目录的详细信息。
+`fs.stat()` 可以获取文件大小，创建时间等信息，它返回一个 Stat 对象，里面包含文件或目录的详细信息。
 
 语法：
 	- `fs.stat(path[, options], callback)`
 	- `fs.statSync(path[, options])`
 
-结果只对象结构：
+结果值对象结构：
     - 检测是否是文件 `isFile()`
     - 检测是否是目录 `isDirectory()`
     - 文件体积大小 `size`
@@ -3183,155 +3429,6 @@ fs.stat('./blog', function (err, stat) {
     console.log('modified time: ' + stat.mtime)
   }
 })
-```
-
-### stream 流
-
-```bash
-- stream 是 nodejs 提供的又一个仅在服务区端可用的模块，目的是支持 “流” 这种数据结构。
-- 流的特点是数据有序的，而且必须依次读取，或者依次写入，不能像 Array 那样随机定位。（类似堆栈）
-
-- 所有可以读取数据的流都继承自`stream.Readable`，所有可以写入的流都继承自`stream.Writable`。
-
-- 流也是一个对象，存在三个响应流的事件：
-    1. `data`事件表示流的数据已经读取；
-    2. `end`事件表示这个流已经到末尾，没有数据可以读取了；
-    3. `error`事件表示出错了。
-
-- 注意：`data` 事件可能会有多次，每次传递的 `chunk` 是流的一部分数据。
-
-
-
-#### readFile() 与 createReadStream() 的区别
-- `readFile` 方法异步读取文件的全部内容，并存储在内存中，然后再传递给用户
-- `createReadStream` 使用一个可读的流，逐块读取文件，而不是全部存储在内存中
-
-与 `readFile` 相比，`createReadStream` 使用更少的内存和更快的速度来优化文件读取操作。如果文件相当大，用户不必等待很长时间直到读取整个内容，因为读取时会先向用户发送小块内容。
-```
-
-```js
-const fs = require("fs")
-
-/** 创建读取流 */
-const rs = fs.createReadStream("./package.json", "utf-8")
-
-rs.on("open", () => {
-    console.log("读取的文件已打开")
-})
-    .on("close", () => {
-        console.log("读取流结束")
-    })
-    .on("error", (err) => {})
-    .on("error", (err) => {
-        console.log("ERROR: ", err)
-    })
-    .on("end", () => {
-        console.log("END")
-    })
-    .on("data", (chunk) => {
-        console.log("单批数据流入: ", chunk.length, chunk)
-    })
-```
-
-```js
-const fs = require("fs")
-
-/** 创建写入流 */
-const ws = fs.createWriteStream("./temp/test1.js", "utf-8")
-
-ws.on("open", () => {
-    console.log("文件打开")
-})
-ws.on("close", () => {
-    console.log("文件写入完成，关闭")
-})
-
-//文件流式写入
-ws.write("helloworld1!", (err) => {
-    if (err) {
-        console.log(err)
-        return
-    }
-    console.log("内容1流入完成")
-})
-ws.write("helloworld2!", (err) => {
-    if (err) {
-        console.log(err)
-        return
-    }
-    console.log("内容2流入完成")
-})
-
-ws.end(() => {
-    console.log("文件写入关闭")
-})
-```
-
-- 要以流的形式写入文件，只需要不断调用`write()`方法，最后以`end()`结束:
-
-```js
-const fs = require("fs")
-
-const ws1 = fs.createWriteStream("./temp/test1.js", "utf-8")
-ws1.write("使用Stream写入文本数据...\n")
-ws1.write("END.")
-ws1.end()
-
-const ws2 = fs.createWriteStream("./temp/test2.js")
-ws2.write(Buffer.from("使用Stream写入二进制数据...\n", "utf-8"))
-ws2.write(Buffer.from("END.", "utf-8"))
-ws2.end()
-
-```
-
-
-
-### pipe 读写流
-
-```bash
-## pipe 读写流
-一个 Readable 流和一个 Writable 流串起来后，所有的数据自动从 Readable 流进入 Writable 流，这种操作叫 pipe。
-通过 pipe() 把一个文件流和另一个文件流串联，这样源文件的所有数据就自动写入到目标文件中(实际是复制文件的过程)
-
-默认情况下，当读取流的数据的`end`事件触发后，将自动关闭写入流。而限制写入流的自动关闭，则需要传入参数：`readable.pipe(writable, { end: false })`
-```
-
-```js
-const fs = require("fs")
-
-const rs = fs.createReadStream("test1.txt")
-const ws = fs.createWriteStream("test2.txt")
-
-rs.on("close", () => {
-    console.log("读取流结束")
-})
-
-rs.pipe(ws, { end: false }) // 限制管理写入流
-
-```
-
-#### pipe原理
-
-```js
-const fs = require("fs")
-
-//创建读取流
-const rs = fs.createReadStream("video.mp4")
-const ws = fs.createWriteStream("b.mp4")
-
-rs.on("close", () => {
-    ws.end()
-    console.log("读取流结束")
-})
-
-//每一批数据流入完成
-rs.on("data", (chunk) => {
-    console.log("单批数据流入:" + chunk.length)
-    ws.write(chunk, () => {
-        console.log("单批输入流入完成")
-    })
-})
-
 ```
 
 
@@ -3399,8 +3496,9 @@ fs.rename('./temp/temp2.json', './temp2.json', (err) => {
 ### 文件删除 unlink
 
 ```bash
-文件系统模块有一种方法，允许您删除文件。但是，需要注意的是，它只适用于文件，不适用于目录。
+文件系统模块的 `unlink` 方法允许您删除文件。
 当以文件路径作为参数调用 `unlink` 方法时，它将删除该文件。
+注意：它只适用于文件，不适用于目录。
 ```
 
 ```js
@@ -3502,25 +3600,9 @@ deleteFolderRecursive('temp')
 
 
 
-### 文件中添加内容 appendFile
-
-使用文件系统模块，可以使用`appendFile` 方法向现有文件添加新内容。
-
-```js
-const fs = require('fs')
-
-fs.appendFile(filePath, '\nAll work and no play makes Jack a dull boy!', (err) => {
-  if (err) throw err
-
-  console.log('All work and no play makes Jack a dull boy!')
-})
-```
-
-
-
 ### 检查文件是否存在 exists
 
-`fs.exists` 已经废弃，建议使用 `fs.access`：
+`fs.exists` 已经废弃，建议使用 `fs.access`
 
 ```js
 const { access, constants } = require('fs')
@@ -3624,8 +3706,6 @@ rl.on('close', () => {
 })
 ```
 
-
-
 **打开一个文件并逐行返回内容**
 
 ```js
@@ -3716,7 +3796,7 @@ emptyDirSync(folder)
 ## 资源压缩 zlib
 
 ```bash
-使用gizp：浏览器向服务端发起资源请求时，浏览器通过在 http 头部添加 `Accept-Encoding: gzip, deflate` 来告诉服务端可以用 gzip 或者 defalte 算法来压缩资源。如下载一个js文件，服务端会先对资源进行压缩再返回给浏览器，以此减少资源的大小，加快返回速度。
+使用gizp：浏览器向服务端发起资源请求时，浏览器通过在 http 头部添加 `Accept-Encoding: gzip, deflate` 来告诉服务端可以用 gzip 或者 defaulte 算法来压缩资源。如下载一个js文件，服务端会先对资源进行压缩再返回给浏览器，以此减少资源的大小，加快返回速度。
 
 在 nodejs 中能对资源压缩的模块为 zlib 模块。
 
@@ -3814,7 +3894,6 @@ async function main() {
 
   console.log(sitemap)
 }
-
 main()
 ```
 
@@ -3825,6 +3904,7 @@ main()
 ```bash
 http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传输数据的方法。而 https 模块通过 HTTP TLS/SSL 协议传输数据的方法，该协议是安全的 HTTP 协议。
 	- 各种 Node HTTP 服务框架的底层原理都是离不开该模块。
+
 使用内置的 `http` 模块，可搭建一个 HTTP 服务器。该服务器允许我们监听任意端口并提供一个回调函数在每个传入请求时调用。
 回调将接收两个参数：一个 Request 对象和一个 Response 对象。Request 对象将填充有关请求的有用属性，而 Response 对象将用于向客户端发送响应。
 
@@ -3850,10 +3930,9 @@ http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传�
 		- chunk：响应主体的内容，可以是string，也可以是buffer。当为string时，encoding参数用来指明编码方式。（默认是utf8）
 		- encoding：编码方式，默认是 utf8。
 		- callback：当响应体 flushed 时触发的回调。
-
 	注意：
 		- 如果 res.write() 被调用时 res.writeHead() 还没被调用过，则会把 header flush 出去。
-		- res.write() 可以被调用多次。
+		- res.write() 可被调用多次。
 		- 当 res.write(chunk) 第一次被调用时，node 会将 header 信息以及 chunk 发送到客户端。第二次调用 res.write(chunk) ，node 会认为你是要发送 streaming data。
 
 
@@ -3929,50 +4008,50 @@ const path = require('node:path')
 
 // 声明 MIME 资源变量
 const mimes: Record<string, string> = {
-    html: 'text/html;charset=utf-8;',
-    css: 'text/css',
-    js: 'text/javascript',
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    gif: 'image/gif',
-    mp4: 'video/mp4',
-    mp3: 'video/mpeg',
-    json: 'application/json',
-    other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
+  html: 'text/html;charset=utf-8;',
+  css: 'text/css',
+  js: 'text/javascript',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  gif: 'image/gif',
+  mp4: 'video/mp4',
+  mp3: 'video/mpeg',
+  json: 'application/json',
+  other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
 }
 
 const server = http.createServer((request, response) => {
-    let { pathname } = new URL(request.url, 'http://127.0.0.1')
-    console.log('pathname==========', pathname)
+  const { pathname } = new URL(request.url, 'http://127.0.0.1')
+  console.log('pathname==========', pathname)
 
-    if (pathname === '/') {
-        const html = fs.readFileSync(__dirname + '/dist/index.html')
-        response.end(html)
+  if (pathname === '/') {
+    const html = fs.readFileSync(__dirname + '/dist/index.html')
+    response.end(html)
+  } else {
+    const resourcePath = __dirname + pathname
+    if (fs.existsSync(resourcePath)) {
+      const resource = fs.readFileSync(resourcePath)
+
+      // 获取文件的后缀名
+      const ext = path.extname(pathname).slice(1)
+
+      // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如，text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
+      // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
+
+      // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
+      response.setHeader('Content-Type', mimes[ext] || mimes.other)
+
+      response.end(resource)
     } else {
-        const resourcePath = __dirname + pathname
-        if (fs.existsSync(resourcePath)) {
-            const resource = fs.readFileSync(resourcePath)
-
-            // 获取文件的后缀名
-            const ext = path.extname(pathname).slice(1)
-
-            // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如，text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
-            // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
-
-            // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
-            response.setHeader('Content-Type', mimes[ext] || mimes['other'])
-
-            response.end(resource)
-        } else {
-            // response.statusCode = 404
-            // response.setHeader('Content-Type', 'text/html')
-            // response.end('<h1>404 Not Found</h1>')
-        }
+      // response.statusCode = 404
+      // response.setHeader('Content-Type', 'text/html')
+      // response.end('<h1>404 Not Found</h1>')
     }
+  }
 })
 
 server.listen(80, () => {
-    console.log('listener 80....')
+  console.log('listener 80....')
 })
 ```
 
@@ -3987,90 +4066,86 @@ const path = require('node:path')
 
 /** 声明 MIME 资源变量 */
 const mimes: Record<string, string> = {
-    html: 'text/html;charset=utf-8;',
-    css: 'text/css',
-    js: 'text/javascript',
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    gif: 'image/gif',
-    mp4: 'video/mp4',
-    mp3: 'video/mpeg',
-    json: 'application/json',
-    other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
+  html: 'text/html;charset=utf-8;',
+  css: 'text/css',
+  js: 'text/javascript',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  gif: 'image/gif',
+  mp4: 'video/mp4',
+  mp3: 'video/mpeg',
+  json: 'application/json',
+  other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
 }
 
 /** 错误处理 */
 const errorResponse = (response, code) => {
-    switch (code) {
-        case 404:
-            response.statusCode = 404
-            response.end('<h1>404 Not Found</h1>')
-            break
-        case 403:
-            response.statusCode = 403
-            response.end('<h1>403 Forbidden</h1>')
-            break
-        case 405:
-            response.statusCode = 405
-            response.end('<h1>405 Method Not Allowed</h1>')
-            break
-        default:
-            response.statusCode = 500
-            response.end('<h1>500 Internet Server Error</h1>')
-    }
-
-    return response
+  switch (code) {
+    case 404:
+      response.statusCode = 404
+      response.end('<h1>404 Not Found</h1>')
+      break
+    case 403:
+      response.statusCode = 403
+      response.end('<h1>403 Forbidden</h1>')
+      break
+    case 405:
+      response.statusCode = 405
+      response.end('<h1>405 Method Not Allowed</h1>')
+      break
+    default:
+      response.statusCode = 500
+      response.end('<h1>500 Internet Server Error</h1>')
+  }
+  return response
 }
 
 const server = http.createServer((request, response) => {
-    if (request.method !== 'GET') {
-        response = errorResponse(response, 405)
-        return;
-    }
+  if (request.method !== 'GET') {
+    response = errorResponse(response, 405)
+    return
+  }
 
-    let { pathname } = new URL(request.url, 'http://127.0.0.1')
-    console.log('pathname==========', pathname)
+  const { pathname } = new URL(request.url, 'http://127.0.0.1')
+  console.log('pathname==========', pathname)
 
-    if (pathname === '/') {
-        const html = fs.readFileSync(__dirname + '/dist/index.html')
-        response.end(html)
-    } else {
-        const resourcePath = __dirname + pathname
-        fs.readFile(resourcePath, (err, resourceData) => {
-            if (err) {
-                console.log('err=====', err)
+  if (pathname === '/') {
+    const html = fs.readFileSync(__dirname + '/dist/index.html')
+    response.end(html)
+  } else {
+    const resourcePath = __dirname + pathname
+    fs.readFile(resourcePath, (err, resourceData) => {
+      if (err) {
+        console.log('err=====', err)
+        response.setHeader('Content-Type', mimes.html)
+        switch (err.code) {
+          case 'ENOENT':
+            response = errorResponse(response, 404)
+            break
+          case 'EPERM':
+            response = errorResponse(response, 403)
+            break
+          default:
+            response = errorResponse(response, err.code)
+        }
+        return
+      }
 
-                response.setHeader('Content-Type', mimes['html'])
-                switch(err.code) {
-                    case 'ENOENT':
-                        response = errorResponse(response, 404)
-                        break;
-                    case 'EPERM':
-                        response = errorResponse(response, 403)
-                        break;
-                    default:
-                        response = errorResponse(response, err.code)
-                }
+      // 获取文件的后缀名
+      const ext = path.extname(pathname).slice(1)
 
-                return
-            }
+      // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如 text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
+      // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
 
-            // 获取文件的后缀名
-            const ext = path.extname(pathname).slice(1)
-
-            // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如，text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
-            // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
-
-            // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
-            response.setHeader('Content-Type', mimes[ext] || mimes['other'])
-
-            response.end(resourceData)
-        })
-    }
+      // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
+      response.setHeader('Content-Type', mimes[ext] || mimes.other)
+      response.end(resourceData)
+    })
+  }
 })
 
 server.listen(80, () => {
-    console.log('listener 80....')
+  console.log('listener 80....')
 })
 ```
 
@@ -4123,16 +4198,15 @@ const https = require("https")
 const fs = require("fs")
 
 const options = {
-    key: fs.readFileSync("./cert/chyingp-key.pem"), // 私钥
-    cert: fs.readFileSync("./cert/chyingp-cert.pem"), // 证书
+  key: fs.readFileSync("./cert/chyingp-key.pem"), // 私钥
+  cert: fs.readFileSync("./cert/chyingp-cert.pem"), // 证书
 }
 
 const server = https.createServer(options, (req, res) => {
-    res.end("这是来自HTTPS服务器的返回")
+  res.end("这是来自HTTPS服务器的返回")
 })
 
 server.listen(3000)
-
 ```
 
 
