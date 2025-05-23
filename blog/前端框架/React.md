@@ -4369,50 +4369,50 @@ export const incrementAsync = (data, time) => {
 > 
 > // 定义UI组件
 > class Count extends Component {
->   increment = () => {
->     const { value } = this.selectNumber
->     this.props.add(value*1)	// 通过进一步封装redux
->   }
->   decrement = () => {
->     const { value } = this.selectNumber
->     store.dispatch(decrement(value*1))
->   }
->   incrementIfOdd = () => {
->     const { value } = this.selectNumber
->     if(this.props.count % 2 !== 0) {
->         this.props.add(value*1)
+>     increment = () => {
+>        const { value } = this.selectNumber
+>        this.props.add(value*1)	// 通过进一步封装redux
 >     }
->   }
->   incrementAsync = () => {
->     const { value } = this.selectNumber
->     this.props.addAsync(value*1, 500)
->   }
+>     decrement = () => {
+>        const { value } = this.selectNumber
+>        store.dispatch(decrement(value*1))
+>     }
+>     incrementIfOdd = () => {
+>        const { value } = this.selectNumber
+>        if(this.props.count % 2 !== 0) {
+>          this.props.add(value*1)
+>        }
+>     }
+>     incrementAsync = () => {
+>        const { value } = this.selectNumber
+>        this.props.addAsync(value*1, 500)
+>     }
 > 
->   render() {
->     console.log("UI组件接收到的props：", this.props)
->     return {
->        <h1>当前求和：{this.props.count}（使用Count组件进行封装redux的用法）</h1>
->         <select ref={c => this.selectNumber =c}>
+>     render() {
+>        console.log("UI组件接收到的props：", this.props)
+>        return {
+>          <h1>当前求和：{this.props.count}（使用Count组件进行封装redux的用法）</h1>
+>          <select ref={c => this.selectNumber =c}>
 >            <option value="1">1</option>
 >            <option value="2">2</option>
 >            <option value="2">2</option>
->         </select>
->         <button onClick={this.increment}>+</button>
->         <button onClick={this.decrement}>-</button>
->         <button onClick={this.incrementIfOdd}>当前求和为奇数再加</button>
->         <button onClick={this.incrementAsync}>异步加</button>
+>          </select>
+>          <button onClick={this.increment}>+</button>
+>          <button onClick={this.decrement}>-</button>
+>          <button onClick={this.incrementIfOdd}>当前求和为奇数再加</button>
+>          <button onClick={this.incrementAsync}>异步加</button>
+>        }
 >     }
->   }
 > }
 > 
 > // 暴露容器组件
 > export default connect(
->   state => ({ count: state }),
->   {
->     add: increment,
->     dec: decrement,
->     addAsync: incrementAsync,
->   }
+>     state => ({ count: state }),
+>     {
+>        add: increment,
+>        dec: decrement,
+>        addAsync: incrementAsync,
+>     }
 > )(Count)
 > ```
 
@@ -4629,22 +4629,22 @@ export const incrementAsync = (data, time) => {
 > import { bindActionCreators } from 'redux'
 > 
 > class App extends Component {
->   render(){
->     return (
->       <div>
->         <h1>当前求和：{this.props.counter}</h1>
->         <button onClick={ () => this.props.counterActions.increment(10) }>+</button>
->         <button onClick={ () => this.props.counterActions.decrement(5) }>-</button> 
->       </div>
->     )
->   }
+>     render(){
+>        return (
+>          <div>
+>            <h1>当前求和：{this.props.counter}</h1>
+>            <button onClick={ () => this.props.counterActions.increment(10) }>+</button>
+>            <button onClick={ () => this.props.counterActions.decrement(5) }>-</button> 
+>          </div>
+>        )
+>     }
 > }
 > 
 > export default connect(
->   state => ({ counter: state.counter }),
->   (dispatch) => ({
->     counterActions:bindActionCreators(counterActions, dispatch)
->   })
+>     state => ({ counter: state.counter }),
+>     (dispatch) => ({
+>        counterActions:bindActionCreators(counterActions, dispatch)
+>     })
 > )(App)
 > ```
 >
@@ -4738,78 +4738,11 @@ export const incrementAsync = (data, time) => {
 > );
 > ```
 
-## express
 
-> #### nodemon
->
-> >- 通过`npm i -g nodemon`安装，它将会见监视源文件中任何的更改自动重启服务器。nodemon不会对代码产生额外改变，只是当修改源文件后无需手动重启更改即可生效(类似热更新)
-> >- 执行js文件与node无区别`nodemon index.js`
->
-> #### JWT（JSON Web token）
->
-> > - 通过`npm i --save jsonwebtoken`安装，
->
-> ````js
-> /* routes/users.js */
-> const express = require('express')
-> const isEmpty = require('lodash/isEmpty')
-> const validator = require('validator')
-> const router = express.Router()
-> const jwt = require('jsonwebtoken')
-> 
-> const validatorInput = (data) => {
->   let errors = {}
->   if(validator.isEmpty(data.username)) {
->     errors.username = "请填写用户名"
->   }
->   if(validator.isEmpty(data.passowrd)) {
->     errors.password = "请输入密码"
->   }
->   if(!validator.equals(data.password, data.pwdConfirm)) {
->     errors.pwdConfirm = "密码不一致"
->   }
->   return {
->     errors,
->     isValid: isEmpty(errors)
->   }
-> }
-> 
-> router.post("/register", (req,res) => {
->   const { errors,isValid } = validatorInput(req.body)
->   const { username, password } = req.body
->   const sql = "select * from user WHERE `username`=? AND `password`=?"
->   const arr = [username, password]
->   sqlFn(sql, arr, (data)=> {
->     if(data.length>0) {
->       const token = jwt.sign({
->         id: data[0].id,
->         username: data[0].username
->       }, config.jwtSecret)
->       } else {
->         res.status(401).json({errors:{from:"用户密码错误"}})
->         if(!isValid) {res.status(401).json(errors) }
->       }
->   })
-> 
-> })
-> 
-> module.exports = router
-> ````
->
-> ```js
-> const express = require('express')
-> const app = express()
-> const users = require('./routes/users')
-> const debug = require('debug')("my-application")
-> const bodyParser = require('body-parser')
-> app.use(bodyParser.json())
-> app.use("/api/users", users)
-> app.listen(3000, (req,res) => { debug("服务器启动") })
-> ```
 
 ## DvaJs
 
-> ```js]
+> ```bash
 > 安装使用
 > 	- 安装：`cnpm i dva-cli -g`
 > 	- 创建新应用：`dva new dva-demo`

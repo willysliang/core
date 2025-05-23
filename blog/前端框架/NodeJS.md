@@ -436,6 +436,307 @@ setImmediate 2
 
 
 
+### 热更新 nodemon
+
+```bash
+- nodemon 会见监视源文件中任何的更改自动重启服务器。nodemon不会对代码产生额外改变，只是当修改源文件后无需手动重启更改即可生效(类似热更新)
+- 执行js文件与node无区别 `$ nodemon index.js`
+- 通过`$ npm i -g nodemon` 全局安装
+```
+
+```bash
+# 启动应用（默认监视所有 .js 文件）
+nodemon app.js
+
+# 指定监视特定文件类型
+nodemon --ext js,html,css app.js
+
+# 手动传递参数给 Node.js
+nodemon app.js --port 3000
+```
+
+
+
+### 日志管理 morgan
+
+```bash
+在 NodeJS 中，morgan 是 Express 框架最常用的 HTTP 请求日志中间件。
+morgan 可以通过预定义的格式或自定义格式来记录日志，比如 'combined'、'common'、'dev'等。
+
+```
+
+**【按日期分割日志】**
+
+```js
+const path = require('path')
+const express = require('express')
+const morgan = require('morgan')
+const app = express()
+const rfs = require('rotating-file-stream')
+
+// 每天生成一个新文件，保留最近7天
+const generator = (time, index) => {
+  if (!time) return 'access.log'
+  return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}.log`
+}
+
+// 创建写入流
+const rotatingStream = rfs.createStream(generator, {
+  interval: '1d', // 每天轮转
+  maxFiles: 7, // 保留7个文件
+  path: path.join(__dirname, 'logs'),
+})
+
+const isProduction = process.env.NODE_ENV === 'production'
+
+// 写入文件（使用 combined 格式）
+// app.use(morgan('combined', { stream: rotatingStream }))
+
+// 按环境区分日志级别
+app.use(morgan(isProduction ? 'combined' : 'dev', {
+  stream: rotatingStream,
+  skip: (req, res) => res.statusCode < 400 // 生产环境只记录错误
+}))
+```
+
+
+
+### 【文件流上传下载】
+
+```js
+const express = require('express')
+const path = require('path')
+const fs = require('fs')
+
+const multer = require('multer')
+const fileType = require('file-type') // 使用文件魔数校验真实类型
+const NodeClam = require('clamscan') // 病毒扫描
+
+const { pipeline } = require('stream')
+const zlib = require('zlib')
+
+const app = express()
+
+/**
+ * 单文件上传
+ */
+// 配置存储
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = 'uploads/'
+    fs.mkdirSync(uploadDir, { recursive: true })
+    cb(null, uploadDir)
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`)
+  },
+})
+
+// 文件过滤
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'application/pdf']
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true)
+  } else {
+    cb(new Error('不支持的文件类型'), false)
+  }
+}
+
+// 初始化上传中间件
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 1024 * 1024 * 100, // 100MB限制
+  },
+})
+
+// 对文件进行病毒扫描
+const scanFile = async (filePath) => {
+  const clamscan = await new NodeClam().init()
+  const { isInfected } = await clamscan.scanFile(filePath)
+  return isInfected
+}
+
+// 单文件上传路由 (增加文件类型校验 和 病毒扫描)
+app.post('/upload', upload.single('file'), async (req, res) => {
+  if (await scanFile(req.file.path)) {
+    fs.unlinkSync(req.file.path)
+    return res.status(422).send('检测到恶意文件')
+  }
+
+  const buffer = fs.readFileSync(req.file.path)
+  const type = await fileType.fromBuffer(buffer)
+  if (!['jpg', 'pdf'].includes(type.ext)) {
+    fs.unlinkSync(req.file.path)
+    return res.status(415).send('非法文件类型')
+  }
+
+  // 重命名保证后缀正确
+  const newPath = `${req.file.path}.${type.ext}`
+  fs.renameSync(req.file.path, newPath)
+
+  res.json({
+    filename: req.file.filename,
+    size: req.file.size,
+  })
+})
+
+/**
+ * 分块上传
+ */
+const mergeChunks = async (fileName, chunkSize) => {
+  const chunkDir = path.join('temp', fileName)
+  const chunks = await fs.promises.readdir(chunkDir)
+  chunks.sort((a, b) => a.split('-')[1] - b.split('-')[1])
+
+  const writeStream = fs.createWriteStream(path.join('uploads', fileName))
+  for (const chunk of chunks) {
+    const chunkPath = path.join(chunkDir, chunk)
+    const readStream = fs.createReadStream(chunkPath)
+    readStream.pipe(writeStream, { end: false })
+    await new Promise((resolve) => readStream.on('end', resolve))
+    fs.unlinkSync(chunkPath)
+  }
+  writeStream.end()
+  fs.rmdirSync(chunkDir)
+}
+app.post('/upload-chunk', upload.single('chunk'), async (req, res) => {
+  const { index, total, filename } = req.body
+  const chunkDir = path.join('temp', filename)
+
+  await fs.promises.mkdir(chunkDir, { recursive: true })
+  await fs.promises.rename(
+    req.file.path,
+    path.join(chunkDir, `${filename}-${index}`),
+  )
+
+  if (index === total) {
+    await mergeChunks(filename, req.file.size)
+    res.json({ status: 'completed' })
+  } else {
+    res.json({ status: 'processing' })
+  }
+})
+
+/**
+ * 下载
+ */
+// 基础下载
+app.get('/download/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+
+  // 验证文件存在性
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send('文件不存在')
+  }
+
+  // 设置下载头信息
+  res.setHeader('Content-Type', 'application/octet-stream')
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename=${req.params.filename}`,
+  )
+
+  // 创建可读流
+  const readStream = fs.createReadStream(filePath)
+  readStream.pipe(res)
+
+  // 错误处理
+  readStream.on('error', (err) => {
+    console.error('下载中断:', err)
+    res.status(500).send('下载失败')
+  })
+})
+
+// 对下载进行内存控制
+app.get('/safe-download/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+
+  const readStream = fs.createReadStream(filePath)
+  pipeline(readStream, res, (err) => {
+    if (err) {
+      console.error('下载管道错误:', err)
+      if (!res.headersSent) res.sendStatus(500)
+    }
+  })
+})
+
+// 流式压缩下载
+app.get('/download-compressed/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+
+  res.setHeader('Content-Encoding', 'gzip')
+  res.setHeader('Content-Type', 'application/octet-stream')
+
+  fs.createReadStream(filePath).pipe(zlib.createGzip()).pipe(res)
+})
+
+// 记录传输指标
+const downloadMetrics = new Map()
+app.get('/download/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+  const startTime = Date.now()
+  const readStream = fs.createReadStream(filePath)
+
+  readStream.on('open', () => {
+    downloadMetrics.set(req.id, {
+      start: startTime,
+      bytesSent: 0,
+    })
+  })
+
+  readStream.on('data', (chunk) => {
+    const metric = downloadMetrics.get(req.id)
+    metric.bytesSent += chunk.length
+  })
+
+  readStream.on('end', () => {
+    const metric = downloadMetrics.get(req.id)
+    console.log(
+      `传输完成: ${metric.bytesSent} bytes in ${Date.now() - metric.start}ms`,
+    )
+  })
+})
+
+// 断点续传支持
+app.get('/download-resumable/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+  const stat = fs.statSync(filePath)
+  const fileSize = stat.size
+  const range = req.headers.range
+
+  if (range) {
+    const parts = range.replace(/bytes=/, '').split('-')
+    const start = parseInt(parts[0], 10)
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1
+    const chunkSize = end - start + 1
+
+    res.writeHead(206, {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunkSize,
+      'Content-Type': 'application/octet-stream',
+    })
+
+    const readStream = fs.createReadStream(filePath, { start, end })
+    readStream.pipe(res)
+  } else {
+    res.writeHead(200, {
+      'Content-Length': fileSize,
+      'Content-Type': 'application/octet-stream',
+    })
+    fs.createReadStream(filePath).pipe(res)
+  }
+})
+
+app.listen(3000)
+```
+
+
+
+
+
 ## Express
 
 ```bash
@@ -787,6 +1088,8 @@ app.use("/login", checkCodeMiddleware, LoginRouter)
 
 http.createServer(app).listen(3000)
 ```
+
+
 
 ## 模板引擎 ejs
 
