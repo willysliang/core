@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年5月26日
+  - docs(前端进阶): [功能记录本] 视频相关-实现代码补充
+
 ## 2025年5月23日
   - docs(前端框架): [NodeJS] 热更新nodemon、日志管理morgan、文件流上传下载
 
