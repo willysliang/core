@@ -73,6 +73,7 @@ declare module '@vue/runtime-core' {
     Lockscreen: typeof import('./src/components/layout/header/lockscreen/index.vue')['default']
     LockscreenIndex: typeof import('./src/components/layout/header/lockscreen/LockscreenIndex.vue')['default']
     LockscreenTransition: typeof import('./src/components/layout/header/lockscreen/LockscreenTransition.vue')['default']
+    LoginForm: typeof import('./src/components/layout/header/userInfo/LoginForm.vue')['default']
     LoginQrcode: typeof import('./src/components/layout/header/userInfo/LoginQrcode.vue')['default']
     Main: typeof import('./src/components/layout/main/index.vue')['default']
     MaskLayer: typeof import('./src/components/Dialog/mask-layer.vue')['default']
