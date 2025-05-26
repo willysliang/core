@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-10-10 09:05:41
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-13 15:20:52
+ * @ ModifierTime: 2025-05-26 16:08:25
  * @ Description: 页面布局头部
  -->
 
@@ -67,6 +67,15 @@ const menuConfig = computed(() => {
         @click="router.back()"
       />
     </el-tooltip>
+
+    <!-- 当前路由的标题 -->
+    <div
+      v-if="appConfig?.routeInfo"
+      class="flex items-center text-gray-400 text-base underline underline-offset-[5px] select-none"
+    >
+      {{ appConfig.routeInfo.title }}
+    </div>
+
     <el-tooltip
       :content="$t('layout.header.tooltipForward')"
       placement="bottom"
@@ -79,17 +88,6 @@ const menuConfig = computed(() => {
         @click="router.go(1)"
       />
     </el-tooltip>
-
-    <!-- 当前路由的标题 -->
-    <div
-      v-if="appConfig?.routeInfo"
-      class="flex items-center text-gray-400 hover-text"
-    >
-      <!-- <IconPark :icon="appConfig.routeInfo.icon" :size="16" :stroke-width="4" /> -->
-      <span class="text-base ml-px cursor-pointer">{{
-        appConfig.routeInfo.title
-      }}</span>
-    </div>
   </div>
 
   <!-- 搜索栏 -->

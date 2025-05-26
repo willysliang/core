@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-02 20:49:42
  * @ Modifier: willysliang
- * @ ModifierTime: 2024-09-19 11:15:02
+ * @ ModifierTime: 2025-05-26 15:56:32
  * @ Description: index app 相关的持久化数据
  */
 
@@ -153,9 +153,17 @@ export const useAppStore = defineStore({
     },
   },
   actions: {
-    /** 设置系统后端地址 */
+    /**
+     * 设置系统后端地址
+     * @param host 后端地址
+     * @description 仅在host有值时添加，如果host为空，则移除 (基于音乐模块显隐控制的支持)
+     */
     setHost(host: string) {
-      localStorage.setItem(BASE_URL, host)
+      if (host) {
+        localStorage.setItem(BASE_URL, host)
+      } else {
+        localStorage.removeItem(BASE_URL)
+      }
       location.reload()
     },
 
