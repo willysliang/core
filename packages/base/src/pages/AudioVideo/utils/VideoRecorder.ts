@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-05-15 22:51:28
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-20 16:47:23
+ * @ ModifierTime: 2025-05-26 14:35:56
  * @ Description: 视频录制
  */
 
@@ -42,6 +42,38 @@ interface IRecordingSources {
  * @memberof #getMimeType 自动兼容不同浏览器的视频编码格式
  * @memberof #getBitrate 根据分辨率计算比特率
  *
+ * @example
+    const videoRef = ref<HTMLVideoElement>()
+    const canvasRef = ref<HTMLCanvasElement>()
+    const recorder = new VideoRecorder()
+    const showPreview = ref<boolean>(true) // 是否展示镜头视图
+
+    // 摄像头列表
+    const cameraList = ref<MediaDeviceInfo[]>([])
+    const currentCamera = ref<MediaDeviceInfo['deviceId']>('')
+    getCameraList().then((list) => {
+      cameraList.value = list
+      currentCamera.value = list[0]?.deviceId
+    })
+
+    // 开始录制
+    const handleStartRecord = async () => {
+      await recorder.startRecording(
+        currentCamera.value,
+        canvasRef.value!,
+        showPreview.value ? videoRef.value! : undefined,
+      )
+    }
+
+    // 结束录制
+    const handleStopRecord = async () => {
+      recorder.stopRecording()
+    }
+
+    // 保存视频
+    const handleSaveVideo = async () => {
+      recorder.saveAsFile()
+    }
  */
 export class VideoRecorder {
   /** 媒体流的源 */

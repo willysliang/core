@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年5月26日
+  - style(demo): [views/demo] 添加example注释
+
 ## 2025年5月20日
   - feat(demo): [AudioVideo/VideoRecord] 视频录制 & 绘制频谱声波图 & 视频水印
 
