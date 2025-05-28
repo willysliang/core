@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年5月28日
+  - docs(工程&网络): [计算机网络] OAuth2.0认证
+
 ## 2025年5月26日
   - docs(前端进阶): [功能记录本] 视频相关-实现代码补充
 
