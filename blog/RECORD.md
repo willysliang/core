@@ -98,6 +98,7 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 ## 2025年5月29日
   - docs(工程&网络): [计算机网络] token存放位置(cookie & Authorization)
+  - docs(前端基础): [Git仓库管理] 基准线rebase
 
 ## 2025年5月28日
   - docs(工程&网络): [计算机网络] OAuth2.0认证
