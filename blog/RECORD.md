@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年5月29日
+  - docs(工程&网络): [计算机网络] token存放位置(cookie & Authorization)
+
 ## 2025年5月28日
   - docs(工程&网络): [计算机网络] OAuth2.0认证
 
