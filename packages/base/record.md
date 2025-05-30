@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年5月30日
+  - feat(demo): [AudioVideo/Dplayer] dPlayer视频播放 & 视频缩略图(聚焦进度条显示预览图)
+
 ## 2025年5月26日
   - style(demo): [views/demo] 添加example注释
   - fix(mp): 修复音乐模块显隐控制异常问题
