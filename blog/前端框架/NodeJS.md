@@ -735,6 +735,109 @@ app.listen(3000)
 
 
 
+### 通信加密策略
+
+```bash
+NodeJS 的通信安全需分层实施
+    1. 传输层：强制使用 https/tls
+    2. 数据层：按需选择 对称/非对称加密
+    3. 验证层：数字签名 + Token 机制
+    4. 运维曾：密钥安全管理 + 定期审计
+
+
+一、传输层加密（HTTPS/TLS）
+通过 SSL/TLS 协议加密整个通信通道，防止数据在传输中被窃取或篡改
+使用 https 模块加载 SSL/TLS 证书和私钥
+使用 https.request() 安全访问外部 API
+
+二、数据加密策略
+对敏感数据（如密码、令牌）单独加密，即使传输层被突破仍可保护数据
+对称加密（AES）：高效加密大量数据（如请求体）
+非对称加密（RSA）：安全传输密钥或签名验证
+Hash（SHA-256/MD5）：用于密码存储或数据完整性校验（不可逆）
+HMAC：密钥相关的哈希，防彩虹表攻击（如用户登录令牌）
+
+三、身份验证与完整性保护
+数字签名：私钥签名，公钥验证，确保数据来源可信
+Token鉴权：
+	使用 JWT（JSON Web Token）结合 HMAC 或 RSA 签名，实现无状态会话管理
+	请求头携带：Authorization: Bearer <token>
+
+四、安全会话管理
+密钥安全
+  对称加密的密钥需通过非对称加密传输（如 RSA 加密 AES 密钥）
+  避免硬编码密钥，使用环境变量或密钥管理服务（KMS）
+防御中间人攻击
+  服务端配置 rejectUnauthorized: true 强制验证客户端证书
+  使用完整的证书链（CA 中间证书）避免浏览器警告
+
+五、问题防范
+算法选择
+	弃用弱算法（如 MD5、SHA-1），优先选 AES-256、SHA-256、RSA-2048。
+防范 Web 攻击
+	防止重放攻击：请求加入时间戳+随机数，服务端校验时效性。
+	防 CSRF：同步令牌验证。
+审计与监控
+	日志记录敏感操作（如解密失败、签名验证异常）。
+	使用安全扫描工具（如 npm audit）定期检查依赖漏洞
+```
+
+**传输层加密（HTTPS/TLS）**
+
+```js
+// 创建 HTTPS 服务器
+const https = require('https')
+const fs = require('fs')
+const options = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt'),
+  ca: fs.readFileSync('ca_bundle.crt'), // 可选，中间证书
+}
+https
+  .createServer(options, (req, res) => {
+    res.end('Secure Data')
+  })
+  .listen(443)
+
+
+// 发起 HTTPS 请求
+https.request('https://api.example.com', (res) => {
+  res.on('data', (d) => process.stdout.write(d))
+}).end()
+```
+
+```js
+// 对称加密
+const crypto = require('crypto')
+const algorithm = 'aes-256-cbc'
+const key = crypto.randomBytes(32) // 密钥
+const iv = crypto.randomBytes(16) // 初始化向量
+
+function encrypt(text) {
+  const cipher = crypto.createCipheriv(algorithm, key, iv)
+  return cipher.update(text, 'utf8', 'hex') + cipher.final('hex')
+}
+
+
+// 非对称加密
+const encrypted = crypto.publicEncrypt(publicKey, Buffer.from('Secret'))
+const decrypted = crypto.privateDecrypt(privateKey, encrypted)
+
+const hmac = crypto.createHmac('sha256', secretKey)
+hmac.update('data')
+console.log(hmac.digest('hex'))
+
+
+// 数字签名
+const sign = crypto.createSign('RSA-SHA256')
+sign.update('data')
+const signature = sign.sign(privateKey, 'base64')
+
+const verify = crypto.createVerify('RSA-SHA256')
+verify.update('data')
+console.log(verify.verify(publicKey, signature, 'base64')) // true/false
+```
+
 
 
 ## Express

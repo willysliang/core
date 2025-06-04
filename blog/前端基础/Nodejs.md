@@ -3927,7 +3927,7 @@ http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传�
 
 ### 设置相应主体
 1. response.write(chunk[, encoding][, callback])
-		- chunk：响应主体的内容，可以是string，也可以是buffer。当为string时，encoding参数用来指明编码方式。（默认是utf8）
+		- chunk：响应主体的内容，可以是string，也可以是buffer。当为string时，encoding参数用来指明编码方式（默认是utf8）
 		- encoding：编码方式，默认是 utf8。
 		- callback：当响应体 flushed 时触发的回调。
 	注意：
@@ -3948,6 +3948,45 @@ http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传�
 - close：response.end() 被调用前连接就断开，此时会触发这个事件。
 - finish：响应header、body都已经发送出去（交给操作系统，排队等候传输），但客户端是否实际收到数据为止。（这个事件后 res 上就不会再有其他事件触发）
 ```
+
+
+
+### 报文流- 请求体流式读取
+
+```js
+const http = require('http')
+
+const server = http.createServer((req, res) => {
+  // 监听数据流 chunk
+  let rawData = ''
+  req.on('data', (chunk) => {
+    rawData += chunk
+    console.log(`收到 ${chunk.length} 字节数据`)
+  })
+
+  // 流结束处理
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(rawData)
+      res.end(`收到数据: ${data.message}`)
+    } catch (err) {
+      res.statusCode = 400
+      res.end('非法数据格式')
+    }
+  })
+
+  // 错误处理
+  req.on('error', (err) => {
+    console.error('请求流错误:', err)
+    res.statusCode = 500
+    res.end('服务器内部错误')
+  })
+})
+
+server.listen(3000)
+```
+
+
 
 ### 服务器请求
 
@@ -4154,8 +4193,12 @@ server.listen(80, () => {
 ## 网络服务 https
 
 ```bash
-## 网络服务 https
+通过 SSL/TLS 协议加密整个通信通道，可防止数据在传输中被窃取或篡改。
 https 与 http 模块用法相似。
+
+证书来源：
+	1. 自签名证书（测试环境）：通过 OpenSSL 生成
+	2. 受信任 CA 证书（生产环境）：如 Let’s Encrypt
 ```
 
 ### 生成证书
@@ -4189,7 +4232,6 @@ openssl x509 \
 
 5. 本地测试（因为本地没有域名，所以先配置本地host）
 127.0.0.1 www.willy.com
-
 ````
 
 ```js
@@ -4205,8 +4247,12 @@ const options = {
 const server = https.createServer(options, (req, res) => {
   res.end("这是来自HTTPS服务器的返回")
 })
+server.listen(443)
 
-server.listen(3000)
+// 使用 https.request() 安全访问外部 API
+https.request('https://api.example.com', (res) => {
+  res.on('data', (d) => process.stdout.write(d))
+}).end()
 ```
 
 
