@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年6月24日
+  - docs(前端框架): [移动开发] 在cmd窗口查看手机程序日志-adb
+
 ## 2025年6月4日
   - docs(前端框架): [NodeJS] 通信加密策略
 
