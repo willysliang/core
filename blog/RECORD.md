@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年7月8日
+  - docs(学海无涯): [格物致知] 「价值可见性」系统太稳定了，甲方觉得我们没有工作量，怎么收运维费？
+
 ## 2025年6月24日
   - docs(前端框架): [移动开发] 在cmd窗口查看手机程序日志-adb
 
