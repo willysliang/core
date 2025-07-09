@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-10-10 09:05:41
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-26 16:08:25
+ * @ ModifierTime: 2025-07-09 09:58:01
  * @ Description: 页面布局头部
  -->
 
@@ -71,7 +71,7 @@ const menuConfig = computed(() => {
     <!-- 当前路由的标题 -->
     <div
       v-if="appConfig?.routeInfo"
-      class="flex items-center text-gray-400 text-base underline underline-offset-[5px] select-none"
+      class="flex items-center text-base opacity-50 underline underline-offset-[5px] select-none"
     >
       {{ appConfig.routeInfo.title }}
     </div>

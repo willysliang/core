@@ -93,8 +93,6 @@ const { showMenu } = storeToRefs(useSettingStore())
     flex-shrink: 0;
     box-sizing: border-box;
     border-bottom: 1px solid var(--theme-border-second-color);
-    background-color: var(--theme-bg-color);
-    color: var(--theme-color);
 
     @apply text-xl px-4;
   }

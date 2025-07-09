@@ -2,7 +2,7 @@
 Author: willy
 CreateTime: 2022-10-10 09:05:41
 Modifier: willy
-ModifierTime: 2024-05-31 17:46:27
+ModifierTime: 2025-07-09 10:03:00
 Description: 日志记录
 ---
 
@@ -26,6 +26,9 @@ Description: 日志记录
 
 
 # 更新记录
+
+## 2025年7月9日
+  - fix(layout): 修复页面头部主题色不生效问题
 
 ## 2025年5月30日
   - feat(demo): [AudioVideo/Dplayer] dPlayer视频播放 & 视频缩略图(聚焦进度条显示预览图)
