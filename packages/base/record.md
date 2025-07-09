@@ -29,6 +29,7 @@ Description: 日志记录
 
 ## 2025年7月9日
   - fix(layout): 修复页面头部主题色不生效问题
+  - fix(mp): 修复音乐模块主题色不生效问题
 
 ## 2025年5月30日
   - feat(demo): [AudioVideo/Dplayer] dPlayer视频播放 & 视频缩略图(聚焦进度条显示预览图)

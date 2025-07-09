@@ -44,7 +44,7 @@ const handleShow = () => {
     <template v-if="isOverflow">
       <span v-if="isShow" v-html="htmls"></span>
       <span v-else v-html="htmls.substring(0, textEnd) + '...'"></span>
-      <span class="ml-5 hover-text text-main" @click="handleShow">
+      <span class="ml-5 hover-text" @click="handleShow">
         [&nbsp;{{ isShow ? '收起' : '详情' }}&nbsp;]
       </span>
     </template>
