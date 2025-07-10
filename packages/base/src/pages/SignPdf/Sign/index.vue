@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-07-10 15:19:58
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-07-10 16:05:35
+ * @ ModifierTime: 2025-07-10 16:06:54
  * @ Description: 电子签名组件
  -->
 
@@ -37,8 +37,8 @@ const {
 <template>
   <div class="signature-app">
     <div class="header">
-      <h1>Vue3 电子签名板</h1>
-      <p>使用Canvas实现的专业电子签名组件，支持自定义画笔设置和签名导出</p>
+      <h1>电子签名板</h1>
+      <p>使用Canvas实现的电子签名组件，支持自定义画笔设置和签名导出</p>
     </div>
 
     <div class="signature-container">
