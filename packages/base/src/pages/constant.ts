@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-11-15 09:25:16
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-12 17:08:12
+ * @ ModifierTime: 2025-07-10 16:04:00
  * @ Description: 路由配置 & 常量设定
  */
 
@@ -29,6 +29,7 @@ import {
   NotebookAndPen,
   Video,
   FaceRecognition,
+  FilePdf,
 } from '@icon-park/vue-next'
 
 export const demoPages = {
@@ -40,14 +41,6 @@ export const demoPages = {
     icon: TestTube,
     component: () => import('./test/index.vue'),
   },
-  CUSTOM_COMPOMENT: {
-    path: 'customComponent',
-    key: 'customComponent',
-    name: 'customComponent',
-    title: '自定义组件',
-    icon: NotebookAndPen,
-    component: () => import('./CustomComponent/index.vue'),
-  },
   AUDIO_VIDEO: {
     path: 'AudioVideo',
     key: 'AudioVideo',
@@ -55,6 +48,14 @@ export const demoPages = {
     title: '音视频',
     icon: Video,
     component: () => import('./AudioVideo/index.vue'),
+  },
+  SIGN_PDF: {
+    path: 'SignPdf',
+    key: 'SignPdf',
+    name: 'SignPdf',
+    title: 'Pdf电子签字',
+    icon: FilePdf,
+    component: () => import('./SignPdf/index.vue'),
   },
   FACE_RECOGNITION: {
     path: 'FaceRecognition',
@@ -71,6 +72,14 @@ export const demoPages = {
     title: 'EXCEL表格',
     icon: Excel,
     component: () => import('./excel/index.vue'),
+  },
+  CUSTOM_COMPOMENT: {
+    path: 'customComponent',
+    key: 'customComponent',
+    name: 'customComponent',
+    title: '自定义组件',
+    icon: NotebookAndPen,
+    component: () => import('./CustomComponent/index.vue'),
   },
   LAZY_LOADING: {
     path: 'lazyLoading',

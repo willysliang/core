@@ -27,6 +27,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年7月10日
+  - feat(demo): [SignPdf/Sign] 电子签名组件
+
 ## 2025年7月9日
   - fix(layout): 修复页面头部主题色不生效问题
   - fix(mp): 修复音乐模块主题色不生效问题
