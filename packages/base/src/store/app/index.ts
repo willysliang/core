@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ Create Time: 2023-11-02 20:49:42
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-26 15:56:32
+ * @ ModifierTime: 2025-07-11 09:37:26
  * @ Description: index app 相关的持久化数据
  */
 
@@ -68,6 +68,7 @@ interface IAppIndexState {
 }
 
 const initLockTime = 5 * 60 * 1000
+
 export const useAppStore = defineStore({
   id: 'app-index',
   state: (): IAppIndexState => ({
