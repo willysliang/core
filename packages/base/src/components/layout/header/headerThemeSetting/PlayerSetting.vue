@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-06-06 14:59:08
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-07-11 10:49:05
+ * @ ModifierTime: 2025-07-11 14:23:56
  * @ Description: 音乐设置
  -->
 
@@ -10,10 +10,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@store/app/setting'
-import {
-  menuListMap,
-  musicHallMenulist,
-} from '@/entries/music-player/router/constant'
+import { Pages } from '@/entries/music-player/router/constant'
 
 const route = useRoute()
 const router = useRouter()
@@ -34,14 +31,14 @@ const handleChangeSwitch = (status: boolean) => {
 
   // 如果不展示音乐相关模块，且当前在音乐模块路由中，则重新跳转首页
   if (!status) {
-    const curPath = route.path.match(/\/([^?]+)/)?.[1] ?? ''
-    const isMusicHallPath = musicHallMenulist.some(
-      (menu) => menu.path === curPath,
+    // 根路由(包含二级路由)
+    const curRootPath = route.path.match(/\/([^?]+)/)?.[1] ?? ''
+    // 获取一级路由
+    const level1Path = curRootPath.split('/')[0]
+    const isMPRoute = Object.values(Pages).some(
+      (menu) => menu.path === level1Path,
     )
-    const isMusicMenuPath = menuListMap.MUSIC.list.some(({ children }) =>
-      children!.some((menu) => menu.path === curPath),
-    )
-    if (isMusicHallPath || isMusicMenuPath) {
+    if (isMPRoute) {
       router.replace('/')
     }
   }

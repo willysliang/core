@@ -2,19 +2,40 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-07-10 16:17:43
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-07-11 15:28:37
+ * @ ModifierTime: 2025-07-11 17:06:34
  * @ Description: todoList的列表展示
  -->
 
 <script setup lang="ts">
 import { Check, Close } from '@icon-park/vue-next'
 import IconPark from '@comp/common/IconPark.vue'
-import { DEFAULT_THEMES, ITodoListProps } from './type'
+import type { ITodoListProps } from './type.d'
 
 const { title, todos, themes } = withDefaults(defineProps<ITodoListProps>(), {
   title: '',
   todos: () => [],
-  themes: () => DEFAULT_THEMES,
+  themes: () => [
+    {
+      border: '#ff7e5f',
+      bg: 'rgba(255, 126, 95, 0.2)',
+      color: '#ff7e5f',
+    },
+    {
+      border: '#4a69bd',
+      bg: 'rgba(74, 105, 189, 0.2)',
+      color: '#4a69bd',
+    },
+    {
+      border: '#6a89cc',
+      bg: 'rgba(106, 137, 204, 0.2)',
+      color: '#6a89cc',
+    },
+    {
+      border: '#3dc1d3',
+      bg: 'rgba(61, 193, 211, 0.2)',
+      color: '#3dc1d3',
+    },
+  ],
 })
 </script>
 

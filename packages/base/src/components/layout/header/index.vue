@@ -2,11 +2,15 @@
  * @ Author: willysliang
  * @ CreateTime: 2022-10-10 09:05:41
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-07-09 09:58:01
+ * @ ModifierTime: 2025-07-11 14:23:20
  * @ Description: 页面布局头部
  -->
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
+import HeaderRouteDetail from './HeaderRouteDetail/index.vue'
 import HeaderSearch from '@comp/layout/header/headerSearch/index.vue'
 import UserInfo from '@comp/layout/header/userInfo/index.vue'
 import HeaderFullScreen from './HeaderFullScreen/index.vue'
@@ -14,84 +18,35 @@ import LockScreen from './lockscreen/index.vue'
 import HeaderThemeSetting from './headerThemeSetting/index.vue'
 import HeaderGuide from './Guide/index.vue'
 import HeaderLocale from './headerLocale/index.vue'
-import { Left, Right, AlignTextLeft, AlignTextRight } from '@icon-park/vue-next'
-import { useRouter } from 'vue-router'
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useAppStore } from '@store/app'
 import { useSettingStore } from '@store/app/setting'
-import { useThemeStore } from '@store/app/theme'
+import { Pages } from '@/entries/music-player/router/constant'
 
-const router = useRouter()
+const route = useRoute()
+const { showPlayerModule } = storeToRefs(useSettingStore())
 
-const { appConfig } = storeToRefs(useAppStore())
-const { showMenu, showPlayerModule } = storeToRefs(useSettingStore())
-const { themeLayoutIsVertical } = storeToRefs(useThemeStore())
-const toggleMenuStatus = () => {
-  showMenu.value = !showMenu.value
-}
-const menuConfig = computed(() => {
-  const className = themeLayoutIsVertical.value ? 'rotate-90' : 'rotate-0'
-  return showMenu.value
-    ? {
-        tooltipName: 'layout.header.tooltipHideMenu',
-        icon: AlignTextLeft,
-        class: className,
-      }
-    : {
-        tooltipName: 'layout.header.tooltipShowMenu',
-        icon: AlignTextRight,
-        class: className,
-      }
+/**
+ * 是否显示搜索栏
+ */
+const showSearch = computed(() => {
+  if (!showPlayerModule.value) return false
+
+  // 根路由(包含二级路由)
+  const curRootPath = route.path.match(/\/([^?]+)/)?.[1] ?? ''
+  // 获取一级路由
+  const level1Path = curRootPath.split('/')[0]
+  const isMPRoute = Object.values(Pages).some(
+    (menu) => menu.path === level1Path,
+  )
+  return isMPRoute
 })
 </script>
 
 <template>
-  <div class="flex items-center">
-    <el-tooltip :content="$t(menuConfig.tooltipName)" placement="bottom">
-      <IconPark
-        :icon="menuConfig.icon"
-        size="22"
-        :stroke-width="4"
-        :class="`hover-text mr-2 ${menuConfig.class}`"
-        @click="toggleMenuStatus"
-      />
-    </el-tooltip>
-
-    <el-tooltip :content="$t('layout.header.tooltipBack')" placement="bottom">
-      <IconPark
-        :icon="Left"
-        size="22"
-        :stroke-width="4"
-        class="hover-text mx-2"
-        @click="router.back()"
-      />
-    </el-tooltip>
-
-    <!-- 当前路由的标题 -->
-    <div
-      v-if="appConfig?.routeInfo"
-      class="flex items-center text-base opacity-50 underline underline-offset-[5px] select-none"
-    >
-      {{ appConfig.routeInfo.title }}
-    </div>
-
-    <el-tooltip
-      :content="$t('layout.header.tooltipForward')"
-      placement="bottom"
-    >
-      <IconPark
-        :icon="Right"
-        size="22"
-        :stroke-width="4"
-        class="hover-text mx-2"
-        @click="router.go(1)"
-      />
-    </el-tooltip>
-  </div>
+  <!-- 路由详情 -->
+  <HeaderRouteDetail />
 
   <!-- 搜索栏 -->
-  <HeaderSearch v-if="showPlayerModule" />
+  <HeaderSearch v-if="showSearch" />
 
   <!-- 设置类 -->
   <div class="flex items-center justify-end">
