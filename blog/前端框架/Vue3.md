@@ -3188,8 +3188,7 @@ export default defineComponent({
 >         tweenedNumber: newVal
 >     })
 > })
->
-> </script>
+></script>
 > ```
 
 ## TSX组件
@@ -3508,7 +3507,6 @@ export default defineComponent({
     )
   },
 })
-
 ```
 
 
@@ -3542,7 +3540,6 @@ export default defineComponent({
 > const renderDom = (props: Props, content: any) => {
 >   return (
 >   	<>
->     	<div></div>
 >     	<div v-show={flag.value} onClick={clickTap}>props接收值：{ props.title }</div>
 >     	<div v-show={!flag.value} onClick={onEmit.bind(this, content)}>Emit派发：</div>
 >    		{
@@ -3555,17 +3552,17 @@ export default defineComponent({
 >     </>
 >   )
 > }
->
-> export default renderDom;
+> 
+>export default renderDom;
 > ```
 
 ### SFC与TSX的对比
 
-> - TSX 要用 `defineComponent` 包裹，并且只使用 `setup`（没有 data、methods、computed 等一级声明），返回值要是一个 `render function`，里面采用 JSX 的写法；
+> - TSX 要用 `defineComponent` 包裹，并且只使用 `setup`（没有 data、methods、computed 等一级声明），返回值要是一个 `render function`，里面采用 JSX 写法；
 > - TSX（defineComponent） 中 `components`、`props`、`emits` 等的声明是省不了的
-> - @click` 在 TSX 中要变为 `onClick`，自定义 `emit` 也要由 `@child-click` 变为 `onChildClick；如果用了 TSX，像 onClick 这种可能引起无效重复 render 的问题，就需要使用者自己解决了
-> - TSX 中的 ref 对象还是需要使用 `.value` 结尾，有点麻烦，但是编辑器会自动补全；
-> - 如果有多个`slots`，TSX 要像例子中一样，通过一个对象传入子组件。对象的 key 为 slot 的名字，value 为要传入的组件
+> - @click` 在 TSX 中要变为 `onClick`，自定义 `emit` 也要由 `@child-click` 变为 `onChildClick；如果使用 TSX，像 onClick 这种可能引起无效重复 render 的问题需手动解决
+> - TSX 中的 ref 对象需要使用 `.value` 结尾
+> - 如果有多个`slots`，TSX 需要通过一个对象传入子组件。对象的 key 为 slot 的名字，value 为要传入的组件
 >
 > ![image-20221015013053414](./image/image-20221015013053414.png)
 >
@@ -3663,12 +3660,8 @@ export default defineComponent({
 >   return () => (
 >     <div>
 >       <span v-show={isShow}>我是v-show</span>
->       {
->         element()
->       }
->       {
->         isShow ? <p>我是三目1</p> : <p>我是三目2</p>
->       }
+>       { element() }
+>       { isShow ? <p>我是三目1</p> : <p>我是三目2</p> }
 >       <div>
 >   )
 > }
@@ -3680,28 +3673,28 @@ export default defineComponent({
 >
 > ```tsx
 > setup() {
->   const listData = [
->     {name: 'Tom', age: 18},
->     {name: 'Jim', age: 20},
->     {name: 'Lucy', age: 16}
->   ]
+>     const listData = [
+>        {name: 'Tom', age: 18},
+>        {name: 'Jim', age: 20},
+>        {name: 'Lucy', age: 16}
+>     ]
 >
->   return () => (
->     <div>
->       <div class={'box'}>
->         <span>姓名</span>
->         <span>年龄</span>
->       </div>
->       {
->         prop.listData.map(item => {
->           return <div class={'box'}>
->             <span>{item.name}</span>
->             <span>{item.age}</span>
->           </div>
->         })
->       }
->     </div>
->   )
+>     return () => (
+>        <div>
+>          <div class={'box'}>
+>            <span>姓名</span>
+>            <span>年龄</span>
+>          </div>
+>          {
+>            prop.listData.map(item => {
+>              return <div class={'box'}>
+>                <span>{item.name}</span>
+>                <span>{item.age}</span>
+>              </div>
+>            })
+>          }
+>        </div>
+>     )
 > }
 > ```
 
@@ -3713,19 +3706,19 @@ export default defineComponent({
 >
 > ```tsx
 > setup() {
->   const clickBox = val => {
->     console.log(val)
->   }
+>     const clickBox = val => {
+>        console.log(val)
+>     }
 >
->   return () => (
->     <div class={'box1'} onClick={() => clickBox('box1')}>
->       <span>我是box1</span>
->       <div class={'box2'} onClick={() => clickBox('box2')}>
->         <span>我是box2</span>
->         <div class={'box3'} onClick={withModifiers(() => clickBox('box3'), ['stop'])}>我是box3</div>
->       </div>
->     </div>
->   )
+>     return () => (
+>        <div class={'box1'} onClick={() => clickBox('box1')}>
+>          <span>我是box1</span>
+>          <div class={'box2'} onClick={() => clickBox('box2')}>
+>            <span>我是box2</span>
+>            <div class={'box3'} onClick={withModifiers(() => clickBox('box3'), ['stop'])}>我是box3</div>
+>          </div>
+>        </div>
+>     )
 > }
 > ```
 
@@ -3758,15 +3751,15 @@ export default defineComponent({
 > ```jsx
 > import { renderSlot } from "vue"
 > export default defineComponent({
->   // 从context 中解构出来 slots
->   setup(props, { slots }) {
->     return () => (
->       <div>
->         { renderSlot(slots, 'default') }
->         { slots.title?.() }
->       </div>
->     )
->   }
+>     // 从context 中解构出来 slots
+>     setup(props, { slots }) {
+>        return () => (
+>          <div>
+>            { renderSlot(slots, 'default') }
+>            { slots.title?.() }
+>          </div>
+>        )
+>     }
 > })
 > ```
 >
@@ -3777,22 +3770,18 @@ export default defineComponent({
 > ```jsx
 > import Vslot from './slotTem'
 > export default defineComponent({
->   setup() {
->     return () => (
->       <div class={'box'}>
->         <Vslot v-slots={{
->             title: () => {
->               return <p>我是title插槽</p>
->             },
->               default: () => {
->                 return <p>我是default插槽</p>
->               }
->           }} />
->       </div>
->     )
->   }
-> })
-> ```
+>     setup() {
+>        return () => (
+>          <div class={'box'}>
+>            <Vslot v-slots={{
+>                title: () => { return <p>我是title插槽</p> },
+>                  default: () => { return <p>我是default插槽</p> }
+>              }} />
+>          </div>
+>        )
+>      }
+>    })
+>    ```
 
 #### 给孙组件传递slot，孙组件如何给父组件传递参数
 
@@ -3804,11 +3793,11 @@ export default defineComponent({
 > </script>
 >
 > <template>
->  <Child>
->   <template #search="{search}">
->     <div v-for="item in search" :key="item">{{ item }}</div>
->   </template>
->  </Child>
+>    <Child>
+>       <template #search="{search}">
+>          <div v-for="item in search" :key="item">{{ item }}</div>
+>       </template>
+>    </Child>
 > </template>
 > ```
 >
@@ -3816,15 +3805,15 @@ export default defineComponent({
 >
 > ```vue
 > <script setup lang="ts">
-> import Grandson from './Grandson.vue'
+>   import Grandson from './Grandson.vue'
 > </script>
 >
 > <template>
->   <Grandson>
->     <template #search_item="{ search }">
->       <slot name="search" :search="search"></slot>
->     </template>
->   </Grandson>
+>     <Grandson>
+>        <template #search_item="{ search }">
+>          <slot name="search" :search="search"></slot>
+>        </template>
+>     </Grandson>
 > </template>
 > ```
 >
@@ -3850,30 +3839,30 @@ export default defineComponent({
 > import './index.scss'
 >
 > export default defineComponent({
->   setup() {
->     const isShowRoutes = computed(() => {
->       return routes
->     })
->     const currentPath = computed(() => {
->       return useRoute().path
->     })
+>     setup() {
+>        const isShowRoutes = computed(() => {
+>          return routes
+>        })
+>        const currentPath = computed(() => {
+>          return useRoute().path
+>        })
 >
->     return () => (
->       <el-scrollbar class={`menuContent`}>
->         <el-menu
->           default-active={currentPath.value}
->           mode="vertical"
->           class={'menu'}
->           >
->           {
->             isShowRoutes.value.map((route) => {
->               return <MenuItem item={route} key={route.path}></MenuItem>
->             })
->           }
->         </el-menu>
->       </el-scrollbar>
->     )
->   }
+>        return () => (
+>          <el-scrollbar class={`menuContent`}>
+>            <el-menu
+>              default-active={currentPath.value}
+>              mode="vertical"
+>              class={'menu'}
+>              >
+>              {
+>                isShowRoutes.value.map((route) => {
+>                  return <MenuItem item={route} key={route.path}></MenuItem>
+>                })
+>              }
+>            </el-menu>
+>          </el-scrollbar>
+>        )
+>     }
 > })
 > ```
 >
@@ -3885,42 +3874,40 @@ export default defineComponent({
 > import './index.scss'
 >
 > const MenuItem = defineComponent({
->   name: 'MenuItem',
->   props: {
->     item: {
->       type: Object as PropType<RouteRecordRaw>,
->       required: true
->     }
->   },
->   setup(props: { item: any }) {
->     const router = useRouter()
->     const jumpRoute = (path: string) => {
->       router.push(path)
->     }
->     return () => {
->       let { item } = props
->       if (item.children) {
->         const slots = {
->           title: () => {
->             return <div>
->               <span>{item.meta.title}</span>
->             </div>
->           }
->         }
->         return <el-sub-menu index={item.path} v-slots={slots}>
->           {item.children.map((child: RouteRecordRaw) => {
->             return <MenuItem item={child} key={child.path}></MenuItem>
->           })}
->         </el-sub-menu>
->       } else {
->         return <el-menu-item index={item.path} onClick={() => jumpRoute(item.path)}>{item.meta.title}</el-menu-item>
->       }
->     }
->   }
-> })
->
+>     name: 'MenuItem',
+>     props: {
+>        item: {
+>          type: Object as PropType<RouteRecordRaw>,
+>          required: true
+>        }
+>     },
+>     setup(props: { item: any }) {
+>        const router = useRouter()
+>        const jumpRoute = (path: string) => {
+>          router.push(path)
+>        }
+>        return () => {
+>          let { item } = props
+>          if (item.children) {
+>            const slots = {
+>              title: () => {
+>                return <div>{item.meta.title}</div>
+>              }
+>            }
+>            return <el-sub-menu index={item.path} v-slots={slots}>
+>              {item.children.map((child: RouteRecordRaw) => {
+>                return <MenuItem item={child} key={child.path}></MenuItem>
+>              })}
+>            </el-sub-menu>
+>          } else {
+>            return <el-menu-item index={item.path} onClick={() => jumpRoute(item.path)}>{item.meta.title}</el-menu-item>
+>          }
+>        }
+>      }
+>    })
+>   
 > export default MenuItem
-> ```
+>```
 
 ### TSX父子组件通信
 

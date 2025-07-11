@@ -3,7 +3,7 @@ home: true
 heroText: 岁序叩梅帖
 tagline: 落叶缤纷诉秋意，风雪飘摇牵梅舞
 title: RECORD
-actions: 
+actions:
 - text: ← 主页 →
   link: /
 features:
@@ -14,7 +14,7 @@ features:
 - title: 🍂 秋实 ❖ 腹笥五车
   details: "粗缯大布裹生涯，腹有诗书气自华"  # 苏轼《和董传留别》· 积淀
 - title: ❄️ 冬藏 ❖ 十年一剑
-  details: "十年磨剑心未冷，三更灯火墨犹温"  # 贾岛《剑客》· 蓄势 + 颜真卿融合句 
+  details: "十年磨剑心未冷，三更灯火墨犹温"  # 贾岛《剑客》· 蓄势 + 颜真卿融合句
 footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 ---
 
@@ -95,6 +95,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 
 # 2025
+
+## 2025年7月11日
+  - docs: 杂细整理
 
 ## 2025年7月8日
   - docs(学海无涯): [格物致知] 「价值可见性」系统太稳定了，甲方觉得我们没有工作量，怎么收运维费？

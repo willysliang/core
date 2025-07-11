@@ -208,15 +208,19 @@ git diff --summary
 > # 文件添加到暂存区
 > git add ./abc.md	#将abc.md文件存放到暂存区
 > git add ./			#添加当前目录下的所有文件到暂存区
->
->
+> 
+> 
 > # 暂存区文件存放到仓库
 > git commit -m "上传说明描述内容"	#把代码放到仓库
 > git commit -a -m "message"		#-a参数可将所有已跟踪文件中的执行修改或删除操作的文件都提交到本地仓库，即使它们没有经过git add添加到暂存区（一般不使用）
->
->
+> 
+> 
 > # 修改提交信息（修改上次提交的信息，值message）
 > git commit --amend -m "所修改的提交信息"
+> 
+> 
+> # 在存在 husky 时，提交不走校验流程
+> git commit -m '提交信息描述' --no-verify
 > ```
 
 ### 查看信息 `status / log`
