@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年7月14日
+  - docs(学海无涯): [皓首穷经] 软考基础知识
+
 ## 2025年7月11日
   - docs: 杂细整理
 
