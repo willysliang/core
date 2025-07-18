@@ -213,6 +213,22 @@ fna(1,2); */
 > }());
 > ```
 
+
+
+### 标识符
+
+```bash
+标识符是代码中表示变量、函数或属性的字符序列。标识符具有以下规则：
+	- 首字母必须是字母、下划线（`_`）或美元符号（`$`），不能是数字。
+	- 除首字母外，其他字符可以是字母、数字、下划线或美元符号（`$`）
+	- 普通标识符（用作变量名、函数名和循环语句中用于跳转的标记）不能是保留字符
+	- 在严格模式下，`arguments` 和 `eval` 不能用作变量名，函数名或者参数名
+
+注意：上面所说的字母，不只是 ASCII 字母，还包括 Unicode 中的一些字符。但便于移植，字母通常是使用 ASCII 中的字母。
+```
+
+
+
 ### 数据类型
 
 > ```bash
@@ -238,44 +254,44 @@ fna(1,2); */
 > 		- 当我们把对象赋值给另外一个变量时，复制的是地址，指向同一块内存空间，当其中一个对象改变时，另一个对象也会变化。
 > ```
 
+
+
 #### 数据类型检测方案
 
 > ```bash
-> ## 数据类型检测方案
 > ### 1. typeof：
 >   - 主要用作基础数据类型的判定，返回值有如下：`string、boolean、number、function、object、undefined、bigInt`。
 >       其中在判定 `null、array、object` 以及函数实例（new+函数）时，都返回`object`。
 >       但 `function` 还是会判断出为 `function` 类型
 >       - 优点：能够快速区分基本数据类型
 >       - 缺点：不能将Object、Array和Null区分，都返回object
->
-> ### 2. instanceof：
+> 
+>### 2. instanceof：
 >   - 只能正确判定引用数据类型，而不能判断基本数据类型，其内部运行机制是判断一个对象在其原型链中依次向下查询栏能否找到该类型的原型(构造函数的prototype属性)。
 >       如obj2的原型属性存在obj1的原型链上，即当obj1是obj2的实例，则`obj1 instanceof obj2`的值为true。
 >       - 优点：能够区分Array、Object 和 Function，适合用于判断自定义的类实例对象
 > 			- 缺点：Number、Boolean、String 基本数据类型不能判断
->
-> ### 3. constructor：
+> 
+>### 3. constructor：
 >   - 一是判断数据类型，二是对象实例通过`constructor`对象访问它的构造函数。
 >         注意：如果创建一个对象来改变它的原型，constructor 就不能用来判断数据类型。
->
-> ### 4. Object.prototype.toString.call()
+> 
+>### 4. Object.prototype.toString.call()
 >   - 使用 Object 对象的原型方法 `toString` 来判断数据类型。
+> 
 >
 >
->
-> ### 判断数组的类型
+>### 判断数组的类型
 > - 通过Object.prototype.toString.call()：`Object.prototype.toString.call(obj).slice(8,-1) === 'Array'`
 > - 通过constructor判断：`obj.constructor === Array`
 > - 通过instanceof做判断：`obj instanceof Array`
 > - 通过ES6的Array.isArray()判断：`Array.isArrray(obj)`
 > - 通过原型链判断：`obj.__proto__ === Array.prototype`
 > - 通过Array.prototype.isPrototypeOf：`Array.prototype.isPrototypeOf(obj)`
->
 > ```
 >
 > ```js
-> /** typeof */
+>/** typeof */
 > typeof "willy" === "string"
 > typeof 2 === 'number'
 > typeof NaN === 'number'
@@ -286,10 +302,10 @@ fna(1,2); */
 > typeof {} === 'object'
 > typeof new Date() === 'object'
 > typeof function(){} === 'function'
->
->
-> /** instanceof */
-> 2 instanceof Number     	// false
+> 
+> 
+>/** instanceof */
+>2 instanceof Number     	// false
 > true instanceof Boolean 	// false
 > 'str' instanceof String	  // false
 > [] instanceof Array				// true
@@ -298,23 +314,23 @@ fna(1,2); */
 > function(){} instanceof Function	// true
 > Function instanceof Object	// true
 > Object instanceof Function	// true
->
+> 
 > // 原型链
-> function obj1(){}
+>function obj1(){}
 > const obj2 = new obj1()
 > obj2 instanceof obj1	// true
->
->
-> /**  constructor 给对象修改原型 */
-> function Fn() {}
+> 
+> 
+>/**  constructor 给对象修改原型 */
+>function Fn() {}
 > Fn.prototype = new Array()
 > const f = new Fn()
 > console.log(f.constructor === Fn) // false
 > console.log(f.constructor === Array) // true
->
->
-> /** Object.prototype.toString.call() */
-> const a = Object.prototype.toString;
+> 
+> 
+>/** Object.prototype.toString.call() */
+>const a = Object.prototype.toString;
 > console.log(a.call(2)); 					// [object Number]
 > console.log(a.call(true));  			// [object Boolean]
 > console.log(a.call('str')); 			// [object String]
@@ -324,10 +340,10 @@ fna(1,2); */
 > console.log(a.call(undefined)); 	 // [object Undefined]
 > console.log(a.call(null));  			 // [object Null]
 > console.log(a.call(new Map()));  	 // [object Map]
->
->
-> /** 获取数据类型的方法封装 */
-> const getType = (value) => Object.prototype.toString.call(value).slice(8, -1)
+> 
+> 
+>/** 获取数据类型的方法封装 */
+>const getType = (value) => Object.prototype.toString.call(value).slice(8, -1)
 > console.log(getType(new Map()))
 > ```
 
@@ -2806,12 +2822,17 @@ objB.bug2 = null;
 
 ##  面向对象 Class
 
+```bash
 - 面向对象编程
   - 特性：封装性、继承性、多态性
   - 优点：易维护、易复用、易扩展，由于面向对象有封装、继承、多态的特性，可以设计出低耦合的系统，使系统更加灵活、易于维护。
+
 - 面向过程
   - 优点：性能比面向对象高，适合跟硬件联系很紧密的东西，如单片机。
   - 缺点：没有面向对象易维护、易复用、易扩展
+```
+
+
 
 ### `constructor`构造函数
 
@@ -3053,6 +3074,8 @@ let cat1 = new Cat('小黄', 'yellow');
 console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "name" in cat1)  // true false true
 ```
 
+
+
 ## 函数式编程 Function
 
 ```bash
@@ -3061,8 +3084,6 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 - 参数（argument）是调用函数时传递给函数的值（它是函数调用时的术语）。
 
 - 如果一个函数被调用，但有参数（argument）未被提供，那么相应的值就会变成 undefined。
-
-
 ```
 
 
@@ -3070,12 +3091,11 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 ### 函数的定义
 
 > ```bash
-> ## 函数的定义
 > - 所有函数都是Function构造函数的实例对象。
->
-> - 函数的长度获取的函数形参的个数 Function.length
+> 
+>- 函数的长度获取的函数形参的个数 Function.length
 > ```
->
+> 
 >![image-20210425195525649](./image/image-20210425195525649.png)
 
 ### name 属性
@@ -3502,7 +3522,7 @@ end fn1
 
 > ```bash
 > ## 函数防抖与节流
-> - 在进行窗口的resize、scroll，输入框内容校验等操作时，如果事件处理函数调用的频率无限制，会加重浏览器的负担，导致用户体验非常糟糕。此时我们可以采用debounce（防抖）和throttle（节流）的方式来限制函数调用的频度，弱化事件函数运行带来的影响，同时又不影响实际效果。（ 高频触发优化方式）
+> 在进行窗口的resize、scroll，输入框内容校验等操作时，如果事件处理函数调用的频率无限制，会加重浏览器的负担，导致用户体验非常糟糕。此时我们可以采用debounce（防抖）和throttle（节流）的方式来限制函数调用的频度，弱化事件函数运行带来的影响，同时又不影响实际效果。（ 高频触发优化方式）
 >
 >
 > ### 函数节流(事件降频)
@@ -5225,52 +5245,31 @@ console.log(unique44)
 >
 > - 对象由属性和方法组成；可通过对象直接法、关键字 new 和 Object.create() 函数来创建对象。
 >
-> - 删除对象中的某个属性
->
->   - 方法1：`delete obj.name`，但比`object[key] = undefined`效率慢（使用`delete`关键字是删除对象属性可真正实现删除）
->
->   - 方法2：`obj.name=undfined;`但其属性还在，只是内容为空
->
->   ```js
->   let obj = {
->     name: "willy",
->     age: "age",
->   }
->   obj.name = undefined; // { name: undefined, age: 'age' }
->   delete obj.age; // { name: undefined }
->   ```
->
-> - 在数组中使用`delete`，null会在数组中留下空缺，而且长度不变。
->
->   ```js
->   let array = [1,2,3];
->   delete array[2];
->   ```
->
+> 
 >
 > #### 广义对象
 >
 > - 狭义对象：` {} `这种字面量形式定义的对象，它是一组属性的无序集合(只包含属性和值)
-> - 广义对象：广义对象也是对象，但是它除了一组属性还有别的东西(如函数包含函数体，数组包含一组值)
+>- 广义对象：广义对象也是对象，但是它除了一组属性还有别的东西(如函数包含函数体，数组包含一组值)
 >   	即只要**能够添加属性**，即是广义对象（万物皆对象）
 > - 对象和json的区别：
 >   -  json一定是对象 但对象不一定是json
 >   -  json的属性名必须要加双引号`""`
 >   -  普通对象可以不用加双引号
->
+> 
 > **规律**
->
-> 1. 函数直接圆括号调用，函数上下文就是window对象
+> 
+>1. 函数直接圆括号调用，函数上下文就是window对象
 > 2. 函数当做对象的方法被对象打点语法调用时，函数上下文就是该对象
-> 3. 函数是事件处理函数，函数上下文就是触发这个事件的对象
+>3. 函数是事件处理函数，函数上下文就是触发这个事件的对象
 > 4. 定时器调用函数，上下文是window对象
 > 5. 数组中存放的函数，被数组索引之后加圆括号调用，函数上下文this代表这个数组
->
+> 
 > ```js
-> let obj = {
->   age: 1,
+>let obj = {
+>  age: 1,
 >   2021: 2,
->   'true': 3,
+>  'true': 3,
 >   name: 'willy',
 >   sayHello: function () {
 >     console.log("我是" + this.name + ",今年" + this.age + "岁");
@@ -5278,7 +5277,7 @@ console.log(unique44)
 > }
 > let age = 2020 + 1;
 > console.log(obj.age); // 1
-> console.log(obj['age']);  // 1
+>console.log(obj['age']);  // 1
 > console.log(obj[age]);  // 2  js能够把变量进行隐式转换成字符串
 >
 > console.log('····-------分割线--------····');
@@ -5388,21 +5387,20 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 
 
 
-### 属性的遍历
+### 对象的属性遍历
 
 > ```bash
-> ## 对象的遍历
 > 1. `for...in`：循环遍历对象自身和继承的可枚举属性（不含Symbol属性）
-> 2. `Object.getOwnPropertyNames(obj)`：返回一个数组，包含对象自身的所有Symbol属性的键名
-> 3. `Object.getOwnPropertySymbols(obj)`：返回一个数组，包含对象自身所有的Symbol属性的键名
+> 2. `Object.getOwnPropertyNames(obj)`：返回数组，包含对象自身的所有Symbol属性的键名
+> 3. `Object.getOwnPropertySymbols(obj)`：返回数组，包含对象自身所有的Symbol属性的键名
 > 4. `Reflect.ownKeys(obj)`：返回一个数组，包含对象自身的（不含继承的）所有键名，不管键名是Symbol或字符串，也不管是否可枚举
-> 5. `Object.keys(obj)`：返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含Symbol属性）的键名
-> 6. `Object.values(obj)`：返回一个数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值
->
+> 5. `Object.keys(obj)`：返回数组，包括对象自身的（不含继承的）所有可枚举属性（不含Symbol属性）的键名
+> 6. `Object.values(obj)`：返回数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值
+> 
 > 注意：通过`Object.create()`添加的对象，如果不显示声明，默认是不可遍历的，因为其属性描述对象的enumerable默认是false
->
->
->
+> 
+> 
+> 
 > ### 对象的遍历顺序
 > 以下方法遍历对象键名都遵守属性遍历次序规则：
 > `key()、ownKeys()、getOwnPropertyNames()、getOwnPropertySymbols()`
@@ -5412,40 +5410,43 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > ```
 >
 > ```js
-> Reflect.ownKeys({ [Symbol()]:0, b:0, 10:0, 2:0, a:0 })
+> Reflect.ownKeys({ [Symbol()]: 0, b: 0, 10: 0, 2: 0, a: 0 })
 > // ['2', '10', 'b', 'a', Symbol()]
->
->
+> 
+> 
 > /* Object.values() */
-> const obj2 = Object.create({}, {
->   a: { value: 'a', enumerable: true },
->   b: { value: "b", },
->   [Symbol()]: { value: 'symbol', enumerable: true },
-> })
+> const obj2 = Object.create(
+>   {},
+>   {
+>     a: { value: 'a', enumerable: true },
+>     b: { value: 'b' },
+>     [Symbol()]: { value: 'symbol', enumerable: true },
+>   },
+> )
 > Object.values(obj2) // [ 'a' ]
-> const obj3 = {
->   a: 1,
->   b: 2,
->   [Symbol()]: 123
-> }
+> 
+> const obj3 = { a: 1, b: 2, [Symbol()]: 123 }
 > Object.values(obj3) // [1, 2]
->
->
+> 
+> 
 > /* keys、values、entries 与 for...of 配套使用 */
-> let obj = { a: 1, b: 2, c: 3 };
-> Object.keys(obj)	// ['a', 'b', 'c']
-> for (let key of Object.keys(obj)) {
->   console.log(key); // 'a', 'b', 'c'
+> const obj = { a: 1, b: 2, c: 3 }
+> Object.keys(obj) // ['a', 'b', 'c']
+> 
+> for (const key of Object.keys(obj)) {
+>   console.log(key) // 'a', 'b', 'c'
 > }
-> for (let value of Object.values(obj)) {
->   console.log(value); // 1, 2, 3
+> 
+> for (const value of Object.values(obj)) {
+>   console.log(value) // 1, 2, 3
 > }
-> for (let [key, value] of Object.entries(obj)) {
->   console.log([key, value]); // ['a', 1], ['b', 2], ['c', 3]
+> 
+> for (const [key, value] of Object.entries(obj)) {
+>   console.log([key, value]) // ['a', 1], ['b', 2], ['c', 3]
 > }
 > ```
 
-### 对象转换为数组 entires
+### 对象转换数组 entires
 
 > `Object.entries(obj)`
 >
@@ -5573,21 +5574,20 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 ### 对象属性的访问方式
 
 ```bash
-### 对象属性的访问方式
-- 有两种方法访问对象属性：点符号（`.`）和括号符号（`[]`）。
-- 一般情况下使用点符号，当想使用变量访问属性时使用括号符号。
-- 当您尝试访问不存在的属性时，它将返回 `undefined`，而不会抛出错误。
+- 对象属性的访问方式有两种：点符号（`.`）和括号符号（`[]`）
+  	一般情况下使用点符号，当想使用变量访问属性时使用括号符号。
+- 当尝试访问不存在的属性时，将返回 `undefined`，而不会抛出错误。
 
 
 #### object.property 和 object['property'] 的区别
 使用点符号的一个主要限制是它只适用于有效的标识符。
+
 标识符是代码中表示变量、函数或属性的字符序列。标识符具有以下规则：
 	- 首字母必须是字母、下划线（`_`）或美元符号（`$`），不能是数字。
 	- 除首字母外，其他字符可以是字母、数字、下划线或美元符号（`$`）
 	- 普通标识符（用作变量名、函数名和循环语句中用于跳转的标记）不能是保留字符
 	- 在严格模式下，`arguments` 和 `eval` 不能用作变量名，函数名或者参数名
   - 注意：上面所说的字母，不只是 ASCII 字母，还包括 Unicode 中的一些字符。但便于移植，字母通常是使用 ASCII 中的字母。
-
 ```
 
 ```js
@@ -5673,7 +5673,7 @@ styles['class'] // 返回 'foo'
 > obj.bar()		// "world"
 > ```
 
-### Object.assign()
+### 对象合并 Object.assign()
 
 > - `Object.assign()`方法用于对象的合并，将源对象`source`的所有可枚举属性复制到目标对象`target`
 >   - 如果对象有同名属性，则后面的属性会覆盖前面的属性
@@ -5737,7 +5737,7 @@ styles['class'] // 返回 'foo'
 > }
 > ```
 
-### 创建新对象 create()
+### 创建新对象 create
 
 > ```bash
 > ## 创建新对象 Object.create()
@@ -5817,29 +5817,85 @@ styles['class'] // 返回 'foo'
 > ```
 >
 
+### 删除对象某个属性 delete
+
+```bash
+删除对象中的某个属性
+  - 方法1：`delete obj.name`，但比`object[key] = undefined`效率慢（使用`delete`关键字是删除对象属性可真正实现删除）
+  - 方法2：`obj.name=undfined;`但其属性还在，只是内容为空
+
+注意：在数组中使用`delete`，null会在数组中留下空缺，而且长度不变。
+
+
+
+使用 delete操作符 注意：
+	- 会改变原始对象（如该对象通过另一个对象赋值方式得来，另一个对象的该属性也会被删除）
+	- 不能删除继承的属性
+	- 严格模式与非严格模式行为不同
+```
+
+```js
+"use strict";
+delete Object.prototype; // 报错：SyntaxError: delete of an unqualified identifier in strict mode
+```
+
+```js
+/** 删除数组中的属性 */
+const array = [1, 2, 3]
+delete array[2]
+
+
+/** 删除对象中的属性 */
+const obj = {
+  name: 'willy',
+  age: 'age',
+}
+obj.name = undefined // { name: undefined, age: 'age' }
+console.log(delete obj.age); // 成功删除时返回 true，原obj = { name: undefined }
+console.log(delete obj.unknown); // 属性不存在时也返回 true
+
+
+/** 删除计算属性名的属性 */
+const key = "dynamicKey";
+const obj2 = { [key]: "value" };
+delete obj2.dynamicKey; // 错误！不会删除该属性
+delete obj2[key]; // 正确方式
+
+
+/** 删除 Symbol 属性 */
+const symbolKey = Symbol("unique");
+const obj3 = { [symbolKey]: "secret" };
+delete obj3[symbolKey];
+
+
+/** 使用 Reflect.deleteProperty()（反射方法） */
+Reflect.deleteProperty(obj, 'age');
+```
+
+
+
 ### 属性判断
 
 > ```bash
-> ## 属性判断
 > 1. 'isPrototypeOf()'：判断某个 prototype 对象和某个实例对象之间的关系。
->
-> 2. 'Object.hasOwnProperty()'：每个实例对象都有一个`hasOwnProperty()`方法，用来判断某一个属性是本地属性还是集成自`prototype`对象的属性。
->
-> 3. 'in' 运算符：判断某个实例是否包含某个属性（还可用来遍历某个对象的所有属性）
+> 
+>2. 'Object.hasOwnProperty()'：每个实例对象都有一个`hasOwnProperty()`方法，用来判断某一个属性是本地属性还是集成自`prototype`对象的属性。
+> 
+>3. 'in' 运算符：判断某个实例是否包含某个属性（还可用来遍历某个对象的所有属性）
 > ```
->
-> ````js
+> 
+>````js
 > function Cat(name) {
 >   this.name = name
 > }
 > Cat.prototype.type = "猫科动物"
->
-> let cat1 = new Cat('小黄')
+> 
+>let cat1 = new Cat('小黄')
 > console.log(Cat.prototype.isPrototypeOf(cat1))  // true
 > console.log(cat1.hasOwnProperty('name'), cat1.hasOwnProperty('type'))  // true false
 > console.log("name" in cat1, "type" in cat1)  // true true
 > ````
->
+> 
 
 ### 防止对象被修改 freeze /seal
 
@@ -5895,7 +5951,7 @@ styles['class'] // 返回 'foo'
 > }
 > ````
 
-### 获取自身属性 Object.getOwnPropertyDescriptors()
+### 获取自身属性的描述对象 getOwnPropertyDescriptor
 
 > - `Object.getOwnPropertyDescriptor(obj, proName)`方法返回某个对象属性的描述对象
 > - `Object.getOwnPropertyDescriptors(obj)`方法返回指定对象所有自身属性（非集成属性）的描述对象；如果没有，则返回空对象。
@@ -6292,7 +6348,7 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 				- 示例一：原始值
 >         		let name = "willy"
 >         		let name2 = name
->        		name2 = "wl"
+>        			name2 = "wl"
 >         		console.log(name, name2)	// "willy" "wl"
 > 							-解析说明：
 > 								1. 先创建了字符串 "willy"
@@ -6304,7 +6360,7 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 				- 示例二：对象 / 数组
 >         		let user = { name: "willy" }
 >         		let user2 = user
->        		user2 = { name: "wl" }
+>        			user2 = { name: "wl" }
 >         		console.log(user, user2)	// { name: "wl" }  { name: "wl" }
 > 							-解析说明：
 > 								1. 先创建了对象 { name: "willy" }
@@ -6318,14 +6374,14 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > ##  `原始值突变`和`对象突变`的区别：可变性
 >   1. 基本数据类型是不可变的。
 >      这意味着我们不必担心两个变量是否指向内存中的同一个原始值：哪个原始值不会改变。
->      充其量，我们可以**重新分配**一个变量来指向其他数据，但这不会影响其他变量。
+>      虽然我们可以**重新分配**一个变量来指向其他数据，但这不会影响其他变量。
 > 
 >   2. 对象是可变的。
->       因此，我们必须记住，多个变量可能指向内存中的同一个对象。
->       **突变**这些变量中的一个是错误的行为，你正在突变它所引用的对象，这将反映在引用同一对象的任何其他变量中。
+>       因此必须记住，多个变量可能指向内存中的同一个对象。
+>       **突变**这些变量中的一个是错误的行为，我们如果突变它所引用的对象，这将反映在引用同一对象的任何其他变量中。
 >
 >   - 防止对象的可变性
->     	- 在许多情况下，您不希望两个变量引用同一个对象。防止这种情况的最好方法是在赋值时**创建对象的一个副本**。
+>     	- 在许多情况下，我们不希望两个变量引用同一个对象。防止这种情况的最好方法是在赋值时**创建对象的一个副本**。
 >     	- 创建对象副本的方法：Object.assign() 方法和扩展运算符`...`。（注意：只会对对象第一层的数据进行拷贝，深层仍然是引用）
 >```
 
@@ -6339,18 +6395,13 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > - （只复制指向某个对象的指针，而不是复制本身，新旧对象共享同一块内存）
 > 	- es6新增方法浅拷贝：`Object.assign(目标对象, 源对象1, 源对象2...)`
 > 	- **注意**：当拷贝对象只有一层时为深拷贝，当拷贝对象为多层时是浅拷贝。
-> 
-> 
-> # 深拷贝
-> - 深拷贝拷贝多层，每一级别的数据都会拷贝
-> 	（会另外创造一个相同的对象，新对象跟原对象不共享内存，修改新对象不会改变原来对象的值）
 > ````
->
+> 
 > ```js
 > let obj = {
 >     id: 1,
 >     name: 'willy',
->     msg: { age: 17, address: '广州' }
+>    msg: { age: 17, address: '广州' }
 > };
 > let o = {};
 > /* console.log('-----浅拷贝------------------');
@@ -6384,7 +6435,7 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 
 #### Array.prototype.conxcat()
 
-> - `concat` 方法用于连接两个或多个数组。该方法不会改变现有的数组，而仅仅会返回被连接数组的一个副本
+> - `concat` 方法用于连接两个或多个数组。该方法不会改变原数组，而是返回被连接数组的一个副本
 >
 > ```js
 > let arr = [1, 2, {a: 'willy'}];
@@ -6395,6 +6446,8 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 
 #### Array.prototype.slice()
 
+> `Array`的`slice`和`concat`方法不修改原数组，只会返回一个浅复制了原数组中元素的一个新数组。
+>
 > ```js
 > let arr = [1,3, {a: 'willy'}];
 > let arr2 = arr.slice();
@@ -6402,7 +6455,6 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > console.log(arr.a);
 > ```
 >
-> > `Array`的`slice`和`concat`方法不修改原数组，只会返回一个浅复制了原数组中的元素的一个新数组。
 
 #### es6的`...`扩展运算符
 
@@ -6422,7 +6474,9 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 ### 深拷贝
 
 > ```BASH
-> ## 深拷贝
+> - 深拷贝拷贝多层，每一级别的数据都会拷贝
+> 	（会另外创造一个相同的对象，新对象跟原对象不共享内存，修改新对象不会改变原来对象的值）
+> 
 > - 拷贝出来的目标对象有着与原始对象相同的属性值，且嵌套的对象更改也不会影响到原始对象的改变，也就是它们之间有着相同的数据，但数据存储在不同的内存地址中
 > ```
 

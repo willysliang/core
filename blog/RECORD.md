@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年7月18日
+  - docs(前端基础): [ES6+语法] 描述微调改
+
 ## 2025年7月14日
   - docs(学海无涯): [皓首穷经] 软考基础知识
 
