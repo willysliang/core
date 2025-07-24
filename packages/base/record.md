@@ -2,7 +2,7 @@
 Author: willy
 CreateTime: 2022-10-10 09:05:41
 Modifier: willy
-ModifierTime: 2025-07-09 10:03:00
+ModifierTime: 2025-07-24 17:11:51
 Description: 日志记录
 ---
 
@@ -26,6 +26,9 @@ Description: 日志记录
 
 
 # 更新记录
+
+## 2025年7月24日
+  - feat(comp): [TodoList] 增加todolist组件使用 & 优化组件样式
 
 ## 2025年7月11日
   - perf(layout): 优化菜单栏布局与展示项 & 优化音乐模块显隐逻辑

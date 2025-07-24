@@ -2,14 +2,14 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-07-10 16:17:43
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-07-11 17:06:34
+ * @ ModifierTime: 2025-07-11 17:28:04
  * @ Description: todoList的列表展示
  -->
 
 <script setup lang="ts">
 import { Check, Close } from '@icon-park/vue-next'
 import IconPark from '@comp/common/IconPark.vue'
-import type { ITodoListProps } from './type.d'
+import type { ITodo, ITodoListProps } from './type.d'
 
 const { title, todos, themes } = withDefaults(defineProps<ITodoListProps>(), {
   title: '',
@@ -37,6 +37,17 @@ const { title, todos, themes } = withDefaults(defineProps<ITodoListProps>(), {
     },
   ],
 })
+
+/**
+ * 根据完成任务与实现任务来计算开发进度
+ */
+const getProcessNum = ({ features, todoFeatures }: ITodo) => {
+  if (!features?.length) return '0%'
+  if (!todoFeatures?.length) return '100%'
+  const percentageVal =
+    (features.length / (features.length + todoFeatures.length)) * 100
+  return `${percentageVal.toFixed(2)}%`
+}
 </script>
 
 <template>
@@ -96,10 +107,13 @@ const { title, todos, themes } = withDefaults(defineProps<ITodoListProps>(), {
         <div class="progress-container">
           <div class="progress-label">
             <span>开发进度</span>
-            <span class="progress-value">{{ task.progressNum }}%</span>
+            <span class="progress-value">{{ getProcessNum(task) }}</span>
           </div>
           <div class="progress-bar">
-            <div class="progress" :style="`width: ${task.progressNum}%`"></div>
+            <div
+              class="progress"
+              :style="`width: ${getProcessNum(task)}`"
+            ></div>
           </div>
         </div>
       </div>
@@ -114,6 +128,7 @@ const { title, todos, themes } = withDefaults(defineProps<ITodoListProps>(), {
   box-sizing: border-box;
   padding: 25px;
   overflow: hidden auto;
+  border-radius: 1rem;
 
   .todo-title {
     font-size: 2.3rem;
