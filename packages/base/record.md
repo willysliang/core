@@ -29,6 +29,7 @@ Description: 日志记录
 
 ## 2025年7月25日
   - perf(layout): [Guide] 优化页面指导Driver的样式
+  - chore(vite): perf vite build options
 
 ## 2025年7月24日
   - feat(comp): [TodoList] 增加todolist组件使用 & 优化组件样式

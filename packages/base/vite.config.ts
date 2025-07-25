@@ -1,8 +1,8 @@
 /**
- * @ Author: willy
- * @ Create Time: 2023-10-27 10:40:11
- * @ Modifier by: willy
- * @ Modifier time: 2023-11-28 20:23:46
+ * @ Author: willysliang
+ * @ CreateTime: 2024-06-18 13:24:51
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-07-25 09:48:01
  * @ Description: vite 构建文件
  */
 
@@ -59,7 +59,7 @@ export default defineConfig(({ mode }) => {
       ssrManifest: false, // 构建不生成 SSR 的 manifest 文件
       ssr: undefined, // 生成面向 SSR 的构建
       minify: 'esbuild', // 指定使用哪种混淆器
-      terserOptions: {}, // 传递给 Terser 的更多 minify 选项
+      // terserOptions: {}, // 传递给 Terser 的更多 minify 选项
       write: true, // 启用将构建后的文件写入磁盘
       emptyOutDir: true, // 构建时清空该目录
       // brotliSize: true, // 启用 brotli 压缩大小报告
