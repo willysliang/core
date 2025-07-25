@@ -1,8 +1,8 @@
 <!--
  * @ Author: willysliang
- * @ Create Time: 2022-09-15 09:16:46
- * @ Modified by: willysliang
- * @ Modified time: 2023-03-27 11:47:15
+ * @ CreateTime: 2022-09-15 09:16:46
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-07-25 16:08:42
  * @ Description: 页面大框
  -->
 
@@ -53,7 +53,7 @@ const { showMenu } = storeToRefs(useSettingStore())
       </div>
 
       <!-- 主内容 -->
-      <div class="flex-1 flex flex-col overflow-hidden">
+      <div class="layout__content flex-1 flex flex-col overflow-hidden">
         <!-- 头部 -->
         <div v-if="!themeLayoutIsVertical" class="layout__header">
           <MyHeader />
