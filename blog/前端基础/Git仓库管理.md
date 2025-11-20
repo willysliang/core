@@ -67,7 +67,6 @@ $ git push username@server:/www/project main
 
 然后，您可以通过将其添加为远程来保存键入内容。
 服务器端的存储库将通过拉取和推送的方式获得提交，而不是通过您编辑文件然后在服务器中提交文件，因此它是一个裸存储库。
-
 ```
 
 #### Git hooks
@@ -77,8 +76,6 @@ $ git push username@server:/www/project main
 Git hooks 是每次 Git 存储库中发生特定事件时自动运行的脚本。它们允许您定制 Git 的内部行为，并在开发生命周期的关键点触发可定制的操作。
 
 Git hooks 的常见用例包括鼓励提交策略、根据存储库的状态改变项目环境，以及实现连续集成工作流。但是，由于脚本是无限可定制的，您可以使用 Git hooks 来自动化或优化开发工作流的几乎任何方面。但如果添加的 Hook 脚本未正常运行，则 Git 操作将不会通过。
-
-
 ```
 
 Hook 脚本置于目录 `~/.git/hooks` 中，以可执行文件的形式存在。
@@ -139,7 +136,6 @@ npm run lint
 ## Git Diff
 当执行 `git fetch` 拉取远程最新代码到本地，但想要在 `git merge` 合并之前查看一些文件的变动时，可以使用 `git diff` 命令。
 注意：如果是少量代码的改动，`git diff` 还是挺方便的，但如果代码量较大，建议使用 GUI 工具。
-
 ```
 
 ##### 查看变化中的差异
@@ -230,26 +226,35 @@ git diff --summary
 > git status	#仓库内文件的状态变化信息
 > git status --short	#或git status -s对status简洁输出
 > $ git status --porcelain # 跟上述一致，也是为对 status 简洁输出
->
->
+> 
+> 
 > # 查看提交记录
 > git log				# 显示当前分支的提交日志
 > git log --oneline	# 简写说明，简洁版的日志 或 git log --pretty=oneline --abbrev-commit
 > git log --stat		# 显示 commit 历史，以及每次 commit 发生变更的文件
 > git log --oneline -number	# 查看最近的 number 个提交数
->
->
+> 
+> 
 > # 获取漂亮的日志信息
 > git log --pretty=format:"%h - %an, %ar : %s"		# 以给定格式有序的打印提交日志的内容、
 > git log --pretty=format:"%Cred(%h)%Creset - %Cgreen(%an, %ar)%Creset : %Cblue%s" # 为输出日志设置颜色
->
->
+> 
+> 
+> # 根据作者查看日志信息
+> git log --author="willsliang" # 查看 'willsliang' 的所有提交（精确名称）
+> git log --author="willy.*" # 查看名称含 'willy' 的提交（正则）
+> git log --format="%h %ae %s" | grep "willysliang@qq.com" # 根据用户邮箱来查看日志信息
+> git log --author="Alex" -n 5 # 查看最近5条
+> git log --author="willy" --since="2025-01-01" --until="2025-12-31" # 查看2025年的提交
+> 
+> 
+> 
 > # 显示提交历史图表
 > ## （`--graph` 选项可以以**图形**方式展示日志）
 > git log --graph
 > git log --pretty=format:"%h %s" --graph
->
->
+> 
+> 
 > # 基于时间的日志记录
 > ## 可以在特定时间范围内记录条目。非常适合检查每日项目的提交记录
 > git log --since="yesterday" --oneline
@@ -290,7 +295,6 @@ git diff --summary
 
 $ git reset HEAD readme.txt
 $ git checkout -- readme.txt
-
 ```
 
 
@@ -386,16 +390,28 @@ $ git checkout -- readme.txt
 > git push gitee master
 > ```
 
-#### GitLab无需每次输入账号密码
+#### 缓存远程仓库账号密码
 
-> ```bash
-> ## GitLab无需每次输入账号密码
-> 1. 添加SSH到本地，然后把SHH放入GitLab上
-> 2. 若再次拉取代码和提取代码应无需再输密码，若还需输入密码
->    1. 在命令行中输入：`$ git config --global credential.helper store`
->    2. 然后操作 pull/push 会让输入用户名密码，第一次输入进去。
->    3. 下次再操作pull/push时就不需要输入用户名密码了
-> ```
+```bash
+## GitLab无需每次输入账号密码
+1. 添加SSH到本地，然后把SHH放入GitLab上
+2. 若再次拉取代码和提取代码应无需再输密码，若还需输入密码
+   1. 缓存输入的用户名和密码：在命令行中输入 `$ git config --global credential.helper store`
+   2. 然后操作 pull/push 会让输入用户名密码，第一次输入进去。
+   3. 下次再操作pull/push时就不需要输入用户名密码了
+   
+
+
+## 删除 git 缓存中的账号密码（不建议使用）
+git credential-manager uninstall
+
+
+## 管理记录的账号密码
+打开“控制面板” -> “用户帐户” -> “凭据管理器” -> “Windows 凭据”
+在“普通凭据”或“Windows 凭据”列表中，找到与你的 Git 服务器（如 git:https://github.com）相关的凭据
+```
+
+
 
 #### 同时推送两个存储库并保持同步
 
@@ -409,15 +425,7 @@ $ git checkout -- readme.txt
 > # 执行 git push 将更改发送到两个存储库
 > ```
 
-#### 删除 git 缓存中的账号密码
 
-> ```bash
-> ## 删除 git 缓存中的账号密码
-> git credential-manager uninstall
->
-> ## 缓存输入的用户名和密码
-> git config --global credential.helper wincred
-> ```
 
 #### ssh连接校验异常
 

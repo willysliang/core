@@ -72,7 +72,7 @@ Description: ES6+ 语法
 - 严格模式的变化：
   - 在全局作用域函数中的`this`指向`window` --> `在全局作用域函数中的this`为`undefined`。
   - 构造函数不加`new`也可以调用，当普通函数，`this`指向全局对象 --> 如果构造函数不加`new`调用`this`会报错。
-  - `new`实例化的构造函数指向创建的对象实例。
+  - `new` 实例化的构造函数指向创建的对象实例。
   - 定时器中的`this`指向`window`。
   - 事件、对象还是指向调用者。
 
@@ -6097,7 +6097,7 @@ Reflect.deleteProperty(obj, 'age');
 
 
 
-## Date 对象
+## 时间 Date
 
 > - Date对象是构造函数，需实例化后才能使用，Date实例用来处理日期和时间
 >
@@ -6129,39 +6129,54 @@ Reflect.deleteProperty(obj, 'age');
 > let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
 > // 请求参数 (options) 中包含参数星期 (weekday)，并且该参数的值为长类型 (long)
 > let options = {
->     weekday: "long",
->     year: "numeric",
->     month: "long",
->     day: "numeric",
->     hour12: false,
-> };
-> alert(date.toLocaleString("de-DE", options));	// "Donnerstag, 20. Dezember 2012"
+>      weekday: "long",
+>      year: "numeric",
+>      month: "long",
+>      day: "numeric",
+>      hour12: false,
+> }
+> alert(date.toLocaleString("de-DE", options))	// "Donnerstag, 20. Dezember 2012"
 > ```
 >
 > **自定义方法**
 >
 > ```js
 > const getMonthName = (val) => {
->   const month = [
->     'January',
->     'February',
->     'March',
->     'April',
->     'May',
->     'June',
->     'July',
->     'August',
->     'September',
->     'October',
->     'November',
->     'December'
->   ]
->   return month[val]
+>     const month = [
+>        'January',
+>        'February',
+>        'March',
+>        'April',
+>        'May',
+>        'June',
+>        'July',
+>        'August',
+>        'September',
+>        'October',
+>        'November',
+>        'December'
+>     ]
+>     return month[val]
 > }
 >
 > let moonLanding = new Date().getMonth()
 > console.log(getMonthName(moonLanding)) // "September"
 > ```
+
+#### 获取一个月后的时间
+
+```js
+function getOneMonthLater(date = new Date()) {
+  const result = new Date(date)
+  result.setMonth(result.getMonth() + 1)
+  return result
+}
+
+// 使用示例
+const today = new Date()
+const nextMonth = getOneMonthLater(today)
+console.log('下个月日期:', nextMonth.toLocaleDateString())
+```
 
 
 
