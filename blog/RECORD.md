@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年11月20日
+  - perf(blog): perf nav config
+
 ## 2025年7月18日
   - docs(前端基础): [ES6+语法] 描述微调改
 

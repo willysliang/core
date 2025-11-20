@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-01-09 10:13:34
+ * @ ModifierTime: 2025-11-18 11:03:19
  * @ Description: 导航栏
  */
 
@@ -129,7 +129,7 @@ const shareNavs = [
   {
     text: '关联',
     children: [
-      { text: '记录', link: '/RECORD' },
+      // { text: '记录', link: '/RECORD' },
       { text: '案例系统', link: 'https://willysliang.github.io/core' },
       { text: '旧版仓库', link: 'https://github.com/willysliang/portfolio' },
       {
