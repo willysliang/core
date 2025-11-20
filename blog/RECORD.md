@@ -3,7 +3,7 @@ home: true
 heroText: 岁序叩梅帖
 tagline: 落叶缤纷诉秋意，风雪飘摇牵梅舞
 title: RECORD
-actions: 
+actions:
 - text: ← 主页 →
   link: /
 features:
@@ -14,7 +14,7 @@ features:
 - title: 🍂 秋实 ❖ 腹笥五车
   details: "粗缯大布裹生涯，腹有诗书气自华"  # 苏轼《和董传留别》· 积淀
 - title: ❄️ 冬藏 ❖ 十年一剑
-  details: "十年磨剑心未冷，三更灯火墨犹温"  # 贾岛《剑客》· 蓄势 + 颜真卿融合句 
+  details: "十年磨剑心未冷，三更灯火墨犹温"  # 贾岛《剑客》· 蓄势 + 颜真卿融合句
 footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 ---
 
@@ -95,6 +95,50 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 
 # 2025
+
+## 2025年11月20日
+  - perf(blog): perf nav config
+  - docs: organize note content
+
+## 2025年7月18日
+  - docs(前端基础): [ES6+语法] 描述微调改
+
+## 2025年7月14日
+  - docs(学海无涯): [皓首穷经] 软考基础知识
+
+## 2025年7月11日
+  - docs: 杂细整理
+
+## 2025年7月8日
+  - docs(学海无涯): [格物致知] 「价值可见性」系统太稳定了，甲方觉得我们没有工作量，怎么收运维费？
+
+## 2025年6月24日
+  - docs(前端框架): [移动开发] 在cmd窗口查看手机程序日志-adb
+
+## 2025年6月4日
+  - docs(前端框架): [NodeJS] 通信加密策略
+
+## 2025年5月29日
+  - docs(工程&网络): [计算机网络] token存放位置(cookie & Authorization)
+  - docs(前端基础): [Git仓库管理] 基准线rebase
+
+## 2025年5月28日
+  - docs(工程&网络): [计算机网络] OAuth2.0认证
+
+## 2025年5月26日
+  - docs(前端进阶): [功能记录本] 视频相关-实现代码补充
+
+## 2025年5月23日
+  - docs(前端框架): [NodeJS] 热更新nodemon、日志管理morgan、文件流上传下载
+
+## 2025年5月22日
+  - docs(前端基础): [Nodejs] 数据加密crypto
+  - docs(工程&网络): 整合[计算机网络]、[构建工具]文档
+  - docs(前端基础): [Nodejs] 文件操作、CORS
+
+## 2025年5月21日
+  - docs(前端进阶): [功能记录本] RBAC权限系统
+  - docs(前端基础): [Nodejs] 缓存区Buffer类
 
 ## 2025年5月20日
   - docs(前端基础): [WEB_API] Blob的生命周期

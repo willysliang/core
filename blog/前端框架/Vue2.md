@@ -1108,7 +1108,7 @@ var vm = new Vue({
 >
 > **组件优化**
 >
-> ```html+vue
+> ```vue
 > //HTML
 > <div id="app">
 >  <cpn></cpn>
@@ -1372,11 +1372,23 @@ var vm = new Vue({
 > 	cmovies: Array,
 > 	
 > 	//2、提供一些默认值
-> 	cmessage:  {
+> 	cmessage: {
 > 		type: String,	//数据类型
 > 		default: 'aaaaaa',	//默认值
 > 		required: true	//必须填写	
-> 	}
+> 	},
+>   
+>   // 3、多类型定义
+>   flexibleProp: {
+>     type: [String, Number, Boolean], // 允许 string/number/boolean
+>     default: '' // 默认值（需考虑多类型兼容）
+>   },
+>     
+>   // 复杂多类型（数组或对象）
+>   dataSource: {
+>     type: [Array, Object],
+>     default: () => ({}) // 工厂函数返回新对象
+>   },
 > }
 > ```
 

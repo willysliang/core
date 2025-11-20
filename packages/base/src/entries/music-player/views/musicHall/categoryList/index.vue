@@ -80,8 +80,8 @@ const changeCat = (newCat: string) => {
         :play-count="item.playCount"
         show-play-count
       />
-      <div class="mt-2 text-xs text-main leading-5">{{ item.name }}</div>
-      <div class="mt-2 text-xs text-main truncate text-dc">
+      <div class="mt-2 text-xs leading-5">{{ item.name }}</div>
+      <div class="mt-2 text-xs truncate text-dc">
         {{ item.creator.nickname }}
       </div>
     </div>

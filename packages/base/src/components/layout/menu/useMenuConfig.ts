@@ -2,7 +2,7 @@
  * @ Author: willy
  * @ CreateTime: 2024-05-31 17:26:31
  * @ Modifier: willysliang
- * @ ModifierTime: 2024-09-19 11:02:38
+ * @ ModifierTime: 2025-07-11 10:56:07
  * @ Description: 菜单的配置
  */
 
@@ -47,23 +47,29 @@ export function useMenuConfig() {
   })
 
   /** 当前所选中的菜单项 */
-  const currentMenuKey = ref<string>((route.meta?.name || '') as string)
+  const currentMenuKey = ref<string>(route.meta?.name || '')
+  /** 上一次所选中的菜单项 */
+  const beforeMenuKey = ref<string>('')
+  /** 根据路由更新所活跃的菜单选项 */
   watch(
     () => route.meta.name,
     (newVal) => {
+      beforeMenuKey.value = currentMenuKey.value
       currentMenuKey.value = newVal as string
     },
     { immediate: true },
   )
 
   /** 选择菜单项 */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMenuSelect = (name, indexPath) => {
     if (name !== 'logo') {
       router.push({
         name,
         replace: false,
-        query: { indexPath: encodeURIComponent(indexPath.join('/')) },
+        query: {
+          beforePath: beforeMenuKey.value,
+          curPath: encodeURIComponent(indexPath.join('/')),
+        },
       })
     }
   }

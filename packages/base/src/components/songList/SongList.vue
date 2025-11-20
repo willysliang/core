@@ -60,7 +60,7 @@ const navToArtist = (id: number) => {
 </script>
 
 <template>
-  <div class="mt-2 text-main">
+  <div class="mt-2">
     <div class="song-item desc-main">
       <div class="w-16 text-center">操作</div>
       <div class="flex-auto">歌曲</div>

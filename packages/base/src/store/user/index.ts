@@ -1,17 +1,29 @@
+/**
+ * @ Author: willysliang
+ * @ CreateTime: 2022-11-11 10:01:13
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-05-26 16:21:42
+ * @ Description: 用户信息
+ */
+
 import { defineStore } from 'pinia'
-import type { UserProfile } from '@/types/user'
-import { useLogin, useLoginStatus } from '@/api/module/user'
-import { Storage } from '@utils/cache'
 import $md5 from 'js-md5'
+import { Storage } from '@utils/cache'
 import { USER_TOKEN, USER_COOKIE, USER_NAME } from '@/config/constant/cache'
+import { useLogin, useLoginStatus } from '@/api/module/user'
+import type { UserProfile } from '@/types/user'
 
 interface IUserState {
-  token: string // token
-  cookie: string // cookie
-  showLogin: boolean // 是否展现登录弹层
-  profile: UserProfile // 用户信息
+  token: string
+  /** cookie */
+  cookie: string
+  /** 是否展现登录弹层 */
+  showLogin: boolean
+  /** 用户信息 */
+  profile: UserProfile
 }
 
+/** 用户信息相关 store */
 export const useUserStore = defineStore({
   id: 'user',
   state: (): IUserState => ({
@@ -21,9 +33,7 @@ export const useUserStore = defineStore({
     profile: Storage.get(USER_NAME, { nickname: 'willy' } as UserProfile),
   }),
   getters: {
-    isLogin: (state): boolean => {
-      return state.profile?.userId > 0
-    },
+    isLogin: (state): boolean => state.profile?.userId > 0,
   },
   actions: {
     /** 登录 */
@@ -44,9 +54,11 @@ export const useUserStore = defineStore({
       try {
         const { data } = await useLoginStatus(null)
         this.profile = data.profile
+
         const expire = 7 * 24 * 60 * 60 * 1000
         Storage.set(USER_NAME, JSON.stringify(data.profile), expire)
         Storage.set(USER_COOKIE, cookie, expire)
+
         this.showLogin = false
       } catch {}
     },

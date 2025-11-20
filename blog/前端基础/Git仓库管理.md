@@ -67,7 +67,6 @@ $ git push username@server:/www/project main
 
 然后，您可以通过将其添加为远程来保存键入内容。
 服务器端的存储库将通过拉取和推送的方式获得提交，而不是通过您编辑文件然后在服务器中提交文件，因此它是一个裸存储库。
-
 ```
 
 #### Git hooks
@@ -77,8 +76,6 @@ $ git push username@server:/www/project main
 Git hooks 是每次 Git 存储库中发生特定事件时自动运行的脚本。它们允许您定制 Git 的内部行为，并在开发生命周期的关键点触发可定制的操作。
 
 Git hooks 的常见用例包括鼓励提交策略、根据存储库的状态改变项目环境，以及实现连续集成工作流。但是，由于脚本是无限可定制的，您可以使用 Git hooks 来自动化或优化开发工作流的几乎任何方面。但如果添加的 Hook 脚本未正常运行，则 Git 操作将不会通过。
-
-
 ```
 
 Hook 脚本置于目录 `~/.git/hooks` 中，以可执行文件的形式存在。
@@ -139,7 +136,6 @@ npm run lint
 ## Git Diff
 当执行 `git fetch` 拉取远程最新代码到本地，但想要在 `git merge` 合并之前查看一些文件的变动时，可以使用 `git diff` 命令。
 注意：如果是少量代码的改动，`git diff` 还是挺方便的，但如果代码量较大，建议使用 GUI 工具。
-
 ```
 
 ##### 查看变化中的差异
@@ -208,15 +204,19 @@ git diff --summary
 > # 文件添加到暂存区
 > git add ./abc.md	#将abc.md文件存放到暂存区
 > git add ./			#添加当前目录下的所有文件到暂存区
->
->
+> 
+> 
 > # 暂存区文件存放到仓库
 > git commit -m "上传说明描述内容"	#把代码放到仓库
 > git commit -a -m "message"		#-a参数可将所有已跟踪文件中的执行修改或删除操作的文件都提交到本地仓库，即使它们没有经过git add添加到暂存区（一般不使用）
->
->
+> 
+> 
 > # 修改提交信息（修改上次提交的信息，值message）
 > git commit --amend -m "所修改的提交信息"
+> 
+> 
+> # 在存在 husky 时，提交不走校验流程
+> git commit -m '提交信息描述' --no-verify
 > ```
 
 ### 查看信息 `status / log`
@@ -226,26 +226,35 @@ git diff --summary
 > git status	#仓库内文件的状态变化信息
 > git status --short	#或git status -s对status简洁输出
 > $ git status --porcelain # 跟上述一致，也是为对 status 简洁输出
->
->
+> 
+> 
 > # 查看提交记录
 > git log				# 显示当前分支的提交日志
 > git log --oneline	# 简写说明，简洁版的日志 或 git log --pretty=oneline --abbrev-commit
 > git log --stat		# 显示 commit 历史，以及每次 commit 发生变更的文件
 > git log --oneline -number	# 查看最近的 number 个提交数
->
->
+> 
+> 
 > # 获取漂亮的日志信息
 > git log --pretty=format:"%h - %an, %ar : %s"		# 以给定格式有序的打印提交日志的内容、
 > git log --pretty=format:"%Cred(%h)%Creset - %Cgreen(%an, %ar)%Creset : %Cblue%s" # 为输出日志设置颜色
->
->
+> 
+> 
+> # 根据作者查看日志信息
+> git log --author="willsliang" # 查看 'willsliang' 的所有提交（精确名称）
+> git log --author="willy.*" # 查看名称含 'willy' 的提交（正则）
+> git log --format="%h %ae %s" | grep "willysliang@qq.com" # 根据用户邮箱来查看日志信息
+> git log --author="Alex" -n 5 # 查看最近5条
+> git log --author="willy" --since="2025-01-01" --until="2025-12-31" # 查看2025年的提交
+> 
+> 
+> 
 > # 显示提交历史图表
 > ## （`--graph` 选项可以以**图形**方式展示日志）
 > git log --graph
 > git log --pretty=format:"%h %s" --graph
->
->
+> 
+> 
 > # 基于时间的日志记录
 > ## 可以在特定时间范围内记录条目。非常适合检查每日项目的提交记录
 > git log --since="yesterday" --oneline
@@ -286,7 +295,6 @@ git diff --summary
 
 $ git reset HEAD readme.txt
 $ git checkout -- readme.txt
-
 ```
 
 
@@ -382,16 +390,28 @@ $ git checkout -- readme.txt
 > git push gitee master
 > ```
 
-#### GitLab无需每次输入账号密码
+#### 缓存远程仓库账号密码
 
-> ```bash
-> ## GitLab无需每次输入账号密码
-> 1. 添加SSH到本地，然后把SHH放入GitLab上
-> 2. 若再次拉取代码和提取代码应无需再输密码，若还需输入密码
->    1. 在命令行中输入：`$ git config --global credential.helper store`
->    2. 然后操作 pull/push 会让输入用户名密码，第一次输入进去。
->    3. 下次再操作pull/push时就不需要输入用户名密码了
-> ```
+```bash
+## GitLab无需每次输入账号密码
+1. 添加SSH到本地，然后把SHH放入GitLab上
+2. 若再次拉取代码和提取代码应无需再输密码，若还需输入密码
+   1. 缓存输入的用户名和密码：在命令行中输入 `$ git config --global credential.helper store`
+   2. 然后操作 pull/push 会让输入用户名密码，第一次输入进去。
+   3. 下次再操作pull/push时就不需要输入用户名密码了
+   
+
+
+## 删除 git 缓存中的账号密码（不建议使用）
+git credential-manager uninstall
+
+
+## 管理记录的账号密码
+打开“控制面板” -> “用户帐户” -> “凭据管理器” -> “Windows 凭据”
+在“普通凭据”或“Windows 凭据”列表中，找到与你的 Git 服务器（如 git:https://github.com）相关的凭据
+```
+
+
 
 #### 同时推送两个存储库并保持同步
 
@@ -405,15 +425,7 @@ $ git checkout -- readme.txt
 > # 执行 git push 将更改发送到两个存储库
 > ```
 
-#### 删除 git 缓存中的账号密码
 
-> ```bash
-> ## 删除 git 缓存中的账号密码
-> git credential-manager uninstall
->
-> ## 缓存输入的用户名和密码
-> git config --global credential.helper wincred
-> ```
 
 #### ssh连接校验异常
 
@@ -857,15 +869,56 @@ $ git cherry-pick x # chergit cherry-pick <HashA> <HashB>ry-pick对应的提交�
     1. 优化（perf）：表示优化代码性能。
     2. 国际化（i18n）：表示国际化相关的修改。
     3. 版本或标签（version/tag）：表示版本或标签相关的修改。
-
 ```
 
-### Rebase
 
+
+### 基准线 rebase
+
+```bash
 `git rebase`操作的特点：把分叉的提交历史"整理"成一条直线，看上去更直观。缺点是本地的分叉提交已经被修改过了。
+  - rebase 操作可以把本地未 push 的分叉提交历史整理成直线；
+  - rebase 目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
+  
+ - 整理提交历史：将当前分支的提交移动到目标分支的最新提交之后，形成一条直线式的提交历史，避免多分支合并产生的复杂网状结构
+ - 解决冲突提前化：如果提交与目标分支有冲突，可以提前在本地解决这些冲突，避免在最终合并时产生额外的合并提交
+ - 保持分支同步：当主分支(如main/master)更新时，可以通过变基将当前分支的提交基于最新的主分支积蓄开发，确保代码与上游一致
 
-- rebase操作可以把本地未push的分叉提交历史整理成直线；
-- rebase的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
+
+合并分支中 rebase 和 merge 的区别
+- git merge 提交历史会保留分支结构，生成合并提交。冲突会在合并时一次性解决。适用于保留分支合并历史场景。
+		会让2个分支的提交按照提交时间进行排序，并且会把最新的commit合并成一个commit。最后的分支树呈现非线性的结构
+- git rebase 提交历史呈线性，无合并提交。冲突在变基过程中逐个提交解决。适用于本地整理提交或同步分支。
+		将分支提交复制到要变基分支的最新提交之后，会形成一个线性的分支树
+
+
+常用场景
+1. 本地分支与主分支同步：在功能分支开发时，主分支有更新，使用变基保持功能分支基于最新代码
+		git checkout feature-branch
+		git rebase main # 将 feature-branch 的提交变基到 main 的最新提交上
+
+2. 合并前整理提交历史：将多个琐碎的提交合并位逻辑清晰的提交，提升可读性
+		git rebase -i HEAD~3 # 交互式变基，合并或修改最近3个提交
+```
+
+```bash
+1. 从主分支创建功能分支
+		git checkout -b feature
+
+2. 在feature 分支开发并提交多次
+
+3. 主分支更新后(在创建新分支后主分支有新提交记录)，将 feature 分支变基到最新主分支
+    git checkout main
+    git pull # 更新主分支
+    git checkout feature
+    git rebase main # 解决可能出现的冲突
+
+4. 将变基后的 feature 分支合并到主分支
+		git checkout main
+		git merge feature # 此时会生成快进合并(Fast-forward)，无合并提交
+```
+
+
 
 ### 标签管理 tag
 
@@ -892,14 +945,15 @@ $ git cherry-pick x # chergit cherry-pick <HashA> <HashB>ry-pick对应的提交�
 
 4. 删除标签
 - 删除本地特定标签：`git tag -d <tag_name>`
-- 删除远程特定标签：`git push -d origin :refs/tags/<tag_name>`
+- 删除远程特定标签：
+		- `git push origin --delete tag <标签名>`
+		- `git push origin :refs/tags/<标签名>`
 
 
 5. 检查标签
 - 检查标签是否仅在本地可用：`git push --tags --dry-run`
 		- `--dry-run` 选项总结了下一次提交中将包含的内容。
 		- 如果上述命令的输出状态为 ‘Everything up-to-date’，则表示没有可推送的标签
-		-
 ```
 
 ```bash
@@ -935,7 +989,6 @@ git tag -d v0.1.3
 
 #删除远端服务器的标签（需先从本地删除才能远程删除）
 git push origin :refs/tags/v0.1.3
-
 ```
 
 ### 忽略特殊文件 gitignore
@@ -983,7 +1036,6 @@ deploy_key_rsa
 # 不排除.gitignore和App.class:
 !.gitignore
 !App.class
-
 ```
 
 #### git clean 删除未跟踪的文件或目录
@@ -1035,18 +1087,18 @@ git config --global alias.br branch
 git config --global alias.unstage 'reset HEAD'
 
 #lg配置别名 git lg
- git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 ```
 
 **配置文件**
 
-- 配置Git的时候，加上`--global`是针对当前用户起作用的，如果不加，那只针对当前的仓库起作用。
+- 配置Git时，加上`--global`是针对当前用户起作用，如果不加，则只针对当前的仓库起作用
 - 每个仓库的Git配置文件都放在`.git/config`文件中。
-- 别名就在`.git/config`文件中的`[alias]`后面，要删除别名，直接把对应的行删掉即可。
+- 别名在`.git/config`文件中的`[alias]`后面，要删除别名，直接把对应的行删掉即可
 
 ### 搭建Git服务器
 
-- 搭建Git服务器需要准备一台运行Linux的机器，还需要有`sudo`权限的用户账号。
+- 搭建Git服务器需要准备一台运行Linux的机器，需有`sudo`权限的用户账号
 
 1. 安装git：`sudo apt-get install git`
 2. 创建一个git用户，用来运行git服务：`sudo adduser git`
@@ -1067,7 +1119,6 @@ git config --global alias.unstage 'reset HEAD'
 ### Husky 工程化
 
 ```bash
-## Husky 工程化
 在前端工程化时，husky 是必不可少的工具，它可以方便地处理 git hooks 并执行特定的脚本。
 钩子都被存储在 .git 目录下的 hooks 目录。
 
@@ -1096,14 +1147,11 @@ $ pnpm run prepare
 - `commit-msg` : 用来在提交通过前验证项目状态或提交信息，`git commit` 和 `git merge` 触发（可通过 `--no-verify` 绕过）。
 - `post-commit` : 主要用于通知，`git commit` 触发，但不会影响结果。
 - `post-receive` : 推送完成后执行，可以用来更新其他系统服务或者通知用户。
-
-
 ```
 
 ### lint-staged
 
 ```bash
-## lint-staged
 lint-staged 是一个在git暂存区上运行linters的工具。它将根据package.json依赖项中的代码质量工具来安装和配置 husky 和 lint-staged ，因此请确保在此之前安装lint-staged，并配置所有代码质量工具，比如Prettier和ESlint。
 
 
@@ -1125,13 +1173,11 @@ Options:
   -r, --relative                     将相对文件路径传递给任务（默认值：false）
   -x, --shell                        跳过任务解析以更好地支持shell（默认值：false）
   -h, --help                         输出用法信息
-
 ```
 
 ### commitlint
 
 ```bash
-## commitlint
 提交时，进行提交信息验证，是否符合规范。 这里使用到一个 commitlint 的包
 
 @commitlint/cli : commit 消息校验工具。
@@ -1145,7 +1191,6 @@ $ pnpm i @commitlint/cli @commitlint/config-conventional -D
 
 ### 生成配置文件
 $ echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.cjs
-
 ```
 
 ### 添加 hooks
@@ -1157,7 +1202,6 @@ $ echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commi
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged --allow-empty "$1"
-
 ```
 
 #### .husky/commit-msg
@@ -1167,7 +1211,6 @@ npx lint-staged --allow-empty "$1"
 . "$(dirname "$0")/_/husky.sh"
 
 npx --no -- commitlint --config commitlint.config.cjs --edit $1
-
 ```
 
 ```bash
@@ -1180,7 +1223,6 @@ $ git add .husky/pre-commit
 $ npx lint-staged --allow-empty "$1"
 
 $ npx --no -- commitlint --config commitlint.config.cjs --edit $1
-
 ```
 
 ## GitHub Actions
@@ -1188,7 +1230,7 @@ $ npx --no -- commitlint --config commitlint.config.cjs --edit $1
 ### 在 GitHub Actions 工作流程中部署 GitHub Pages 时出现 403 错误
 
 ```bash
-### 在 GitHub Actions 工作流程中部署 GitHub Pages 时出现 403 错误，可能是由于以下原因之一：
+在 GitHub Actions 工作流程中部署 GitHub Pages 时出现 403 错误，可能是由于以下原因之一：
 1. 没有正确配置仓库的访问权限。如果你没有正确配置仓库的访问权限，可能会导致 403 错误。你需要确保你有足够的权限来访问该仓库，并进行部署操作。你可以在仓库的设置页面中配置访问权限。
 
 

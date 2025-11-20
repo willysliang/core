@@ -2,7 +2,7 @@
 Author: willy
 CreateTime: 2022-10-10 09:05:41
 Modifier: willy
-ModifierTime: 2024-05-31 17:46:27
+ModifierTime: 2025-07-24 17:11:51
 Description: 日志记录
 ---
 
@@ -26,6 +26,40 @@ Description: 日志记录
 
 
 # 更新记录
+
+## 2025年7月25日
+  - perf(layout): [Guide] 优化页面指导Driver的样式
+  - chore(vite): perf vite build options
+
+## 2025年7月24日
+  - feat(comp): [TodoList] 增加todolist组件使用 & 优化组件样式
+
+## 2025年7月11日
+  - perf(layout): 优化菜单栏布局与展示项 & 优化音乐模块显隐逻辑
+      1.将音乐模块的显隐开关存储到localStorage中，防止刷新后重置开关控制；
+      2.如果不展示音乐相关模块，且当前在音乐模块路由中，则重新跳转首页；
+      3.菜单列表只有一个大项时，把该大项中的所有子项展开(针对音乐模块隐藏后只有一个demo大项优化)；
+      4.菜单栏顶部布局超出隐藏滚动条
+  - feat(comp): [TodoList] todo列表组件
+  - feat(layout): 顶部导航栏增加todolist显示 & 优化音乐搜索栏显隐
+      1.仅在音乐相关路由才显示音乐搜索栏；
+      2.修复在音乐模块二级路由下，进行设置隐藏路由模块，无法重定向到首页；
+      3.在当前路由若设置todolist情况下，点击导航栏中路由菜单名显示todolist弹窗
+
+## 2025年7月10日
+  - feat(demo): [SignPdf/Sign] 电子签名组件
+
+## 2025年7月9日
+  - fix(layout): 修复页面头部主题色不生效问题
+  - fix(mp): 修复音乐模块主题色不生效问题
+
+## 2025年5月30日
+  - feat(demo): [AudioVideo/Dplayer] dPlayer视频播放 & 视频缩略图(聚焦进度条显示预览图)
+
+## 2025年5月26日
+  - style(demo): [views/demo] 添加example注释
+  - fix(mp): 修复音乐模块显隐控制异常问题
+  - perf(mp): 优化登录流程
 
 ## 2025年5月20日
   - feat(demo): [AudioVideo/VideoRecord] 视频录制 & 绘制频谱声波图 & 视频水印

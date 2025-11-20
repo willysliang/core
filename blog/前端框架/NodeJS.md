@@ -2,50 +2,11 @@
 Author: willy
 CreateTime: 2023-08-24 16:42:38
 Modifier: willysliang
-ModifiedTime: 2023-11-27 20:09:45
+ModifiedTime: 2025-05-21 14:51:21
 Description: NodeJS 进阶
 ---
 
 ## NodeJS 进阶
-
-```bash
-## NodeJS 进阶
-1. Node与工程化开发
-阻塞非阻塞
-触发器events与path模块
-Buffer对象
-
-
-2. Node框架
-数据脚本
-CORS配置
-错误处理
-校验封装
-nodemoon管理
-MORGAN日志处理
-查询正则捕获
-文件流上传下载
-
-
-3. 前后端数据交互
-报文流
-测试监听抓包
-TCP/IP握手机制
-网络业务模型
-代理
-网关
-隧道等概念
-代理服务器跨域处理
-拦截
-合并
-通信加密策略
-数据对称加密
-数据非对称加密
-RSA加密实践
-MD5加密实践
-```
-
-
 
 ### 原生路由
 
@@ -108,12 +69,12 @@ module.exports = { use, start }
  */
 
 /** 接口调用中转处理 */
-const render = (res, path, type = "", code = 200) => {
-    res.writeHead(code, {
-        "Content-Type": `${type || "text/html"};charset=utf8`,
-    })
-    res.write(fs.readFileSync(path), "utf-8")
-    res.end()
+const render = (res, path, type = '', code = 200) => {
+  res.writeHead(code, {
+    'Content-Type': `${type || 'text/html'};charset=utf8`,
+  })
+  res.write(fs.readFileSync(path), 'utf-8')
+  res.end()
 }
 
 module.exports = { render }
@@ -124,30 +85,30 @@ module.exports = { render }
  * @file route.ts 路由表
  */
 
-const fs = require("fs")
-const path = require("path")
-//根据文件后缀名自动获取响应头中content-type
-const mime = require("mime")
-const { render: routeRender } = require("./utils")
+const fs = require('fs')
+const path = require('path')
+// 根据文件后缀名自动获取响应头中content-type
+const mime = require('mime')
+const { render: routeRender } = require('./utils')
 
 /** 路由表 */
 const routes = {
-    "/login"(req, res) {
-        routeRender(res, "./static/login.html")
-    },
-    "/home"(req, res) {
-        routeRender(res, "./static/home.html")
-    },
-    "/404"(req, res) {
-        const url = new URL(req.url, "http://127.0.0.1")
-        /*
-         <link href='/css/index.css'></link>根路径访问，就等于127.0.0.1:3000/css/index.css。
-         这里将项目文件夹F://项目+static+/css/index.css合并成文件路径，如果存在就读取该文件返回
-         */
-        let pathname = path.join(__dirname, "static", url.pathname)
-        if (fs.readStaticFile(res, pathname)) return
-        routeRender(res, "./static/404.html")
-    },
+  '/login'(req, res) {
+    routeRender(res, './static/login.html')
+  },
+  '/home'(req, res) {
+    routeRender(res, './static/home.html')
+  },
+  '/404'(req, res) {
+    const url = new URL(req.url, 'http://127.0.0.1')
+    /*
+      <link href='/css/index.css'></link>根路径访问，就等于127.0.0.1:3000/css/index.css。
+    	这里将项目文件夹F://项目+static+/css/index.css合并成文件路径，如果存在就读取该文件返回
+    */
+    const pathname = path.join(__dirname, 'static', url.pathname)
+    if (fs.readStaticFile(res, pathname)) return
+    routeRender(res, './static/404.html')
+  },
 }
 
 module.exports = routes
@@ -158,40 +119,40 @@ module.exports = routes
  * @file api.ts 接口
  */
 
-const { render: apiRender } = require("./utils")
+const { render: apiRender } = require('./utils')
 
 const api = {
-    //get请求
-    "/api/login"(req, res) {
-        const url = new URL(req.url, "http://127.0.0.1")
-        const data = {}
-        let username = url.searchParams.get("username")
-        let password = url.searchParams.get("password")
-        if (username === "ds" && password === "123") {
-            Object.assign(data, { ok: 1 })
-        } else {
-            Object.assign(data, { ok: 0 })
-        }
-        apiRender(res, JSON.stringify(data))
-    },
+  // get请求
+  '/api/login'(req, res) {
+    const url = new URL(req.url, 'http://127.0.0.1')
+    const data = {}
+    const username = url.searchParams.get('username')
+    const password = url.searchParams.get('password')
+    if (username === 'ds' && password === '123') {
+      Object.assign(data, { ok: 1 })
+    } else {
+      Object.assign(data, { ok: 0 })
+    }
+    apiRender(res, JSON.stringify(data))
+  },
 
-    //post请求
-    "/api/loginpost"(req, res) {
-        let data: any = ""
-        //这里使用最原始的方法获取post请求参数, 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
-        req.on("data", (chunk) => {
-            data += chunk
-        })
-        // 在end事件触发后，通过querystring.parse将post解析为真正的POST请求格式，然后向客户端返回。
-        req.on("end", () => {
-            data = JSON.parse(data)
-            if (data.username === "ds" && data.password === "123") {
-                apiRender(res, JSON.stringify({ ok: 1 }))
-            } else {
-                apiRender(res, JSON.stringify({ ok: 0 }))
-            }
-        })
-    },
+  // post请求
+  '/api/loginpost'(req, res) {
+    let data: any = ''
+    // 这里使用最原始的方法获取post请求参数, 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
+    req.on('data', (chunk) => {
+      data += chunk
+    })
+    // 在end事件触发后，通过querystring.parse将post解析为真正的POST请求格式，然后向客户端返回。
+    req.on('end', () => {
+      data = JSON.parse(data)
+      if (data.username === 'ds' && data.password === '123') {
+        apiRender(res, JSON.stringify({ ok: 1 }))
+      } else {
+        apiRender(res, JSON.stringify({ ok: 0 }))
+      }
+    })
+  },
 }
 
 module.exports = api
@@ -207,23 +168,23 @@ const password = 123456
 
 // get请求
 fetch(`/api/login?username=${username}&password=${password}`)
-    .then((res) => res.text())
-    .then((res) => {
-        console.log(res)
-    })
+  .then((res) => res.text())
+  .then((res) => {
+    console.log(res)
+  })
 
 // post请求
 fetch(`/api/loginpost`, {
-    method: "POST",
-    body: JSON.stringify({ username, password }),
-    headers: {
-        "Content-Type": "application/json",
-    },
+  method: 'POST',
+  body: JSON.stringify({ username, password }),
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
-    .then((res) => res.text())
-    .then((res) => {
-        console.log(res)
-    })
+  .then((res) => res.text())
+  .then((res) => {
+    console.log(res)
+  })
 ```
 
 
@@ -475,6 +436,410 @@ setImmediate 2
 
 
 
+### 热更新 nodemon
+
+```bash
+- nodemon 会见监视源文件中任何的更改自动重启服务器。nodemon不会对代码产生额外改变，只是当修改源文件后无需手动重启更改即可生效(类似热更新)
+- 执行js文件与node无区别 `$ nodemon index.js`
+- 通过`$ npm i -g nodemon` 全局安装
+```
+
+```bash
+# 启动应用（默认监视所有 .js 文件）
+nodemon app.js
+
+# 指定监视特定文件类型
+nodemon --ext js,html,css app.js
+
+# 手动传递参数给 Node.js
+nodemon app.js --port 3000
+```
+
+
+
+### 日志管理 morgan
+
+```bash
+在 NodeJS 中，morgan 是 Express 框架最常用的 HTTP 请求日志中间件。
+morgan 可以通过预定义的格式或自定义格式来记录日志，比如 'combined'、'common'、'dev'等。
+
+```
+
+**【按日期分割日志】**
+
+```js
+const path = require('path')
+const express = require('express')
+const morgan = require('morgan')
+const app = express()
+const rfs = require('rotating-file-stream')
+
+// 每天生成一个新文件，保留最近7天
+const generator = (time, index) => {
+  if (!time) return 'access.log'
+  return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}.log`
+}
+
+// 创建写入流
+const rotatingStream = rfs.createStream(generator, {
+  interval: '1d', // 每天轮转
+  maxFiles: 7, // 保留7个文件
+  path: path.join(__dirname, 'logs'),
+})
+
+const isProduction = process.env.NODE_ENV === 'production'
+
+// 写入文件（使用 combined 格式）
+// app.use(morgan('combined', { stream: rotatingStream }))
+
+// 按环境区分日志级别
+app.use(morgan(isProduction ? 'combined' : 'dev', {
+  stream: rotatingStream,
+  skip: (req, res) => res.statusCode < 400 // 生产环境只记录错误
+}))
+```
+
+
+
+### 【文件流上传下载】
+
+```js
+const express = require('express')
+const path = require('path')
+const fs = require('fs')
+
+const multer = require('multer')
+const fileType = require('file-type') // 使用文件魔数校验真实类型
+const NodeClam = require('clamscan') // 病毒扫描
+
+const { pipeline } = require('stream')
+const zlib = require('zlib')
+
+const app = express()
+
+/**
+ * 单文件上传
+ */
+// 配置存储
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = 'uploads/'
+    fs.mkdirSync(uploadDir, { recursive: true })
+    cb(null, uploadDir)
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`)
+  },
+})
+
+// 文件过滤
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'application/pdf']
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true)
+  } else {
+    cb(new Error('不支持的文件类型'), false)
+  }
+}
+
+// 初始化上传中间件
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 1024 * 1024 * 100, // 100MB限制
+  },
+})
+
+// 对文件进行病毒扫描
+const scanFile = async (filePath) => {
+  const clamscan = await new NodeClam().init()
+  const { isInfected } = await clamscan.scanFile(filePath)
+  return isInfected
+}
+
+// 单文件上传路由 (增加文件类型校验 和 病毒扫描)
+app.post('/upload', upload.single('file'), async (req, res) => {
+  if (await scanFile(req.file.path)) {
+    fs.unlinkSync(req.file.path)
+    return res.status(422).send('检测到恶意文件')
+  }
+
+  const buffer = fs.readFileSync(req.file.path)
+  const type = await fileType.fromBuffer(buffer)
+  if (!['jpg', 'pdf'].includes(type.ext)) {
+    fs.unlinkSync(req.file.path)
+    return res.status(415).send('非法文件类型')
+  }
+
+  // 重命名保证后缀正确
+  const newPath = `${req.file.path}.${type.ext}`
+  fs.renameSync(req.file.path, newPath)
+
+  res.json({
+    filename: req.file.filename,
+    size: req.file.size,
+  })
+})
+
+/**
+ * 分块上传
+ */
+const mergeChunks = async (fileName, chunkSize) => {
+  const chunkDir = path.join('temp', fileName)
+  const chunks = await fs.promises.readdir(chunkDir)
+  chunks.sort((a, b) => a.split('-')[1] - b.split('-')[1])
+
+  const writeStream = fs.createWriteStream(path.join('uploads', fileName))
+  for (const chunk of chunks) {
+    const chunkPath = path.join(chunkDir, chunk)
+    const readStream = fs.createReadStream(chunkPath)
+    readStream.pipe(writeStream, { end: false })
+    await new Promise((resolve) => readStream.on('end', resolve))
+    fs.unlinkSync(chunkPath)
+  }
+  writeStream.end()
+  fs.rmdirSync(chunkDir)
+}
+app.post('/upload-chunk', upload.single('chunk'), async (req, res) => {
+  const { index, total, filename } = req.body
+  const chunkDir = path.join('temp', filename)
+
+  await fs.promises.mkdir(chunkDir, { recursive: true })
+  await fs.promises.rename(
+    req.file.path,
+    path.join(chunkDir, `${filename}-${index}`),
+  )
+
+  if (index === total) {
+    await mergeChunks(filename, req.file.size)
+    res.json({ status: 'completed' })
+  } else {
+    res.json({ status: 'processing' })
+  }
+})
+
+/**
+ * 下载
+ */
+// 基础下载
+app.get('/download/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+
+  // 验证文件存在性
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send('文件不存在')
+  }
+
+  // 设置下载头信息
+  res.setHeader('Content-Type', 'application/octet-stream')
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename=${req.params.filename}`,
+  )
+
+  // 创建可读流
+  const readStream = fs.createReadStream(filePath)
+  readStream.pipe(res)
+
+  // 错误处理
+  readStream.on('error', (err) => {
+    console.error('下载中断:', err)
+    res.status(500).send('下载失败')
+  })
+})
+
+// 对下载进行内存控制
+app.get('/safe-download/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+
+  const readStream = fs.createReadStream(filePath)
+  pipeline(readStream, res, (err) => {
+    if (err) {
+      console.error('下载管道错误:', err)
+      if (!res.headersSent) res.sendStatus(500)
+    }
+  })
+})
+
+// 流式压缩下载
+app.get('/download-compressed/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+
+  res.setHeader('Content-Encoding', 'gzip')
+  res.setHeader('Content-Type', 'application/octet-stream')
+
+  fs.createReadStream(filePath).pipe(zlib.createGzip()).pipe(res)
+})
+
+// 记录传输指标
+const downloadMetrics = new Map()
+app.get('/download/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+  const startTime = Date.now()
+  const readStream = fs.createReadStream(filePath)
+
+  readStream.on('open', () => {
+    downloadMetrics.set(req.id, {
+      start: startTime,
+      bytesSent: 0,
+    })
+  })
+
+  readStream.on('data', (chunk) => {
+    const metric = downloadMetrics.get(req.id)
+    metric.bytesSent += chunk.length
+  })
+
+  readStream.on('end', () => {
+    const metric = downloadMetrics.get(req.id)
+    console.log(
+      `传输完成: ${metric.bytesSent} bytes in ${Date.now() - metric.start}ms`,
+    )
+  })
+})
+
+// 断点续传支持
+app.get('/download-resumable/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.filename)
+  const stat = fs.statSync(filePath)
+  const fileSize = stat.size
+  const range = req.headers.range
+
+  if (range) {
+    const parts = range.replace(/bytes=/, '').split('-')
+    const start = parseInt(parts[0], 10)
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1
+    const chunkSize = end - start + 1
+
+    res.writeHead(206, {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunkSize,
+      'Content-Type': 'application/octet-stream',
+    })
+
+    const readStream = fs.createReadStream(filePath, { start, end })
+    readStream.pipe(res)
+  } else {
+    res.writeHead(200, {
+      'Content-Length': fileSize,
+      'Content-Type': 'application/octet-stream',
+    })
+    fs.createReadStream(filePath).pipe(res)
+  }
+})
+
+app.listen(3000)
+```
+
+
+
+### 通信加密策略
+
+```bash
+NodeJS 的通信安全需分层实施
+    1. 传输层：强制使用 https/tls
+    2. 数据层：按需选择 对称/非对称加密
+    3. 验证层：数字签名 + Token 机制
+    4. 运维曾：密钥安全管理 + 定期审计
+
+
+一、传输层加密（HTTPS/TLS）
+通过 SSL/TLS 协议加密整个通信通道，防止数据在传输中被窃取或篡改
+使用 https 模块加载 SSL/TLS 证书和私钥
+使用 https.request() 安全访问外部 API
+
+二、数据加密策略
+对敏感数据（如密码、令牌）单独加密，即使传输层被突破仍可保护数据
+对称加密（AES）：高效加密大量数据（如请求体）
+非对称加密（RSA）：安全传输密钥或签名验证
+Hash（SHA-256/MD5）：用于密码存储或数据完整性校验（不可逆）
+HMAC：密钥相关的哈希，防彩虹表攻击（如用户登录令牌）
+
+三、身份验证与完整性保护
+数字签名：私钥签名，公钥验证，确保数据来源可信
+Token鉴权：
+	使用 JWT（JSON Web Token）结合 HMAC 或 RSA 签名，实现无状态会话管理
+	请求头携带：Authorization: Bearer <token>
+
+四、安全会话管理
+密钥安全
+  对称加密的密钥需通过非对称加密传输（如 RSA 加密 AES 密钥）
+  避免硬编码密钥，使用环境变量或密钥管理服务（KMS）
+防御中间人攻击
+  服务端配置 rejectUnauthorized: true 强制验证客户端证书
+  使用完整的证书链（CA 中间证书）避免浏览器警告
+
+五、问题防范
+算法选择
+	弃用弱算法（如 MD5、SHA-1），优先选 AES-256、SHA-256、RSA-2048。
+防范 Web 攻击
+	防止重放攻击：请求加入时间戳+随机数，服务端校验时效性。
+	防 CSRF：同步令牌验证。
+审计与监控
+	日志记录敏感操作（如解密失败、签名验证异常）。
+	使用安全扫描工具（如 npm audit）定期检查依赖漏洞
+```
+
+**传输层加密（HTTPS/TLS）**
+
+```js
+// 创建 HTTPS 服务器
+const https = require('https')
+const fs = require('fs')
+const options = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt'),
+  ca: fs.readFileSync('ca_bundle.crt'), // 可选，中间证书
+}
+https
+  .createServer(options, (req, res) => {
+    res.end('Secure Data')
+  })
+  .listen(443)
+
+
+// 发起 HTTPS 请求
+https.request('https://api.example.com', (res) => {
+  res.on('data', (d) => process.stdout.write(d))
+}).end()
+```
+
+```js
+// 对称加密
+const crypto = require('crypto')
+const algorithm = 'aes-256-cbc'
+const key = crypto.randomBytes(32) // 密钥
+const iv = crypto.randomBytes(16) // 初始化向量
+
+function encrypt(text) {
+  const cipher = crypto.createCipheriv(algorithm, key, iv)
+  return cipher.update(text, 'utf8', 'hex') + cipher.final('hex')
+}
+
+
+// 非对称加密
+const encrypted = crypto.publicEncrypt(publicKey, Buffer.from('Secret'))
+const decrypted = crypto.privateDecrypt(privateKey, encrypted)
+
+const hmac = crypto.createHmac('sha256', secretKey)
+hmac.update('data')
+console.log(hmac.digest('hex'))
+
+
+// 数字签名
+const sign = crypto.createSign('RSA-SHA256')
+sign.update('data')
+const signature = sign.sign(privateKey, 'base64')
+
+const verify = crypto.createVerify('RSA-SHA256')
+verify.update('data')
+console.log(verify.verify(publicKey, signature, 'base64')) // true/false
+```
+
+
+
 ## Express
 
 ```bash
@@ -654,6 +1019,73 @@ app.get('500', (_, response) => {
 })
 ```
 
+### CORS 配置
+
+```js
+const express = require('express')
+const cors = require('cors')
+const app = express()
+
+// 全局默认不启用
+app.use(cors({ origin: false }))
+
+// 为特定路由启用
+app.get(
+  '/public-api',
+  cors({
+    origin: 'https://trusted-domain.com',
+  }),
+  (req, res) => {
+    res.json({ data: '受保护数据' })
+  },
+)
+
+// 允许所有来源的跨域请求
+app.use(cors())
+
+// 或者配置选项
+app.use(
+  cors({
+    origin: '*', // 允许所有源（生产环境慎用）
+    methods: 'GET,POST', // 允许的 HTTP 方法
+    allowedHeaders: 'Content-Type,Authorization', // 允许的请求头
+  }),
+)
+
+// 生产环境推荐配置
+app.use(
+  cors({
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
+    exposedHeaders: ['Content-Range', 'X-Items-Count'],
+    credentials: true, // 允许发送 cookies
+    maxAge: 86400, // 预检请求缓存时间（秒）
+    optionsSuccessStatus: 200, // 兼容旧浏览器
+    // origin: ['https://your-domain.com', 'https://cdn.your-domain.com'],
+    origin: (origin, callback) => {
+      const whitelist = new Set([
+        'https://your-domain.com',
+        'https://cdn.your-domain.com',
+        'http://localhost:3000',
+      ])
+      if (whitelist.has(origin) || !origin) {
+        callback(null, true)
+      } else {
+        callback(new Error('未允许的跨域请求'))
+      }
+    },
+  }),
+)
+
+app.get('/api', (req, res) => {
+  res.json({ message: 'CORS 已启用' })
+})
+
+app.listen(3000)
+```
+
+
+
 ### Express 中间件
 
 ```bash
@@ -759,6 +1191,8 @@ app.use("/login", checkCodeMiddleware, LoginRouter)
 
 http.createServer(app).listen(3000)
 ```
+
+
 
 ## 模板引擎 ejs
 
@@ -3540,5 +3974,3 @@ cron.schedule('0 0 * * 5', () => {
 如果需要测试效果，Nodemailer 支持 [Ethereal Email](https://ethereal.email/) 提供的测试账户。创建一个 Ethereal 帐户并使用为您生成的用户名和密码。
 
 
-
-## 结语

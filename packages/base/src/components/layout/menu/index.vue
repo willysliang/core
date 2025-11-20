@@ -1,3 +1,11 @@
+<!--
+ * @ Author: willysliang
+ * @ CreateTime: 2022-09-15 09:16:46
+ * @ Modifier: willysliang
+ * @ ModifierTime: 2025-07-11 10:05:14
+ * @ Description: 菜单栏
+ -->
+
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import IconPark from '@comp/common/IconPark.vue'
@@ -26,7 +34,7 @@ const { handleMenuSelect, currentMenuKey, menuList, menuTitle } =
     :collapse-transition="false"
     :class="[
       'menu',
-      themeLayoutIsVertical ? 'overflow-y-hidden' : 'overflow-x-hidden',
+      `menu--${themeLayoutIsVertical ? 'horizontal' : 'vertical'}`,
     ]"
     @select="handleMenuSelect"
   >
@@ -43,21 +51,36 @@ const { handleMenuSelect, currentMenuKey, menuList, menuTitle } =
         <span class="menu__logo--title">{{ menuTitle }}</span>
       </div>
     </el-menu-item>
-    <el-sub-menu
-      v-for="menuItem in menuList"
-      :key="menuItem.key"
-      :index="menuItem.name"
-    >
-      <template #title>{{ menuItem.title }}</template>
+
+    <!-- 列表只有一个大项时，把该大项中的所有子项展开 -->
+    <template v-if="menuList.length === 1">
       <el-menu-item
-        v-for="menu in menuItem.children"
+        v-for="menu in menuList[0].children"
         :key="menu.key"
         :index="menu.name"
       >
         <IconPark :icon="menu.icon" size="18" theme="outline" />
         <span class="pl-2">{{ menu.title }}</span>
       </el-menu-item>
-    </el-sub-menu>
+    </template>
+
+    <template v-else>
+      <el-sub-menu
+        v-for="menuItem in menuList"
+        :key="menuItem.key"
+        :index="menuItem.name"
+      >
+        <template #title>{{ menuItem.title }}</template>
+        <el-menu-item
+          v-for="menu in menuItem.children"
+          :key="menu.key"
+          :index="menu.name"
+        >
+          <IconPark :icon="menu.icon" size="18" theme="outline" />
+          <span class="pl-2">{{ menu.title }}</span>
+        </el-menu-item>
+      </el-sub-menu>
+    </template>
   </el-menu>
 </template>
 
@@ -82,6 +105,11 @@ const { handleMenuSelect, currentMenuKey, menuList, menuTitle } =
       overflow: hidden;
     }
   }
+}
+
+/** 菜单垂直排列(在左侧) */
+.menu--vertical {
+  @apply overflow-x-hidden;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -102,5 +130,15 @@ const { handleMenuSelect, currentMenuKey, menuList, menuTitle } =
     background: rgb(63 52 52);
     box-sizing: border-box;
   }
+}
+
+/** 菜单横向排列(在顶部) */
+.menu--horizontal {
+  @apply overflow-y-hidden;
+
+  /* 隐藏滚动条 */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 </style>

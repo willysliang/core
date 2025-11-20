@@ -2,7 +2,7 @@
  * @ Author: willysliang
  * @ CreateTime: 2025-04-03 19:32:07
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-05-20 16:47:14
+ * @ ModifierTime: 2025-05-26 14:38:16
  * @ Description: 视频录制 & 黑屏检测
  -->
 
@@ -112,7 +112,7 @@ const checkResult = ref<string>('')
  * 黑屏检测(起始帧按1s一次检测)
  */
 const handleCheck1 = () => {
-  // 需要视频处于播放然后再获取实时的帧页面来处理
+  // 需要视频处于播放状态，然后再获取实时的帧画面来处理
   if (videoRef.value?.paused) {
     videoRef.value?.play()
   }

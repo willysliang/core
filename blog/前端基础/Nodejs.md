@@ -2800,24 +2800,43 @@ const newURL = {
 ## 操作路径 path
 
 ```bash
-`const path = require(node:path)`
-
-常用API
-    - 拼接规范的绝对路径：`path.resolve`
-    - 获取操作系统的路径分隔符：`path.sep`
-    - 解析路径并返回对象：`path.parse`
-    - 获取路径的基础名称：`path.basename`
-    - 获取路径的目录名：`path.dirname`
-    - 获取路径的扩展名：`path.extname`
-
+const path = require(node:path)
 
 
 ### __dirname
-`__dirname` 表示当前模块所在的目录的绝对路径。
-`__dirname` 是每个模块独有的局部变量（不是一个全局变量），因此在模块中使用 `__dirname` 变量时，不需要使用 `global` 对象或 `require()` 方法进行导入。
-例如，一个 Node.js 模块位于 `C:\myapp\index.js`，那么在该模块中访问 __dirname 变量的值为 `C:\myapp`。
-`__dirname` 变量可以确保路径的正确性，避免出现相对路径错误，常用于构建文件路径，比如读取文件、写入文件、加载模块等。
+`__dirname` 表示当前模块所在的目录的绝对路径
+`__dirname` 是每个模块独有的局部变量（不是一个全局变量），因此在模块中使用 `__dirname` 时不需要使用 `global` 对象或 `require()` 方法进行导入
+`__dirname` 变量可以确保路径的正确性，避免出现相对路径错误，常用于构建文件路径，比如读取文件、写入文件、加载模块等
+例如 Node.js 模块位于 C:\myapp\index.js，那么在该模块中访问 `__dirname` 变量的值为 C:\myapp。
+
+
+
+### 跨平台处理
+路径分隔符：
+	Windows：\，POSIX（Linux/macOS）：/
+	可使用 path.sep 获取当前平台分隔符。
+
+
+
+### 常用API
+- 拼接规范的绝对路径：`path.resolve`
+- 获取操作系统的路径分隔符：`path.sep`
+- 解析路径并返回对象：`path.parse`
+- 获取路径的基础名称：`path.basename`
+- 获取路径的目录名：`path.dirname`
+- 获取路径的扩展名：`path.extname`
 ```
+
+|        方法        |             作用             |                     示例（输入 → 输出）                      |
+| :----------------: | :--------------------------: | :----------------------------------------------------------: |
+|   `path.join()`    |         安全拼接路径         |            `join('/tmp', 'a', '../b')` → `/tmp/b`            |
+|  `path.resolve()`  | 解析绝对路径（从右向左处理） |   `resolve('src', '/img')` → `/img` (若当前目录是 `/home`)   |
+| `path.normalize()` |  规范路径（处理 `.`和`..`）  |         `normalize('/foo/../bar//baz')` → `/bar/baz`         |
+| `path.basename()`  |    获取文件名（含扩展名）    |           `basename('/tmp/file.txt')` → `file.txt`           |
+|  `path.dirname()`  |         获取目录路径         |             `dirname('/tmp/file.txt')` → `/tmp`              |
+|  `path.extname()`  |        获取文件扩展名        |              `extname('index.html')` → `.html`               |
+|   `path.parse()`   |        分解路径为对象        | `parse('/tmp/file.txt')` → `{ root: '/', dir: '/tmp', base: 'file.txt', ... }` |
+|  `path.format()`   |        从对象生成路径        | `format({ dir: '/tmp', base: 'file.txt' })` → `/tmp/file.txt` |
 
 ```js
 const path = require('path')
@@ -2828,13 +2847,18 @@ const p2 = path.resolve(__dirname, 'index.js')
 const p3 = path.resolve(__dirname, '/index.js') // 这会回到根目录下
 console.log(p1, p2, p3)
 
+
 /** sep 分隔符 */
 console.log(path.sep)   // window下为 \，Linux下为 /
+// 强制使用 POSIX 风格路径（如 Web 配置）
+const posixPath = path.posix.join('src', 'images', 'logo.png'); // → 'src/images/logo.png'
+// 强制使用 Windows 风格路径
+const winPath = path.win32.join('C:', 'tmp', 'file.txt'); // → 'C:\\tmp\\file.txt'
 
-const pathStr = 'C:\\Users\\OP0213\\Desktop\\core\\index.js'
 
 /** 文件分隔符：parse */
 console.log(path.parse(pathStr))
+
 
 /** 文件基础名称：basename */
 path.basename(pathStr) // index.js
@@ -2942,6 +2966,34 @@ export const syncStaticDir = (): void => {
 
 
 
+### 【文件监控与路径处理】
+
+```js
+const fs = require('fs')
+const path = require('path')
+const EventEmitter = require('events')
+
+class FileWatcher extends EventEmitter {
+  constructor(dir) {
+    super()
+    this.dir = path.resolve(dir) // 确保绝对路径
+  }
+
+  watch() {
+    fs.watch(this.dir, (eventType, filename) => {
+      const fullPath = path.join(this.dir, filename)
+      this.emit('change', fullPath, eventType) // 触发事件
+    })
+  }
+}
+
+const watcher = new FileWatcher('./logs')
+watcher.on('change', (filepath) => {
+  console.log(`文件修改：${path.basename(filepath)}`)
+})
+watcher.watch()
+```
+
 
 
 ##  文件操作 fs
@@ -2955,40 +3007,41 @@ fs 模块可以执行以下操作：
 
 
 ### 同步与异步的取舍
-- 由于 Node 环境执行的JS代码一般作为服务端的代码运行，且其绝大部分需要在服务器运行期反复执行业务逻辑的代码，所以必须使用异步代码，否则，同步代码在执行时期，服务器将会因为同步错误而停止响应（因为JavaScript只有一个执行线程，产生同步错误会跳出异常并停止运行）。
-- 服务器启动时，如果需要读取配置文件，或者结束时需要写入到状态文件时，可以使用同步代码，因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。
+- 由于 Node 环境执行的JS代码一般作为服务端的代码运行，且其绝大部分需要在服务器运行期反复执行业务逻辑的代码，所以必须使用异步代码，否则，同步代码在执行时期，服务器将会因为同步错误而停止响应（因为 JS 只有一个执行线程，产生同步错误会跳出异常并停止运行）
+- 服务器启动时，如果需要读取配置文件，或者结束时需要写入到状态文件时，可以使用同步代码。因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。
 
 
 同步方法有两个缺点：
-	1. 同步方法同步的执行代码，因此它们阻塞了主线程。例如：我使用 `fs.readdirSync` 同步读取目录下的所有文件，它将阻塞后面代码的运行，直到读取目录完成。阻塞 Node.js 中的主线程被认为是不好的做法，我们不应该这么做
+	1. 同步方法同步执行代码，因此会阻塞主线程。例如使用 `fs.readdirSync` 同步读取目录下的所有文件，它将阻塞后面代码的运行，直到读取目录完成。
 	2. 同步代码需要使用 `try...catch` 捕获错误
 
-因此，以下都使用文件系统模块中的异步方法。
+因此推荐使用文件系统模块中的异步方法。
 ```
 
-### 文件读取 readFile
+
+
+### 文件读写 readFile/writeFile
+
+#### 文件读取 readFile
 
 ```bash
-## 文件读取
 标准读取文件，是采取异步的方式读取的。
 同步读取的函数和异步函数相比，函数需要加`Sync`后缀，并且不接收回调函数，函数直接返回结果。
 并且如果同步读取文件发生错误，需要用`try...catch`捕获错误。
 
+文件读取方法
+  1. 异步读取：`fs.readFile(path[, options], callback)`
+  2. 同步读取：readFileSync
+  3. 流式读取：createReadStream
 
-### 文件读取方法
-1. 异步读取：`fs.readFile(path[, options], callback)`
-2. 同步读取：readFileSync
-3. 流式读取：createReadStream
-
-
-### 读取文件应用场景
-- 电脑开机
-- 程序运行
-- 编辑器打开文件
-- 查看图片、聊天记录
-- 播放视频、音乐
-- 上传文件
-- 查看 Git 提交记录
+读取文件应用场景
+  - 电脑开机
+  - 程序运行
+  - 编辑器打开文件
+  - 查看图片、聊天记录
+  - 播放视频、音乐
+  - 上传文件
+  - 查看 Git 提交记录
 ```
 
 ```js
@@ -3013,62 +3066,36 @@ try {
 }
 ```
 
-### 文件写入 writeFile
+
+
+#### 文件写入 writeFile
 
 ```bash
-## 文件写入
-将数据写入文件是通过 `fs.writeFile()` 函数实现；同步写文件则是`writeFileSync()`函数。
-`writeFile()`的参数依次为文件名、数据和回调函数。如果传入的数据是String，默认按UTF-8编码写入文本文件，如果传入的参数是`Buffer`，则写入的是二进制文件。回调函数由于只关心成功与否，因此只需要一个`err`参数。
+`fs.writeFile(filePath, data[, options], callback)` 可将数据写入文件
+    - 如果传入的数据是String，默认按UTF-8编码写入文本文件
+    - 如果传入的参数是Buffer，则写入的是二进制文件
+    - callback 回调函数由于只关心成功与否，因此只需要一个 err 参数
+实现在文件内追加内容：fs.writeFile('/path', '追加的内容', { flag: 'a' })
 
 
-### 文件写入的方法
+文件写入的方法
     1. 异步写入：writeFile
     2. 同步写入：writeFileSync
     3. 追加写入：appendFile、appendFileSync
     4. 流式写入：createWriteStram
 
-
-### 写入文件的场景：（当需要持久化保存数据时，应该想到文件写入）
+写入文件的场景：（当需要持久化保存数据时，应该想到文件写入）
     - 下载文件
     - 安装软件
     - 保存程序日志，如 Git
     - 编辑器保存文件
     - 视频录制
-
-
-### 追加内容：appendFile
-- `fs.appendFile(file, data[, options], callback)`
-
-fs.appendFile('example.txt', 'Hello, world!\n', (err) => {
-  if (err) throw err;
-  console.log('内容已追加到文件');
-});
-
-
-### 写入内容：writeFile
-- 实现在文件内追加内容：fs.writeFile('/path', '追加的内容', { flag: 'a' })
-- `fs.writeFile(file, data[, options], callback)`
-
-fs.writeFile('example.txt', 'Hello, world!', (err) => {
-  if (err) throw err;
-  console.log('内容已写入文件');
-});
-
-
-### 流式写入：createWriteStream
-注意：程序打开一个文件是需要消耗资源的，流失写入可以减少打开关闭文件的次数。
-流式写入方式适用于大文件写入或者频繁写入的场景，writeFile 适用于写入频率较低的场景。
-`fs.createWriteStream(path[, options])`
-
-const ws = fs.createWriteStream('./willy.txt')
-ws.write('昨日晴空万里\r\n')
-ws.write('今天依旧晴朗，风和日丽\r\n')
 ```
 
 ```js
-let fs = require('fs')
+const fs = require('fs')
 
-let data = 'Hello, Node.js'
+const data = 'Hello, Node.js'
 
 fs.writeFile('test.txt', data, function (err) {
   if (err) {
@@ -3081,16 +3108,287 @@ fs.writeFile('test.txt', data, function (err) {
 fs.writeFileSync('test.txt', data)
 ```
 
+
+
+#### 文件追加内容 appendFile
+
+```bash
+使用文件系统模块，可以使用 `appendFile` 方法向现有文件添加新内容
+- `fs.appendFile(file, data[, options], callback)`
+```
+
+```js
+const fs = require('fs')
+
+fs.appendFile('example.txt', 'Hello, world!\n', (err) => {
+  if (err) throw err
+  console.log('内容已追加到文件')
+})
+```
+
+
+
+#### 【读取/写入本地文件】
+
+```js
+const fs = require('fs').promises
+const path = require('path')
+
+// 读取 JSON 文件
+async function readJSON(filePath) {
+  const rawData = await fs.readFile(path.resolve(__dirname, filePath))
+  return JSON.parse(rawData)
+}
+
+// 写入 JSON 文件
+async function writeJSON(data, outputPath) {
+  await fs.writeFile(
+    path.resolve(__dirname, outputPath),
+    JSON.stringify(data, null, 2),
+  )
+}
+
+// 使用示例
+;(async () => {
+  const data = await readJSON('input.json')
+  data.push({ id: 100, name: 'New Item' })
+  await writeJSON(data, 'output.json')
+})()
+```
+
+
+
+### stream 流
+
+```bash
+- stream 是 nodejs 提供的又一个仅在服务区端可用的模块，目的是支持 “流” 这种数据结构。
+- 流的特点是数据有序，而且必须依次读取，或依次写入，不能像 Array 那样随机定位（类似堆栈）
+- 所有可以读取数据的流都继承自 stream.Readable，所有可以写入的流都继承自 stream.Writable
+
+- 流也是一个对象，存在三个响应流的事件：
+    1. `data`事件表示流的数据已经读取；
+    2. `end`事件表示这个流已经到末尾，没有数据可以再读取；
+    3. `error`事件表示出错了。
+- 注意：`data` 事件可能会有多次，每次传递的 `chunk` 是流的一部分数据。
+
+
+
+#### 流式写入：createWriteStream
+注意：程序打开一个文件是需要消耗资源的，流失写入可以减少打开关闭文件的次数。
+流式写入方式适用于大文件写入或者频繁写入的场景，writeFile 适用于写入频率较低的场景。
+`fs.createWriteStream(path[, options])`
+
+
+
+#### readFile() 与 createReadStream() 的区别
+- `readFile` 方法异步读取文件的全部内容，并存储在内存中，然后再传递给用户
+- `createReadStream` 使用一个可读的流，逐块读取文件，而不是全部存储在内存中
+
+与 `readFile` 相比，`createReadStream` 使用更少的内存和更快的速度来优化文件读取操作。如果文件相当大，用户不必等待很长时间直到读取整个内容，因为读取时会先向用户发送小块内容。
+```
+
+```js
+const fs = require("fs")
+
+/** 创建读取流 */
+const rs = fs.createReadStream("./package.json", "utf-8")
+
+rs.on("open", () => {
+    console.log("读取的文件已打开")
+})
+    .on("close", () => {
+        console.log("读取流结束")
+    })
+    .on("error", (err) => {})
+    .on("error", (err) => {
+        console.log("ERROR: ", err)
+    })
+    .on("end", () => {
+        console.log("END")
+    })
+    .on("data", (chunk) => {
+        console.log("单批数据流入: ", chunk.length, chunk)
+    })
+```
+
+```js
+const fs = require("fs")
+
+/** 创建写入流 */
+const ws = fs.createWriteStream("./willy.txt", "utf-8")
+
+ws.on("open", () => {
+  console.log("文件打开")
+})
+ws.on("close", () => {
+  console.log("文件写入完成，关闭")
+})
+
+//文件流式写入
+ws.write("helloworld1!", (err) => {
+  if (err) {
+    console.log(err)
+    return
+  }
+  console.log("内容1流入完成")
+})
+ws.write('昨日晴空万里\r\n')
+ws.write('今天依旧晴朗，风和日丽\r\n')
+
+
+ws.end(() => { console.log("文件写入关闭") })
+```
+
+- 要以流的形式写入文件，只需要不断调用`write()`方法，最后以`end()`结束
+
+```js
+const fs = require("fs")
+
+const ws1 = fs.createWriteStream("./temp/test1.js", "utf-8")
+ws1.write("使用Stream写入文本数据...\n")
+ws1.write("END.")
+ws1.end()
+
+const ws2 = fs.createWriteStream("./temp/test2.js")
+ws2.write(Buffer.from("使用Stream写入二进制数据...\n", "utf-8"))
+ws2.write(Buffer.from("END.", "utf-8"))
+ws2.end()
+```
+
+
+
+#### pipe 读写流
+
+```bash
+一个 Readable 流和一个 Writable 流串起来后，所有的数据自动从 Readable 流进入 Writable 流，这种操作叫 pipe。
+通过 pipe() 把一个文件流和另一个文件流串联，这样源文件的所有数据就自动写入到目标文件中(实际是复制文件的过程)
+
+默认情况下，当读取流的数据的`end`事件触发后，将自动关闭写入流。而限制写入流的自动关闭，则需要传入参数：`readable.pipe(writable, { end: false })`
+```
+
+```js
+const fs = require("fs")
+
+const rs = fs.createReadStream("test1.txt")
+const ws = fs.createWriteStream("test2.txt")
+
+rs.on("close", () => {
+    console.log("读取流结束")
+})
+
+rs.pipe(ws, { end: false }) // 限制管理写入流
+```
+
+#### pipe原理
+
+```js
+const fs = require("fs")
+
+//创建读取流
+const rs = fs.createReadStream("video.mp4")
+const ws = fs.createWriteStream("b.mp4")
+
+rs.on("close", () => {
+    ws.end()
+    console.log("读取流结束")
+})
+
+//每一批数据流入完成
+rs.on("data", (chunk) => {
+    console.log("单批数据流入:" + chunk.length)
+    ws.write(chunk, () => {
+        console.log("单批输入流入完成")
+    })
+})
+```
+
+#### 【1. 流式处理大文件】
+
+```js
+const fs = require('fs')
+const csv = require('csv-parser')
+
+const results = []
+
+// 处理 CSV 文件
+fs.createReadStream('./input.csv')
+  .pipe(csv())
+  .on('data', (row) => {
+    // 转换数据类型示例
+    row.price = parseFloat(row.price)
+    results.push(row)
+  })
+  .on('end', async () => {
+    console.log('CSV 处理完成，共', results.length, '条记录')
+    // 可在此处进行数据保存或其他操作
+  })
+```
+
+#### 【2. 流处理大文件-避免内存溢出】
+
+```js
+const { pipeline } = require('stream/promises')
+const { Transform } = require('stream')
+
+// 创建转换流处理 CSV
+const transformer = new Transform({
+  objectMode: true,
+  transform(row, encoding, callback) {
+    // 在此处处理每行数据
+    this.push(processRow(row))
+    callback()
+  },
+})
+
+await pipeline(
+  fs.createReadStream('bigfile.csv'),
+  csv(),
+  transformer,
+  fs.createWriteStream('output.ndjson'),
+)
+```
+
+#### 【3. CSV 转 JSON 并保存】
+
+```js
+const fs = require('fs')
+const csv = require('csv-parser')
+const { Transform } = require('stream')
+
+// 创建转换流处理 CSV
+const transformer = new Transform({
+  objectMode: true,
+  transform: (row, _, done) => {
+    // 数据清洗：去除空值，转换数字
+    const cleaned = {
+      id: parseInt(row.id, 10),
+      name: row.name.trim(),
+      value: row.value ? parseFloat(row.value) : 0,
+    }
+    done(null, JSON.stringify(cleaned) + '\n')
+  },
+})
+
+// 创建处理管道
+fs.createReadStream('input.csv')
+  .pipe(csv())
+  .pipe(transformer)
+  .pipe(fs.createWriteStream('output.ndjson'))
+  .on('finish', () => console.log('转换完成！'))
+```
+
+
+
 ### 文件信息状态 stat
 
 ```bash
-`fs.stat()` 或 `fs.statSync()` 可以获取文件大小，创建时间等信息，它返回一个`Stat`对象，里面包含文件或目录的详细信息。
+`fs.stat()` 可以获取文件大小，创建时间等信息，它返回一个 Stat 对象，里面包含文件或目录的详细信息。
 
 语法：
 	- `fs.stat(path[, options], callback)`
 	- `fs.statSync(path[, options])`
 
-结果只对象结构：
+结果值对象结构：
     - 检测是否是文件 `isFile()`
     - 检测是否是目录 `isDirectory()`
     - 文件体积大小 `size`
@@ -3131,155 +3429,6 @@ fs.stat('./blog', function (err, stat) {
     console.log('modified time: ' + stat.mtime)
   }
 })
-```
-
-### stream 流
-
-```bash
-- stream 是 nodejs 提供的又一个仅在服务区端可用的模块，目的是支持 “流” 这种数据结构。
-- 流的特点是数据有序的，而且必须依次读取，或者依次写入，不能像 Array 那样随机定位。（类似堆栈）
-
-- 所有可以读取数据的流都继承自`stream.Readable`，所有可以写入的流都继承自`stream.Writable`。
-
-- 流也是一个对象，存在三个响应流的事件：
-    1. `data`事件表示流的数据已经读取；
-    2. `end`事件表示这个流已经到末尾，没有数据可以读取了；
-    3. `error`事件表示出错了。
-
-- 注意：`data` 事件可能会有多次，每次传递的 `chunk` 是流的一部分数据。
-
-
-
-#### readFile() 与 createReadStream() 的区别
-- `readFile` 方法异步读取文件的全部内容，并存储在内存中，然后再传递给用户
-- `createReadStream` 使用一个可读的流，逐块读取文件，而不是全部存储在内存中
-
-与 `readFile` 相比，`createReadStream` 使用更少的内存和更快的速度来优化文件读取操作。如果文件相当大，用户不必等待很长时间直到读取整个内容，因为读取时会先向用户发送小块内容。
-```
-
-```js
-const fs = require("fs")
-
-/** 创建读取流 */
-const rs = fs.createReadStream("./package.json", "utf-8")
-
-rs.on("open", () => {
-    console.log("读取的文件已打开")
-})
-    .on("close", () => {
-        console.log("读取流结束")
-    })
-    .on("error", (err) => {})
-    .on("error", (err) => {
-        console.log("ERROR: ", err)
-    })
-    .on("end", () => {
-        console.log("END")
-    })
-    .on("data", (chunk) => {
-        console.log("单批数据流入: ", chunk.length, chunk)
-    })
-```
-
-```js
-const fs = require("fs")
-
-/** 创建写入流 */
-const ws = fs.createWriteStream("./temp/test1.js", "utf-8")
-
-ws.on("open", () => {
-    console.log("文件打开")
-})
-ws.on("close", () => {
-    console.log("文件写入完成，关闭")
-})
-
-//文件流式写入
-ws.write("helloworld1!", (err) => {
-    if (err) {
-        console.log(err)
-        return
-    }
-    console.log("内容1流入完成")
-})
-ws.write("helloworld2!", (err) => {
-    if (err) {
-        console.log(err)
-        return
-    }
-    console.log("内容2流入完成")
-})
-
-ws.end(() => {
-    console.log("文件写入关闭")
-})
-```
-
-- 要以流的形式写入文件，只需要不断调用`write()`方法，最后以`end()`结束:
-
-```js
-const fs = require("fs")
-
-const ws1 = fs.createWriteStream("./temp/test1.js", "utf-8")
-ws1.write("使用Stream写入文本数据...\n")
-ws1.write("END.")
-ws1.end()
-
-const ws2 = fs.createWriteStream("./temp/test2.js")
-ws2.write(Buffer.from("使用Stream写入二进制数据...\n", "utf-8"))
-ws2.write(Buffer.from("END.", "utf-8"))
-ws2.end()
-
-```
-
-
-
-### pipe 读写流
-
-```bash
-## pipe 读写流
-一个 Readable 流和一个 Writable 流串起来后，所有的数据自动从 Readable 流进入 Writable 流，这种操作叫 pipe。
-通过 pipe() 把一个文件流和另一个文件流串联，这样源文件的所有数据就自动写入到目标文件中(实际是复制文件的过程)
-
-默认情况下，当读取流的数据的`end`事件触发后，将自动关闭写入流。而限制写入流的自动关闭，则需要传入参数：`readable.pipe(writable, { end: false })`
-```
-
-```js
-const fs = require("fs")
-
-const rs = fs.createReadStream("test1.txt")
-const ws = fs.createWriteStream("test2.txt")
-
-rs.on("close", () => {
-    console.log("读取流结束")
-})
-
-rs.pipe(ws, { end: false }) // 限制管理写入流
-
-```
-
-#### pipe原理
-
-```js
-const fs = require("fs")
-
-//创建读取流
-const rs = fs.createReadStream("video.mp4")
-const ws = fs.createWriteStream("b.mp4")
-
-rs.on("close", () => {
-    ws.end()
-    console.log("读取流结束")
-})
-
-//每一批数据流入完成
-rs.on("data", (chunk) => {
-    console.log("单批数据流入:" + chunk.length)
-    ws.write(chunk, () => {
-        console.log("单批输入流入完成")
-    })
-})
-
 ```
 
 
@@ -3347,8 +3496,9 @@ fs.rename('./temp/temp2.json', './temp2.json', (err) => {
 ### 文件删除 unlink
 
 ```bash
-文件系统模块有一种方法，允许您删除文件。但是，需要注意的是，它只适用于文件，不适用于目录。
+文件系统模块的 `unlink` 方法允许您删除文件。
 当以文件路径作为参数调用 `unlink` 方法时，它将删除该文件。
+注意：它只适用于文件，不适用于目录。
 ```
 
 ```js
@@ -3450,25 +3600,9 @@ deleteFolderRecursive('temp')
 
 
 
-### 文件中添加内容 appendFile
-
-使用文件系统模块，可以使用`appendFile` 方法向现有文件添加新内容。
-
-```js
-const fs = require('fs')
-
-fs.appendFile(filePath, '\nAll work and no play makes Jack a dull boy!', (err) => {
-  if (err) throw err
-
-  console.log('All work and no play makes Jack a dull boy!')
-})
-```
-
-
-
 ### 检查文件是否存在 exists
 
-`fs.exists` 已经废弃，建议使用 `fs.access`：
+`fs.exists` 已经废弃，建议使用 `fs.access`
 
 ```js
 const { access, constants } = require('fs')
@@ -3572,8 +3706,6 @@ rl.on('close', () => {
 })
 ```
 
-
-
 **打开一个文件并逐行返回内容**
 
 ```js
@@ -3664,7 +3796,7 @@ emptyDirSync(folder)
 ## 资源压缩 zlib
 
 ```bash
-使用gizp：浏览器向服务端发起资源请求时，浏览器通过在 http 头部添加 `Accept-Encoding: gzip, deflate` 来告诉服务端可以用 gzip 或者 defalte 算法来压缩资源。如下载一个js文件，服务端会先对资源进行压缩再返回给浏览器，以此减少资源的大小，加快返回速度。
+使用gizp：浏览器向服务端发起资源请求时，浏览器通过在 http 头部添加 `Accept-Encoding: gzip, deflate` 来告诉服务端可以用 gzip 或者 defaulte 算法来压缩资源。如下载一个js文件，服务端会先对资源进行压缩再返回给浏览器，以此减少资源的大小，加快返回速度。
 
 在 nodejs 中能对资源压缩的模块为 zlib 模块。
 
@@ -3762,7 +3894,6 @@ async function main() {
 
   console.log(sitemap)
 }
-
 main()
 ```
 
@@ -3773,6 +3904,7 @@ main()
 ```bash
 http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传输数据的方法。而 https 模块通过 HTTP TLS/SSL 协议传输数据的方法，该协议是安全的 HTTP 协议。
 	- 各种 Node HTTP 服务框架的底层原理都是离不开该模块。
+
 使用内置的 `http` 模块，可搭建一个 HTTP 服务器。该服务器允许我们监听任意端口并提供一个回调函数在每个传入请求时调用。
 回调将接收两个参数：一个 Request 对象和一个 Response 对象。Request 对象将填充有关请求的有用属性，而 Response 对象将用于向客户端发送响应。
 
@@ -3795,13 +3927,12 @@ http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传�
 
 ### 设置相应主体
 1. response.write(chunk[, encoding][, callback])
-		- chunk：响应主体的内容，可以是string，也可以是buffer。当为string时，encoding参数用来指明编码方式。（默认是utf8）
+		- chunk：响应主体的内容，可以是string，也可以是buffer。当为string时，encoding参数用来指明编码方式（默认是utf8）
 		- encoding：编码方式，默认是 utf8。
 		- callback：当响应体 flushed 时触发的回调。
-
 	注意：
 		- 如果 res.write() 被调用时 res.writeHead() 还没被调用过，则会把 header flush 出去。
-		- res.write() 可以被调用多次。
+		- res.write() 可被调用多次。
 		- 当 res.write(chunk) 第一次被调用时，node 会将 header 信息以及 chunk 发送到客户端。第二次调用 res.write(chunk) ，node 会认为你是要发送 streaming data。
 
 
@@ -3817,6 +3948,45 @@ http 模块提供了一种让 Node.js 通过 HTTP（超文本传输协议）传�
 - close：response.end() 被调用前连接就断开，此时会触发这个事件。
 - finish：响应header、body都已经发送出去（交给操作系统，排队等候传输），但客户端是否实际收到数据为止。（这个事件后 res 上就不会再有其他事件触发）
 ```
+
+
+
+### 报文流- 请求体流式读取
+
+```js
+const http = require('http')
+
+const server = http.createServer((req, res) => {
+  // 监听数据流 chunk
+  let rawData = ''
+  req.on('data', (chunk) => {
+    rawData += chunk
+    console.log(`收到 ${chunk.length} 字节数据`)
+  })
+
+  // 流结束处理
+  req.on('end', () => {
+    try {
+      const data = JSON.parse(rawData)
+      res.end(`收到数据: ${data.message}`)
+    } catch (err) {
+      res.statusCode = 400
+      res.end('非法数据格式')
+    }
+  })
+
+  // 错误处理
+  req.on('error', (err) => {
+    console.error('请求流错误:', err)
+    res.statusCode = 500
+    res.end('服务器内部错误')
+  })
+})
+
+server.listen(3000)
+```
+
+
 
 ### 服务器请求
 
@@ -3877,50 +4047,50 @@ const path = require('node:path')
 
 // 声明 MIME 资源变量
 const mimes: Record<string, string> = {
-    html: 'text/html;charset=utf-8;',
-    css: 'text/css',
-    js: 'text/javascript',
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    gif: 'image/gif',
-    mp4: 'video/mp4',
-    mp3: 'video/mpeg',
-    json: 'application/json',
-    other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
+  html: 'text/html;charset=utf-8;',
+  css: 'text/css',
+  js: 'text/javascript',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  gif: 'image/gif',
+  mp4: 'video/mp4',
+  mp3: 'video/mpeg',
+  json: 'application/json',
+  other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
 }
 
 const server = http.createServer((request, response) => {
-    let { pathname } = new URL(request.url, 'http://127.0.0.1')
-    console.log('pathname==========', pathname)
+  const { pathname } = new URL(request.url, 'http://127.0.0.1')
+  console.log('pathname==========', pathname)
 
-    if (pathname === '/') {
-        const html = fs.readFileSync(__dirname + '/dist/index.html')
-        response.end(html)
+  if (pathname === '/') {
+    const html = fs.readFileSync(__dirname + '/dist/index.html')
+    response.end(html)
+  } else {
+    const resourcePath = __dirname + pathname
+    if (fs.existsSync(resourcePath)) {
+      const resource = fs.readFileSync(resourcePath)
+
+      // 获取文件的后缀名
+      const ext = path.extname(pathname).slice(1)
+
+      // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如，text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
+      // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
+
+      // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
+      response.setHeader('Content-Type', mimes[ext] || mimes.other)
+
+      response.end(resource)
     } else {
-        const resourcePath = __dirname + pathname
-        if (fs.existsSync(resourcePath)) {
-            const resource = fs.readFileSync(resourcePath)
-
-            // 获取文件的后缀名
-            const ext = path.extname(pathname).slice(1)
-
-            // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如，text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
-            // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
-
-            // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
-            response.setHeader('Content-Type', mimes[ext] || mimes['other'])
-
-            response.end(resource)
-        } else {
-            // response.statusCode = 404
-            // response.setHeader('Content-Type', 'text/html')
-            // response.end('<h1>404 Not Found</h1>')
-        }
+      // response.statusCode = 404
+      // response.setHeader('Content-Type', 'text/html')
+      // response.end('<h1>404 Not Found</h1>')
     }
+  }
 })
 
 server.listen(80, () => {
-    console.log('listener 80....')
+  console.log('listener 80....')
 })
 ```
 
@@ -3935,90 +4105,86 @@ const path = require('node:path')
 
 /** 声明 MIME 资源变量 */
 const mimes: Record<string, string> = {
-    html: 'text/html;charset=utf-8;',
-    css: 'text/css',
-    js: 'text/javascript',
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    gif: 'image/gif',
-    mp4: 'video/mp4',
-    mp3: 'video/mpeg',
-    json: 'application/json',
-    other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
+  html: 'text/html;charset=utf-8;',
+  css: 'text/css',
+  js: 'text/javascript',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  gif: 'image/gif',
+  mp4: 'video/mp4',
+  mp3: 'video/mpeg',
+  json: 'application/json',
+  other: 'application/octet-stream', // 其他文件类型(此会让浏览器对资源进行下载)
 }
 
 /** 错误处理 */
 const errorResponse = (response, code) => {
-    switch (code) {
-        case 404:
-            response.statusCode = 404
-            response.end('<h1>404 Not Found</h1>')
-            break
-        case 403:
-            response.statusCode = 403
-            response.end('<h1>403 Forbidden</h1>')
-            break
-        case 405:
-            response.statusCode = 405
-            response.end('<h1>405 Method Not Allowed</h1>')
-            break
-        default:
-            response.statusCode = 500
-            response.end('<h1>500 Internet Server Error</h1>')
-    }
-
-    return response
+  switch (code) {
+    case 404:
+      response.statusCode = 404
+      response.end('<h1>404 Not Found</h1>')
+      break
+    case 403:
+      response.statusCode = 403
+      response.end('<h1>403 Forbidden</h1>')
+      break
+    case 405:
+      response.statusCode = 405
+      response.end('<h1>405 Method Not Allowed</h1>')
+      break
+    default:
+      response.statusCode = 500
+      response.end('<h1>500 Internet Server Error</h1>')
+  }
+  return response
 }
 
 const server = http.createServer((request, response) => {
-    if (request.method !== 'GET') {
-        response = errorResponse(response, 405)
-        return;
-    }
+  if (request.method !== 'GET') {
+    response = errorResponse(response, 405)
+    return
+  }
 
-    let { pathname } = new URL(request.url, 'http://127.0.0.1')
-    console.log('pathname==========', pathname)
+  const { pathname } = new URL(request.url, 'http://127.0.0.1')
+  console.log('pathname==========', pathname)
 
-    if (pathname === '/') {
-        const html = fs.readFileSync(__dirname + '/dist/index.html')
-        response.end(html)
-    } else {
-        const resourcePath = __dirname + pathname
-        fs.readFile(resourcePath, (err, resourceData) => {
-            if (err) {
-                console.log('err=====', err)
+  if (pathname === '/') {
+    const html = fs.readFileSync(__dirname + '/dist/index.html')
+    response.end(html)
+  } else {
+    const resourcePath = __dirname + pathname
+    fs.readFile(resourcePath, (err, resourceData) => {
+      if (err) {
+        console.log('err=====', err)
+        response.setHeader('Content-Type', mimes.html)
+        switch (err.code) {
+          case 'ENOENT':
+            response = errorResponse(response, 404)
+            break
+          case 'EPERM':
+            response = errorResponse(response, 403)
+            break
+          default:
+            response = errorResponse(response, err.code)
+        }
+        return
+      }
 
-                response.setHeader('Content-Type', mimes['html'])
-                switch(err.code) {
-                    case 'ENOENT':
-                        response = errorResponse(response, 404)
-                        break;
-                    case 'EPERM':
-                        response = errorResponse(response, 403)
-                        break;
-                    default:
-                        response = errorResponse(response, err.code)
-                }
+      // 获取文件的后缀名
+      const ext = path.extname(pathname).slice(1)
 
-                return
-            }
+      // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如 text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
+      // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
 
-            // 获取文件的后缀名
-            const ext = path.extname(pathname).slice(1)
-
-            // 兼容在模块脚本需要在服务器响应中设置正确的 MIME 类型（例如，text/javascript 或 application/javascript），否则浏览器将无法正确解析脚本并报告这个错误
-            // if (ext === 'js') response.setHeader('Content-Type', 'application/javascript')
-
-            // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
-            response.setHeader('Content-Type', mimes[ext] || mimes['other'])
-
-            response.end(resourceData)
-        })
-    }
+      // 设置文件的 MIME 类型,如果文件的后缀没有匹配到,则设置为 'application/octet-stream' 类型
+      response.setHeader('Content-Type', mimes[ext] || mimes.other)
+      response.end(resourceData)
+    })
+  }
 })
 
 server.listen(80, () => {
-    console.log('listener 80....')
+  console.log('listener 80....')
 })
 ```
 
@@ -4027,8 +4193,12 @@ server.listen(80, () => {
 ## 网络服务 https
 
 ```bash
-## 网络服务 https
+通过 SSL/TLS 协议加密整个通信通道，可防止数据在传输中被窃取或篡改。
 https 与 http 模块用法相似。
+
+证书来源：
+	1. 自签名证书（测试环境）：通过 OpenSSL 生成
+	2. 受信任 CA 证书（生产环境）：如 Let’s Encrypt
 ```
 
 ### 生成证书
@@ -4062,7 +4232,6 @@ openssl x509 \
 
 5. 本地测试（因为本地没有域名，所以先配置本地host）
 127.0.0.1 www.willy.com
-
 ````
 
 ```js
@@ -4071,16 +4240,19 @@ const https = require("https")
 const fs = require("fs")
 
 const options = {
-    key: fs.readFileSync("./cert/chyingp-key.pem"), // 私钥
-    cert: fs.readFileSync("./cert/chyingp-cert.pem"), // 证书
+  key: fs.readFileSync("./cert/chyingp-key.pem"), // 私钥
+  cert: fs.readFileSync("./cert/chyingp-cert.pem"), // 证书
 }
 
 const server = https.createServer(options, (req, res) => {
-    res.end("这是来自HTTPS服务器的返回")
+  res.end("这是来自HTTPS服务器的返回")
 })
+server.listen(443)
 
-server.listen(3000)
-
+// 使用 https.request() 安全访问外部 API
+https.request('https://api.example.com', (res) => {
+  res.on('data', (d) => process.stdout.write(d))
+}).end()
 ```
 
 
@@ -4136,344 +4308,15 @@ client.on('end', () => {
 
 
 
-## 数据加密 crypto
+## 事件触发器 events
 
 ```bash
-crypto 模块的目的是为了提供通用的加密和哈希算法。
-```
-
-```js
-const cryptos = require("crypto")
-
-const algorithm = "aes-256-cbc" // 加密算法
-const key = cryptos.randomBytes(32) // 根据加密算法生成一个32字节的密钥
-const iv = cryptos.randomBytes(16) // 生成长度为 16 字节的随机数作为 iv
-
-const data = "hello world" // 要加密的数据
-
-/**
- * 创建加密器
- */
-const cipher = cryptos.createCipheriv(algorithm, key, iv)
-
-let encrypted = cipher.update(data, "utf8", "hex")
-encrypted += cipher.final("hex")
-console.log("encrypted:", encrypted) // encrypted: e221f586cf104b2d0d5d58166a8cfe69
-
-/**
- * 创建解密器
- */
-const decipher = cryptos.createDecipheriv(algorithm, key, iv)
-
-let decrypted = decipher.update(encrypted, "hex", "utf8")
-decrypted += decipher.final("utf8")
-console.log("decrypted:", decrypted) // decrypted: hello world
-
-```
-
-### 计算摘要 hash
-
-```bash
-在 crypto 模块中，Hash 是一种用于计算数据摘要的算法，它可以将任意长度的数据映射为固定长度的哈希值。
-哈希值通常用于验证数据完整性、数据签名和密码存储等场景。
-
-注意：Hash 对象是单向的，不能从哈希值中恢复原始数据。因此 Hash 算法通常用于验证数据完整性和密码存储等场景。
-在密码场景中，通常将密码的哈希值存储在数据库中，而不是存储密码本身，以提高安全性。当用户登录时，将输入的密码进行哈希计算，然后将计算得到的哈希值与数据库中存储的哈希值进行比较，以验证密码是否正确。
-
-在 crypto 模块中，可以使用 `const hash = crypto.createHash(algorithm)` 方法创建一个 Hash 对象。
-`algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
-可以使用 `crypto.getHashes()` 方法获取支持的哈希算法列表。
-
-
-### hash 对象实例方法
-1. 计算摘要：hash.digest([encoding])
-		encoding 可以是 hex、latin1 或者 base64。
-	如果声明了 encoding，那么返回字符串。否则，返回Buffer实例。
-	注意：调用 hash.digest() 后，hash 对象就作废了，再次调用就会出错。
-
-
-2. hash.update(data[, input_encoding])：
-		input_encoding 可以是 utf8、ascii 或者 latin1。
-	如果 data 是字符串，且没有指定 input_encoding，则默认是utf8。
-	注意：hash.update() 方法可以调用多次。
-```
-
-```js
-const cryptos = require("crypto")
-
-// 创建了一个 SHA-256 的 Hash 对象
-const algorithm = "sha256"
-const hash = cryptos.createHash(algorithm)
-
-// 使用 update() 方法将 data 字符串写入 Hash 对象中
-const data = "Hi, willys"
-hash.update(data)
-
-// 使用 digest() 方法获取哈希值，以十六进制字符串的形式返回
-const digest = hash.digest("hex")
-
-console.log(digest) // 5412b888d0f63cc2269dab76826196fb5f37cd4253f081ff0fa9def0c3e4f1b4
-
-```
-
-### 消息认证 HMAC
-
-```bash
-## 消息认证 HMAC
-HMAC（Hash-base Message Authentication Code）是一种基于哈希函数和密钥的消息认证算法，它可以用于验证消息的完整性和真实性。
-
-在 crypto 模块中，可以使用 `crypto.createHmac(algorithm, key)` 方法创建一个 HMAC 对象。
-	`algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
-	key 参数指定用于计算 HMAC 的密钥。
-	可以使用 `crypto.getHashes()` 方法获取支持的哈希算法列表。
-
-```
-
-```js
-const cryptos = require("crypto")
-
-// 创建了一个 SHA-256 的 Hash 对象
-const algorithm = "sha256"
-const key = "willy-key"
-const hmac = cryptos.createHmac(algorithm, key)
-
-// 使用 update() 方法将 data 字符串写入 Hash 对象中
-const data = "Hi, willys"
-hmac.update(data)
-
-// 使用 digest() 方法获取哈希值，以十六进制字符串的形式返回
-const digest = hmac.digest("hex")
-
-console.log(digest) // ff21d18da8f432e60025a04db1eccdc39b1574edb5e5ae49d3ad8d1509335cfe
-
-```
-
-### 散列函数 md5
-
-```bash
-## 散列函数 md5
-MD5（Message-Digest Algorithm）是计算机安全领域广泛使用的散列函数（又称哈希算法、摘要算法），主要用来确保消息的完整和一致性。
-
-
-### 应用场景：
-1. 文件完整性校验：如从网上下载一个软件，一般网站都会将软件的 md5 值附在网页上，用户下载完软件后，可对下载到本地的软件进行 md5 运算，然后跟网站上的 md5 值进行对比，确保下载的软件是完整的、正确的。
-2. 密码保护：将 md5 加密后的密码保存到数据库，而不是保存明文密码，避免拖库等事件发生后导致明文密码外泄。
-3. 防篡改：比如数字证书的防篡改，就用到摘要算法（还需要结合数字签名等手段）
-
-
-### 特点：
-1. 运算速度快
-2. 输出长度固定：输入长度不固定，输出长度固定为 128 位。
-3. 运算不可逆：已知运算结果的情况下，无法通过逆运算得到原始字符串。
-4. 高度离散：输入的微小变化，可导致运算结果差异巨大。
-5. 弱碰撞性：不同输入的散列值可能相同。
-
-
-### 单纯 md5 加密的缺陷
-因为相同的明文密码 md5 值也是相同的。即当攻击者知道算法是 md5 且数据库里存储的密码值时，理论上可以猜测出用户的明文密码。
-
-事实上，彩虹表也是这么暴力破解的：事先将常见明文密码的 md5 值运算好存储起来，然后跟网站数据库里存储的密码进行匹配就能快速找到用户的明文密码。（此时可以使用 "密码加盐" 来进一步提升安全性）
-
-
-
-### 密码加盐
-密码加盐的原理：在密码特定位置插入特定字符串后，再对修改后的字符串进行 md5 运算加密。
-例如同样的密码，当 "盐值" 不一样时 md5 值的差异非常大。通过密码加密，可以防止最初级的暴力破解。如果攻击者事先不知道 "盐值"，破解的难度就会非常大。
-```
-
-```js
-const cryptos = require("crypto")
-
-const cryptoPwd = (password) => {
-    const md5 = cryptos.createHash("md5")
-    return md5.update(password).digest("hex")
-}
-
-const password = "123456"
-// 服务器端加密
-console.log(cryptoPwd(password)) // e10adc3949ba59abbe56e057f20f883e
-
-// 他人恶意暴力破解
-console.log(cryptoPwd("123456")) // e10adc3949ba59abbe56e057f20f883e
-
-```
-
-### 盐值加密
-
-```js
-const cryptos = require("crypto")
-
-/** 密码盐值加密 */
-const cryptoPwd = (password, savedSalt = "") => {
-    // 生成随机的盐值
-    const salt = cryptos.randomBytes(16).toString("hex")
-
-    // 对密码进行哈希处理（如果为用户注册时则使用随机生成的盐值，如果用户登录时则拿用户注册的盐值进行校验）
-    const hash = cryptos
-        .pbkdf2Sync(password, savedSalt || salt, 1000, 64, "sha512")
-        .toString("hex")
-
-    // 将盐值和哈希值保存到数据库中
-    const savedPassword = {
-        salt,
-        hash,
-    }
-
-    return savedPassword
-}
-
-// 当用户注册时时，获取保存的盐值和哈希值
-const password = "willy" // 假设用户输入的密码为 "password"
-const savedPassword = cryptoPwd(password)
-const savedSalt = savedPassword.salt
-const savedHash = savedPassword.hash
-
-// 对用户输入的密码进行哈希处理，并与保存的哈希值进行比较
-const loginPassword = cryptoPwd("willy", savedSalt)
-const loginHash = loginPassword.hash
-
-if (loginHash === savedHash) {
-    console.log("密码正确", loginHash)
-} else {
-    console.log("密码错误", loginHash, savedHash)
-}
-
-```
-
-
-
-## 缓存区 Buffer类
-
-```bash
-#### Buffer 的作用：
-1. 存储二进制数据：可存储二进制数据，包括字节、位、16进制、ASCII等。
-2. 处理网络流数据：可用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
-3. 处理文件系统操作：可用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
-4. 实现加密算法：可用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
-5. 处理数据传输：可用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
-6. 支持转换编码：可将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
-
-
-
-#### 概念
-1. 二进制代码：
-因为计算机处理器由晶体管组成，靠开（0）和关（1）信号激活。为了让计算机能理解、处理和存储数据，必须将数据转换为二进制代码。
-发送到计算机的每一条数据在处理和输出结果之前，首先由微处理器转换成二进制，因此需要区分不同的数据类型。而计算机通过对不同的数据类型进行不同的编码，以区分不同类型的数据。
-
-2. 缓冲区：
-二进制流是大量二进制数据的集合，由于二进制流庞大，因而不会被一起发送，需要在发送之前分解成更小部分再进行发送。
-当数据处理单元不能接收更多数据流时，多余的数据将存储在缓冲区中，直到数据处理单元准备好接收更多数据。
-
-3. Node.js 中的缓冲区类
-Node.js 中的 Buffer 类用于处理二进制数据，它是 Node.js 在处理 TCP 流、文件系统操作、加密算法等方面的核心模块之一。
-	- 读写文件系统（文件存储在二进制文件中）
-	- 处理 TCP 流，它们在以小块形式发送二进制数据之前保护与接收器的连接。发送到接收器的数据流需要存储在缓冲区，直到接收器准备好接收更多数据块进行处理为止。
-注意：
-	- Buffer 类在 V8 引擎之外处理二进制数据分配存储。
-	- Buffer 对象在创建时需指定其大小（以字节为单位），且创建后无法改变。在使用Buffer时需要注意内存泄漏、安全及避免缓冲区溢出问题。
-	- Buffer 类可以方便地进行二进制数据的拼接、切片等操作，提高对二进制数据的处理效率。
-```
-
-#### 属性和方法
-
-```bash
-- `Buffer.alloc()` 创建指定长度的缓冲区对象。它以字节为单位分配缓冲区的大小。
-- `Buffer.byteLength()` 返回指定对象中的字节数
-- `Buffer.compare()` 比较两个缓冲区对象
-- `Buffer.concat()` 将缓冲区对象数组连接到一个缓冲区对象中
-- `Buffer.fill()` 用指定的值填充缓冲区对象
-- `Buffer.from()` 从对象（字符串/数组/缓冲区）创建缓冲区对象
-- `Buffer.isEncoding()` 检查缓冲区对象是否支持指定的编码
-
-- `buf.entries()` 返回缓冲区对象的 index、byte 对的迭代器
-- `buf.includes()` 检查缓冲区对象是否包含指定的值。如果存在匹配项，则返回`true`，否则返回 `false`
-- `buf.slice()` 将一个缓冲区对象分割成一个新的缓冲区对象，从指定的位置开始和结束。
-- `buf.readInt8()` 从缓冲区对象读取 8 位整数
-- `buf.writeFloatBE()` 使用 big-endian 将指定的字节写入缓冲区对象。字节应为 32 位浮点。
-- `buf.length` 返回缓冲区对象的长度，以字节为单位
-
-
-
-#### 创建 Buffer
-在 Node V6.0 之前，要创建新的 Buffer，只需要使用 `new` 关键字调用构造函数：
-		`const newBuffer = new Buffer('new String')`
-在 Node V6.0 之后，`new Buffer()` 构造函数已被弃用，并被单独的 `Buffer.from()`、`Buffer.alloc()` 和 `Buffer.allocUnsafe()` 方法替换。要创建新的 Buffer 实例：
-		`const newBuffer = Buffer.from('new String')`
-
-const buf = Buffer.alloc(15) // 创建长度为15的空Buffer
-buf // <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
-buf.length // 15
-
-
-
-#### 类方法：Buffer.from(buffer)
-- Buffer.from()方法用于创建包含指定字符串，数组或缓冲区的新缓冲区。
-- `Buffer.from( object, encoding)`
-    - object：此参数可以包含字符串，缓冲区，数组或arrayBuffer。
-    - encoding：如果对象是字符串，则用于指定其编码。它是可选参数。其默认值为utf8。
-
-
-
-#### buffer 与字符串的转换
-- 转换为buffer：`Buffer.from()`
-- 转换为字符串：`Buffer.toString()`，默认情况下，它会转换为 utf-8 格式字符串。
-注意：一个 buffer 位只能存储最高二进制值为256的数值，超出256的数值会在转换为二进制后进行高位舍弃。
-
-const buf1 = Buffer.from('hi, willy')
-const buf2 = Buffer.from([105, 108, 111, 118, 101, 121, 111, 117])
-const str1 = buf2.toString() // iloveyou
-console.log(buf1, buf2, str1)
-```
-
-#### Buffer 转换为 JSON 和 `utf-8` 字符串
-
-```js
-const bufferOne = Buffer.from('iloveyou')
-console.log(bufferOne) // // <Buffer 69 6c 6f 76 65 79 6f 75>
-
-
-/** 将 Buffer 转换为 JSON */
-const json = JSON.stringify(bufferOne, null, 2)
-console.log(json)
-/**
- {
-  "type": "Buffer",
-  "data": [
-    105,
-    108,
-    111,
-    118,
-    101,
-    121,
-    111,
-    117
-  ]
-}
- */
-
-
-/** 将 JSON 转换为 Buffer */
-const bufferOriginal = Buffer.from(JSON.parse(json).data)
-console.log(bufferOriginal) // <Buffer 69 6c 6f 76 65 79 6f 75>
-
-
-/** 将 Buffer 转换为 UTF-8 字符串 */
-console.log(bufferOriginal.toString('utf8')) // iloveyou
-```
-
-
-
-## 事件机制模块 events
-
-```bash
-## 事件机制模块 events
-nodejs 存在许多内置的事件，可通过引入 events 模块并通过实例化 EventEmitter 类来绑定和监听事件。
+nodejs 存在许多内置的事件，可通过引入 events 模块并通过实例化 EventEmitter 类来绑定和监听事件
 
 
 ### EventEmmiter
 EventEmitter 的每个事件由一个事件名和若干个参数组成，事件名是一个字符串，而对于每个事件，EventEmitter 支持若干个事件监听器。
-当事件触发时，注册到这个事件的事件监听器被依次调用，事件参数作为回调函数参数传递。
-
+当事件触发时，注册到这个事件的事件监听器被依次调用，事件参数作为回调函数参数传递
 ```
 
 ```js
@@ -4497,6 +4340,843 @@ events.emit("someEvent", "arg1 参数", "arg2 参数")
  * listener1 arg1 参数 arg2 参数
     listener2 arg1 参数 arg2 参数
  */
+```
+
+
+
+## 缓存区 Buffer类
+
+```bash
+#### 概念
+1. 二进制代码：
+因为计算机处理器由晶体管组成，靠开（0）和关（1）信号激活。为了让计算机能理解、处理和存储数据，必须将数据转换为二进制代码。
+发送到计算机的每一条数据在处理和输出结果之前，首先由微处理器转换成二进制，因此需要区分不同的数据类型。而计算机通过对不同的数据类型进行不同的编码，以区分不同类型的数据。
+
+2. 缓冲区：
+二进制流是大量二进制数据的集合，由于二进制流庞大，因而不会被一起发送，需要在发送之前分解成更小部分再进行发送。
+当数据处理单元不能接收更多数据流时，多余的数据将存储在缓冲区中，直到数据处理单元准备好接收更多数据。
+
+3. NodeJS 中的缓冲区类
+NodeJS 中的 Buffer 类用于处理二进制数据，它是 NodeJS 在处理TCP流、文件系统操作、加密算法等方面的核心模块之一。
+	- 读写文件系统（文件存储在二进制文件中）
+	- 处理 TCP 流，它们在以小块形式发送二进制数据之前保护与接收器的连接。发送到接收器的数据流需要存储在缓冲区，直到接收器准备好接收更多数据块进行处理为止。
+注意：
+	- Buffer 是 V8 堆外分配的一段固定长度的连续内存，用于直接操作二进制数据流。与普通数组不同，Buffer 内存分配不经过 V8 引擎，避免了垃圾回收的延迟。
+	- Buffer 对象在创建时需指定其大小(以字节为单位)，且创建后无法改变。在使用Buffer时需要注意内存泄漏、安全及避免缓冲区溢出问题。
+	- Buffer 类可以方便地进行二进制数据的拼接、切片等操作，提高对二进制数据的处理效率。
+	
+
+
+#### Buffer 的作用
+1. 存储二进制数据：可存储二进制数据，包括字节、位、16进制、ASCII等。
+2. 处理网络流数据：可用于处理网络流数据，如socket接收到的数据，可以将其转换为Buffer对象进行处理。
+3. 处理文件系统操作：可用于读取和写入文件系统中的二进制数据，如读取图片、音频、视频等文件。
+4. 实现加密算法：可用于实现加密算法，如MD5、SHA1等，以及对称加密算法、非对称加密算法等。
+5. 处理数据传输：可用于处理数据传输的编码和解码，如Base64编码、URL编码、JSON编码等。
+6. 支持转换编码：可将不同编码的数据进行转换，如将UTF-8编码的数据转换为GBK编码的数据。
+```
+
+#### 属性和方法
+
+```bash
+- `Buffer.alloc()` 创建指定长度的缓冲区对象。以字节为单位分配缓冲区的大小
+- `Buffer.from()` 从对象（字符串/数组/缓冲区）创建缓冲区对象
+- `Buffer.compare()` 比较两个缓冲区对象
+- `Buffer.concat()` 将缓冲区对象数组连接到一个缓冲区对象中
+- `Buffer.fill()` 用指定的值填充缓冲区对象
+- `Buffer.byteLength()` 返回指定对象中的字节数
+- `Buffer.isEncoding()` 检查缓冲区对象是否支持指定的编码
+
+- `buf.entries()` 返回缓冲区对象的 index、byte 对的迭代器
+- `buf.includes()` 检查缓冲区对象是否包含指定的值。如果存在匹配项，则返回`true`，否则返回 `false`
+- `buf.slice()` 将一个缓冲区对象分割成一个新的缓冲区对象，从指定的位置开始和结束。
+- `buf.readInt8()` 从缓冲区对象读取 8 位整数
+- `buf.writeFloatBE()` 使用 big-endian 将指定的字节写入缓冲区对象。字节应为 32 位浮点。
+- `buf.length` 返回缓冲区对象的长度，以字节为单位
+
+
+
+#### 创建 Buffer
+在 Node V6.0 前，要创建新的 Buffer，只需要使用 `new` 关键字调用构造函数：
+		`const newBuffer = new Buffer('new String')`
+在 Node V6.0 后，`new Buffer()`构造函数已被弃用，并被 `Buffer.from()、Buffer.alloc()、Buffer.allocUnsafe()` 方法替换
+
+类方法：Buffer.from(buffer)
+  - Buffer.from()方法用于创建包含指定字符串，数组或缓冲区的新缓冲区
+  - `Buffer.from( object, encoding)`
+      - object：此参数可以包含字符串，缓冲区，数组或arrayBuffer。
+      - encoding：如果对象是字符串，则用于指定其编码。它是可选参数。其默认值为utf8
+  - 创建新的 Buffer 实例：`const newBuffer = Buffer.from('new String')`
+
+
+#### buffer 与字符串的转换
+- 转换为buffer：`Buffer.from()`
+- 转换为字符串：`Buffer.toString()`，默认情况下，它会转换为 utf-8 格式字符串
+注意：一个 buffer 位只能存储最高二进制值为256的数值，超出256的数值会在转换为二进制后进行高位舍弃
+
+const buf1 = Buffer.from('hi, willy')
+const buf2 = Buffer.from([105, 108, 111, 118, 101, 121, 111, 117])
+const str1 = buf2.toString() // iloveyou
+console.log(buf1, buf2, str1)
+```
+
+#### Buffer 的创建
+
+```js
+// 创建长度为15的空Buffer（填充 0）
+const buf1 = Buffer.alloc(15) // <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
+buf1.length // 15
+
+// 创建并初始化 Buffer（填充指定值）
+const buf2 = Buffer.alloc(10, 0x41) // 填充 ASCII 'A'
+
+// 从数组创建
+const buf3 = Buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f]) // 'hello'
+
+// 从字符串创建（自动编码）
+const buf4 = Buffer.from('Hello Node.js', 'utf8')
+```
+
+
+
+#### Buffer 转换为 JSON 和 `utf-8` 字符串
+
+```js
+const bufferOne = Buffer.from('iloveyou')
+console.log(bufferOne) // // <Buffer 69 6c 6f 76 65 79 6f 75>
+
+
+/** 将 Buffer 转换为 JSON */
+const json = JSON.stringify(bufferOne, null, 2)
+console.log(json)
+/**
+{
+  "type": "Buffer",
+  "data": [105, 108, 111, 118, 101, 121, 111, 117],
+}
+ */
+
+
+/** 将 JSON 转换为 Buffer */
+const bufferOriginal = Buffer.from(JSON.parse(json).data)
+console.log(bufferOriginal) // <Buffer 69 6c 6f 76 65 79 6f 75>
+
+
+/** 将 Buffer 转换为 UTF-8 字符串 */
+console.log(bufferOriginal.toString('utf8')) // iloveyou
+```
+
+#### 文件读写
+
+```js
+const fs = require('fs')
+
+// 读取图片文件并转换为 Base64
+const imageBuffer = fs.readFileSync('logo.png')
+const base64Image = imageBuffer.toString('base64')
+
+// 写入二进制数据
+const data = Buffer.from('0101', 'hex')
+fs.writeFileSync('binary.dat', data)
+```
+
+#### 网络通信
+
+```js
+const net = require('net')
+
+const server = net.createServer((socket) => {
+  socket.on('data', (buffer) => {
+    // 解析二进制协议头（如前4字节为长度）
+    const length = buffer.readUInt32BE(0)
+    const payload = buffer.slice(4)
+    console.log('Received:', payload.toString())
+  })
+})
+server.listen(3000)
+```
+
+#### 加密与哈希
+
+```js
+const crypto = require('crypto')
+
+// 未指定编码，可能按 UTF-8 处理，但若环境默认编码不同（如 latin1）会出错
+const input = Buffer.from('secret data')
+
+// 计算 SHA-256 哈希
+const hash = crypto.createHash('sha256').update(input).digest('hex')
+
+// AES 加密
+const key = Buffer.from('32bytes-long-secret-key-1234567890ab')
+const iv = crypto.randomBytes(16) // 初始化向量
+const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+const encrypted = Buffer.concat([iv, cipher.update(input), cipher.final()]) 
+```
+
+
+
+## 数据加密 crypto
+
+```bash
+crypto 模块提供了通用的加密和哈希算法。
+
+
+### 加密类别
+1. 对称加密技术：加密系统的加密密钥和解密密钥相同，或者虽然不同，但可以轻松从一个密钥推导出另外的一个密钥。
+		- 破解方案1：明文+密钥=密文，这个公式只要知道任何两个，就可以推导出第三个
+		- 破解方案2：在已知明文和对应密文的情况下，通过穷举和暴力破解可以破解 DES。
+适用场景：
+    - 数据传输加密（如 https 内容加密）
+    - 本地存储加密（用户敏感信息存储）
+    - 文件/数据库加密（静态数据保护）
+
+2. 非对称加密技术：与对称加密技术相反
+
+
+
+#### 加密的本质是二进制操作（Nodejs 加密为什么需要使用Buffer）
+加密算法（如AES、SHA-256）的底层实现基于字节级运算(二进制数据)，而非字节编码(字符串)，所以必须要将输入先转换成二进制
+	- 哈希函数：将输入视为二进制流，逐字节计算摘要
+	- 对称加密：对字节进行异或、置换等数学操作
+
+任何涉及加密、哈希、数字签名的操作，都应优先使用 Buffer 而非字符串。直接操作字符串会导致以下问题：
+	- 二进制完整性：加密要求输入数据完全精确，字符串隐式转换会破坏数据完整性
+	- 编码一致性：字符串默认使用 UTF-8/UTF-16 编码，不同编码的字符表示不同
+		- utf8：将字符串 ↔ 字节互相转换
+		- hex/base64：将字节 ↔ 文本互相转换，便于传输或存储
+
+加密过程：字符串 → utf8 编码为字节 → 加密 → 字节 → hex/base64 编码为文本
+    "hello world" (字符串) 
+    → utf8编码 → 二进制数据 (字节) 
+    → 加密 → 加密后的二进制 (字节) 
+    → hex编码 → "e221f586cf104b2d0d5d58166a8cfe69" (可传输的字符串)
+
+解密过程：文本 → hex/base64 解码为字节 → 解密 → 字节 → utf8 解码为字符串
+    "e221f586cf104b2d0d5d58166a8cfe69" (hex字符串) 
+    → hex解码 → 加密后的二进制 (字节) 
+    → 解密 → 原始二进制 (字节) 
+    → utf8解码 → "hello world" (字符串)
+
+示例1：
+    const str = '加密'
+    const bufUtf8 = Buffer.from(str, 'utf8') // <Buffer e5 8a a0 e5 af 86>
+    const bufHex = Buffer.from(str, 'hex')   // 若 str 是十六进制字符串则正确
+
+示例2：
+    let encrypted = cipher.update(data, "utf8", "base64") // 加密时使用 base64
+    encrypted += cipher.final("base64")
+
+    let decrypted = decipher.update(encrypted, "base64", "utf8") // 解密时使用 base64
+    decrypted += decipher.final("utf8")
+
+
+
+#### 主流的加密方式
+- aes：高级加密标准（Advanced Encryption Standard），对称加密
+- des：数据加密标准（Data Encryption Standard）
+- md5：MD5信息摘要算法（Message-Digest Algorithm）
+- sha-256：安全哈希算法256位
+- dsa：数字签名算法（Digital Signature Algorithm）
+- ecdsa：椭圆曲线数字签名算法
+- elliptic：椭圆曲线密码体制
+- hmac：密钥相关的哈希运算消息认证码（Hash-based Message Authentication Code）
+- rand：随机数生成
+- rc4：Ron Rivest设计的流密码
+- rsa：一种非对称加密算法（RSA 是三位创造者的首字母缩写）
+- cipher：密码
+
+
+场景使用方案
+- 大数据加密（文件/数据库）：对称加密（AES-256-GCM）
+- 安全通信初始握手：非对称加密（ECDH/RSA）交换对称密钥
+- 用户身份认证：非对称签名算法（Ed25519）
+- 移动端低性能设备：对称加密（ChaCha20-Poly1305） + 非对称加密（X25519）
+
+安全防御
+- 密钥泄漏：定期轮换密钥，使用 HSM/KMS 硬件保护
+- 中间人攻击：证书校验（TLS）、数字签名验证
+- 随机数质量：使用 crypto.randomBytes() 而非 Math.random()
+- 算法过时：禁用 DES/RC4，优先选择 AES-256 和 ECC
+```
+
+|    **特性**    |       **对称加密**       |              **非对称加密**              |
+| :------------: | :----------------------: | :--------------------------------------: |
+|  **密钥数量**  | 单一密钥（加密解密共用） |          密钥对（公钥 + 私钥）           |
+|  **算法速度**  |    快（适合大数据量）    |        慢（适合小数据或密钥交换）        |
+|  **典型算法**  |    AES-256、ChaCha20     |     RSA、ECC（椭圆曲线加密）、EdDSA      |
+| **安全性基础** |        密钥保密性        | 数学难题（如大数分解、椭圆曲线离散对数） |
+|  **适用场景**  |  数据加密（传输/存储）   |       密钥交换、数字签名、身份认证       |
+
+### 主流加密方式详解
+
+```bash
+1. AES（高级加密标准）
+特点：
+  - 对称加密算法，加密和解密使用相同的密钥。密钥长度可以是128位、192位或256位，安全性高。
+  - 基于字节替换、行移位、列混合和轮密钥加等操作，通过多轮加密来混淆和扩散明文信息。如 AES-128 的加密轮数是10轮，能有效抵抗各种密码分析攻击。
+应用场景：
+  - 广泛用于网络通信加密，如SSL/TLS协议中部分加密环节。当用户访问安全网站（https开头）时，数据传输可能采用AES加密，防止数据被窃取或篡改。
+  - 用于文件加密和数据库加密，如操作系统中的加密文件系统，企业存储敏感数据（用户密码、财务数据等）也常用AES加密。
+
+
+2. DES（数据加密标准）
+特点：
+  - 对称加密算法，密钥长度64位，其中有效位56位。采用Feistel网络结构，将明文分组后进行16轮加密。
+  - 由于密钥长度较短，随着计算能力提升，安全性逐渐降低。
+应用场景：
+	- 早期广泛应用在金融领域（银行系统间资金转账、账户余额查询等数据传输）和企业内部（保护商业文件），现因安全性问题逐渐被替代，但在一些兼容旧系统场景下仍可能出现。
+
+
+3. MD5（MD5信息摘要算法）
+特点：
+  - 产生128位的消息摘要，主要用于验证数据完整性。它是一种哈希函数，将任意长度的数据转换为固定长度的哈希值。
+  - 算法速度快，但安全性有缺陷，容易出现碰撞（不同的数据产生相同的哈希值）。
+应用场景：
+	- 曾经用于密码存储，但由于安全性差，现在不建议用于密码验证。可用于简单的数据完整性检查，如文件下载时检查文件是否被篡改。
+
+
+4. SHA-256（安全哈希算法256位）
+特点：
+  - 属于SHA-2系列哈希算法，产生256位的哈希值。比MD5更安全，抗碰撞能力强。
+  - 计算过程复杂，通过一系列的位运算和逻辑运算对输入数据进行处理。
+应用场景：
+  - 用于数字货币（如比特币）的挖矿过程和区块链技术中，确保交易信息完整性和不可篡改性。
+  - 在安全认证和数字签名等场景也广泛应用。
+
+
+5. DSA（数字签名算法）
+特点：
+  - 用于数字签名，是一种非对称加密算法。包括私钥和公钥，私钥用于签名，公钥用于验证签名。
+  - 基于离散对数问题的数学难题，保证签名的安全性和不可否认性。
+应用场景：
+	- 电子政务、电子商务等领域，用于签署电子合同、电子文件等，确保文件的来源真实性和完整性。
+
+
+6. ECDSA（椭圆曲线数字签名算法）
+特点：
+  - 基于椭圆曲线密码体制的数字签名算法，相比DSA，它在相同安全强度下密钥长度更短，效率更高。
+  - 利用椭圆曲线上的点运算来实现签名和验证功能。
+应用场景：
+	- 广泛应用于区块链技术、移动设备安全（如移动支付签名）和物联网安全等领域。
+
+
+7. Elliptic（椭圆曲线密码体制）
+特点：
+  - 基于椭圆曲线的数学理论构建密码系统，除了数字签名（如ECDSA），还可用于密钥交换和加密。
+  - 提供与传统密码体制（如RSA）相当的安全性，但密钥长度更短，计算资源需求可能更低。
+应用场景：
+	- 在资源受限的设备（如物联网设备）和对安全要求较高的移动应用中有很好的应用前景。
+
+
+8. HMAC（密钥相关的哈希运算消息认证码）
+特点：
+  - 结合了哈希函数和密钥，用于验证消息的完整性和真实性。它可以使用不同的哈希函数（如SHA-1、SHA-256等）作为基础。
+  - 计算方式是将密钥和消息通过特定的算法组合后进行哈希运算，接收方使用相同的密钥和算法进行验证。
+应用场景：
+	- 在网络通信中，用于验证消息在传输过程中是否被篡改，如在IPsec协议中用于数据完整性验证。
+
+
+9. Rand（随机数生成）
+特点：
+  - 用于生成随机数，在密码学中，高质量的随机数对于密钥生成等操作至关重要。真正的随机数应该是不可预测的。
+  - 分为伪随机数和真随机数，伪随机数是通过算法生成的看似随机的序列，真随机数通常依赖于物理现象（如热噪声）生成。
+应用场景：
+	- 用于生成加密密钥、初始化向量（IV）等，在各种加密算法和安全协议中都有应用。
+
+
+10. RC4（Ron Rivest设计的流密码）
+特点：
+  - 对称加密算法，属于流密码。加密和解密速度快，以字节为单位进行加密操作。
+  - 密钥长度可变，但安全性存在一定问题，容易受到攻击。
+应用场景：
+	- 曾广泛用于网络协议（如SSL早期版本）的加密，但由于发现安全漏洞，现在使用较少。
+
+
+11. RSA（非对称加密算法）
+特点：
+  - 基于大整数分解和欧拉定理，使用一对密钥（公钥和私钥）。公钥用于加密，私钥用于解密，或者私钥用于签名，公钥用于验证签名。
+  - 安全性基于数学难题，密钥长度较长，计算开销相对较大。
+应用场景：
+	- 用于安全通信中的密钥交换，如在SSL/TLS协议中，先使用RSA交换AES等对称加密算法的密钥。
+	- 也用于数字签名，确保文件的真实性和不可否认性。
+
+
+12. Cipher（密码）
+特点：
+  - 这是一个比较宽泛的概念，涵盖了各种加密和解密算法、技术和工具。
+  - 不同的密码系统有不同的特点，包括对称和非对称加密、分组密码和流密码等多种类型。
+应用场景：
+	- 根据具体的密码类型（如AES、RSA等）应用于不同的安全领域，从网络安全到数据存储安全等各个方面。
+```
+
+
+
+### 计算摘要 hash
+
+```bash
+Hash 是一种用于计算数据摘要的算法，它可以将任意长度的数据映射为固定长度的哈希值。
+Hash 对象是单向的，不能从哈希值中恢复原始数据。因此 Hash 算法通常用于验证数据完整性、数据签名和密码存储等场景。
+在密码场景中，通常将密码的哈希值存储在数据库中，而不是存储密码本身，以提高安全性。当用户登录时，将输入的密码进行哈希计算，然后将计算得到的哈希值与数据库中存储的哈希值进行比较，以验证密码是否正确。
+
+在 crypto 模块中，可以使用 `const hash = crypto.createHash(algorithm)` 方法创建一个 Hash 对象。
+`algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
+可以使用 `crypto.getHashes()` 方法获取支持的哈希算法列表。
+
+
+
+### hash 对象实例方法
+1. 计算摘要：hash.digest([encoding])
+		encoding 可以是 hex、latin1 或者 base64。
+	如果声明了 encoding，那么返回字符串。否则，返回Buffer实例。
+	注意：调用 hash.digest() 后，hash 对象就作废了，再次调用就会出错。
+
+2. hash.update(data[, input_encoding])：
+		input_encoding 可以是 utf8、ascii 或者 latin1。
+	如果 data 是字符串，且没有指定 input_encoding，则默认是utf8。
+	注意：hash.update() 方法可以调用多次。
+```
+
+```js
+const cryptos = require("crypto")
+
+// 创建了一个 SHA-256 的 Hash 对象
+const algorithm = "sha256"
+const hash = cryptos.createHash(algorithm)
+
+// 使用 update() 方法将 data 字符串写入 Hash 对象中
+const data = "Hi, willys"
+hash.update(data)
+
+// 使用 digest() 方法获取哈希值，以十六进制字符串的形式返回
+const digest = hash.digest("hex")
+
+console.log(digest) // 5412b888d0f63cc2269dab76826196fb5f37cd4253f081ff0fa9def0c3e4f1b4
+```
+
+
+
+### 消息认证 HMAC
+
+```bash
+HMAC（Hash-base Message Authentication Code）是一种基于哈希函数和密钥的消息认证算法，可用于验证消息的完整性和真实性。
+HMAC 是使用 key 标记信息的加密hash（加密哈希信息认证码），接收者使用相同的key逆运算来认证hash。
+hmac 主要应用在身份验证中，认证流程如下：
+	1. 客户端发出登录请求（假设是浏览器的GET请求）
+	2. 服务器返回一个随机值，并在会话中记录这个随机值
+	3. 客户端将该随机值作为密钥，用户密码进行hmac运算，然后提交给服务器
+	4. 服务器读取用户数据库中的用户密码和步骤2中发送的随机值做与客户端一样的hmac运算，然后与用户发送的结果比较，如果结果一致则验证用户合法。
+
+
+
+在 crypto 模块中，可以使用 `crypto.createHmac(algorithm, key)` 方法创建一个 HMAC 对象。
+	- `algorithm` 参数指定要使用的哈希算法，例如 "sha256"、"md5" 等。
+	- key 参数指定用于计算 HMAC 的密钥。
+	可以使用 `crypto.getHashes()` 方法获取支持的哈希算法列表。
+```
+
+```js
+const cryptos = require("crypto")
+
+// 创建了一个 SHA-256 的 Hash 对象
+const algorithm = "sha256"
+const key = "willy-key"
+const hmac = cryptos.createHmac(algorithm, key)
+
+// 使用 update() 方法将 data 字符串写入 Hash 对象中
+const data = "Hi, willys"
+hmac.update(data)
+
+// 使用 digest() 方法获取哈希值，以十六进制字符串的形式返回
+const digest = hmac.digest("hex")
+
+console.log(digest) // ff21d18da8f432e60025a04db1eccdc39b1574edb5e5ae49d3ad8d1509335cfe
+```
+
+
+
+### 散列函数 md5
+
+```bash
+MD5（Message-Digest Algorithm）是计算机安全领域广泛使用的散列函数（又称哈希算法、摘要算法），主要用来确保消息的完整和一致性。
+
+
+### 应用场景：
+1. 文件完整性校验：如从网上下载一个软件，一般网站都会将软件的 md5 值附在网页上，用户下载完软件后，可对下载到本地的软件进行 md5 运算，然后跟网站上的 md5 值进行对比，确保下载的软件是完整的、正确的。
+2. 密码保护：将 md5 加密后的密码保存到数据库，而不是保存明文密码，避免拖库等事件发生后导致明文密码外泄。
+3. 防篡改：比如数字证书的防篡改，就用到摘要算法（还需要结合数字签名等手段）
+
+
+### 特点：
+1. 运算速度快
+2. 输出长度固定：输入长度不固定，输出长度固定为 128 位。
+3. 运算不可逆：已知运算结果的情况下，无法通过逆运算得到原始字符串。
+4. 高度离散：输入的微小变化，可导致运算结果差异巨大。
+5. 弱碰撞性：不同输入的散列值可能相同。
+
+
+### 单纯 md5 加密的缺陷
+因为相同的明文密码 md5 值也相同，所以当攻击者知道加密算法是 md5，且知道数据库里存储的密码值时，理论上可推测出用户的明文密码。
+事实上，彩虹表也是这么暴力破解的：事先将常见明文密码的 md5 值运算好存储起来，然后跟网站数据库里存储的密码进行匹配就能快速找到用户的明文密码（此时可以使用 "密码加盐" 来进一步提升安全性）
+
+
+
+### 密码加盐
+密码加盐的原理：在密码特定位置插入特定字符串后，再对修改后的字符串进行 md5 运算加密。
+例如同样的密码，当 "盐值" 不一样时 md5 值的差异非常大。通过密码加密，可以防止最初级的暴力破解。如果攻击者事先不知道 "盐值"，破解的难度就会非常大。
+```
+
+```js
+const cryptos = require("crypto")
+
+const cryptoPwd = (password) => {
+    const md5 = cryptos.createHash("md5")
+    return md5.update(password).digest("hex")
+}
+
+const password = "123456"
+// 服务器端加密
+console.log(cryptoPwd(password)) // e10adc3949ba59abbe56e057f20f883e
+
+// 他人恶意暴力破解
+console.log(cryptoPwd("123456")) // e10adc3949ba59abbe56e057f20f883e
+```
+
+
+
+### 盐值加密
+
+```js
+const cryptos = require('crypto')
+
+/** 密码盐值加密 */
+const cryptoPwd = (password, savedSalt = '') => {
+  // 生成随机的盐值
+  const salt = cryptos.randomBytes(16).toString('hex')
+
+  // 对密码进行哈希处理（如果为用户注册时则使用随机生成的盐值，如果用户登录时则拿用户注册的盐值进行校验）
+  const hash = cryptos
+    .pbkdf2Sync(password, savedSalt || salt, 1000, 64, 'sha512')
+    .toString('hex')
+
+  // 将盐值和哈希值保存到数据库中
+  const savedPassword = { salt, hash }
+  return savedPassword
+}
+
+// 当用户注册时时，获取保存的盐值和哈希值
+const password = 'willy' // 假设用户输入的密码为 "password"
+const savedPassword = cryptoPwd(password)
+const savedSalt = savedPassword.salt
+const savedHash = savedPassword.hash
+
+// 对用户输入的密码进行哈希处理，并与保存的哈希值进行比较
+const loginPassword = cryptoPwd('willy', savedSalt)
+const loginHash = loginPassword.hash
+
+if (loginHash === savedHash) {
+  console.log('密码正确', loginHash)
+} else {
+  console.log('密码错误', loginHash, savedHash)
+}
+```
+
+
+
+### RSA
+
+```bash
+攻击防御方案
+- 使用短密钥(如512位) - 易被暴力破解：强制密钥长度 ≥ 2048 位
+- 重用同一密钥对 - 增加侧信道攻击风险：定期轮换密钥（每 1-2 年）
+- 明文存储私钥 - 私钥泄露导致系统崩溃：加密存储 + 访问控制
+- 忽略填充验证 - 填充 Oracle 攻击：使用标准库而非手动实现加密逻辑
+```
+
+```js
+const crypto = require('crypto')
+
+// 1. 生成密钥对
+const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+  modulusLength: 2048,
+  publicKeyEncoding: { type: 'spki', format: 'pem' },
+  privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+})
+
+// 2. 加密
+const encrypt = (plaintext) => {
+  return crypto.publicEncrypt(
+    {
+      key: publicKey,
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      oaepHash: 'sha256',
+    },
+    Buffer.from(plaintext),
+  )
+}
+
+// 3. 解密
+const decrypt = (ciphertext) => {
+  return crypto.privateDecrypt(
+    {
+      key: privateKey,
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      oaepHash: 'sha256',
+    },
+    ciphertext,
+  )
+}
+
+// 使用示例
+const message = 'Data to encrypt'
+const encrypted = encrypt(message)
+console.log('加密结果:', encrypted.toString('base64'))
+console.log('解密结果:', decrypt(encrypted).toString())
+```
+
+
+
+### DES
+
+```bash
+对称加密技术 - DES（数据加密标准）算法主要采用替换和移位的方式进行加密，它用56位（64位密钥只有56位有效）对64位二进制数据块进行加密，每次加密对64位的输入数据进行16轮编码，经过一系列替换和移位后，输入的64位原数据转换成完全不同的64位输出数据。
+
+DES算法的入口参数有三个：Key、Data、Mode。
+	- Key为8个字节共64位，是DES算法的工作密钥；
+	- Data也为8个字节64位，是要被加密或被解密的数据；
+	- Mode为DES的工作方式，有两种：加密或解密。
+
+DES算法具有极高安全性，到目前为止，除了用穷举搜索法对DES算法进行攻击外，还没有发现更有效的办法。而56位长的密钥的穷举空间为256，这意味着如果一台计算机的速度是每一秒种检测一百万个密钥，则它搜索完全部密钥就需要将近2285年的时间。而以现代计算能力24小时内即可被破解，可考虑把DES密钥的长度再增长一些，以此来达到更高的保密程度。
+
+DES算法中只用到64位密钥中的其中56位，而第8、16、24、......64位8个位（奇偶校验位）并未参与DES运算，这一点，向我们提出了一个应用上的要求，即DES的安全性是基于除了8，16，24，......64位外的其余56位的组合变化256才得以保证的。因此，在实际应用中，我们应避开使用第8，16，24，......64位作为有效数据位，而使用其它的56位作为有效数据位，才能保证DES算法安全可靠地发挥作用。如果不了解这一点，把密钥Key的8，16，24，..... .64位作为有效数据使用，将不能保证DES加密数据的安全性，对运用DES来达到保密作用的系统产生数据被破译的危险，这正是DES算法在应用上的误区，留下了被人攻击、被人破译的极大隐患。
+```
+
+**DES加解密(web版)**
+
+```ts
+import * as CryptoJS from 'crypto-js'
+
+/** 加密 */
+const encryptDES = (message: string, key: string): string => {
+  const keyHex = CryptoJS.enc.Utf8.parse(key)
+  const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7,
+  })
+  return encrypted.toString()
+}
+
+/** 解密 */
+const decryptDES = (encryptedMessage: string, key: string): string => {
+  const keyHex = CryptoJS.enc.Utf8.parse(key)
+  const decrypted = CryptoJS.DES.decrypt(encryptedMessage, keyHex, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7,
+  })
+  return decrypted.toString(CryptoJS.enc.Utf8)
+}
+
+/** DES - CBC（密码分组链接）模式加密 */
+const encryptDESWebCrypto = async (
+  message: string,
+  key: string,
+): Promise<string> => {
+  // 将消息和密钥转换为字节数组
+  const encoder: TextEncoder = new TextEncoder()
+  const data: Uint8Array = encoder.encode(message)
+  const keyBuffer: Uint8Array = encoder.encode(key)
+
+  const cryptoKey = await CryptoJS.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'DES - CBC', length: 64 },
+    false,
+    ['encrypt'],
+  )
+  const iv: Uint8Array = CryptoJS.getRandomValues(new Uint8Array(8))
+  const encryptedData = await CryptoJS.subtle.encrypt(
+    { name: 'DES - CBC', iv },
+    cryptoKey,
+    data,
+  )
+
+  const encryptedArray: Uint8Array = new Uint8Array(encryptedData)
+  const combined: Uint8Array = new Uint8Array(iv.length + encryptedArray.length)
+  combined.set(iv)
+  combined.set(encryptedArray, iv.length)
+  return btoa(String.fromCharCode.apply(null, Array.from(combined)))
+}
+
+/* DES - CBC（密码分组链接）模式解密 */
+const decryptDESWebCrypto = async (
+  encryptedMessage: string,
+  key: string,
+): Promise<string> => {
+  const decoder: TextDecoder = new TextDecoder()
+  const encryptedArray: Uint8Array = new Uint8Array(
+    atob(encryptedMessage)
+      .split('')
+      .map((c) => c.charCodeAt(0)),
+  )
+  const iv: Uint8Array = encryptedArray.slice(0, 8)
+  const encryptedData: Uint8Array = encryptedArray.slice(8)
+  const keyBuffer: Uint8Array = new TextEncoder().encode(key)
+  const cryptoKey = await CryptoJS.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'DES - CBC', length: 64 },
+    false,
+    ['decrypt'],
+  )
+  const decryptedData = await CryptoJS.subtle.decrypt(
+    { name: 'DES - CBC', iv },
+    cryptoKey,
+    encryptedData,
+  )
+  return decoder.decode(decryptedData)
+}
+
+const message: string = 'This is a secret message'
+const key: string = 'mysecretkey'
+
+const encryptedMessage = encryptDES(message, key)
+console.log('加密消息:', encryptedMessage)
+const decryptedMessage = decryptDES(encryptedMessage, key)
+console.log('解密消息:', decryptedMessage)
+
+encryptDESWebCrypto(message, key).then((encryptedMessageRes) => {
+  console.log(encryptedMessageRes)
+
+  decryptDESWebCrypto(encryptedMessageRes, key).then((result) => {
+    console.log(result)
+  })
+})
+```
+
+### AES
+
+```bash
+1. 密钥长度和安全性
+1.1 密钥长度
+DES：DES（数据加密标准）的密钥长度是 64 位，但其中有 8 位用于奇偶校验，所以实际有效密钥长度为 56 位。这种相对较短的密钥长度在现代计算环境下安全性较低。
+AES：AES（高级加密标准）支持多种密钥长度，包括 128 位、192 位和 256 位。较长的密钥长度使得 AES 能够抵抗更强大的暴力破解攻击，提供更高的安全性。例如，使用暴力破解方法破解 AES-256 加密的数据，在目前的计算技术下几乎是不可行的。
+
+1.2 安全性对比
+DES 的安全性问题：56位的密钥长度已不足以保证数据的安全性，以目前计算机算力，可通过大规模的并行计算在合理的时间内破解 DES 加密的数据。
+AES 的安全性优势：AES 的设计结构和密钥长度使其在理论和实践中都具有很高的安全性。其采用的分组密码体制和复杂的轮函数变换，在多轮加密过程中有效地混淆和扩散了明文信息，从而抵抗各种密码分析攻击。
+
+
+2. 加密算法结构和轮数
+2.1 算法结构
+DES：DES 采用 Feistel 网络结构。它将64位的明文分组分为左右两部分（各32位），在每一轮加密中，右半部分通过一个函数（涉及子密钥）变换后与左半部分进行异或操作，然后左右部分交换，重复 16 轮这样的操作。最后通过逆初始置换得到密文。
+AES：AES 的结构基于字节替换、行移位、列混合和轮密钥加等操作。它以 128 位（16字节）为一个分组，根据密钥长度的不同（128/192/256 位），加密轮数分别为 10 轮、12 轮或 14 轮。例如，在 AES-128 中，128 位的明文分组在 10 轮的加密过程中，每一轮都进行字节替换（通过 S - 盒）、行移位、列混合和轮密钥加操作，使得明文信息充分混淆。
+
+2.2 轮数影响
+DES 轮数固定为 16 轮：16 轮的 Feistel 网络结构在当时的设计中有其合理性，但随着密码分析技术的发展，这种固定轮数和相对简单的结构（相比 AES）使得 DES 更容易被分析和攻击。
+AES 轮数根据密钥长度变化：AES 的轮数根据密钥长度而变化，更多的轮数意味着更高的安全性，但也会带来一定的计算开销。且现代计算机硬件能够较好地处理 AES 加密所需的计算量。
+
+
+3. 工作模式和应用场景
+3.1 工作模式
+DES 工作模式：DES 常见的工作模式有电子密码本（ECB）模式和密码分组链接（CBC）模式。
+		ECB 模式是将明文分组直接加密，但这种模式可能会出现相同明文分组加密后得到相同密文分组的情况，存在安全隐患。
+		CBC 模式通过将前一个密文分组与当前明文分组进行异或操作后再加密，一定程度上增强了安全性。
+AES 工作模式：AES 除 ECB 和 CBC 模式外，还有计数器（CTR）模式、伽罗瓦/计数器（GCM）模式等。
+		CTR 模式将计数器的值与密钥进行加密后与明文进行异或操作，它在加密和解密过程中可以并行处理，效率较高。
+		GCM 模式则结合了加密和认证功能，在安全性要求较高的场景中广泛应用。
+
+3.2 应用场景
+DES 早期广泛应用在金融领域（银行系统间资金转账、账户余额查询等数据传输）和企业内部（保护商业文件），现因安全性问题逐渐被替代，但在一些兼容旧系统场景下仍可能出现。
+AES 由于其高安全性和灵活性，被广泛应用在网络通信加密（如 SSL/TLS 协议）、文件加密（操作系统的加密文件系统）、数据库加密、移动设备加密等场景。
+
+
+4. 攻击防御方案
+- 重放攻击：在加密数据中添加时间戳 + 序列号
+- Padding Oracle：适用认证加密（如GCM）替代 CBC
+- 密钥泄露：实施密钥分层（主密钥 → 数据密钥） + 硬件隔离
+```
+
+**AES-256-CBC 加/解密(NodeJS版)**
+
+```js
+const cryptos = require("crypto")
+
+const algorithm = "aes-256-cbc" // 加密算法
+const key = cryptos.randomBytes(32) // 根据加密算法生成一个32字节的密钥
+const iv = cryptos.randomBytes(16) // 生成长度为 16 字节的随机数作为 iv
+
+const data = "hello world" // 要加密的数据
+
+/** 创建加密器 */
+const cipher = cryptos.createCipheriv(algorithm, key, iv)
+let encrypted = cipher.update(data, "utf8", "hex")
+encrypted += cipher.final("hex")
+console.log("encrypted:", encrypted) // encrypted: e221f586cf104b2d0d5d58166a8cfe69
+
+/** 创建解密器 */
+const decipher = cryptos.createDecipheriv(algorithm, key, iv)
+let decrypted = decipher.update(encrypted, "hex", "utf8")
+decrypted += decipher.final("utf8")
+console.log("decrypted:", decrypted) // decrypted: hello world
+```
+
+
+
+**AES-256-GCM 加/解密(NodeJS版)**
+
+```js
+const crypto = require('crypto')
+
+// 加密
+function encrypt(plaintext, key) {
+  const iv = crypto.randomBytes(12) // GCM 推荐 12 字节 IV
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
+  const encrypted = Buffer.concat([
+    cipher.update(plaintext, 'utf8'),
+    cipher.final(),
+  ])
+  const authTag = cipher.getAuthTag()
+  return {
+    iv: iv.toString('hex'),
+    encrypted: encrypted.toString('hex'),
+    authTag: authTag.toString('hex'),
+  }
+}
+
+// 解密
+function decrypt(encryptedData, key) {
+  const iv = Buffer.from(encryptedData.iv, 'hex')
+  const encrypted = Buffer.from(encryptedData.encrypted, 'hex')
+  const authTag = Buffer.from(encryptedData.authTag, 'hex')
+
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
+  decipher.setAuthTag(authTag)
+
+  return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString(
+    'utf8',
+  )
+}
+
+// 使用示例
+const key = crypto.randomBytes(32)
+const original = '敏感数据'
+
+const encrypted = encrypt(original, key)
+console.log('加密结果:', encrypted)
+
+const decrypted = decrypt(encrypted, key)
+console.log('解密结果:', decrypted) // 应与 original 相同
+// 加密结果: { iv: 'a1b2c3d4e5f6g7h8i9j0', encrypted: 'a1b2c3d4e5f6g7h8i9j0', authTag: 'a1b2c3d4e5f6g7h8i9j0' }
+```
+
+
+
+### SM4
+
+```bsh
+SM4 是中国国家密码管理局 (GM/T) 发布的商用分组密码标准，属于对称加密算法，适用于物联网、金融等领域的数据加密需求。
+对标国际算法：AES-128（但设计结构不同）
+合规要求：中国金融、政务系统强制使用 SM 系列算法
 ```
 
 
