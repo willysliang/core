@@ -79,9 +79,9 @@ Description: ES6+ 语法
 - 函数变化
   - 函数不能有重名的参数。
   - 函数必须声明在顶层，不允许在非函数的代码块内声明函数。
-  
- 
- 
+
+
+
 #### 严格模式的限制
 - 变量必须声明后再使用
 - 不能使用with语句
@@ -237,18 +237,18 @@ fna(1,2); */
 > - JS数据类型有8种：`Number、String、Boolean、Null、undefined、object、symbol、bigInt`
 > - 基本类型(值类型)：`Undefined、Null、Boolean、Number、String、Symbol、BigInt`（除了object）
 > - 引用类型(复杂数据类型)：`Object`（Object 包含 Function、Array、Date、RegExp、特殊的基本包装类型(String、Number、Boolean) 以及单体内置对象(Global、Math)等）。
-> 
-> 
+>
+>
 > 2. 存储空间
 > - 栈区（stack）：存储基本数据类型的值和执行代码的环境。
 > 		- 在其他语言中，由编译器自动分配释放，存放函数的参数值，局部变量的值等。
 > - 堆区（heap）：堆内存存储的是引用类型值的空间（对象的变量标识符以及对象在内存中的存储地址）。
 > 		- 在其他语言中，堆可以被看成是一棵树，一般由程序员分配释放，若程序员不释放，程序结束时可能由OS回收。
-> 
+>
 > - 基本数据类型：
 > 		- 在内存中占据固定大小，保存在栈内存中。其存储的是值。
 > 		- 可以直接操作保存在变量中的实际值（基本数据类型的实际值）。
-> 
+>
 > - 引用数据类型：
 > 		- 复杂数据类型的值存储在堆内存中(每个空间大小都不一样，会根据情况进行特定的配置)，地址(指向堆中的值)存储在栈内存。
 > 		- 当我们把对象赋值给另外一个变量时，复制的是地址，指向同一块内存空间，当其中一个对象改变时，另一个对象也会变化。
@@ -265,20 +265,20 @@ fna(1,2); */
 >       但 `function` 还是会判断出为 `function` 类型
 >       - 优点：能够快速区分基本数据类型
 >       - 缺点：不能将Object、Array和Null区分，都返回object
-> 
+>
 >### 2. instanceof：
 >   - 只能正确判定引用数据类型，而不能判断基本数据类型，其内部运行机制是判断一个对象在其原型链中依次向下查询栏能否找到该类型的原型(构造函数的prototype属性)。
 >       如obj2的原型属性存在obj1的原型链上，即当obj1是obj2的实例，则`obj1 instanceof obj2`的值为true。
 >       - 优点：能够区分Array、Object 和 Function，适合用于判断自定义的类实例对象
 > 			- 缺点：Number、Boolean、String 基本数据类型不能判断
-> 
+>
 >### 3. constructor：
 >   - 一是判断数据类型，二是对象实例通过`constructor`对象访问它的构造函数。
 >         注意：如果创建一个对象来改变它的原型，constructor 就不能用来判断数据类型。
-> 
+>
 >### 4. Object.prototype.toString.call()
 >   - 使用 Object 对象的原型方法 `toString` 来判断数据类型。
-> 
+>
 >
 >
 >### 判断数组的类型
@@ -302,8 +302,8 @@ fna(1,2); */
 > typeof {} === 'object'
 > typeof new Date() === 'object'
 > typeof function(){} === 'function'
-> 
-> 
+>
+>
 >/** instanceof */
 >2 instanceof Number     	// false
 > true instanceof Boolean 	// false
@@ -314,21 +314,21 @@ fna(1,2); */
 > function(){} instanceof Function	// true
 > Function instanceof Object	// true
 > Object instanceof Function	// true
-> 
+>
 > // 原型链
 >function obj1(){}
 > const obj2 = new obj1()
 > obj2 instanceof obj1	// true
-> 
-> 
+>
+>
 >/**  constructor 给对象修改原型 */
 >function Fn() {}
 > Fn.prototype = new Array()
 > const f = new Fn()
 > console.log(f.constructor === Fn) // false
 > console.log(f.constructor === Array) // true
-> 
-> 
+>
+>
 >/** Object.prototype.toString.call() */
 >const a = Object.prototype.toString;
 > console.log(a.call(2)); 					// [object Number]
@@ -340,8 +340,8 @@ fna(1,2); */
 > console.log(a.call(undefined)); 	 // [object Undefined]
 > console.log(a.call(null));  			 // [object Null]
 > console.log(a.call(new Map()));  	 // [object Map]
-> 
-> 
+>
+>
 >/** 获取数据类型的方法封装 */
 >const getType = (value) => Object.prototype.toString.call(value).slice(8, -1)
 > console.log(getType(new Map()))
@@ -427,7 +427,7 @@ fna(1,2); */
 
 > ```bash
 > - null 和 undefined 的共同点：都是基本数据类型，数据保存在栈中，且在 if 判断语句中值都为 false。
-> 
+>
 >- `null` 表示'无'的对象，即空对象。
 >       1. 作为函数的参数，表示该函数的参数是正常或意料之中的值空缺。
 >       2. 作为对象原型链的终点。
@@ -435,7 +435,7 @@ fna(1,2); */
 >       4. 解除对象引用，便于对象垃圾回收。
 >       		- 垃圾回收机制：当一个对象不再被任何变量引用时，会被释放
 >       		- 即 null 是主动释放一个变量引用的对象，表示一个变量不再指向任何对象地址，null会被内存收集器回收。
-> 
+>
 >
 >- `undefined`表示'无'的原始值，即变量声明但未赋值。
 >       1. 作判断变量是否声明（变量被声明但没有赋值时，就等于undefined）。
@@ -449,22 +449,22 @@ fna(1,2); */
 
 > ```bash
 > 0.1 + 0.2 != 0.3 是因为在进制转换和进阶运算的过程中出现精度损失。
-> 
+>
 >计算机无法直接对十进制的数字进行运算, 需要先对照 IEEE 754 规范转换成二进制，然后对阶运算。
-> 
+>
 >1.进制转换
 > 0.1和0.2转换成二进制后会无限循环
 >    0.1 -> 0.0001100110011001...(无限循环)
 >      0.2 -> 0.0011001100110011...(无限循环)
 >    但是由于IEEE 754尾数位数限制，需要将后面多余的位截掉，这样在进制之间的转换中精度已经损失。
->  
+>
 >2.对阶运算
 > 由于指数位数不相同，运算时需要对阶运算 这部分也可能产生精度损失。
 >  按照上面两步运算（包括两步的精度损失），最后的结果是
 >    0.0100110011001100110011001100110011001100110011001100
 >    结果转换成十进制之后就是 0.30000000000000004。
 >  ```
-> 
+>
 >![image-20230410110121037](./image/image-20230410110121037.png)
 
 
@@ -627,13 +627,13 @@ Boolean('') // false
 >         aFn()
 >         console.log(b)	// 2
 >         console.log(delete a) // false
-> 
+>
 >
 >### 函数与变量提升
 > - 变量声明、函数声明都会被提升到作用域顶处。
 > - 当出现相同名称时，优先级为：'变量/函数赋值 > 函数声明 > 变量声明'
 > ```
-> 
+>
 >```js
 > /** js编译器处理过程 */
 > var foo;	// foo#1
@@ -641,7 +641,7 @@ Boolean('') // false
 > function foo(x, y) { return x + y; }	// foo#2
 > var foo = function(x, y) { return x - y }	// foo#3
 > num = foo(1, 2)	// foo#4
-> 
+>
 >/* ---------------------- */
 > var foo = function(x, y) { return x - y }	// 函数赋值不会提升
 > function foo(x, y) { return x + y; }	// 函数声明会提升
@@ -2173,7 +2173,6 @@ console.log(9 >>> 2)	// 2
 ### Math 对象
 
 ```bash
-### Math 对象
 - Math对象不是构造函数，它具有数学常数和函数的属性和方法。跟数学相关的运算（求绝对值、取整、最大值等）可使用。
 - Math.PI()：圆周率
 - Math.abs(值)：绝对值
@@ -2182,10 +2181,9 @@ console.log(9 >>> 2)	// 2
 - Math.round(值)：四舍五入，注意负数的取值，如：-3.5 结果为-3
 - Math.max(值)：最大值
 - Math.min(值)：最小值
-- Math.random()：返回的是取值范围为`0 ~ 1` 的一个随机数
-- `Math.trunc(Num)`：用于去除一个数的小数部分后返回整数部分，对于控制和无法截取整数的值返回 `NaN`（IE 浏览器不支持这个方法）
-- `Math.sign` 方法用来判断一个数到底是正数、负数、还是零。对于非数值会先将其转换为数值，可返回`+1、-1、0、-0、NaN`
-
+- Math.random(值)：返回的是取值范围为`0 ~ 1` 的一个随机数
+- Math.trunc(值)：用于去除一个数的小数部分后返回整数部分，对于控制和无法截取整数的值返回 `NaN`（IE 浏览器不支持这个方法）
+- Math.sign(值): 用来判断一个数到底是正数、负数、还是零。对于非数值会先将其转换为数值，可返回`+1、-1、0、-0、NaN`
 ```
 
 | 原来数值 | `Math.floor` | `Math.ceil` | `Math.round` | `Math.trunc` |
@@ -2206,10 +2204,9 @@ console.log(9 >>> 2)	// 2
  * @param {number} max 最大值
  * @returns {number}
  * @desc 注意：此随机方法包括下限，但不包括上限。
- * @eaample random(10, 12) 将随机 10 或 11，但从不随机 12
+ * @example random(10, 12) 将随机 10 或 11，但从不随机 12
  */
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
-
 ```
 
 
@@ -2517,7 +2514,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > ## 内存泄露（垃圾回收机制BUG）
 > 内存泄漏指任何对象在您不再拥有或需要它之后仍然存在。
 > 在 JS 中，常见的内存泄露主要有 4 中，全局变量、闭包、DOM元素的引用、定时器。
-> 
+>
 > 1. 意外创建的全局变量：由于使用未声明的变量，而意外的创建了一个全局变量，而使得这个变量一直留在内存中而无法被回收。
 > 2. 被遗忘的计时器或回调函数：设置了 `setInterval` 定时器，而忘记销毁它；如果循环函数有对外部变量引用，那么这个变量会被一直保留在内存中而无法被回收。
 > 3. 脱离 DOM 的引用：获取一个 DOM 元素的引用，而后这个元素被删除，由于一直保留了这个元素的引用，所以它也无法被回收。
@@ -2539,7 +2536,7 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >     fn2()
 >     return a
 >   }
-> 
+>
 >   let res = []
 >   function myClick() {
 >     res.push(fn1())
@@ -2556,8 +2553,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >   name = new Array(99999999)
 > }
 > fn1()
-> 
-> 
+>
+>
 > /** 纠正式写法 */
 > function fn1() {
 >   'use strict';
@@ -2581,8 +2578,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >     root.removeChild(child)
 >   })
 > </script>
-> 
-> 
+>
+>
 > <!-- 改进式写法 -->
 > <script>
 >   let btn = document.querySelector('button')
@@ -2604,8 +2601,8 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 >     console.log(obj);
 >   })
 > </script>
-> 
-> 
+>
+>
 > <!-- 改进式写法 -->
 > <script>
 >   document.querySelector('button').addEventListener('click', function() {
@@ -2628,13 +2625,13 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 > document.querySelector('button').addEventListener('click', function() {
 >   fn1()
 > })
-> 
-> 
+>
+>
 > /** 写法改进 */
 > function fn1() {
 >   let largeObj = new Array(100000)
 >   let index = 0
-> 
+>
 >   let timer = setInterval(() => {
 >     if(index === 3) clearInterval(timer);
 >     let myObj = largeObj
@@ -3092,10 +3089,10 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 
 > ```bash
 > - 所有函数都是Function构造函数的实例对象。
-> 
+>
 >- 函数的长度获取的函数形参的个数 Function.length
 > ```
-> 
+>
 >![image-20210425195525649](./image/image-20210425195525649.png)
 
 ### name 属性
@@ -3104,19 +3101,19 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 > - 函数的name属性，返回该函数的函数名。
 > - Function构造函数返回的函数实例，name属性的值为anonymous。
 > - bind返回的函数，name属性值会加上bound前缀。
-> 
+>
 >- 注意：如果将一个匿名函数赋值给一个变量，ES5 的name属性，会返回空字符串；而 ES6 的name属性会返回实际的函数名。
 > - 如果将一个具名函数赋值给一个变量，则 ES5 和 ES6 的name属性都返回这个具名函数原本的名字
 > ```
-> 
+>
 >```js
 > function foo() {}
 > foo.name // "foo"
-> 
+>
 >
 >// 构造函数
 > (new Function).name // "anonymous"
-> 
+>
 >
 >// 匿名函数
 > var f = function () {}; // 变量f等于一个匿名函数
@@ -3124,7 +3121,7 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 > f.name // ""
 > // ES6
 > f.name // "f"
-> 
+>
 >
 >// 具名函数
 > const bar = function baz() {};
@@ -3132,7 +3129,7 @@ console.log(Cat.prototype.isPrototypeOf(cat1), cat1.hasOwnProperty('type'), "nam
 > bar.name // "baz"
 > // ES6
 > bar.name // "baz"
-> 
+>
 >
 >// bind 返回的函数
 > function foo() {};
@@ -5245,7 +5242,7 @@ console.log(unique44)
 >
 > - 对象由属性和方法组成；可通过对象直接法、关键字 new 和 Object.create() 函数来创建对象。
 >
-> 
+>
 >
 > #### 广义对象
 >
@@ -5256,15 +5253,15 @@ console.log(unique44)
 >   -  json一定是对象 但对象不一定是json
 >   -  json的属性名必须要加双引号`""`
 >   -  普通对象可以不用加双引号
-> 
+>
 > **规律**
-> 
+>
 >1. 函数直接圆括号调用，函数上下文就是window对象
 > 2. 函数当做对象的方法被对象打点语法调用时，函数上下文就是该对象
 >3. 函数是事件处理函数，函数上下文就是触发这个事件的对象
 > 4. 定时器调用函数，上下文是window对象
 > 5. 数组中存放的函数，被数组索引之后加圆括号调用，函数上下文this代表这个数组
-> 
+>
 > ```js
 >let obj = {
 >  age: 1,
@@ -5396,11 +5393,11 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > 4. `Reflect.ownKeys(obj)`：返回一个数组，包含对象自身的（不含继承的）所有键名，不管键名是Symbol或字符串，也不管是否可枚举
 > 5. `Object.keys(obj)`：返回数组，包括对象自身的（不含继承的）所有可枚举属性（不含Symbol属性）的键名
 > 6. `Object.values(obj)`：返回数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值
-> 
+>
 > 注意：通过`Object.create()`添加的对象，如果不显示声明，默认是不可遍历的，因为其属性描述对象的enumerable默认是false
-> 
-> 
-> 
+>
+>
+>
 > ### 对象的遍历顺序
 > 以下方法遍历对象键名都遵守属性遍历次序规则：
 > `key()、ownKeys()、getOwnPropertyNames()、getOwnPropertySymbols()`
@@ -5412,8 +5409,8 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 > ```js
 > Reflect.ownKeys({ [Symbol()]: 0, b: 0, 10: 0, 2: 0, a: 0 })
 > // ['2', '10', 'b', 'a', Symbol()]
-> 
-> 
+>
+>
 > /* Object.values() */
 > const obj2 = Object.create(
 >   {},
@@ -5424,23 +5421,23 @@ console.log(obj == 'This is default value') // "default" hint，结果为true
 >   },
 > )
 > Object.values(obj2) // [ 'a' ]
-> 
+>
 > const obj3 = { a: 1, b: 2, [Symbol()]: 123 }
 > Object.values(obj3) // [1, 2]
-> 
-> 
+>
+>
 > /* keys、values、entries 与 for...of 配套使用 */
 > const obj = { a: 1, b: 2, c: 3 }
 > Object.keys(obj) // ['a', 'b', 'c']
-> 
+>
 > for (const key of Object.keys(obj)) {
 >   console.log(key) // 'a', 'b', 'c'
 > }
-> 
+>
 > for (const value of Object.values(obj)) {
 >   console.log(value) // 1, 2, 3
 > }
-> 
+>
 > for (const [key, value] of Object.entries(obj)) {
 >   console.log([key, value]) // ['a', 1], ['b', 2], ['c', 3]
 > }
@@ -5878,24 +5875,24 @@ Reflect.deleteProperty(obj, 'age');
 
 > ```bash
 > 1. 'isPrototypeOf()'：判断某个 prototype 对象和某个实例对象之间的关系。
-> 
+>
 >2. 'Object.hasOwnProperty()'：每个实例对象都有一个`hasOwnProperty()`方法，用来判断某一个属性是本地属性还是集成自`prototype`对象的属性。
-> 
+>
 >3. 'in' 运算符：判断某个实例是否包含某个属性（还可用来遍历某个对象的所有属性）
 > ```
-> 
+>
 >````js
 > function Cat(name) {
 >   this.name = name
 > }
 > Cat.prototype.type = "猫科动物"
-> 
+>
 >let cat1 = new Cat('小黄')
 > console.log(Cat.prototype.isPrototypeOf(cat1))  // true
 > console.log(cat1.hasOwnProperty('name'), cat1.hasOwnProperty('type'))  // true false
 > console.log("name" in cat1, "type" in cat1)  // true true
 > ````
-> 
+>
 
 ### 防止对象被修改 freeze /seal
 
@@ -5976,7 +5973,7 @@ Reflect.deleteProperty(obj, 'age');
 >      "configurable": true
 >     }
 >   } */
-> 
+>
 >
 >/* defineProperties + getOwnPropertyDescriptors 实现正确拷贝 */
 > const source = {
@@ -5988,7 +5985,7 @@ Reflect.deleteProperty(obj, 'age');
 >   Object.getOwnPropertyDescriptors(source)
 > );
 > shallowMerge({}, source)  // { foo: [Setter] }
-> 
+>
 >
 >/* create + getOwnPropertyDescriptors 实现浅拷贝 */
 > const cloneObj = Object.create(
@@ -5997,7 +5994,7 @@ Reflect.deleteProperty(obj, 'age');
 >     foo: 123,
 >   })
 > );
-> 
+>
 >
 >/* Object.getOwnPropertyDescriptors()也可以用来实现 Mixin（混入）模式 */
 > let mix = (object) => ({
@@ -6006,7 +6003,7 @@ Reflect.deleteProperty(obj, 'age');
 >       c, Object.getOwnPropertyDescriptors(mixin)
 >     ), object)
 > });
-> 
+>
 >// multiple mixins example
 > let a = { a: 'a' };
 > let b = { b: 'b' };
@@ -6324,8 +6321,8 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 >JavaScript 数据类型分为基本数据类型（值/原始类型），引用（对象）数据类型
 >   - 七种基本数据类型：String、Number、Boolean、Null、Undefined、BigInt、Symbol
 >    	- 一种对象数据类型：Object。（Object 包括 Array、Math、Function 等）
-> 
-> 
+>
+>
 >
 >## 变量赋值
 > 		- 赋值可看作是创建变量名并使该变量引用数据（无论是原始还是引用数据类型）的过程
@@ -6335,9 +6332,9 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 						1. 先创建字符串 "willy"
 > 						2. 再创建变量 name
 > 						3. 为变量 name 指定一个对先前创建的字符串的引用
-> 
-> 
-> 
+>
+>
+>
 > ## 重新赋值
 >		- 例子：let name = "willy"; name = "william";
 >				- 说明：
@@ -6347,19 +6344,19 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 						3. 为变量 name 指定一个对先前创建的字符串的引用
 >              4. 创建字符串 "william"
 >              5. 重新赋值 变量 name 对字符串 "willy" 的引用
-> 
-> 
+>
+>
 > ## 突变（Mutation）
 > 		- 突变是改变数据的行为
 >		1. 原始值突变（无法改变基本数据类型）
 >				- 原始值不能突变（它们是不可改变的），无法改变任何数据
 > 				- 例子：let name = "willy";  name[0] = "wl"; // Error，name仍为"willy"
-> 
+>
 > 		2. 对象突变
 > 				- 对于对象来说，可以简单的改变值
 > 				- 例子：let user = {name: "willy"}; user.name = "wl";	// { name: "wl" }
 >						- 在此，我们从未重新赋值过 "user" 变量，但是确实改变了它所指向的对象
-> 
+>
 > 				- 示例一：原始值
 >         		let name = "willy"
 >         		let name2 = name
@@ -6371,7 +6368,7 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 								3. 创建了变量 name2 并给字符串 "willy" 赋了一个引用
 > 								4. 创建了字符串 "wl"，并重新赋值 name2 来引用该字符串
 > 								5. 当进行 console.logg 打印 name 和 name2时，name 仍为 "willy"，name2 为 "wl"
-> 
+>
 > 				- 示例二：对象 / 数组
 >         		let user = { name: "willy" }
 >         		let user2 = user
@@ -6384,13 +6381,13 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > 										(**注意**：user2 现在引用的是 user 所引用的同一个对象！)
 > 								4. 创建了字符串 "wl"，并通过重新分配 `name` 属性来引用 "wl" 来改变对象。
 > 								5. 当进行 console.logg 打印 user 和 user2 时，内存中两个变量所引用的对象已经发生了变化
-> 
-> 
+>
+>
 > ##  `原始值突变`和`对象突变`的区别：可变性
 >   1. 基本数据类型是不可变的。
 >      这意味着我们不必担心两个变量是否指向内存中的同一个原始值：哪个原始值不会改变。
 >      虽然我们可以**重新分配**一个变量来指向其他数据，但这不会影响其他变量。
-> 
+>
 >   2. 对象是可变的。
 >       因此必须记住，多个变量可能指向内存中的同一个对象。
 >       **突变**这些变量中的一个是错误的行为，我们如果突变它所引用的对象，这将反映在引用同一对象的任何其他变量中。
@@ -6404,14 +6401,14 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 
 > ````bash
 > - 深拷贝和浅拷贝是 只针对 `Object` 和 `Array` 这样的引用数据类型
-> 
+>
 > # 浅拷贝
 > - 拷贝出来的目标对象有着与原对象相同的属性值。如果我们的对象/数组中嵌套了对象，那么像 `object.assign` 和扩展运算符（`...`）这样的浅层复制机制将只创建根级对象的副本，但深层次对象级别的只拷贝引用，仍将被共享
 > - （只复制指向某个对象的指针，而不是复制本身，新旧对象共享同一块内存）
 > 	- es6新增方法浅拷贝：`Object.assign(目标对象, 源对象1, 源对象2...)`
 > 	- **注意**：当拷贝对象只有一层时为深拷贝，当拷贝对象为多层时是浅拷贝。
 > ````
-> 
+>
 > ```js
 > let obj = {
 >     id: 1,
@@ -6425,12 +6422,12 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > }
 > o.msg.age = 20;
 > console.log(o, '\n', obj); */
-> 
+>
 > /* console.log('-----es6 浅拷贝 语法糖---------');
 > Object.assign(o, obj);
 > o.msg.age = 12;
 > console.log(o, '\n', obj); */
-> 
+>
 > let obj1 = {'a': 1}, obj2 = {'a': 1}, obj3 = {'b': 2};
 > let copy1 = Object.assign(obj1, obj3);  // { a: 1, b: 2 } { a: 1, b: 2 }  obj1会改变
 > let copy2 = Object.assign({}, obj2, obj3); // { a: 1 } { a: 1, b: 2 } obj2不会改变
@@ -6491,7 +6488,7 @@ console.log(copyKenNaNa.toString()) // "[object Object]"
 > ```BASH
 > - 深拷贝拷贝多层，每一级别的数据都会拷贝
 > 	（会另外创造一个相同的对象，新对象跟原对象不共享内存，修改新对象不会改变原来对象的值）
-> 
+>
 > - 拷贝出来的目标对象有着与原始对象相同的属性值，且嵌套的对象更改也不会影响到原始对象的改变，也就是它们之间有着相同的数据，但数据存储在不同的内存地址中
 > ```
 

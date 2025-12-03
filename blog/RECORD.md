@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年12月3日
+  - docs: organize note content
+
 ## 2025年11月20日
   - perf(blog): perf nav config
   - docs: organize note content

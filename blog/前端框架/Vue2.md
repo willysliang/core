@@ -1958,18 +1958,34 @@ methods: {
   ```
 
 
+
 ### `this.$nextTick()`异步更新队列
 
-- Vue 在更新 DOM 时是**异步**执行的。
-  只要侦听到数据变化，Vue 将开启一个队列，并缓冲在同一事件循环中发生的所有数据变更。
-  如果同一个 watcher 被多次触发，只会被推入到队列中一次。
-  这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作是非常重要的。
-  然后，在下一个的事件循环“tick”中，Vue 刷新队列并执行实际 (已去重的) 工作。
-  Vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObserver` 和 `setImmediate`，如果执行环境不支持，则会采用 `setTimeout(fn, 0)` 代替。
+```bash
+vue 在更新 DOM 时是'异步'执行：
+	只要侦听到数据变化，vue 会开启一个队列，并缓冲在同一事件循环(EventLoop)中进行所有数据变更。
+	如果同一个数据触发多次 watcher，也只会把最后一次触发推入到队列中。
+	这种在缓冲时去除同一个数据触发的多次数据变更对于避免不必要的计算和减少 DOM 操作的优化很重要。
+在下一个事件循环 'tick' 中，vue 刷新队列并执行实际(已去重)工作。
 
-- this.$nextTick 将回调延迟到下次DOM更新循环之后执行。在修改数据之后立即使用它，然后等待DOM更新。
+this.$nextTick 将回调延迟到下次DOM更新循环之后执行。在修改数据之后立即使用它，然后等待DOM更新。
+`$nextTick()` 返回一个 `Promise` 对象
 
-- >`$nextTick()` 返回一个 `Promise` 对象
+
+### 多级降级策略
+vue2 在内部对异步队列使用了多级降级策略（Promise > MutationObserver > setImmediate > setTimeout）
+	先使用原生的 `Promise.then`、`MutationObserver` 和 `setImmediate`
+	如果执行环境不支持，则会采用 `setTimeout(fn, 0)` 代替
+	
+
+### vue2的 this.$nextTick 跟 vue3的 $nextTick 的区别
+内部实现策略不同：
+	- vue2 使用多级降级策略（Promise > MutationObserver > setImmediate > setTimeout）
+	- vue3 统一使用 Promise.resolve().then() （因为vue3基于esmodule，不再做向下兼容）
+性能优化
+	- vue2 高频调用可能导致“微任务爆炸”
+	- 任务合并机制，同一时间循环的多次调用共享一个微任务
+```
 
 ```vue
 <div id="example">{{message}}</div>
@@ -1998,6 +2014,8 @@ methods: {
   }
 }
 ```
+
+
 
 ### 无痕刷新
 

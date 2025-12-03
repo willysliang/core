@@ -15,7 +15,7 @@ Description: React
 
 ### 设计思想
 1. vue
-vue 是一款渐进式框架，采用自底向上增量开发的设计。渐进式框架是在声明式渲染（视图模板引擎）的基础上，我们可以通过添加组件系统（components）、客户端路由（vue-router）、大规模状态管理（vuex）来构建一个完整的框架。Vue从设计角度来讲，虽然能够涵盖所有这些内容，但是这都是可选的。声明式渲染和组建系统是Vue的核心库所包含内容，而客户端路由、状态管理、构建工具都有专门解决方案。这些解决方案相互独立，你可以在核心的基础上任意选用其他的部件，不一定要全部整合在一起。可以看到，所说的“渐进式”，其实就是Vue的使用方式，同时也体现了Vue的设计的理念。
+vue 是一款渐进式框架，采用自底向上增量开发的设计。渐进式框架是在声明式渲染（视图模板引擎）的基础上，可以通过添加组件系统（components）、客户端路由（vue-router）、大规模状态管理（vuex）来构建一个完整的框架。Vue从设计角度来讲，虽然能够涵盖所有这些内容，但是这都是可选的。声明式渲染和组建系统是Vue的核心库所包含内容，而客户端路由、状态管理、构建工具都有专门解决方案。这些解决方案相互独立，你可以在核心的基础上任意选用其他的部件，不一定要全部整合在一起。“渐进式”其实就是Vue的使用方式，同时也体现了Vue的设计的理念。
 
 2. react
 react主张函数式编程，所以推崇纯组件，数据不可变，单向数据流，当然需要双向的地方也可以手动实现，比如借助 onChange 和 setState 来实现一个双向的数据流。而vue是基于可变数据的，支持双向绑定，它提供了v-model这样的指令来实现文本框的数据流双向绑定。
@@ -24,24 +24,24 @@ react主张函数式编程，所以推崇纯组件，数据不可变，单向数
 
 ### 编写语法
 1. vue
-vue推荐的做法是webpack+vue-loader的单文件组件格式，vue保留了html、css、js分离的写法，使得现有的前端开发者在开发的时候能保持原有的习惯，更接近常用的web开发方式，模板就是普通的html，数据绑定使用mustache风格，样式直接使用css。其中<style>标签还提供了一个可选的scoped属性，它会为组件内 CSS 指定作用域，用它来控制仅对当前组件有效还是全局生效。
-模板和JSX是各有利弊的东西。模板更贴近我们的HTML，可以让我们更直观地思考语义结构，更好地结合CSS的书写。
-同时vue也支持JSX语法，因为是真正的JavaScript，拥有这个语言本身的所有的能力，可以进行复杂的逻辑判断，进行选择性的返回最终要返回的DOM结构，能够实现一些在模板的语法限制下，很难做到的一些事情。
+vue保留 html、css、js 分离的写法，更接近常用的web开发方式，模板就是普通的html，数据绑定使用mustache风格，样式直接使用css。其中<style>标签还提供了一个可选的scoped属性，它会为组件内 CSS 指定作用域，用来控制仅对当前组件有效还是全局生效。
+模板更贴近HTML，可以更直观地思考语义结构，更好地结合CSS的书写。
+同时vue也支持JSX语法，因为是真正的JavaScript，拥有这个语言本身的所有能力，可以进行复杂的逻辑判断，进行选择性的返回最终要返回的DOM结构，能够实现一些在模板的语法限制下很难做到的一些事情。
 
 2. react
-用过react的开发者可能知道，react是没有模板的，直接就是一个渲染函数，它中间返回的就是一个虚拟DOM树，React推荐的做法是 JSX + inline style, 也就是把HTML和CSS全都写进JavaScript了,即'all in js'。JSX实际就是一套使用XML语法，用于让我们更简单地去描述树状结构的语法糖。在react中，所有的组件的渲染功能都依靠JSX。你可以在render()中编写类似XML的语法，它最终会被编译成原生JavaScript。不仅仅是 HTML 可以用 JSX 来表达，现在的潮流也越来越多地将 CSS 也纳入到 JavaScript 中来处理。JSX是基于 JS 之上的一套额外语法，学习使用起来有一定的成本。
+react是没有模板的，直接就是一个渲染函数，它中间返回的就是一个虚拟DOM树，React推荐的做法是 JSX + inline style, 也就是把HTML、CSS 全都写入JavaScript，即'all in js'。JSX实际就是一套使用XML语法，用于让我们更简单地去描述树状结构的语法糖。在react中，所有的组件的渲染功能都依靠JSX。你可以在render()中编写类似XML的语法，它最终会被编译成原生JavaScript。不仅仅是 HTML 可以用 JSX 来表达，现在 CSS 也纳入到 JavaScript 中来处理。JSX是基于 JS 之上的一套额外语法，学习使用起来有一定的成本。
 
 
 
 ### 数据绑定
 1. vue
 vue是实现了双向数据绑定的mvvm框架，当视图改变更新模型层，当模型层改变更新视图层。在vue中，使用了双向绑定技术，就是View的变化能实时让Model发生变化，而Model的变化也能实时更新到View。
-Vue采用数据劫持&发布-订阅模式的方式，vue在创建vm的时候，会将数据配置在实例当中，然后通过Object.defineProperty对数据进行操作，为数据动态添加了getter与setter方法，当获取数据的时候会触发对应的getter方法，当设置数据的时候会触发对应的setter方法，从而进一步触发vm的watcher方法，然后数据更改，vm则会进一步触发视图更新操作。
+Vue采用数据劫持&发布-订阅模式的方式，vue在创建vm时，会将数据配置在实例中，然后通过Object.defineProperty对数据进行操作，为数据动态添加getter与setter方法，当获取数据时会触发对应的getter方法，当设置数据时会触发对应的setter方法，从而进一步触发vm的watcher方法，然后数据更改，vm则会进一步触发视图更新操作。
 
 2. react
-react是单向数据流，react中属性是不允许更改的，状态是允许更改的。react中组件不允许通过this.state这种方式直接更改组件的状态。自身设置的状态，可以通过setState来进行更改。在setState中，传入一个对象，就会将组件的状态中键值对的部分更改，还可以传入一个函数，这个回调函数必须向上面方式一样的一个对象函数可以接受prevState和props。通过调用this.setState去更新this.state,不能直接操作this.state，请把它当成不可变的。
-调用setState更新this.state，它不是马上就会生效的，它是异步的。所以不要认为调用完setState后可以立马获取到最新的值。多个顺序执行的setState不是同步的一个接着一个的执行，会加入一个异步队列，然后最后一起执行，即批处理。
-setState是异步的，导致获取dom可能拿的还是之前的内容，所以我们需要在setState第二个参数（回调函数）中获取更新后的新的内容。
+react是单向数据流，react中属性是不允许更改的，状态是允许更改的。react中组件不允许通过this.state这种方式直接更改组件的状态。自身设置的状态，可以通过setState来进行更改。在setState中，传入一个对象，就会将组件的状态中键值对的部分更改，还可以传入一个函数，这个回调函数必须向上面方式一样的一个对象函数可以接受prevState和props。通过调用this.setState去更新this.state，不能直接操作this.state，请把它当成不可变的。
+调用setState更新this.state，它是异步的，不会马上生效。所以不要认为调用完setState后可以立马获取到最新的值。多个顺序执行的setState不是同步的一个接着一个的执行，会加入一个异步队列，然后最后一起执行，即批处理。
+setState是异步的，导致获取dom可能拿的还是之前的内容，所以需要在setState第二个参数（回调函数）中获取更新后的新的内容。
 
 
 
@@ -50,61 +50,61 @@ setState是异步的，导致获取dom可能拿的还是之前的内容，所以
 vue中diff算法实现流程
 		1. 在内存中构建虚拟dom树
 		2. 将内存中虚拟dom树渲染成真实dom结构
-		3. 数据改变的时候，将之前的虚拟dom树结合新的数据生成新的虚拟dom树
+		3. 数据改变时，将之前的虚拟dom树结合新的数据生成新的虚拟dom树
 		4. 将此次生成好的虚拟dom树和上一次的虚拟dom树进行一次比对（diff算法进行比对），来更新只需要被替换的DOM，而不是全部重绘。在Diff算法中，只平层的比较前后两棵DOM树的节点，没有进行深度的遍历。
 		5. 会将对比出来的差异进行重新渲染
 
 2. react
 react中diff算法实现流程
 		1. DOM结构发生改变-----直接卸载并重新create
-		2. DOM结构一样-----不会卸载,但是会update变化的内容
+		2. DOM结构一样-----不会卸载，但是会update变化的内容
 		3. 所有同一层级的子节点。他们都可以通过key来区分-----同时遵循1.2两点
-（其实这个key的存在与否只会影响diff算法的复杂度,换言之,你不加key的情况下,diff算法就会以暴力的方式去根据一二的策略更新,但是你加了key,diff算法会引入一些另外的操作）
+（其实key的存在与否只会影响diff算法的复杂度，即是在不加key的情况下,diff算法就会以暴力的方式去根据一二的策略更新，但是加了key后diff算法会引入一些另外的操作）
 
 React会逐个对节点进行更新，转换到目标节点。而最后插入新的节点，涉及到的DOM操作非常多。diff总共就是移动、删除、增加三个操作，而如果给每个节点唯一的标识（key），那么React优先采用移动的方式，能够找到正确的位置去插入新的节点。
-vue会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树。而对于React而言,每当应用的状态被改变时,全部组件都会重新渲染,所以react中会需要shouldComponentUpdate这个生命周期函数方法来进行控制。
-
+vue会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树。而对于React而言，每当应用的状态被改变时，全部组件都会重新渲染，所以react中会需要shouldComponentUpdate这个生命周期函数方法来进行控制。
 
 
 
 ### 指令
 1. vue
 指令 (Directives) 是带有 `v-` 前缀的特殊特性，指令的职责是，当表达式的值改变时，将其产生的连带影响，响应式地作用于 DOM。
-vue中提供很多内部指令供我们使用，它可以让我们进行一些模板的操作，例如有时候，我们的data中的存放的数据不是个简单的数字或者字符串，而是数组Array类型，这个时候，我们要把数组的元素展示在视图上，就需要用到vue提供的 v-for 指令，来实现列表的渲染。
+vue中提供很多内部指令，它可以让我们进行一些模板的操作，例如有时data中的存放的数据不是个简单的数字或者字符串，而是数组Array类型，此时要把数组的元素展示在视图上，就需要用到vue提供的 v-for 指令来实现列表的渲染。
 
 2. react
-因为react中没有v-for指令，所以循环渲染的时候需要用到map()方法来渲染视图，并且将符合条件的元素放入一个新数组返回。
+因为react中没有v-for指令，所以循环渲染的时候需要用到 map 方法来渲染视图，并且将符合条件的元素放入一个新数组返回。
 
 
 
 ### 性能优化
 1. vue
-vue中的每个组件内部自动实现了 shouldComponentUpdate 的优化，在vue里面由于依赖追踪系统的存在，当任意数据变动的时，Vue的每一个组件都精确地知道自己是否需要重绘，所以并不需要手动优化。用vue渲染这些组件的时候，数据变了，对应的组件基本上去除了手动优化的必要性。而在react中我们需要手动去优化其性能，但是当数据特别多的时候vue中的watcher也会特别多，从而造成页面卡顿，所以一般数据比较多的大型项目会倾向于使用react。React 适用于构建快速响应的大型 Web 应用程序。
+vue中的每个组件内部自动实现 shouldComponentUpdate 的优化，在vue里面由于依赖追踪系统的存在，当任意数据变动时，Vue的每一个组件都精确地知道自己是否需要重绘，所以并不需要手动优化。用vue渲染这些组件时，数据变了，对应的组件基本上去除了手动优化的必要性。而在react中需要手动去优化其性能，但是当数据特别多时，vue中的watcher也会特别多，从而造成页面卡顿，所以一般数据比较多的大型项目会倾向于使用react。React 适用于构建快速响应的大型 Web 应用程序。
 
 2. react
-当props或state发生改变的时候会触发 shouldComponentUpdate 生命周期函数，它是用来控制组件是否被重新渲染的，如果它返回true，则执行render函数，更新组件；如果它返回false，则不会触发重新渲染的过程。
-有的时候我们希望它在更新之前，和之前的状态进行一个对比，这个时候我们就需要重写 shouldComponentUpdate 来避免不必要的dom操作，对比当前的props或state和更新之后的nextProps或nextState，返回true时 ，组件更新；返回false，则不会更新，节省性能。
+当props或state发生改变时会触发 shouldComponentUpdate 生命周期函数，它是用来控制组件是否被重新渲染，如果它返回true，则执行render函数，更新组件；如果它返回false，则不会触发重新渲染的过程。
+有时我们希望它在更新之前，和之前的状态进行一个对比，这时就需要重写 shouldComponentUpdate 来避免不必要的dom操作，对比当前的props或state和更新之后的nextProps或nextState，返回true时，组件更新；返回false，则不会更新，节省性能。
       shouldComponentUpdate(nextProps, nextState) {
-          if (this.props.a !== nextProps.a) {
-              return true;
-          }
-          if (this.state.b !== nextState.b) {
-              return true;
-          }
+          if (this.props.a !== nextProps.a) return true;
+          if (this.state.b !== nextState.b) return true;
           return false;
       }
 我们也可以创建一个继承React.PureComponent的React组件，它自带 shouldComponentUpdate，可以对props进行浅比较，发现更新之后的props与当前的props一样，就不会进行render了。
-`classTestextendsReact.PureComponent{constructor(props){super(props);}render(){return<div>hello...{this.props.a}</div>}}`
-由于React.PureComponent进行的是浅比较，也就是说它只会对比原对象的值是否相同，当我们的props或state为数组或者对象这种引用类型的时候，我们修改它的数值，由于数据引用指针没有发生改变，所以组件也是不会重新渲染的。这个时候我们就需要进行深拷贝，创建一个新的对象或数组，将原对象的各项属性的"值"（数组的所有元素）拷贝过来，是"值"而不仅仅是"引用地址"。我们可以使用slice()方法：`ew_state.todos = new_state.todos.slice();`，或者引入immutable库来实现数据不可变。
+		classTestextendsReact.PureComponent{
+			constructor(props){super(props);}
+			render(){
+				return<div>hello...{this.props.a}</div>
+			}
+		}
+由于 React.PureComponent 是浅比较，当 props或state 为数组或者对象这种引用类型时，修改它的数值，由于数据引用指针没有发生改变，所以组件也是不会重新渲染的。这时就需要进行深拷贝创建一个新的对象或数组。可以使用slice方法：`ew_state.todos = new_state.todos.slice()`，或者引入immutable库来实现数据不可变。
 
 
 
 ### 销毁组件
 1. vue
-vue在调用 `$destroy` 方法的时候就会执行beforeDestroy生命周期函数，然后组件被销毁，这个时候组件的dom结构还存在于页面结构中，也就说如果想要对残留的dom结构进行处理必须在destroyed生命周期函数中处理。
+vue在调用 `$destroy` 方法时会执行beforeDestroy生命周期函数，然后组件被销毁，这时组件的dom结构还存在于页面结构中，也就说如果想要对残留的dom结构进行处理必须在destroyed生命周期函数中处理。
 
 2. react
-react执行完componentWillUnmount之后把事件、数据、dom都全部处理掉了，也就是说当父组件从渲染这个子组件变成不渲染这个子组件的时候，子组件相当于被销毁，所以根本不需要其他的钩子函数了。react销毁组件的时候，会将组件的dom结构也移除，vue则不然，在调用destory方法销毁组件的时候，组件的dom结构还是存在于页面中的，this.$destory组件结构还是存在的，只是移除了事件监听，所以这就是为什么vue中有destroyed，而react却没有componentDidUnmount。
+react执行完 componentWillUnmount 之后把事件、数据、dom都全部处理掉了，也就是说当父组件从渲染这个子组件变成不渲染这个子组件时，子组件相当于被销毁，所以根本不需要其他的钩子函数。react销毁组件时，会将组件的dom结构也移除，vue则在调用destory方法销毁组件时，组件的dom结构还是存在于页面中，this.$destory组件结构还是存在，只是移除了事件监听，所以这就是为什么vue中有destroyed，而react却没有componentDidUnmount。
 
 
 
@@ -113,25 +113,25 @@ react执行完componentWillUnmount之后把事件、数据、dom都全部处理�
 vuex是一个专门为vue构建的状态集管理工具，vue和react都是基于组件化开发的，项目中包含很多的组件，组件都会有组件嵌套，想让组件中的数据被其他组件也可以访问到就需要使用到Vuex。
 vuex的流程
 1. 将需要共享的状态挂载到state上：this.$store.state来调用
-创建store，将状态挂载到state上，在根实例里面配置store，之后我们在组件中就可以通过this.$store.state来使用state中管理的数据，但是这样使用时，当state的数据更改的时候，vue组件并不会重新渲染，所以我们要通过计算属性computed来使用，但是当我们使用多个数据的时候这种写法比较麻烦，vuex提供了mapState辅助函数，帮助我们在组件中获取并使用vuex的store中保存的状态。
+创建store，将状态挂载到state上，在根实例里面配置store，之后在组件中就可以通过this.$store.state来使用state中管理的数据，但是这样使用时，当state的数据更改时，vue组件并不会重新渲染，所以要通过计算属性computed来使用，但是当使用多个数据时这种写法比较麻烦，vuex提供 mapState 辅助函数可在组件中获取并使用vuex的store中保存的状态。
 
-2. 我们通过getters来创建状态：通过this.$store.getters来调用
-可以根据某一个状态派生出一个新状态，vuex也提供了mapGetters辅助函数来帮助我们在组件中使用getters里的状态。
+2. 通过getters来创建状态：通过this.$store.getters来调用
+可以根据某一个状态派生出一个新状态，vuex也提供mapGetters辅助函数来在组件中使用getters里的状态。
 
 3. 使用mutations来更改state：通过this.$store.commit来调用
-我们不能直接在组件中更改state，而是需要使用mutations来更改，mutations也是一个纯对象，里面包含很多更改state的方法，这些方法的形参接收到state，在函数体里更改，这时，组件用到的数据也会更改，实现响应式。vuex提供了mapMutations方法来帮助我们在组件中调用mutations 的方法。
+不能直接在组件中更改state，而是需要使用mutations来更改，mutations也是一个纯对象，里面包含很多更改state的方法，这些方法的形参接收到state，在函数体里更改，这时组件用到的数据也会更改，实现响应式。vuex提供mapMutations方法在组件中调用mutations 的方法。
 
 4. 使用actions来处理异步操作：this.$store.dispatch来调用
-Actions类似于mutations，不同在于：Actions提交的是mutations，而不是直接变更状态。Actions可以包含任意异步操作。也就是说，如果有这样的需求：在一个异步操作处理之后，更改状态，我们在组件中应该先调用actions，来进行异步动作，然后由actions调用mutations来更改数据。在组件中通过this.$store.dispatch方法调用actions的方法，当然也可以使用mapMutations来辅助使用。
+Actions类似于mutations，不同在于：Actions提交的是mutations，而不是直接变更状态。Actions可以包含任意异步操作。也就是说，如果有这样的需求：在一个异步操作处理之后更改状态，我们在组件中应该先调用actions来进行异步动作，然后由actions调用mutations来更改数据。在组件中通过this.$store.dispatch方法调用actions的方法，当然也可以使用mapMutations来辅助使用。
 
 
 - react
-2015年Redux出现，将 Flux 与函数式编程结合一起，很短时间内就成为了最热门的前端架构。它的出现主要是为解决react中组件之间的通信问题。建议把数据放入到redux中管理，目的就是方便数据统一，好管理。项目一旦出现问题，可以直接定位问题点。组件扩展的时候，后续涉及到传递的问题。本来的话，组件使用自己的数据，但是后来公用组件，还需要考虑如何值传递，在redux中可以存储至少5G以上的数据。
+Redux 主要是为解决react中组件之间的通信问题。建议把数据放入到redux中管理，目的就是方便数据统一，好管理。项目一旦出现问题，可以直接定位问题点。组件扩展时，后续涉及到传递的问题。本来的话，组件使用自己的数据，但是后来公用组件，还需要考虑如何值传递，在redux中可以存储至少5G以上的数据。
 redux的流程
 1. 创建store： 从redux工具中取出createStore去生成一个store。
 
 2. 创建一个reducer，然后将其传入到createStore中辅助store的创建。 
-reducer是一个纯函数，接收当前状态和action，返回一个状态，返回什么，store的状态就是什么，需要注意的是，不能直接操作当前状态，而是需要返回一个新的状态。 想要给store创建默认状态其实就是给reducer一个参数创建默认值。
+reducer是一个纯函数，接收当前状态和 action，返回一个store的状态，需要注意的是，不能直接操作当前状态，而是需要返回一个新的状态。 想要给store创建默认状态其实就是给reducer一个参数创建默认值。
 
 3. 组件通过调用store.getState方法来使用store中的state，挂载在了自己的状态上。
 
@@ -139,7 +139,7 @@ reducer是一个纯函数，接收当前状态和action，返回一个状态，�
 
 5. reducer对action上的标示性信息做出判断后对新状态进行处理，然后返回新状态，这个时候store的数据就会发生改变， reducer返回什么状态，store.getState就可以获取什么状态。
 
-6. 我们可以在组件中，利用store.subscribe方法去订阅数据的变化，也就是可以传入一个函数，当数据变化的时候，传入的函数会执行，在这个函数中让组件去获取最新的状态。
+6. 可以在组件中利用store.subscribe方法去订阅数据的变化，即是传入一个函数，当数据变化时传入的函数会执行，在这个函数中让组件去获取最新的状态。
 
 
 
@@ -147,7 +147,6 @@ reducer是一个纯函数，接收当前状态和action，返回一个状态，�
 ### 总结
 vue和react的核心都是专注于轻量级的视图层，虽然只是解决一个很小的问题，但是它们庞大的生态圈提供了丰富的配套工具，一开始它并不会给你提供全套的配置方案，将所有的功能都一次性给你打包好，它只会给你提供一些简单的核心功能，当你需要做一个更复杂的应用时，再增添相应的工具。例如做一个单页应用的时候才需要用路由；做一个相当庞大的应用，涉及到多组件状态共享以及多个开发者共同协作时，才可能需要大规模状态管理方案。
 框架的存在就是为了帮助我们应对不同的项目复杂度，当我们面对一个大型、复杂的开发项目时，使用太简陋的工具会极大的降低开发人员的生产力，影响工作效率，框架的诞生就是在这些工程中提取一些重复的并且已经受过验证的模式，抽象到一个已经帮你设计好的API封装当中，帮助我们去应对不同复杂度的问题。所以在开发的过程中，选择一个合适的框架就会事半功倍。但是，框架本身也有复杂度，有些框架会让人一时不知如何上手。当你接到一个并不复杂的需求，却使用了很复杂的框架，那么就相当于杀鸡用牛刀，会遇到工具复杂度所带来的副作用，不仅会失去工具本身所带来优势，还会增加各种问题，例如学习成本、上手成本，以及实际开发效率等。
-
 ```
 
 
@@ -209,10 +208,7 @@ redux的reducer纯函数应用（redux的reducer必须是一个纯函数，不�
 `UI=f(data)`，通过这个公式得出，如果要渲染界面，不应该直接操作DOM，而是通过修改数据(state或prop)，数据驱动视图更新
 
 3. 虚拟DOM
-由浏览器的渲染流水线可知，DOM操作是一个昂贵的操作，很耗性能，因此产生了虚拟DOM。虚拟DOM是对真实DOM的映射，React通过新旧虚拟DOM对比，得到需要更新的部分，实现数据的增量更新
-
-
-#### 常用的性能优化方案
+由浏览器的渲染流水线可知，DOM操作很耗性能，因此产生了虚拟DOM。虚拟DOM是对真实DOM的映射，React通过新旧虚拟DOM对比，得到需要更新的部分，实现数据的增量更新
 ```
 
 
@@ -225,10 +221,10 @@ redux的reducer纯函数应用（redux的reducer必须是一个纯函数，不�
 - JSX是react的语法糖，它允许在html中写JS，它不能被浏览器直接识别，需要通过webpack、babel之类的编译工具转换为JS执行
 
 - jsx语法规则
-  1. 虚拟DOM元素**只能有一个根元素**
+  1. 虚拟DOM元素只能有一个根元素
   2. DOM元素标签必须闭合
   3. 定义虚拟DOM时，不能用引号
-  4. 标签中混入JS**表达式**要用`{}`(注意：只能混入表达式，不能混入语句)
+  4. 标签中混入JS 表达式要用`{}`(注意：只能混入表达式，不能混入语句)
   5. 样式的类名指定用`className`，而不是class
   6. 内联样式要用`style={key:value}`的形式写，且样式要用驼峰法
   7. 标签首字母大小写（自定义组件需要大写）
@@ -243,7 +239,7 @@ JS可以被打包工具直接编译，不需要额外转换，jsx需要通过bab
 jsx是js的语法扩展，允许在html中写JS；JS是原生写法，需要通过script标签引入
 
 
-#### 为什么在文件中没有使用react，也要在文件顶部import React from “react”
+#### 为什么在文件中没有使用react，也要在文件顶部import React from "react"
 只要使用了jsx，就需要引用react，因为jsx本质就是React.createElement
 
 注意，在React 17RC 版本后，jsx不一定会被转换为React.createElement了
@@ -251,7 +247,7 @@ jsx是js的语法扩展，允许在html中写JS；JS是原生写法，需要通�
 react17 将会通过编译器babel/typescript转换为
 		import {jsx as _jsx} from 'react/jsx-runtime';
 		function App() { return _jsx('h1', { children: 'hello,lyllovelemon' }); }
-此时就不需要通过import React就能使用jsx了（用react hooks还是需要导入React）
+此时就不需要通过 import React 就能使用jsx（用react hooks还是需要导入React）
 ```
 
 
@@ -410,11 +406,9 @@ ReactDOM.render(<Demo/>, document.getElementById('app'))
 
 #### 组件中的组件
 
-我们可以在其他组件内部引用组件：
-
 ```jsx
 function SayHello() {
-  return <h2>Hello React!</h2>
+  return <h2>Hello React!内部被引用组件</h2>
 }
 
 function Person() {
@@ -435,11 +429,20 @@ ReactDOM.render(<Person />, document.getElementById('root'))
 
 #### constructor
 
->- 如果不初始化state或不进行方法绑定，则不需要为React组件实现构造函数，但使用则必须要调用super(props)，否则会出现bug
->- 构造函数在react的唯二作用
->
->  1. 通过给`this.state`赋值对象来初始化内部state
->  2. 为事件处理函数绑定实例
+```bash
+如果不初始化 state 或不进行方法绑定，则不需要为React组件实现构造函数，但使用则必须要调用super(props)，否则会出现bug
+
+构造函数在react的作用：
+    1. 通过给`this.state`赋值对象来初始化内部state
+    2. 为事件处理函数绑定实例
+  
+
+
+### 调用super(props)的目的是什么
+super() 调用父类的构造方法，有super组件才有自己的this，在组件全局中都可使用this，如果只是constructor而不执行super，之后的this都是错误的，super继承父组件的this
+```
+
+
 
 #### state
 
@@ -480,32 +483,30 @@ ReactDOM.render(<Person />, document.getElementById('root'))
 >	2. 启用并发更新，完成异步渲染。
 >```
 >
->```js
-><script type="text/babel">
+>```jsx
 >class Weather extends React.Component {
->constructor(props) {
->  super(props); //初始化状态
->   this.state = { isHot: false, wind: "微风" };
->   this.oldFun = this.newFun.bind(this); //解决changeWeather中this指向问题
-> }
+>  constructor(props) {
+>    super(props); //初始化状态
+>     this.state = { isHot: false, wind: "微风" };
+>     this.oldFun = this.newFun.bind(this); //解决changeWeather中this指向问题
+>   }
 > 
-> newFun() {
->  const isHot = this.state.isHot;
->   this.setState({ isHot: !isHot });
-> }
+>   newFun() {
+>     const isHot = this.state.isHot;
+>     this.setState({ isHot: !isHot });
+>   }
 > 
-> render() {
->  const { isHot, wind } = this.state;
->   return (
->     <h1 onClick={this.oldFun}>
->       今天天气很{isHot ? "炎热" : "凉爽"}，{wind}
->     </h1>
->   );
-> }
+>   render() {
+>     const { isHot, wind } = this.state;
+>     return (
+>       <h1 onClick={this.oldFun}>
+>         今天天气很{isHot ? "炎热" : "凉爽"}，{wind}
+>       </h1>
+>     );
+>   }
 > }
 > //2.渲染组件到页面
->ReactDOM.render(<Weather />, document.getElementById("test"));
-></script>
+> ReactDOM.render(<Weather />, document.getElementById("test"));
 >```
 >
 >#### 简写
@@ -634,10 +635,7 @@ class ReferenceDemo extends React.Component{
 ### 单向数据流 props
 
 ```bash
-单向数据流意味着数据只有一种方式可以传输到应用程序的其他部分。
-
-
-在 React 中，这意味着：
+单向数据流意味着数据只有一种方式可以传输到应用程序的其他部分。在 React 中意味着：
   - 状态传递给视图和子组件
   - 操作由视图触发
   - 操作可以更新状态
@@ -651,22 +649,28 @@ class ReferenceDemo extends React.Component{
   - 调试起来更容易，因为您知道来自哪里
   - 它更有效，因为库已经知道系统每个部分的边界是什么
   
-状态始终由一个组件拥有。任何受此状态影响的数据都只能影响它下面的组件：它的子组件。
-
+状态始终由一个组件拥有。任何受此状态影响的数据都只能影响它的子组件。
 更改组件的状态不会影响其父组件、同级组件或应用程序中的任何其他组件：仅影响其子组件。
-
 这就是状态经常在组件树中向上移动的原因，以便可以在需要访问它的组件之间共享。
+
+
+
+### 函数组件的props
+- 函数组件可以使用 props 属性，但不能使用 state 和 refs（除非使用Hooks）
+- 函数式组件没有自己的 this，this为 undefined
+- props 属性中的值只读，不可修改
+
+
+### 组件的 状态state 和 属性props 的区别
+1. props 是父组件入的参数，只读不能修改。
+		主要作用是父组件向子组件传递数据。
+		只能通过外部组件主动传入新的 props 来重新渲染子组件。
+2. state 是组件自身设定的参数，可修改数据。
+		显示形态由数据状态(state)和外部参数(props)决定。
+		可通过 this.setState() 方法来修改 state。
 ```
 
 ![单向数据流](./image/18281896-156f51f6a5f6afcd.png)
-
-
-
-#### 函数组件的props
-
-- 函数组件可以使用props属性，但不能使用state和refs（除非使用Hooks）
-- 函数式组件没有自己的this，this为undefined
-- props属性中的值只读，不可修改
 
 ```jsx
 <!-- 准备好一个“容器” -->
@@ -705,7 +709,7 @@ class ReferenceDemo extends React.Component{
 		age:18 //age默认值为18
 	}
 	//渲染组件到页面
-	ReactDOM.render(<Person name="jerry"/>,document.getElementById('test1'))
+	ReactDOM.render(<Person name="jerry"/>, document.getElementById('test1'))
 </script>
 ```
 
@@ -713,58 +717,69 @@ class ReferenceDemo extends React.Component{
 
 ### 合成事件
 
-> ```bash
-> ## React 的事件机制：合成事件 & 原生事件
-> React 的合成事件与浏览器的原生事件不同，也不会直接映射到原生事件。
-> React 事件注册后并没有绑定在对应的真实 DOM 上，而是通过事件代理的方式，将所有的事件都统一绑定在 Document 上。这样的方式不仅减少了内存消耗，还能在组件挂载销毁时统一订阅和移除事件。
-> 另外冒泡到 Document 上的事件也不是原生浏览器事件，而是 React 自己实现的合成事件(SyntheticEvent)。它是浏览器原生事件的跨浏览器包装器，它还是拥有和浏览器原生事件相同的接口，包括阻止事件传递的 `stopPropagation()` 和 `preventDefault()` 等接口。
-> 
-> 
-> ### 什么是合成事件
-> React基于浏览器的事件机制实现了一套自身的事件机制，它符合W3C规范，包括事件触发、事件冒泡、事件捕获、事件合成和事件派发等
-> React事件机制和原生DOM事件流区别：虽然合成事件不是原生DOM事件，但它包含了原生DOM事件的引用，可以通过e.nativeEvent访问
-> 
-> React事件的设计动机(作用)：
-> 1. 在底层磨平不同浏览器的差异，React实现了统一的事件机制，我们不再需要处理浏览器事件机制方面的兼容问题，在上层面向开发者暴露稳定、统一的、与原生事件相同的事件接口
-> 2. React把握了事件机制的主动权，实现了对所有事件的中心化管控
-> 3. React引入事件池避免垃圾回收，在事件池中获取或释放事件对象，避免频繁的创建和销毁
-> 
-> 
-> 
-> ### React 实现合成事件的目的
-> 1. 赋予 React 跨浏览器开发的能力。合成事件是一个跨浏览器原生事件包装器（将不同浏览器的行为合并为一个 API），抹平了浏览器之间的兼容问题。
-> 2. 不仅减少了内存，还能在组件挂载销毁时统一订阅和移除事件（事件委托）：
-> 		- 对于原生浏览器事件来说，浏览器会给每个监听器创建一个事件对象，如果有很多事件需要监听，那么就需要分配很多的事件对象，造成高额的内存分配问题。
-> 		- 但对于合成事件来说，有一个事件池专门来管理它们的创建和销毁，当事件需要被使用时，就会从事件池中复用对象，事件回调结束后，就会销毁事件对象上的属性，从而便于下次复用事件对象（简化了事件处理和回收机制）。
-> 		（但在 React17 中移除类库事件池）
-> 		- 记录当前事件发生的状态，即记录事件执行的上下文，这便于 React 来处理不同事件的优先级，达到谁优先级高先处理谁的目的，这也实现了 React 的增量渲染思想，可以预防掉帧，同时达到页面更顺滑的目的，提升用户体验。
-> 		
-> 
-> ### 事件处理
-> - 通过onXxx属性指定事件处理函数(注意大小写)
->     - React使用的是自定义(合成)事件, 而不是使用的原生DOM事件
->     - React中的事件是通过事件委托方式处理的(委托给组件最外层的元素)
-> - 通过event.target得到发生事件的DOM元素对象
-> - 注意：不要过度使用ref，可以把数据保存在state中
-> ```
->
-> ```jsx
-> myRef = React.createRef()
-> //展示左侧输入框的数据
-> showData = (event) => {
->   console.log(event.target);
->   alert(this.myRef.current.value);
-> }
-> 
-> render(){
->   return (
->     <div>
->       <input ref={this.myRef} type="text" placeholder="点击按钮提示数据"/>&nbsp;
->       <button onClick={this.showData}>点我提示左侧的数据</button>&nbsp;
->     </div>
->   )
-> }
-> ```
+```bash
+## React 的事件机制：合成事件 & 原生事件
+React 的合成事件与浏览器的原生事件不同，也不会直接映射到原生事件。
+React 事件注册后并没有绑定在对应的真实 DOM 上，而是通过事件代理的方式将所有的事件都统一绑定在 Document 上。这样的方式不仅减少了内存消耗，还能在组件挂载销毁时统一订阅和移除事件。
+另外冒泡到 Document 上的事件也不是原生浏览器事件，而是 React 自己实现的合成事件(SyntheticEvent)。它是浏览器原生事件的跨浏览器包装器，拥有和浏览器原生事件相同的接口，包括阻止事件传递的 `stopPropagation()` 和 `preventDefault()` 等接口。
+
+
+### 什么是合成事件
+React基于浏览器的事件机制实现了一套自身的事件机制，它符合W3C规范，包括事件触发、事件冒泡、事件捕获、事件合成和事件派发等
+React事件机制和原生DOM事件流区别：虽然合成事件不是原生DOM事件，但它包含了原生DOM事件的引用，可以通过e.nativeEvent访问
+
+React事件的设计动机(作用)：
+1. 在底层抹平不同浏览器的差异，实现统一的事件机制，不再需要处理浏览器事件机制方面的兼容问题，在上层面向开发者暴露稳定、统一的、与原生事件相同的事件接口
+2. React把握了事件机制的主动权，实现对所有事件的中心化管控
+3. React引入事件池避免垃圾回收，在事件池中获取或释放事件对象，避免频繁的创建和销毁
+
+
+
+### React 实现合成事件的目的
+1. 赋予 React 跨浏览器开发的能力。合成事件是一个跨浏览器原生事件包装器（将不同浏览器的行为合并为一个 API），抹平浏览器之间的兼容问题。
+2. 不仅减少了内存，还能在组件挂载销毁时统一订阅和移除事件（事件委托）：
+		- 对于原生浏览器事件来说，浏览器会给每个监听器创建一个事件对象，如果有很多事件需要监听，那么就需要分配很多的事件对象，造成高额的内存分配问题。
+		- 但对于合成事件来说，有一个事件池专门来管理它们的创建和销毁，当事件需要被使用时，就会从事件池中复用对象，事件回调结束后，就会销毁事件对象上的属性，从而便于下次复用事件对象（简化了事件处理和回收机制）。
+		（但在 React17 中移除类库事件池）
+		- 记录当前事件发生的状态，即记录事件执行的上下文，这便于 React 来处理不同事件的优先级，达到谁优先级高先处理谁的目的，这也实现了 React 的增量渲染思想，可以预防掉帧，同时达到页面更顺滑的目的，提升用户体验。
+		
+
+### 事件处理
+- 通过onXxx属性指定事件处理函数(注意大小写)
+    - React使用的是自定义(合成)事件, 而不是使用的原生DOM事件
+    - React中的事件是通过事件委托方式处理的(委托给组件最外层的元素)
+- 通过event.target得到发生事件的DOM元素对象
+- 注意：不要过度使用ref，可以把数据保存在state中
+```
+
+```jsx
+myRef = React.createRef()
+//展示左侧输入框的数据
+showData = (event) => {
+  console.log(event.target);
+  alert(this.myRef.current.value);
+}
+
+render(){
+  return (
+    <div>
+      <input ref={this.myRef} type="text" placeholder="点击按钮提示数据"/>&nbsp;
+      <button onClick={this.showData}>点我提示左侧的数据</button>&nbsp;
+    </div>
+  )
+}
+```
+
+### 事件处理-修改this指向
+
+```bash
+1. 通过bind方法进行原地绑定，从而改变this的指向
+2. 通过创建箭头函数
+3. 在constructor中提前对事件进行绑定（即通过在构造函数中对事件绑定，但会替换掉原来的事件名称，且给其事件的this会改变，因为调用时是在类中调用）
+4. 将事件调用的写法改成箭头函数的形式，因为箭头函数没有自身的this，调用的this会是上层作用域的this
+```
+
+
 
 ### 受控/非受控组件
 
@@ -849,7 +864,7 @@ class ReferenceDemo extends React.Component{
 ```bash
 要使用内联样式属性设置元素的样式，值必须是 JavaScript 对象
 
-**注意**：在 JSX 中，JavaScript 表达式写在花括号内，由于 JavaScript 对象也使用花括号，所以样式写在两组花括号内 `{{}}`。
+注意：在 JSX 中 JS 表达式写在花括号内，由于 JS 对象也使用花括号，所以样式写在两组花括号内 `{{}}`。
 
 由于内联 CSS 是在 JavaScript 对象中编写的，因此带有连字符分隔符的属性，例如 `background-color`，必须使用驼峰式语法编写
 还可以创建带有样式信息的对象，并在样式属性中引用它
@@ -877,10 +892,10 @@ const Header = () => {
 
 #### CSS 样式表
 
-可以在单独的文件中编写 CSS 样式，只需使用 `.css` 文件扩展名保存文件，然后将其导入您的应用程序
+可以在单独的文件中编写 CSS 样式，只需使用 `.css` 文件扩展名保存文件，然后将其导入到 jsx 中
 
-```scss
-// index.scss
+```css
+// index.css
 body {
   background-color: plum;
   color: white;
@@ -890,7 +905,7 @@ body {
 }
 ```
 
-```js
+```jsx
 // main.js
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -1150,57 +1165,89 @@ ReactDOM.render(<Header />, document.getElementById('root'))
 
 #### React 的 DOM Diff 算法原理
 
-> ```bash
-> ## React 的 DOM Diff 算法原理
-> React 组件在首次渲染后，会创建一颗对应的虚拟 DOM 树，当组件的 props 或 state 变化时，React 将会调用 render() 方法，并构建一颗新的虚拟 DOM 树，React 需要基于这两棵树之间的差别来判断真正变化的部分，进而有效率地更新真实 DOM 数据，以保证当前 UI 与最新的树保持同步，这就涉及 Diff 算法的优劣问题。
-> Diff 算法是指生成更新补丁的方式，主要应用于虚拟 DOM 树变化后，更新真实 DOM。所以 diff 算法一定存在这样一个过程：
-> 		触发更新 -> 生成补丁 -> 应用补丁
-> 
-> ### 传统 Diff 算法：
-> 传统的diff算法触发虚拟DOM变更遍历，采用了深度优先遍历算法，通过循环递归对节点进行依次对比，算法复杂度达到 O(n^3)，效率较低。
-> 
-> ### React 的 Diff 算法：
-> React的Diff算法是：将 Virtual DOM 树转换成实际 DOM 树的最少操作化的过程。
-> React为了优化效率，采用分治的方式，将单一节点比对转化为三种类型节点(树、组件以及节点元素)的对比，将 O(n^3)复杂度 转化为 O(n)复杂度，以此提升效率。
-> 
-> 1. Tree Diff（树层级比较）
-> 对两颗 Virtual DOM 树只对同一层级的节点进行比较。如果比较发现对应的节点无法匹配或不存在，则该节点及子节点会被完全删除，不再进行比较。这样只需遍历一次就能完成整颗 DOM 树的比较。
-> 如此，Diff 算法只简单考虑同层级的节点位置变换，如果是跨层级，只有创建新节点和删除旧节点的操作。
-> 
-> 2. Component Diff（组件比较）
-> 如果两个组件时同一类型，则进行树比较；
-> 如果两个组件为不同类型，则会判定为脏组件，则直接放入到补丁中（替换整个组件的所有节点，将会生成不同的树形结构）。
-> 
-> 3. Element Diff（节点元素比较）
-> 主要发生在同一层级中，通过标记节点操作生成补丁，节点操作对应真实的 DOM 剪裁操作：
->   - 插入：对于新的节点，直接插入；
->   - 删除：对于不能复用和实际移除的节点，则删除旧的，重新创建新的；
->   - 移动：对于添加唯一 Key 进行区分的同一组子节点，可以做到移动位置即可。
-> 
-> 
-> 
-> ### JavaScript 链表的作用：React 16 引入的 Fiber 架构的更新算法
-> Fiber 英文意思为纤维化，即将任务进行细化，它把一个耗时长的任务分成很多小片，每一个小片的运行时间很短，虽然总时间依然很长，但是在每个小片执行完之后，都给其他任务一个执行的机会，这样唯一的线程就不会被独占，其他任务依然有运行的机会，React 中的 Fiber 就把整个 VDOM 的更新过程碎片化。
-> 
-> 在之前 React 的 render() 方法会接收一个 虚拟DOM 对象和一个真实的 容器DOM 作为 虚拟DOM 渲染完成后的挂载节点，其主要作用是将 虚拟DOM 渲染为 真实DOM 并挂载到容器下，这个方法在更新时是进行递归操作的，如果在更新的过程中有大量的节点需要更新，就会出现长时间占用 JS 主线程的情况，并且整个递归过程是无法被打断的，由于 JS 线程和 GUI 线程是互斥的，所以大量更新的情况下会看到界面有些卡顿。
-> 
-> Fiber 架构主要是解决两个问题：一是保证任务在浏览器空闲时执行，二是将任务进行碎片化。
-> 
-> JS 中有一个实验性质的方法 `requestIdleCallback(callback)`，它可以传入一个回调函数，回调函数能够收到一个 deadline 对象，通过该对象的 timeRemaining() 方法可以获取到当前浏览器的空闲时间，如果有空闲时间，那么就可以执行一小段任务，如果时间不足，则继续 requestIdleCallback，等到浏览器有空闲时间时再接着执行，这样就实现了浏览器空闲时执行。
-> 
-> 但是 虚拟DOM 是树结构，当任务被打断后，树结构无法恢复之前的任务继续执行。
-> Fiber 架构为了使整个更新过程可随时暂停恢复，节点与树分别采用了 FiberNode 与 FiberTree 进行重构。FiberNode 使用了双链表结构，链表中就包含三个指针，parent 指向其父 Fiber 节点，child 指向其子 Fiber 节点，sibling 指向其兄弟 Fiber 节点，一个 Fiber 节点对应一个任务节点，这样就可以直接找到兄弟节点与子节点，继而可以恢复任务的执行。
-> 整个过程由 current 与 workInProgress 两株树双缓冲完成。workInProgress 更新完成后，再通过修改 current 相关指针指向新节点。
-> 
-> 
-> ### Vue 的 Preact 与 React 的 diff 算法对比
-> Preact 的 Diff 算法相较于 React，整体设计思路相似，但最底层的元素采用了真实 DOM 对比操作，也没有采用 Fiber 设计。Vue 的 Diff 算法整体也与 React 相似，同样未实现 Fiber 设计。
-> 然后进行横向比较，React 拥有完整的 Diff 算法策略，且拥有随时中断更新的时间切片能力，在大批量节点更新的极端情况下，拥有更友好的交互体验。
-> Preact 可以在一些对性能要求不高，仅需要渲染框架的简单场景下应用。
-> Vue 的整体 diff 策略与 React 对其，虽然缺乏事件切片能力，但这并不意味着 Vue 的性能更差，因为 VUe3 初期引入过，后期因为收益不高移除掉了。除了高帧率动画，在 Vue 中其他的场景几乎都可以使用防抖和节流去提高响应性能。
-> ```
->
-> ![image-20210914141112782](./image/image-20210914141112782.png)
+```bash
+## React 的 DOM Diff 算法原理
+React 组件在首次渲染后，会创建一颗对应的虚拟 DOM 树，当组件的 props 或 state 变化时，React 将会调用 render() 方法，并构建一颗新的虚拟 DOM 树，React 需要基于这两棵树之间的差别来判断真正变化的部分，进而有效率地更新真实 DOM 数据，以保证当前 UI 与最新的树保持同步，这就涉及 Diff 算法的优劣问题。
+Diff 算法是指生成更新补丁的方式，主要应用于虚拟 DOM 树变化后，更新真实 DOM。所以 diff 算法一定存在这样一个过程：
+		触发更新 -> 生成补丁 -> 应用补丁
+
+### 传统 Diff 算法：
+传统的diff算法触发虚拟DOM变更遍历，采用了深度优先遍历算法，通过循环递归对节点进行依次对比，算法复杂度达到 O(n^3)，效率较低。
+
+### React 的 Diff 算法：
+React的Diff算法是：将 Virtual DOM 树转换成实际 DOM 树的最少操作化的过程。
+React为了优化效率，采用分治的方式，将单一节点比对转化为三种类型节点(树、组件以及节点元素)的对比，将 O(n^3)复杂度 转化为 O(n)复杂度，以此提升效率。
+
+1. Tree Diff（树层级比较）
+对两颗 Virtual DOM 树只对同一层级的节点进行比较。如果比较发现对应的节点无法匹配或不存在，则该节点及子节点会被完全删除，不再进行比较。这样只需遍历一次就能完成整颗 DOM 树的比较。
+如此，Diff 算法只简单考虑同层级的节点位置变换，如果是跨层级，只有创建新节点和删除旧节点的操作。
+
+2. Component Diff（组件比较）
+如果两个组件时同一类型，则进行树比较；
+如果两个组件为不同类型，则会判定为脏组件，则直接放入到补丁中（替换整个组件的所有节点，将会生成不同的树形结构）。
+
+3. Element Diff（节点元素比较）
+主要发生在同一层级中，通过标记节点操作生成补丁，节点操作对应真实的 DOM 剪裁操作：
+  - 插入：对于新的节点，直接插入；
+  - 删除：对于不能复用和实际移除的节点，则删除旧的，重新创建新的；
+  - 移动：对于添加唯一 Key 进行区分的同一组子节点，可以做到移动位置即可。
+
+
+
+### JavaScript 链表的作用：React 16 引入的 Fiber 架构的更新算法
+Fiber 英文意思为纤维化，即将任务进行细化，它把一个耗时长的任务分成很多小片，每一个小片的运行时间很短，虽然总时间依然很长，但是在每个小片执行完之后，都给其他任务一个执行的机会，这样唯一的线程就不会被独占，其他任务依然有运行的机会，React 中的 Fiber 就把整个 VDOM 的更新过程碎片化。
+
+在之前 React 的 render() 方法会接收一个 虚拟DOM 对象和一个真实的 容器DOM 作为 虚拟DOM 渲染完成后的挂载节点，其主要作用是将 虚拟DOM 渲染为 真实DOM 并挂载到容器下，这个方法在更新时是进行递归操作的，如果在更新的过程中有大量的节点需要更新，就会出现长时间占用 JS 主线程的情况，并且整个递归过程是无法被打断的，由于 JS 线程和 GUI 线程是互斥的，所以大量更新的情况下会看到界面有些卡顿。
+
+Fiber 架构主要是解决两个问题：一是保证任务在浏览器空闲时执行，二是将任务进行碎片化。
+
+JS 中 `requestIdleCallback(callback)` 方法可以传入一个回调函数，回调函数能够收到一个 deadline 对象，通过该对象的 timeRemaining() 方法可以获取到当前浏览器的空闲时间，如果有空闲时间就执行一小段任务，如果时间不足则继续 requestIdleCallback，等到浏览器有空闲时间再接着执行，这样就实现了浏览器空闲时执行。
+
+但是 虚拟DOM 是树结构，当任务被打断后，树结构无法恢复之前的任务继续执行。
+Fiber 架构为了使整个更新过程可随时暂停恢复，节点与树分别采用了 FiberNode 与 FiberTree 进行重构。FiberNode 使用了双链表结构，链表中就包含三个指针，parent 指向其父 Fiber 节点，child 指向其子 Fiber 节点，sibling 指向其兄弟 Fiber 节点，一个 Fiber 节点对应一个任务节点，这样就可以直接找到兄弟节点与子节点，继而可以恢复任务的执行。
+整个过程由 current 与 workInProgress 两株树双缓冲完成。workInProgress 更新完成后，再通过修改 current 相关指针指向新节点。
+
+
+### Vue 的 Preact 与 React 的 diff 算法对比
+Preact 的 Diff 算法相较于 React，整体设计思路相似，但最底层的元素采用了真实 DOM 对比操作，也没有采用 Fiber 设计。Vue 的 Diff 算法整体也与 React 相似，同样未实现 Fiber 设计。
+然后进行横向比较，React 拥有完整的 Diff 算法策略，且拥有随时中断更新的时间切片能力，在大批量节点更新的极端情况下，拥有更友好的交互体验。
+Preact 可以在一些对性能要求不高，仅需要渲染框架的简单场景下应用。
+Vue 的整体 diff 策略与 React 对其，虽然缺乏事件切片能力，但这并不意味着 Vue 的性能更差，因为 VUe3 初期引入过，后期因为收益不高移除掉了。除了高帧率动画，在 Vue 中其他的场景几乎都可以使用防抖和节流去提高响应性能。
+
+
+
+### Fiber 总结
+Fiber 本质是基于链表的增量式协调模型。其核心目标并非单纯提升性能，而是重构架构以实现：
+	- 线程碎片化、可中断的异步渲染：将同步递归的调和过程拆解为可暂时/恢复的异步任务
+	- 优先级调度：高优先级任务（如用户输入）可打断低优先级任务（如数据更新）
+	- 并发模型基础：为 Suspense、useTransition 等提供底层支持
+
+Fiber 节点的核心设计：每个组件对应一个 Fiber 构成双向链表树结构，包含以下关键信息：
+	- 组件类型：函数组件、类组件或原生标签
+	- 状态与副作用：Hooks状态（如useState）、生命周期标记（如useEffect）
+	- 调度信息：任务优先级(lane模型)、到期时间（expirationTime）
+	- 链表指针：child（子节点）、sibling（兄弟节点）、return（父节点）
+```
+
+```js
+// Fiber 节点结构简化示例
+const fiberNode = {
+  tag: FunctionComponent, // 组件类型
+  stateNode: ComponentFunc, // 组件实例或 DOM 节点
+  memoizedState: {
+    /* Hooks 链表 */
+  },
+  pendingProps: {
+    /* 待处理 props */
+  },
+  lanes: Lanes.HighPriority, // 任务优先级
+  child: nextFiber, // 子节点
+  sibling: null, // 兄弟节点
+  return: parentFiber, // 父节点
+}
+```
+
+![image-20210914141112782](./image/image-20210914141112782.png)
 
 #### key的渲染机制
 
@@ -1832,39 +1879,48 @@ export default NotFoundPage
 
 ### 组件通信方式
 
-> ```bash
-> ## 组件间关系
->   - 父子组件
->   - 兄弟组件（非嵌套组件）
->   - 祖孙组件（跨级组件）
-> 
-> 
-> ## 组件通信方式
->   1. props：children props、render props
->   2. 消息发布-订阅：pubs-sub、event
->   3. 集中式管理：redux、dva
->   4. conText：生产者-消费者模式
-> 
-> 
-> ## 推荐使用的组件通信方式
-> 	- 父子组件：props
-> 	- 兄弟组件：消息发布-订阅、集中式观念里
-> 	- 祖孙组件：消息发布-订阅、集中式管理、conText(开发用得少，封装插件用得多)
-> 	
-> 	
-> 	
-> ## 面向组件跨层级通信
-> 1. 在父与子的情况下，因为 react 的设计实际上就是传递 props 即可。那么场景体现在容器组件与展示组件之间，通过 props 传递 state，让展示组件受控。
-> 
-> 2. 在子与父的情况下，有两种方式，分别是回调函数与实例函数。
->   - 回调函数，比如输入框向父级组件返回输入内容，按钮向父级组件传递点击事件等。
->   - 实例函数的情况有些特别，主要是在父组件中通过 react 的 ref API 获取子组件的实例，然后是通过实例调用子组件的实例函数。这种方式在过去常见于 Modal 框的显示与隐藏。这种代码风格有着 JQuery 时代特征，在现在比较少见，目前流行做法是希望组件的所有能力都可以通过 props 控制。
-> 
-> 3. 多层级的数据通信，有两种情况。第一种是容器中包含了多层子组件，需要最底部的子组件与顶部组件进行通信。在这种情况下，如果不断传 props 或回调函数，不仅代码层级太深，后续也不好维护。第二种是两个组件不相关，在整个 react 的组件树的两侧，完全不想交。那么基于多层级间的通信一般有三种方案。
-> - 第一个是使用 react 的 Context API，最常见的用途是做语言包国际化。
-> - 第二个是使用全局变量与事件。全局变量通过在 windows 上挂载新对象的方式实现，这种方式一般用于临时存储值，这种值用于计算或者上报，缺点是渲染显示时容易引发错误。全局事件就是使用 document 的自定义事件，因为绑定事件的操作一般会放在组件的 componentDidMount 中，所以一般要求两个组件都已经在页面中加载显示，这就导致了一定的时序依赖。如果加载时机存在差异，那么很有可能导致两者都没对应响应时间。
-> - 第三个是使用状态管理框架，比如 Flux、Redux及 Mobx。优点是由于引入了状态管理，使得项目的开发模式与代码结构得以约束，缺点是学习成本相对较高。
-> ```
+```bash
+### 组件间关系
+  - 父子组件
+  - 兄弟组件（非嵌套组件）
+  - 祖孙组件（跨级组件）
+
+
+### 组件通信方式
+  1. props：children props、render props
+  2. 消息发布-订阅：pubs-sub、event
+  3. 集中式管理：redux、dva
+  4. conText：生产者-消费者模式
+
+
+### 推荐使用的组件通信方式
+	- 父子组件：props
+	- 兄弟组件：消息发布-订阅、集中式观念里
+	- 祖孙组件：消息发布-订阅、集中式管理、conText(开发用得少，封装插件用得多)
+	
+	1. 正向传值用props
+  2. 逆向传值用函数传值，通过事件调用函数传递
+  3. 同级传值用pubsub-js
+      - 用`pubsub.publish(事件名, 数据)`来抛出数据
+      - 用`pubsub.subscribe(监听的事件, ()=>{})`接收数据
+  4. 跨组件传递数据使用context
+      要用context进行跨组件传值用createContext()方法，此方法有两个对象，provider是生产者，Consumer是消费者
+	
+	
+### 面向组件跨层级通信
+1. 在父与子的情况下，因为 react 的设计实际上就是传递 props 即可。那么场景体现在容器组件与展示组件之间，通过 props 传递 state，让展示组件受控。
+
+2. 在子与父的情况下，有两种方式，分别是回调函数与实例函数。
+  - 回调函数，比如输入框向父级组件返回输入内容，按钮向父级组件传递点击事件等。
+  - 实例函数的情况有些特别，主要是在父组件中通过 react 的 ref API 获取子组件的实例，然后是通过实例调用子组件的实例函数。这种方式在过去常见于 Modal 框的显示与隐藏。这种代码风格有着 JQuery 时代特征，在现在比较少见，目前流行做法是希望组件的所有能力都可以通过 props 控制。
+
+3. 多层级的数据通信，有两种情况。第一种是容器中包含了多层子组件，需要最底部的子组件与顶部组件进行通信。在这种情况下，如果不断传 props 或回调函数，不仅代码层级太深，后续也不好维护。第二种是两个组件不相关，在整个 react 的组件树的两侧，完全不想交。那么基于多层级间的通信一般有三种方案。
+- 第一个是使用 react 的 Context API，最常见的用途是做语言包国际化。
+- 第二个是使用全局变量与事件。全局变量通过在 windows 上挂载新对象的方式实现，这种方式一般用于临时存储值，这种值用于计算或者上报，缺点是渲染显示时容易引发错误。全局事件就是使用 document 的自定义事件，因为绑定事件的操作一般会放在组件的 componentDidMount 中，所以一般要求两个组件都已经在页面中加载显示，这就导致了一定的时序依赖。如果加载时机存在差异，那么很有可能导致两者都没对应响应时间。
+- 第三个是使用状态管理框架，比如 Flux、Redux及 Mobx。优点是由于引入了状态管理，使得项目的开发模式与代码结构得以约束，缺点是学习成本相对较高。
+```
+
+
 
 ### Context
 
@@ -2174,116 +2230,48 @@ export default NotFoundPage
 
 ## 函数式组件
 
-> ```bash
-> ## 函数式组件
-> 
-> ### 类组件遇到的问题
-> 1. 在组件之间复用状态逻辑很难
-> 可以通过拆分组件的方式做到复用 UI，但却没有一个简洁的方式在组件间复用状态的处理逻辑；
-> 如果我们需要抽离一些重复的状态逻辑处理，就会选择 HOC  或者 render props  的方式。
-> 这类方式需要重新组织组件结构，改造麻烦的同时也使代码难以理解。
-> 
-> 2. 组件嵌套地狱问题
-> 在实现复杂业务逻辑时，大量使用 HOC、render props 等高阶技巧组成的代码充斥着组件结构，打开 React DevTools 就会明显地发现正常组件被各种由 providers、高阶组件、render props 等其它抽象层组成包裹，形成“嵌套地狱”。
-> 带来的问题是代码难以理解，也提高了 debug 的难度。
-> 
-> 3. 函数组件的局限性
-> React 16.8 之前，函数式组件不能维护内部状态，如果需要一个有状态管理的组件，就必须转成 class 的方式去创建一个组件，并且一旦 class 组件变得复杂，那么逻辑四散的代码就不容易维护。
-> 
-> 4. class 组件通过 Babel 编译出来的代码相对函数组件多得多
-> 
-> 
-> 
-> ### Hooks解决的问题
-> 1. 组件间的状态、逻辑复用
->   在 hooks 出现之前，react先后尝试 mixins 混入，HOC 高阶组件，render-props 等模式
->   但是都有各自的问题，比如 mixin 的数据来源不清晰，高阶组件的嵌套问题等
-> 2. class 组件自身问题
-> 	class 组件提供了许多东西，有不可忽视的学习成本，比如各种生命周期、this指向问题等
-> 	hooks 可实现在不编写 class 的情况下使用 state 以及其他 React 特性
-> 3. Hooks 的函数式编程可以减少组件的嵌套
-> 
-> 
-> ### hook 注意事项
-> - hooks 只能在函数组件中使用。
-> - 在函数组件渲染时 Hooks API 是依赖于固定顺序调用的，底层通过单向链表维护队列。
-> - hooks 实现的源码在 react-reconciler 库。
-> 
-> 
-> ### Hooks 的原理
-> - 函数式组件的底层心智模式与 Class 组件不同，函数式组件捕获了渲染所使用的值。
-> - 函数组件首先是一个普通函数，每一次渲染都是函数执行一遍。函数每一次执行都会生成本次独有的执行上下文，相对应的，React 重新渲染组件时都有它自己独立的变量及函数，包括 Props 和 State 以及它自己的事件处理函数。
-> - 其次 React Hooks API 赋予了函数内被 Hooks API 包裹的某些变量独特的意义：缓存值和函数、值变更触发重渲染等（通过 useMemo、useCallback、useEffect等）。
-> - 每一个组件内的函数（包括事件处理函数、effects、定时器或者 API 调用等等）会捕获某次渲染中定义的 props 和 state。
-> 
-> 
-> 
-> ### Hooks 使用规则
-> #### 1. 只能在函数最外层调用 Hook，不要在循环、条件判断或者子函数中调用。
-> react规则的限制是为了保证 react 对函数组件的正确重渲染。
-> 而 react 源码实现中是通过单向链表维护 list 队列的方式存储 hooks API 的调用顺序。
-> 因为函数式组件在每次重新渲染时，函数会重新执行，这需要保证每次执行时，hooks API 的调用顺序是保持一致的。
-> 
-> 在组件首次渲染时，hooks 依次插入链表之中；
-> 再次渲染时，执行中 hooks API 则从之前的链表队列中一一关联对照；
-> 而如果此时在条件判断等逻辑中调用了 hooks，当条件不满足时，hooks 调用的对应关系就会不一致，从而产生 Bug。
-> 在下一次函数组件更新，hooks 链表结构将会破坏。
-> 
-> hooks 的基本操作可以分为 mount(首次挂载)阶段和 update(更新)阶段。
->   在 mount 阶段，初始化新的 hooks 队列，添加到 fiber 流中；
->   在 update 阶段，则将当前 fiber 的 hooks 队列克隆到 workProgressHook。
-> 以下为mount阶段-mountWorkInProgressHook函数生成hook的逻辑：
-> 
-> 
-> #### 2. 只能在 React 的函数组件或自定义的 Hooks 中调用 hook，不要在其他 JavaScript 函数中调用。
-> 2.1 不能在 react 的 Class 组件中使用
-> react渲染时，判断一个组件是 Class 组合和函数组件后，是两套不同的处理逻辑，hooks API 只支持函数组件。
-> Class 组件中通过声明周期函数完成，也无法达成第一准则——只能在最外层函数中调用 hooks API。
-> 
-> 2.2 在其他 JS 函数中调用无效
-> - react 库只是定义 react 语法的 API 封装，绝大多数的实现都存在于 React-DOM 等渲染器中。实际功能是渲染时通过 "依赖注入" 的方式加载的。
-> - 在 react 组件之外的其他普通 JS 函数中，只是引入 React.useState() 等 API 直接调用是无效的。它不是一个 React 组件，就不会被渲染器识别，未被依赖注入 React-DOM 渲染器上的 dispatcher，自然无法被正常执行。
-> 
-> 2.3 在自定义的 hooks 中可以使用
-> - 自定义 hooks 在函数组件中使用，且只在最外层函数中调用 hooks，就可以在自定义 hook 执行后里面调用 hook API 平铺添加到当前函数组件中。再次渲染时，可以满足调用顺序是保持一致的。
-> 
-> 
-> #### 需要遵从的实践规则
-> - 你可能不需要派生 state，任何数据，都要保证只有一个数据来源，而且避免直接复制它。
-> - useMemo、useCallback 是作为性能优化的方式存在，不要作为阻止渲染的语义化保证。
-> - 一个 hooks 函数尽量只做一件事，每个 effect 内功能不能过于耦合，尽量控制一个 effect 只做一件事。
-> - 代码结构：功能划分优于结构化划分；逻辑聚合，获得更高的代码可读性。
-> - 尽量避免过早地增加抽象逻辑。
-> ```
-> 
-> #### mount阶段-mountWorkInProgressHook函数生成hook的逻辑
-> 
-> ```ts
->// React 部分源码
-> let currentlyRenderingFiber: Fiber = (null: any); // 当前Fiber
->let workInProgressHook = null; // 指向当前hook，存储当前hook相关信息
-> 
-> // 初次渲染，每一个自定义hook都会调用 mountWorkInProgressHook 函数
-> function mountWorkInProgressHook(){
->   const hook = {
->     memoizedState: null, // 记忆存储的state，
->     baseState: null, // 缓存的基准state
->     baseQueue: null, // 缓存的基准队列
->     queue: null, // 调度的操作队列
->     next: null, // 指向下一个hook对象
->   };
-> 
->   if (workInProgressHook === null) {
->     // 如果链表为空，则是list队列中的第一个hook，直接添加
->     // 且添加到当前fiber的memoizedState中；
->     currentlyRenderingFiber.memoizedState = workInProgressHook = hook;
->   } else {
->     // 否则，则向链表尾部增加hook
->     workInProgressHook = workInProgressHook.next = hook;
->   }
->   return workInProgressHook;  // 返回当前hook
-> }
-> ```
+```bash
+### 类组件遇到的问题
+1. 在组件之间复用状态逻辑很难
+可以通过拆分组件的方式做到复用 UI，但却没有一个简洁的方式在组件间复用状态的处理逻辑；
+如果我们需要抽离一些重复的状态逻辑处理，就会选择 HOC  或者 render props  的方式。
+这类方式需要重新组织组件结构，改造麻烦的同时也使代码难以理解。
+
+2. 组件嵌套地狱问题
+在实现复杂业务逻辑时，大量使用 HOC、render props 等高阶技巧组成的代码充斥着组件结构，打开 React DevTools 就会明显地发现正常组件被各种由 providers、高阶组件、render props 等其它抽象层组成包裹，形成“嵌套地狱”。
+带来的问题是代码难以理解，也提高了 debug 的难度。
+
+3. 函数组件的局限性
+React 16.8 之前，函数式组件不能维护内部状态，如果需要一个有状态管理的组件，就必须转成 class 的方式去创建一个组件，并且一旦 class 组件变得复杂，那么逻辑四散的代码就不容易维护。
+
+4. class 组件通过 Babel 编译出来的代码相对函数组件多得多
+
+
+
+### Hooks解决的问题
+1. 组件间的状态、逻辑复用
+  在 hooks 出现之前，react先后尝试 mixins 混入，HOC 高阶组件，render-props 等模式
+  但是都有各自的问题，比如 mixin 的数据来源不清晰，高阶组件的嵌套问题等
+2. class 组件自身问题
+	class 组件提供了许多东西，有不可忽视的学习成本，比如各种生命周期、this指向问题等
+	hooks 可实现在不编写 class 的情况下使用 state 以及其他 React 特性
+3. Hooks 的函数式编程可以减少组件的嵌套
+
+
+### hook 注意事项
+- hooks 只能在函数组件中使用。
+- 在函数组件渲染时 Hooks API 是依赖于固定顺序调用的，底层通过单向链表维护队列。
+- hooks 实现的源码在 react-reconciler 库。
+
+
+### Hooks 的原理
+- 函数式组件的底层心智模式与 Class 组件不同，函数式组件捕获了渲染所使用的值。
+- 函数组件首先是一个普通函数，每一次渲染都是函数执行一遍。函数每一次执行都会生成本次独有的执行上下文，相对应的，React 重新渲染组件时都有它自己独立的变量及函数，包括 Props 和 State 以及它自己的事件处理函数。
+- 其次 React Hooks API 赋予了函数内被 Hooks API 包裹的某些变量独特的意义：缓存值和函数、值变更触发重渲染等（通过 useMemo、useCallback、useEffect等）。
+- 每一个组件内的函数（包括事件处理函数、effects、定时器或者 API 调用等等）会捕获某次渲染中定义的 props 和 state。
+```
+
+
 
 ### hooks注意事项
 
@@ -2315,7 +2303,92 @@ export default NotFoundPage
   - Hooks 只能在组件的顶层调用。
   - Hooks 不能是有条件的
 **注意**：钩子在 React 类组件中不起作用。
+```
 
+#### Hooks 使用规则
+
+```bash
+#### 1. 只能在函数最外层调用 Hook，不要在循环、条件判断或者子函数中调用。
+react规则的限制是为了保证 react 对函数组件的正确重渲染。
+而 react 源码实现中是通过单向链表维护 list 队列的方式存储 hooks API 的调用顺序。
+因为函数式组件在每次重新渲染时，函数会重新执行，这需要保证每次执行时，hooks API 的调用顺序是保持一致的。
+
+在组件首次渲染时，hooks 依次插入链表之中；
+再次渲染时，执行中 hooks API 则从之前的链表队列中一一关联对照；
+而如果此时在条件判断等逻辑中调用了 hooks，当条件不满足时，hooks 调用的对应关系就会不一致，从而产生 Bug。
+在下一次函数组件更新，hooks 链表结构将会破坏。
+
+hooks 的基本操作可以分为 mount(首次挂载)阶段和 update(更新)阶段。
+  在 mount 阶段，初始化新的 hooks 队列，添加到 fiber 流中；
+  在 update 阶段，则将当前 fiber 的 hooks 队列克隆到 workProgressHook。
+以下为mount阶段-mountWorkInProgressHook函数生成hook的逻辑：
+
+
+#### 2. 只能在 React 的函数组件或自定义的 Hooks 中调用 hook，不要在其他 JavaScript 函数中调用。
+2.1 不能在 react 的 Class 组件中使用
+react渲染时，判断一个组件是 Class 组合和函数组件后，是两套不同的处理逻辑，hooks API 只支持函数组件。
+Class 组件中通过声明周期函数完成，也无法达成第一准则——只能在最外层函数中调用 hooks API。
+
+2.2 在其他 JS 函数中调用无效
+- react 库只是定义 react 语法的 API 封装，绝大多数的实现都存在于 React-DOM 等渲染器中。实际功能是渲染时通过 "依赖注入" 的方式加载的。
+- 在 react 组件之外的其他普通 JS 函数中，只是引入 React.useState() 等 API 直接调用是无效的。它不是一个 React 组件，就不会被渲染器识别，未被依赖注入 React-DOM 渲染器上的 dispatcher，自然无法被正常执行。
+
+2.3 在自定义的 hooks 中可以使用
+- 自定义 hooks 在函数组件中使用，且只在最外层函数中调用 hooks，就可以在自定义 hook 执行后里面调用 hook API 平铺添加到当前函数组件中。再次渲染时，可以满足调用顺序是保持一致的。
+
+
+#### 需要遵从的实践规则
+- 你可能不需要派生 state，任何数据，都要保证只有一个数据来源，而且避免直接复制它。
+- useMemo、useCallback 是作为性能优化的方式存在，不要作为阻止渲染的语义化保证。
+- 一个 hooks 函数尽量只做一件事，每个 effect 内功能不能过于耦合，尽量控制一个 effect 只做一件事。
+- 代码结构：功能划分优于结构化划分；逻辑聚合，获得更高的代码可读性。
+- 尽量避免过早地增加抽象逻辑。
+```
+
+#### 常用的 hooks
+
+```bash
+状态钩子 (useState): 用于定义组件的 State，类似类定义中 this.state 的功能
+useReducer：用于管理复杂状态逻辑的替代方案，类似于 Redux 的 reducer。
+生命周期钩子 (useEffect): 类定义中有许多生命周期函数，而在 React Hooks 中也提供了一个相应的函数 (useEffect)，这里可以看做componentDidMount、componentDidUpdate和componentWillUnmount的结合。
+useLayoutEffect：与 useEffect 类似，但在浏览器完成绘制之前同步执行。
+useContext: 获取 context 对象，用于在组件树中获取和使用共享的上下文。
+useCallback: 缓存回调函数，避免传入的回调每次都是新的函数实例而导致依赖组件重新渲染，具有性能优化的效果（主要优化仅在不同的传参时才去调用函数）
+useMemo: 用于缓存计算结果，避免重复计算昂贵的操作。
+useRef: 获取组件的真实节点；用于在函数组件之间保存可变的值，并且不会引发重新渲染。
+useImperativeHandle：用于自定义暴露给父组件的实例值或方法。
+useDebugValue：用于在开发者工具中显示自定义的钩子相关标签。
+```
+
+
+
+#### mount阶段-mountWorkInProgressHook函数生成hook的逻辑
+
+```ts
+// React 部分源码
+let currentlyRenderingFiber: Fiber = (null: any); // 当前Fiber
+let workInProgressHook = null; // 指向当前hook，存储当前hook相关信息
+
+// 初次渲染，每一个自定义hook都会调用 mountWorkInProgressHook 函数
+function mountWorkInProgressHook(){
+  const hook = {
+    memoizedState: null, // 记忆存储的state，
+    baseState: null, // 缓存的基准state
+    baseQueue: null, // 缓存的基准队列
+    queue: null, // 调度的操作队列
+    next: null, // 指向下一个hook对象
+  };
+
+  if (workInProgressHook === null) {
+    // 如果链表为空，则是list队列中的第一个hook，直接添加
+    // 且添加到当前fiber的memoizedState中；
+    currentlyRenderingFiber.memoizedState = workInProgressHook = hook;
+  } else {
+    // 否则，则向链表尾部增加hook
+    workInProgressHook = workInProgressHook.next = hook;
+  }
+  return workInProgressHook;  // 返回当前hook
+}
 ```
 
 

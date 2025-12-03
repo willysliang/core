@@ -88,18 +88,18 @@ Description: TypeScript
 >
 > ```ts
 > const collection = [
->   { name: 'willy' },
->   undefined,
->   { name: 'cilly' },
->   false,
->   null,
->   NaN,
->   0,
->   '',
->   function () {},
->   {},
->   [],
->   Symbol(),
+>     { name: 'willy' },
+>     undefined,
+>     { name: 'cilly' },
+>     false,
+>     null,
+>     NaN,
+>     0,
+>     '',
+>     function () {},
+>     {},
+>     [],
+>     Symbol(),
 > ]
 > collection.filter(Boolean) 
 > // [ { name: 'willy' }, { name: 'cilly' }, function () {}, {}, [], Symbol() ]
@@ -215,6 +215,16 @@ Description: TypeScript
 > let num2: string = "1"
 > num2 = test
 > ```
+
+#### never、unknow、any的区别
+
+```bash
+- any：绕开所有类型检查。可赋值给任何类型，任何类型可赋值给它。
+- unknow：表示未知类型。使用时必须进行类型判断。任何类型可赋值给它，它只能赋值给 any 或 unknown 自身。
+- never：表示不应出现的状态。不可赋值给任何类型(除never自身)，是所有类型的子类型
+```
+
+
 
 ### 类型推论
 
@@ -3484,7 +3494,6 @@ const s = new Square()
 #### implements 与 extends 的区别
 
 > ```bash
-> ## implements 与 extends 的区别
 > ### extends
 > 1. `子类 extends 父类`：继承类只能单继承，即如果父亲属于类，那么父亲只能有一个
 > 2. `类/接口 extends 接口1, 接口2`：继承接口可以是多继承，即如果父亲是接口，那么可以有多个父亲
@@ -3510,6 +3519,101 @@ const s = new Square()
 > 1. 实现一个接口需要实现接口中的所有方法。
 > 2. 接口不能实现接口，接口只能继承接口。因为接口中的方法都是没有方法体的，如果接口实现接口，那么实现的过程就必定要定义方法体，对方法进行重写，所以两者是矛盾的。
 > ```
+
+#### abstract、implements、extends 的区别
+
+```bash
+abstract- 声明抽象类和抽象成员，只管声明但不能被实例化(只是定义类有哪些变量和方法)
+抽象类本身不能被 new实例化，它更像一个蓝图或一套标准，规定了继承它的子类必须具备哪些能力（抽象方法），同时它自己也可以提供一些通用能力（具体方法）供子章直接使用
+
+extends- 继承与扩展，子类继承父类的方法，而且可覆盖重写方法
+一个类（子类）通过 extends 继承另一个类（父类/超类），子类将自动获得父类的非私有属性和方法，并可以添加新成员或覆盖已有方法。接口也可以使用 extends 来继承其他接口，从而组合多个接口的约束
+
+implements- 履行契约，契约可以是interface和abstract定义
+确保一个类符合某个特定的形状或契约（通常来自 interface或 abstract class）。它检查类的结构，但不提供任何实现。一个类可以实现多个接口
+```
+
+```ts
+abstract class Vehicle {
+  // 抽象属性，必须由子类实现
+  abstract brand: string; 
+  // 抽象方法，只有声明，没有实现
+  abstract startEngine(): void; 
+  // 具体方法，有实现，子类可直接继承或覆盖
+  honk(): void { 
+    console.log("Beep beep!");
+  }
+}
+
+class Car extends Vehicle { // 使用 extends 继承抽象类
+  brand: string = "Toyota"; // 必须实现抽象属性
+  startEngine(): void { // 必须实现抽象方法
+    console.log("Car engine started with a key.");
+  }
+}
+
+// const v = new Vehicle(); // 错误！无法创建抽象类的实例
+const myCar = new Car();
+myCar.startEngine(); // "Car engine started with a key."
+myCar.honk(); // "Beep beep!" (继承自抽象父类)
+```
+
+```ts
+// 类继承类
+class Animal {
+  name: string;
+  constructor(name: string) { this.name = name; }
+  move(distance: number = 0) {
+    console.log(`${this.name} moved ${distance}m.`);
+  }
+}
+class Dog extends Animal { // Dog 继承 Animal
+  bark() { console.log("Woof! Woof!"); } // 扩展新方法
+  move(distance = 10) { // 覆盖父类方法
+    console.log("Running...");
+    super.move(distance); // 可调用父类方法
+  }
+}
+const myDog = new Dog("Buddy");
+myDog.bark(); // "Woof! Woof!" (自身方法)
+myDog.move(); // "Running..." \n "Buddy moved 10m." (继承并覆盖了父类方法)
+
+// 接口继承接口
+interface Shape { color: string; }
+interface Square extends Shape { // Square 继承 Shape 的约束
+  sideLength: number;
+}
+let square: Square = { color: "blue", sideLength: 10 }; // 必须同时满足两个接口
+```
+
+```ts
+// 定义接口
+interface Swimmable {
+  swim(): void;
+}
+interface Flyable {
+  fly(): void;
+}
+
+// 类实现接口
+class Duck implements Swimmable, Flyable { // 实现多个接口
+  swim() { console.log("The duck paddles in the water."); } // 必须实现接口方法
+  fly() { console.log("The duck flies through the air."); } // 必须实现接口方法
+}
+
+// 类实现抽象类（较少见，与 extends 不同）
+abstract class HasLogger {
+  abstract log(message: string): void;
+}
+// 使用 implements 实现抽象类，必须重新定义所有成员
+class ConsoleService implements HasLogger {
+  log(message: string): void { // 必须实现抽象方法
+    console.log(message);
+  }
+}
+```
+
+
 
 ### 泛型
 

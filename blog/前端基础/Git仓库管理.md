@@ -204,17 +204,17 @@ git diff --summary
 > # 文件添加到暂存区
 > git add ./abc.md	#将abc.md文件存放到暂存区
 > git add ./			#添加当前目录下的所有文件到暂存区
-> 
-> 
+>
+>
 > # 暂存区文件存放到仓库
 > git commit -m "上传说明描述内容"	#把代码放到仓库
 > git commit -a -m "message"		#-a参数可将所有已跟踪文件中的执行修改或删除操作的文件都提交到本地仓库，即使它们没有经过git add添加到暂存区（一般不使用）
-> 
-> 
+>
+>
 > # 修改提交信息（修改上次提交的信息，值message）
 > git commit --amend -m "所修改的提交信息"
-> 
-> 
+>
+>
 > # 在存在 husky 时，提交不走校验流程
 > git commit -m '提交信息描述' --no-verify
 > ```
@@ -226,35 +226,35 @@ git diff --summary
 > git status	#仓库内文件的状态变化信息
 > git status --short	#或git status -s对status简洁输出
 > $ git status --porcelain # 跟上述一致，也是为对 status 简洁输出
-> 
-> 
+>
+>
 > # 查看提交记录
 > git log				# 显示当前分支的提交日志
 > git log --oneline	# 简写说明，简洁版的日志 或 git log --pretty=oneline --abbrev-commit
 > git log --stat		# 显示 commit 历史，以及每次 commit 发生变更的文件
 > git log --oneline -number	# 查看最近的 number 个提交数
-> 
-> 
+>
+>
 > # 获取漂亮的日志信息
 > git log --pretty=format:"%h - %an, %ar : %s"		# 以给定格式有序的打印提交日志的内容、
 > git log --pretty=format:"%Cred(%h)%Creset - %Cgreen(%an, %ar)%Creset : %Cblue%s" # 为输出日志设置颜色
-> 
-> 
+>
+>
 > # 根据作者查看日志信息
 > git log --author="willsliang" # 查看 'willsliang' 的所有提交（精确名称）
 > git log --author="willy.*" # 查看名称含 'willy' 的提交（正则）
 > git log --format="%h %ae %s" | grep "willysliang@qq.com" # 根据用户邮箱来查看日志信息
 > git log --author="Alex" -n 5 # 查看最近5条
 > git log --author="willy" --since="2025-01-01" --until="2025-12-31" # 查看2025年的提交
-> 
-> 
-> 
+>
+>
+>
 > # 显示提交历史图表
 > ## （`--graph` 选项可以以**图形**方式展示日志）
 > git log --graph
 > git log --pretty=format:"%h %s" --graph
-> 
-> 
+>
+>
 > # 基于时间的日志记录
 > ## 可以在特定时间范围内记录条目。非常适合检查每日项目的提交记录
 > git log --since="yesterday" --oneline
@@ -399,7 +399,7 @@ $ git checkout -- readme.txt
    1. 缓存输入的用户名和密码：在命令行中输入 `$ git config --global credential.helper store`
    2. 然后操作 pull/push 会让输入用户名密码，第一次输入进去。
    3. 下次再操作pull/push时就不需要输入用户名密码了
-   
+
 
 
 ## 删除 git 缓存中的账号密码（不建议使用）
@@ -794,7 +794,6 @@ git branch -d dev	#删除dev分支
 - `git stash pop`：恢复的同时把`stash`内容也删了
 - `git stash apply stash@{0}`：恢复指定的stash（有多次stash时使用）
 - `git cherry-pick 4c80e2 `：复制一个特定的提交到当前分支（`3c80e2`为其他分支的提交号）
-
 ```
 
 #### cherry-pick
@@ -879,7 +878,7 @@ $ git cherry-pick x # chergit cherry-pick <HashA> <HashB>ry-pick对应的提交�
 `git rebase`操作的特点：把分叉的提交历史"整理"成一条直线，看上去更直观。缺点是本地的分叉提交已经被修改过了。
   - rebase 操作可以把本地未 push 的分叉提交历史整理成直线；
   - rebase 目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
-  
+
  - 整理提交历史：将当前分支的提交移动到目标分支的最新提交之后，形成一条直线式的提交历史，避免多分支合并产生的复杂网状结构
  - 解决冲突提前化：如果提交与目标分支有冲突，可以提前在本地解决这些冲突，避免在最终合并时产生额外的合并提交
  - 保持分支同步：当主分支(如main/master)更新时，可以通过变基将当前分支的提交基于最新的主分支积蓄开发，确保代码与上游一致
