@@ -2,35 +2,42 @@
  * @ Author: willy
  * @ CreateTime: 2024-02-26 19:54:14
  * @ Modifier: willysliang
- * @ ModifierTime: 2025-11-18 11:03:19
+ * @ ModifierTime: 2025-12-04 10:48:44
  * @ Description: 导航栏
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 
+type IFile =
+  | string
+  | {
+      filePath: string
+      fileName: string
+    }
+
 /**
  * 获取目录中的所有文件/目录
- * @param directoryPath 目录地址
- * @param isGetFile 是否获取文件名,还是获取文件夹名
- * @param prefix 拼接的 path 前缀
- * @returns {any[]}
+ * @param {string} directoryPath 目录地址
+ * @param {boolean} isGetFile 是否获取文件名,还是获取文件夹名
+ * @param {string} prefix 拼接的 path 前缀
+ * @returns {IFile[]}
  *
  * @description 注意：此结构仅限于两层结构
  */
 const getDirectoryPathFileNames = (
-  directoryPath,
+  directoryPath: string,
   isGetFile = true,
   prefix = '',
-) => {
+): IFile[] => {
   const files = fs.readdirSync(directoryPath)
-  const result: (string | Record<string, string>)[] = []
+  const result: (string | IFile)[] = []
 
   // 忽略的文件夹
   const ignoreDirectoryList = ['.vuepress', 'node_modules', 'images']
 
   // 忽略的md名单 （只要 md 文件名存在这个名，则忽略这个文件的构建）
-  const ignoreMdList = ['前端面试', '杂记']
+  const ignoreMdList = ['前端总结']
 
   // files 参数是包含文件名的数组
   files.forEach((file) => {
@@ -63,10 +70,10 @@ const getDirectoryPathFileNames = (
 
 /**
  * 指定需要列出文件的目录
- * @param rootDirectoryPath 根目录地址
- * @returns {object} 返回目录的所有文件
+ * @param {string} rootDirectoryPath 根目录地址
+ * @returns {IFile[]} 返回目录的所有文件
  */
-const getAllFile = (rootDirectoryPath) => {
+const getAllFile = (rootDirectoryPath: string): IFile[] => {
   const rootFolder = getDirectoryPathFileNames(rootDirectoryPath, false)
   const allFile: any = {}
   rootFolder.forEach((folderName) => {
@@ -84,15 +91,15 @@ const getAllFile = (rootDirectoryPath) => {
 
 /**
  *
- * @param allFile 所有的文件
- * @returns {any[]} 返回所有导航项
+ * @param {IFile} allFile 所有的文件
+ * @returns {IFile[]} 返回所有导航项
  *
  * @description 逻辑分项
     1. 字符串类型
     2. 对象类型
     3. 数组类型
  */
-const getAllNav = (allFile): any[] => {
+const getAllNav = (allFile: IFile[]): any[] => {
   const allNav: any[] = []
 
   for (const key in allFile) {

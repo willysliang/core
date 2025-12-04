@@ -24,6 +24,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2025年12月4日
+  - style: ignore ts verification warning
+
 ## 2025年4月26日
   - fix(ci/cd): 修复 ci/cd static.yml 因为 unbuntu 版本不稳定导致部署异常问题
 
