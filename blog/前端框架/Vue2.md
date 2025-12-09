@@ -15,20 +15,20 @@ Description: Vue2
 > 1. 提高开发效率的发展历程
 >   - 原生JS -> Jquery之类的类库 -> 前端模板引擎 -> Angular.js / vue.js
 >   - 能够帮助我们减少不必要的DOM操作；提高渲染能力；双向数据绑定的概念
-> 
+>
 > 2. 框架和库的区别
 >   - 框架：是一套完整的解决方案，对项目的侵入性较大，项目如果需要更换框架，则需要重新架构整个项目。
 >   - 库(插件)：提供某一个功能，读项目的侵入性较小，如果某个库无法完成某些需求，可以很容易切换到其他库实现需求
-> 
+>
 > 3. Vue的两个核心
 >   - 数据驱动和组件系统
-> 
+>
 > 4. 方法和函数的区别
 >   - 方法：methods；函数：function
 >   - java中只有方法，没有函数（方法面对对象的）
 >   - 方法在类中定义的，函数是在外边定义
->   
-> 
+>
+>
 > Vue 是一个构建数据驱动的渐进式框架，它的目标是通过 API 实现响应数据绑定和视图更新。
 > 优点：
 >     1. 数据驱动视图：对真实 DOM 进行抽象出 Virtual DOM（本质是一个 JS 对象），并配合 diff 算法、响应式和观察者、异步队列等手段以最小代价更新 DOM，渲染页面。
@@ -38,9 +38,9 @@ Description: Vue2
 > 		由于底层基于 Object.defineProperty（vue3采用 Proxy）实现响应式，但这个 API 本身不支持 IE8 及以下浏览器。
 > 		CSR 的先天不足，首屏性能问题（白屏）
 > 		由于搜索引擎爬虫无法爬取 JS 中的内容，故 SPA 应用先天对 SEO 优化存在短板。
-> 
-> 
-> 
+>
+>
+>
 > ### vue 的特点
 > 1. 数据双向绑定，数据响应式改变
 > 2. 组件化开发，代码量减少，维护代码成本降低
@@ -55,16 +55,16 @@ Description: Vue2
 > ```bash
 > ## MVC 与 MVVM 间的区别
 > - MVC是后端的分层开发概念；MVVM是前端视图层的概念，主要关注于视图层分离（即MVVM把前端视图层分为Model，ViewModel，View三部分）
-> 
+>
 > ### MVVM作用：把逻辑层跟视图层区通过VM调度来分开
 >   - M（数据层Model）：指保存的是每个页面中的单独数据，js中data的数据
 >   - V（视图层View）：UI组件(html+css)，负责将数据模型转化成UI展现到页面上
 >   - VM（视图模型层ViewModel）：分割了M和每当V层想要获取后保存数据时，都要由VM做中间处理，把data中的数据(model层)通过v-model双向数据绑定把数据渲染到页面(view层)（即VM层实现了数据双向绑定）
->     
+>
 > 	1. View和ViewModel通信是双向的，ViewModel和Model也是双向通信的
 >   2. View和Model不会直接通信
->   
->   
+>
+>
 > ### MVC
 >   1. View 传送指令到 Controller
 >   2. Controller 完成业务逻辑后，要求 Model 改变状态
@@ -85,8 +85,8 @@ Description: Vue2
 > 2. 解析器Compile：解析 Vue 指令模板，将模板的变量替换为数据，然后初始渲染页面视图，并对每个指令节点绑定更新函数，添加监听数据的订阅者，当数据有变动，就会调动更新函数进行数据更新。
 > 3. 订阅者Watcher：是监听器和解析器之间通信的桥梁，主要是订阅监听器中的属性值变化，当发生变化，就会触发解析器中对应的更新函数。
 > 4. 订阅器Dep：订阅器采用 发布-订阅 模式，用来收集订阅者，对监听器进行统一管理。
-> 
-> 
+>
+>
 > ### Vue2 的 Object.definedProperty 为什么不支持数组的响应式变化？
 > Object.definedProperty 虽然可以实现这样的效果，但是 vue2 为了优化性能而不实现这样的功能。
 > 因为如果不断地监听数组变化（可能数组存在深层次数据），就会消耗很多不必要的性能，所以在 vue2 中不做这样的实现。
@@ -95,16 +95,14 @@ Description: Vue2
 >
 > ![image-20211102161402565](./image/image-20211102161402565.png)
 
-###  Vue的生命周期
+###  Vue2的生命周期
 
 > ```bash
-> ## Vue2 的生命周期
-> ### 名词说明
 > - 生命周期：从 vue 实例创建、运行到销毁期间，总是伴随各种事件，这些事件统称为生命周期。
 > 					开始创建vue实例、初始化数据、编译模板、挂载DOM -> 渲染、更新 -> 渲染、销毁等一系列过程。
 > - 生命周期钩子 = 生命周期函数 = 生命周期事件 = callbackHook(回调钩子)
-> 
-> 
+>
+>
 > ### 创建期间的生命周期函数
 >   1. beforeCreate：
 >       在实例初始化后，数据观测(data observer) 和 event/watcher 事件配置之前被调用。
@@ -119,7 +117,7 @@ Description: Vue2
 >   4. mounted：
 >       在挂载完成后被触发。
 >       此时真实 DOM 挂载完毕，数据完成双向绑定，可以访问到 DOM 节点。
-> 
+>
 > ### 运行期间的生命周期函数
 >   1. beforeUpdate：
 >       数据更新时调用，发生在虚拟 DOM 重新渲染和打补丁(patch) 之前。
@@ -128,7 +126,7 @@ Description: Vue2
 >       发生在更新完成之后，当前阶段组件 DOM 已完成更新。
 >       注意1：要避免在此期间更改数据，因为这可能会导致无限循环的更新。
 >       注意2：该钩子在服务端渲染期间不被调用。
-> 
+>
 > ### 销毁期间的生命周期函数（vue实例一般不会销毁，一般组件会销毁）
 >   1. beforeDestroy：
 >       实例销毁之前被调用。此时实例仍然可用。
@@ -137,16 +135,16 @@ Description: Vue2
 >       Vue实例(组件)销毁之后调用。
 >       调用后，vue实例(组件)的所有东西都会解除绑定，所有的事件监听器都会被移除，所有的子实例也会被销毁。
 >       该钩子在服务端渲染期间不被调用。
-> 
+>
 >   前者适合移除事件、定时器等，避免可能引起的内存泄露问题。
 >   然后进行销毁操作，如果有子组件，也会递归销毁子组件，所有子组件都销毁完毕后才会执行根组件的 destroyed 钩子函数。
->   
+>
 >   注意：关于销毁 vue 实例
 >     - 销毁后借助 vue 开发工具看不到任何消息。
 >     - 销毁后自定义会失效，但原生DOM事件依然有效（只是消除其绑定的模板、methods方法与钩子函数等）
 >     - 一般不会在 beforeDestroy 操作数据，因为即便可操作数据，也不会再触发数据更新流程。
-> 
-> 
+>
+>
 > ### keep-alive 独有的生命周期函数
 > 1. activated：路由设置keep-alive时，该路由组件被激活时调用。
 > 2. deactivated：路由设置keep-alive时，该路由组件被销毁时调用。
@@ -156,22 +154,20 @@ Description: Vue2
 ### 虚拟DOM
 
 > ```bash
-> ## 虚拟 DOM
 > DOM（Document Object Model）渲染是很慢的，其元素非常庞大，页面的性能问题鲜有由 JS 引起的，大部分都是由 DOM 操作引起的。如果对前端工作进行抽象的话，主要是维护状态和更新视图，而更新视图和维护状态都需要 DOM 操作。
-> 在 JQ 之前直接操作 DOM 结构，这种方法复杂度高，兼容性差；
-> JQ 强大的选择器以及高度封装的API 可以让我们更方便的操作 DOM，还能帮我们解决兼容性问题，同时也使得 DOM 操作变得简单；
-> MVVM使用数据双向绑定，使得我们完全不需要操作DOM，更新了状态视图会自动更新，更新了视图数据状态也会自动更新，可以说MMVM使得前端的开发效率大幅提升，但是其大量的事件绑定使得其在复杂场景下的执行性能堪忧。
-> Vue底层引入的 Virtual DOM(虚拟DOM) 在用 JS 对象表示 DOM 结构后，当页面状态发生变化而需要操作 DOM 时，可以先通过虚拟 DOM 计算出对真实 DOM 的最小修改量，然后再修改真实 DOM 结构(因为真实DOM的操作代价太大)。通过虚拟DOM计算出两颗真实DOM树之间的差异后，就可以修改真实的DOM结构。上文深度优先遍历过程产生了用于记录两棵树之间差异的数据结构patches, 通过使用patches我们可以方便对真实DOM做最小化的修改。
-> 
-> 
+> JQ 强大的选择器以及高度封装的API 可以更方便的操作 DOM，还能解决兼容性问题，同时也使得 DOM 操作变得简单，但在 JQ 之前直接操作 DOM 结构，这种方法复杂度高，兼容性差；
+> MVVM 使用数据双向绑定，使得不需要操作DOM，更新了状态视图会自动更新，更新了视图数据状态也会自动更新，可以说MMVM使得前端的开发效率大幅提升，但是其大量的事件绑定使得其在复杂场景下的执行性能堪忧。
+> Vue底层引入的 Virtual DOM(虚拟DOM) 在用 JS 对象表示 DOM 结构后，当页面状态发生变化而需要操作 DOM 时，可以先通过虚拟 DOM 计算出对真实 DOM 的最小修改量，然后再修改真实 DOM 结构(因为真实DOM的操作代价太大)。通过虚拟DOM计算出两颗真实DOM树之间的差异后，就可以修改真实的DOM结构。上文深度优先遍历过程产生了用于记录两棵树之间差异的数据结构patches, 通过使用patches可以方便对真实DOM做最小化的修改。
+>
+>
 > ### 渲染一个列表时，设置 key 的目的是什么？
 > 使用 key 有助于虚拟 dom 识别哪些 items 进行修改(增删改操作)。
 > key 应该被赋予数组内的元素一个稳定的唯一字符串，该字符串能唯一地标识一个列表项。
-> 
-> 
+>
+>
 > ## VNode实例对象的属性
->     tag: 当前节点的标签名
->     data: 当前节点的数据对象，
+>  tag: 当前节点的标签名
+>  data: 当前节点的数据对象，
 >     children: 数组类型，包含了当前节点的子节点
 >     text: 当前节点的文本，一般文本节点或注释节点会有该属性
 >     elm: 当前虚拟节点对应的真实的dom节点
@@ -188,26 +184,26 @@ Description: Vue2
 >     isComment: 当前节点是否是注释节点
 >     isCloned: 当前节点是否为克隆节点
 >     isOnce: 当前节点是否有v-once指令
-> 
+>
 >     VNode可以理解为vue框架的虚拟dom的基类，通过new实例化的VNode大致可以分为几类
->     EmptyVNode: 没有内容的注释节点
+>  EmptyVNode: 没有内容的注释节点
 >     TextVNode: 文本节点
 >     ElementVNode: 普通元素节点
 >     ComponentVNode: 组件节点
 >     CloneVNode: 克隆节点，可以是以上任意类型的节点，唯一的区别在于isCloned属性为true
-> 
-> 
+>
+>
 > ## patch原理
->     patch函数的定义在src/core/vdom/patch.js中，我们先来看下这个函数的逻辑
->     patch函数接收6个参数：
+>  patch函数的定义在src/core/vdom/patch.js中，我们先来看下这个函数的逻辑
+>  patch函数接收6个参数：
 >     oldVnode: 旧的虚拟节点或旧的真实dom节点
 >     vnode: 新的虚拟节点
 >     hydrating: 是否要跟真实dom混合
 >     removeOnly: 特殊flag，用于<transition-group>组件
 >     parentElm: 父节点
 >     refElm: 新节点将插入到refElm之前
-> 
-> 
+>
+>
 > ## patch的策略是：
 > 如果vnode不存在但是oldVnode存在，说明意图是要销毁老节点，那么就调用invokeDestroyHook(oldVnode)来进行销毁
 > 如果oldVnode不存在但是vnode存在，说明意图是要创建新节点，那么就调用createElm来创建新节点
@@ -215,8 +211,8 @@ Description: Vue2
 > 如果oldVnode和vnode是同一个节点，就调用patchVnode来进行patch
 > 当vnode和oldVnode不是同一个节点时，如果oldVnode是真实dom节点或hydrating设置为true，需要用hydrate函数将虚拟dom和真是dom进行映射，然后将oldVnode设置为对应的虚拟dom，找到oldVnode.elm的父节点，根据vnode创建一个真实dom节点并插入到该父节点中oldVnode.elm的位置
 > 这里面值得一提的是patchVnode函数，因为真正的patch算法是由它来实现的（patchVnode中更新子节点的算法其实是在updateChildren函数中实现的，为了便于理解，我统一放到patchVnode中来解释）。
-> 
-> 
+>
+>
 > ## patchVnode算法是：
 > 1. 如果oldVnode跟vnode完全一致，那么不需要做任何事情
 > 2. 如果oldVnode跟vnode都是静态节点，且具有相同的key，当vnode是克隆节点或是v-once指令控制的节点时，只需要把oldVnode.elm和oldVnode.child都复制到vnode上，也不用再有其他操作
@@ -227,18 +223,18 @@ Description: Vue2
 >      - 如果oldEndVnode和newEndVnode是同一节点，调用patchVnode进行patch，然后将oldEndVnode和newEndVnode都设置为上一个子节点，重复上述流程
 >      - 如果oldStartVnode和newEndVnode是同一节点，调用patchVnode进行patch，如果removeOnly是false，那么可以把oldStartVnode.elm移动到oldEndVnode.elm之后，然后把oldStartVnode设置为下一个节点，newEndVnode设置为上一个节点，重复上述流程
 >      - 如果newStartVnode和oldEndVnode是同一节点，调用patchVnode进行patch，如果removeOnly是false，那么可以把oldEndVnode.elm移动到oldStartVnode.elm之前，然后把newStartVnode设置为下一个节点，oldEndVnode设置为上一个节点，重复上述流程
-> 
+>
 > - 如果以上都不匹配，就尝试在oldChildren中寻找跟newStartVnode具有相同key的节点，如果找不到相同key的节点，说明newStartVnode是一个新节点，就创建一个，然后把newStartVnode设置为下一个节点
 > - 如果上一步找到了跟newStartVnode相同key的节点，那么通过其他属性的比较来判断这2个节点是否是同一个节点，如果是，就调用patchVnode进行patch，如果removeOnly是false，就把newStartVnode.elm插入到oldStartVnode.elm之前，把newStartVnode设置为下一个节点，重复上述流程
-> 
+>
 > 1. - - 如果在oldChildren中没有寻找到newStartVnode的同一节点，那就创建一个新节点，把newStartVnode设置为下一个节点，重复上述流程
 >      - 如果oldStartVnode跟oldEndVnode重合了，并且newStartVnode跟newEndVnode也重合了，这个循环就结束了
 >    - 如果只有oldVnode有子节点，那就把这些节点都删除
 >    - 如果只有vnode有子节点，那就创建这些子节点
 >    - 如果oldVnode和vnode都没有子节点，但是oldVnode是文本节点或注释节点，就把vnode.elm的文本设置为空字符串
 > 2. 如果vnode是文本节点或注释节点，但是vnode.text != oldVnode.text时，只需要更新vnode.elm的文本内容就可以
-> 
-> 
+>
+>
 > ## 生命周期
 > patch提供了5个生命周期钩子，分别是
 > - create: 创建patch时
@@ -246,8 +242,8 @@ Description: Vue2
 > - update: 更新节点时
 > - remove: 移除节点时
 > - destroy: 销毁节点时
-> 
-> 
+>
+>
 > ## vnode也提供了生命周期钩子，分别是
 > - init: vdom初始化时
 > - create: vdom创建时
@@ -257,8 +253,8 @@ Description: Vue2
 > - postpatch: patch之后
 > - remove: vdom移除时
 > - destroy: vdom销毁时
-> 
-> 
+>
+>
 > ## vue 组件的生命周期
 > vue组件的生命周期底层其实就依赖于vnode的生命周期，在src/core/vdom/create-component.js中我们可以看到
 > ```
@@ -276,6 +272,28 @@ Description: Vue2
 >   - 先判断key值再判断标签名是否相同，都相同则认为是相同节点，不再继续深度比较
 >
 > ![img](./image/998023-20180519213134497-676744027.png)
+
+
+
+### runtime-compiler和runtime-only的区别
+
+vue程序运行过程：
+
+![image-20201229000721595](./image/image-20201229000721595.png)
+
+- runtime-compiler运行过程：template-->ast-->render-->virtual dom-->UI
+
+- runtime-only运行过程：render-->virtual dom-->UI，所以性能相对更高，代码量更少
+
+  注意：runtime-only中不存在template
+
+### npm run build/dev运行过程
+
+![image-20210105104406137](./image/image-20210105104406137.png)
+
+![image-20210105104341788](./image/image-20210105104341788.png)
+
+
 
 ## 语法
 
@@ -317,7 +335,7 @@ Description: Vue2
 >   - ```html
 >     // css
 >     [v-cloak] { display:none }
->     
+>
 >     <!-- html -->
 >     <ul v-cloak v-for="item in obj"><li>{{ obj.name }}</li></ul>
 >     <p v-cloak>{{msg}}</p>
@@ -384,7 +402,7 @@ data: {
 //4、调用函数的样式
 <h1 :style="getStyles()">这是一个H1</h1>
 data: {
-       finalColor: 'red', 
+       finalColor: 'red',
        finalSize: 100
 },
 methods: {
@@ -415,12 +433,12 @@ methods: {
 >     <!-- 事件调用方法不带参数 -->
 >     <button @click="btn1">按钮1</button>
 >     <button @click="btn1()">按钮2</button>
-> 
+>
 >     <!-- 带一个参数 -->
 >     <button @click="btn2(123)">按钮3</button>
 >     <button @click="btn2()">按钮4</button>
 >     <button @click="btn2">按钮5</button>
-> 
+>
 >     <!-- 带两个参数 -->
 >     <!-- 手动获取到浏览器参数的event对象：$event -->
 >     <button @click="btn3(123,$event)">按钮6</button>
@@ -428,7 +446,7 @@ methods: {
 > </div>
 > <!-- 按钮1、2为空值；按钮3：123；按钮4：undefined；按钮5：event对象；按钮6、7:123，evnet对象 -->
 > //JS
-> const app = new Vue({ 
+> const app = new Vue({
 > 	el: '#app',
 > 	methods: {
 > 		btn1(){ console.log("btn1"); },
@@ -443,7 +461,7 @@ methods: {
 > ```vue
 > <template>
 > 	<p v-on="{ click:dbClick, mousemove:MouseClick }">绑定多个触发事件</p>
-> 
+>
 > 	<p @click="one(), two()">绑定多个方法·</p>
 > </template>
 > ```
@@ -464,30 +482,30 @@ methods: {
 > ```html
 > <!-- 阻止单击事件继续传播 -->
 > <a @click.stop="doThis"></a>
-> 
+>
 > <!-- 提交事件不再重载页面 -->
 > <form @submit.prevent="onSubmit"></form>
-> 
+>
 > <!-- 修饰符可以串联 -->
 > <a @click.stop.prevent="doThat"></a>
-> 
+>
 > <!-- 只有修饰符 -->
 > <form @submit.prevent></form>
-> 
+>
 > <!-- 添加事件监听器时使用事件捕获模式 -->
 > <!-- 即内部元素触发的事件先在此处理，然后才交由内部元素进行处理 -->
 > <div @click.capture="doThis">...</div>
-> 
+>
 > <!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
 > <!-- 即事件不是从内部元素触发的 -->
 > <div @click.self="doThat">...</div>
-> 
+>
 > <!-- 点击事件将只会触发一次 -->
 > <a @click.once="doThis"></a>
-> 
+>
 > <!-- 点击事件监听键帽（点击enter键触发事件） -->
 > <input type="text" @keyup.enter="keyup">
-> 
+>
 > //1、 给vue组件绑定事件时，必须加上native ，否则会认为监听的是来自Item组件自定义的事件
 > //2、 等同在子组件中：子组件内部处理click事件然后向外发送click事件：$emit("click".fn)
 > <Item @click.native = "shijian()"></Item>
@@ -531,7 +549,7 @@ methods: {
 </div>
 
 //vue
-const app = new Vue({ 
+const app = new Vue({
     el: '#app',
     data: {
     	fruit: []
@@ -554,7 +572,7 @@ const app = new Vue({
 </div>
 
 //VUE
-const app = new Vue({ 
+const app = new Vue({
     el: '#app',
     data: {
     	hobbies: ['篮球'],	//多选框，默认为篮球
@@ -584,7 +602,7 @@ v-model默认是在input事件中同步输入框的数据，即一旦数据发�
 > ```js
 > // 父组件给子组件传入一个函数
 > <MyFooter :age="age" @setAge="(res)=> age = res"></MyFooter>
-> 
+>
 > // 子组件通过调用这个函数来实现修改父组件的状态
 > mounted() {
 > console.log(this.$emit('setAge', 1234567));
@@ -594,7 +612,7 @@ v-model默认是在input事件中同步输入框的数据，即一旦数据发�
 > ```js
 > // 父组件将age传给子组件并使用.sync修饰符
 > <MyFooter :age.sync="age">
-> 
+>
 > // 子组件触发事件
 > mounted() {
 > console.log(this.$emit('update:age', 1234567));
@@ -615,10 +633,10 @@ v-model默认是在input事件中同步输入框的数据，即一旦数据发�
 > <ul>
 > <li v-for="(item,i) in list">索引：{{i}}---值：{{item.name}}{{item.age}}</li>
 > </ul>
-> 
+>
 > //2、迭代对象中的属性 //循环遍历对象身上的属性
 > <div v-for="(val,key,i) in info">{{val}}---{{key}}---{{i}}</div>
->     
+>
 > //3、迭代数字
 > <p v-for="i in 10">这是第 {{i}} 个P标签</p>
 > ```
@@ -631,23 +649,23 @@ v-model默认是在input事件中同步输入框的数据，即一旦数据发�
 >
 > - 注意：如果循环的的是一个如`[1, 2, 3]`，并且绑定的key值为value值，且给其内置绑定的是输入框可改变值，则每次输入内容都会失去焦点。
 >- 这是因为每次输入值，其都会使得重新渲染标签，即之前所绑定的标签，虚拟DOM认为已经被删除，且添加了一个新的标签内容进来
-> 
+>
 > ```vue
 ><!-- 错误的绑定方法，每次在输入框中输入值，都会使得输入框失去焦点 -->
 > <div v-for="(val, index) in arr" :key="val">
 >   <input v-model="val" type="text" />
 > </div>
-> 
+>
 > <div v-for="(val, index) in arr" :key="index">
 >   <input v-model="val" type="text" />
 > </div>
-> 
+>
 > <script setup>
 > import { ref } from 'vue'
 > const arr = [1, 2, 3];
 > </script>
 > ```
-> 
+>
 > #### vue循环赋值
 >
 > ```js
@@ -661,10 +679,10 @@ v-model默认是在input事件中同步输入框的数据，即一旦数据发�
 >     return item.IIType == "尺寸类"
 > })
 > ```
-> 
-> 
+>
+>
 > ### 方法
-> 
+>
 >- **splice()**：从数组中添加/删除u项目，然后返回被删除的项目（返回数组，且会改变原数组）
 >
 > ```js
@@ -675,30 +693,30 @@ v-model默认是在input事件中同步输入框的数据，即一旦数据发�
 > this.arr.splice(1);//删除第一个参数后面的所有参数
 > this.arr.splice(1,3);//删除第一个参数的三个参数
 > ```
-> 
+>
 > - **push()**：添加元素到最后面	//this.array1.push('abc');
 > - **pop()**：删除最前面的元素	//this.array1.pop();
 > - **shift()**：删除数组第一个元素	//this.array1.shirt();
 >
 > - **unshift**：在数组最前面添加元素	//this.array1.unshirt('aaa','bbb','ccc');
-> 
+>
 > - **sort()：**排序。
 >- **reverse()：**对字符串进行反转操作。
-> 
+>
 >- **Number.toFixed(num)**：定义num位小数位数（需要是数字型）
 > - **padStart(maxLength,fillString=' ')**：用于头部补全，补充字符串
-> 
+>
 >- **padEnd(maxLength,fillString=')**：用来尾部补全，填充字符串
-> 
+>
 > ```js
 >//超出会自动补全，差一点则截取到最大长度
 > 'AA'.padStart(5,'B')  //输出：BBBAA
 >'AA'.padStart(5,'BC')  //输出：BCBAA
-> 
+>
 > 'AA'.padEnd(5,'B') //输出：AABBB
 > 'AA'.padEnd(5,'BC') //输出：AABCB
 > ```
-> 
+>
 
 ### v-if
 
@@ -830,13 +848,13 @@ data:{
 > ## scoped 属性
 > - scoped 代表作用域。
 > - 在 `<style scoped></stype>` 中添加scope属性，该style中的css样式只会针对当前组件起效果；若不添加，其他组件中的css样式相同样式，会在该组件中其效果。
-> 
-> 
+>
+>
 > ### scoped 的原理
 > vue中的 scoped 通过在DOM结构以及css样式上加唯一不重复的标记:data-v-hash的方式，以保证唯一（而这个工作是由过PostCSS转译实现的），达到样式私有化模块化的目的。
 > PostCSS会给一个组件中的所有dom添加了一个独一无二的动态属性data-v-xxxx，然后，给CSS选择器额外添加一个对应的属性选择器来选择该组件中dom，这种做法使得样式只作用于含有该属性的dom——组件内部dom, 从而达到了'样式模块化'的效果。
-> 
-> 
+>
+>
 > ### scoped 渲染规则
 > 1. 给HTML的DOM节点加一个不重复data属性(形如：data-v-123)来表示他的唯一性
 > 2. 在每句css选择器的末尾（编译后的生成的css语句）加一个当前组件的data属性选择器（如[data-v-123]）来私有化样式
@@ -856,7 +874,7 @@ data:{
 > <style scoped>
 > .a >>> .b { /* css样式 */ }
 > </style>
-> 
+>
 > //会编译成如下:
 > .a[data-v-f3f3eg9] .b { /* css样式 */ }
 > ```
@@ -963,7 +981,7 @@ filters: { // 私有局部过滤器，只能在当前VM对象所控制的 View �
       var y = dt.getFullYear();
       var m = (dt.getMonth() + 1).toString().padStart(2, '0');
       var d = dt.getDate().toString().padStart(2, '0');
-      
+
       // 如果 传递进来的字符串类型，转为小写之后，等于 yyyy-mm-dd，那么就返回 年-月-日
       // 否则，就返回  年-月-日 时：分：秒
       if (pattern.toLowerCase() === 'yyyy-mm-dd') {return `${y}-${m}-${d}`;
@@ -976,7 +994,7 @@ filters: { // 私有局部过滤器，只能在当前VM对象所控制的 View �
     }
   }
 
-/* 使用ES6中的字符串新方法 
+/* 使用ES6中的字符串新方法
 String.prototype.padStart(maxLength, fillString='')
 String.prototype.padEnd(maxLength, fillString='')
 来填充字符串； */
@@ -1025,6 +1043,34 @@ var vm = new Vue({
 })
 ```
 
+
+
+### createElement
+
+```vue
+const cpn = {
+  template: `<div>{{message}}</div>`,
+  data() {
+    return {
+      message: '我是组件message'
+    }
+  }
+}
+
+new Vue({
+	el: '#app',
+	render: function(createElement){
+	//1.普通用法：createElemnt('标签',{标签的属性},['标签的内容，里面可以再次嵌套'])
+		//return createElement('h4',{class:'box'},['Hello,world~',createElement('button',['按钮'])])
+
+	//2. 传入组件对象(不能再runtime-only中运行)
+	return createElement(cpn)
+	}
+})
+```
+
+
+
 ## 组件
 
 ### 全局组件与局部组件
@@ -1033,7 +1079,7 @@ var vm = new Vue({
 > <div id="app">
 > 	<cpn></cpn>
 > </div>
-> 
+>
 > //全局组件
 > //创建组件构造器对象
 > const cpnC = Vue.extend({
@@ -1049,7 +1095,7 @@ var vm = new Vue({
 > <div id="app">
 > 	<cpn></cpn>
 > </div>
-> 
+>
 > //js
 > const cpnC1 = Vue.extend({	//子组件
 > 	template: `
@@ -1084,24 +1130,24 @@ var vm = new Vue({
 > ```js
 > //全局组件语法糖
 > Vue.component('cpn1',{
-> 	template: 
+> 	template:
 > 		`<div>
 > 			<h2>标题1</h2>
 > 			<p>内容1</p>
 > 		<div>`
 > })
-> 
+>
 > //局部组件语法糖
 > const VM = new Vue({
 > 	el: '#app',
 > 	components: {
 >      'cpn2': {
->      	template: 
+>      	template:
 >          `<div>
 >           <h2>标题2</h2>
 >           <p>内容2</p>
 >         <div>`
->      }        
+>      }
 >  }
 > })
 > ```
@@ -1121,7 +1167,7 @@ var vm = new Vue({
 >      <p>内容1</p>
 >  <div>
 > </template>
-> 
+>
 > <!-- 2.通过script标签，但是类型必须为text/x-template -->
 > <script type="text/x-template" id="myCpn">
 >  <div>
@@ -1129,7 +1175,7 @@ var vm = new Vue({
 >      <p>内容1</p>
 >  <div>
 > </script>
-> 
+>
 > //JS
 > Vue.component('cpn1',{
 > 	template: '#cpnC1'
@@ -1151,7 +1197,7 @@ var vm = new Vue({
 > - 组件的 data 不能是对象的原因：
 > 		vue组件中 data 值不能为对象，因为对象是引用类型，组件可能会被多个实例同时引用。
 > 		如果 data 值为对象，将导致多个实例共享一个对象，其中一个组件改变 data 属性值，其它实例也会受到影响。
-> 
+>
 > - data 为函数的原因：
 > 		data 为函数，通过 return 返回对象的拷贝，致使每个实例都有自己独立的对象，实例之间可以互不影响地改变 data 的属性值。
 > ```
@@ -1161,14 +1207,14 @@ var vm = new Vue({
 > <div id="app">
 >   <cpn></cpn>
 > </div>
-> 
+>
 > <template id="cpnC1">
 > 	<div>
 >     <h2>{{title}}</h2>
 >     <p>{{content}}</p>
 >   <div>
 > </template>
-> 
+>
 > //js
 > <script>
 >   Vue.component('cpn',{
@@ -1258,7 +1304,7 @@ var vm = new Vue({
 >        <one-comp />
 >     </div>
 > </template>
-> 
+>
 > <script>
 >   import OneComp from './OneComp'
 >   export default {
@@ -1287,7 +1333,7 @@ var vm = new Vue({
 >     <three-comp />
 >   </div>
 > </template>
-> 
+>
 > <script>
 > import OneComp from './OneComp'
 > export default {
@@ -1316,7 +1362,7 @@ var vm = new Vue({
 >     - 在子组件中 使用 `props` 属性来接收父组件传来的数据（如果定义类型，就会对传来的数据做过滤）
 >     - 在子组件中使用 `$attrs` 会保存父组件传来的数据中 `props` 不接收的数据（捡漏）
 >           注意：`$attrs` 中接收的数据不会存在类型过滤（父组件传递什么数据就会接收什么）
-> 
+>
 > #### 子组件中，data 中的数据和 props 中的数据的区别：
 > 		- 子组件中的 data 数据，并不是通过父组件传递过来的，而是子组件自身私有的；
 > 			props 中的数据都是通过父组件传递给子组件的。
@@ -1328,7 +1374,7 @@ var vm = new Vue({
 > <div id="app">
 >   <cpn :cmovies="movies" :cmessage="message" mname="willys"></cpn>
 > </div>
-> 
+>
 > <template id="cpn1">
 > 	<div>
 >     <p>{{cmessage}}</p>
@@ -1338,13 +1384,13 @@ var vm = new Vue({
 >     <p>props中不接收的数据,$attrs来接收剩余数据 {{ $attrs.mname }}</p>
 >   <div>
 > </template>
-> 
+>
 > <script>
 >   const cpn = {
 >     template: '#cpn1',
 >     props: ['cmovies','cmessage'],
 >     data(){
->       return {} 
+>       return {}
 >     }
 >   }
 >   const VM = new Vue({
@@ -1365,25 +1411,25 @@ var vm = new Vue({
 > ```js
 > // 数组写法
 > props: ['cmovies','cmessage'],	//里面的定义不支持驼峰写法
-> 
+>
 > // 对象写法
 > props: {
 > 	//1、类型限制
 > 	cmovies: Array,
-> 	
+>
 > 	//2、提供一些默认值
 > 	cmessage: {
 > 		type: String,	//数据类型
 > 		default: 'aaaaaa',	//默认值
-> 		required: true	//必须填写	
+> 		required: true	//必须填写
 > 	},
->   
+>
 >   // 3、多类型定义
 >   flexibleProp: {
 >     type: [String, Number, Boolean], // 允许 string/number/boolean
 >     default: '' // 默认值（需考虑多类型兼容）
 >   },
->     
+>
 >   // 复杂多类型（数组或对象）
 >   dataSource: {
 >     type: [Array, Object],
@@ -1400,19 +1446,19 @@ var vm = new Vue({
 > <div id="app">
 >   <cpn @itemclick="cpnClick"></cpn>
 > </div>
-> 
+>
 > <template id="cpn">
 > 	<button v-for="item in categories" @click="btnClick(item)">
 >   {{ item.name }}
 >   </button>
 > </template>
-> 
+>
 > <script>
 >   // 子组件
 >   const cpn = {
 >     template: '#cpn',
 >     data() {
->       return { categories: [ {id: 'a', name: '热门推荐'},{id: 'b', name: '手机数码'},{id: 'c', name: '家用电器'} ]} 
+>       return { categories: [ {id: 'a', name: '热门推荐'},{id: 'b', name: '手机数码'},{id: 'c', name: '家用电器'} ]}
 >     },
 >     methods: {
 >       btnClick(item) {
@@ -1420,7 +1466,7 @@ var vm = new Vue({
 >       }
 >     }
 >   }
->   
+>
 >   // 父组件
 >   const VM = new Vue({
 >     el: '#app',
@@ -1440,7 +1486,7 @@ var vm = new Vue({
   - `this.$emit("自定义事件名","要传送的数据");`
   - 触发当前实例上的事件，要传递的数据会传给监听器。
 - **`$on`**
-  - `VM.$on('事件名',callback);`	
+  - `VM.$on('事件名',callback);`
   - `callback`回调`$emit`要传送的数据；
   - 监听当前实例上自定义事件
 
@@ -1769,7 +1815,7 @@ inheritAttrs
 </template>
 
 //JS
-const app = new Vue({ 
+const app = new Vue({
     el: '#app',
     components: {
         cpn: {
@@ -1780,38 +1826,56 @@ const app = new Vue({
                 }
             }
         }
-    }   
+    }
 });
 ````
 
-## 响应式原理
 
-### 动态修改`Vue`中的页面标题
 
-> - 在页面的最外层div上添加属性 v-title data-title="页面标题"，然后通过在`main.js`中获取值给`document.title`
-> - 还可在页面方法中直接赋值给`document.title`（不建议，会产生多冗余代码）
+#### 依赖注入 provider/inject
+
+> ```bash
+> - 在父组件中通过 provider 来提供变量，然后再子组件中通过 inject 来注入变量。
+> 		- provide：一个对象或返回一个对象的函数。
+> 		- inject：一个字符串数组，或一个对象，对象的 key 是本地的绑定名。
+>
+> 注意：
+> - 不论子组件有多深层次，只要调用了 inject 就可以注入 provider 中的数据，而不是局限于只能从当前父组件的 prop 属性来获取数据。
+> - 只要在父组件中通过 provide 注入了该变量，那么在这个父组件生效的生命周期内，其所有的子组件都可以通过调用 inject 来注入父组件中的值。
+> ```
 >
 > ```js
-> //main.js
-> Vue.directive('title', {
-> 	inserted: function(el, binding) {
-> 		document.title = el.dataset.title
-> 	}
-> })
-> ```
+> // 返回一个对象的函数
+> provide() {
+>   return {
+>     objFun: "返回一个对象的函数",
+>   }
+> },
 >
-> ```vue
-> //在页面的最外层div上添加属性 v-title data-title="页面标题"
-> <template>
-> 	<div v-title data-title="页面标题"><p>这是页面的内容</p></div>
-> </template>
-> ```
+> // 返回一个对象
+> provide() {
+>   obj: "一个对象",
+> }
 >
+> // 注入一个字符串数组
+> inject: ["objFun"],
+>
+> // 注入一个对象
+> inject: {
+>   obj: {
+>     type: String,
+>     default: "一个对象",
+>   }
+> },
+> ```
+
+
+
+## 响应式原理
 
 ### vue2响应式的缺陷
 
 >````bash
->## vue2 响应式缺陷
 >对象新增、删除属性没有响应式，数组新增、删除元素没有响应式，通过下标修改某个元素没有响应式，通过 `.length` 改变数组长度没有响应式。
 >只有实例创建时 data 中有的数据实例创建后才是响应式，给已创建好的 vue 实例 data 对象中添加属性时，数据虽然会更新，但视图不会更新，不具有响应式。
 >
@@ -1822,7 +1886,7 @@ const app = new Vue({
 >
 >2. 使用具有响应式的函数来操作对象：
 >	[Vue | this].$set(object,key,value),实例中添加响应式属性;
->    [Vue | this].$delete(object,key)，实例中删除属性;
+>   [Vue | this].$delete(object,key)，实例中删除属性;
 >    Object.assign()，将多个对象属性合并到目标对象中，具有响应式;
 >    Object.freeze()，将对象冻结，防止任何改变。使得对象成为只读，无法添加、删除或更新;
 >    Object.keys()，返回对象的所有属性;
@@ -1830,7 +1894,7 @@ const app = new Vue({
 >    Object.entries(),返回对象的所有键值对;
 >
 >3. 使用具有响应式的函数来操作数组：
->    pop(),尾部删除元素；
+>   pop(),尾部删除元素；
 >    push(),尾部添加元素；
 >    unshift(),首部添加元素；
 >    shift(),首部删除元素；
@@ -1839,15 +1903,15 @@ const app = new Vue({
 >    splice(index[必填，位置]，howmany[必填，要删除的数量],item1...itemx[可选，向数组中添加的新元素])；
 >
 >4. 清空对象
->    this.form = {}
+>   this.form = {}
 >    this.$refs.form.resetFields()
 >    this.form.name = ""
 >
 >5. 清空数组
->    this.arrayList = [] 
+>   this.arrayList = []
 >    this.arrayList.splice(0,this.arrayList.length)
 >    // this.arrayList.length = 0  不具有响应式，无法实现
->````
+> ````
 
 ### vue中响应式值变化处理this.$set()
 
@@ -1912,13 +1976,13 @@ methods: {
         )
 		this.$set( this.fillData, index, { result: "1" })
 	}
-	
+
 }
 ```
 
 ### 重置vue的data中的数据
 
-- **方法1**：`Object.assign()`合并成一个新的对象再赋值		
+- **方法1**：`Object.assign()`合并成一个新的对象再赋值
 
   -  Object.assign() 方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象
   -  例：`this.seller=Object.assign({},this.seller,new.data)`
@@ -1929,10 +1993,10 @@ methods: {
   - 例：vue文件中data有个值option，修改option值，并让页面视图更新
 
     ```vue
-    data() { 
-    	return { 
+    data() {
+    	return {
     		option: {},
-    	} 
+    	}
     },
     methods: {
     	btn() {
@@ -1946,7 +2010,7 @@ methods: {
 
 - **方法4**： v-if也会触发视图更新
 
-- **方法5：**this.$nextTick() 
+- **方法5：**this.$nextTick()
 
 - 方法6：对象层次过深，没有办法时，可以试试重新获取数据，前提是清空数据，再异步获取数据
 
@@ -1976,7 +2040,7 @@ this.$nextTick 将回调延迟到下次DOM更新循环之后执行。在修改�
 vue2 在内部对异步队列使用了多级降级策略（Promise > MutationObserver > setImmediate > setTimeout）
 	先使用原生的 `Promise.then`、`MutationObserver` 和 `setImmediate`
 	如果执行环境不支持，则会采用 `setTimeout(fn, 0)` 代替
-	
+
 
 ### vue2的 this.$nextTick 跟 vue3的 $nextTick 的区别
 内部实现策略不同：
@@ -2072,164 +2136,7 @@ methods: {
 </script>
 ```
 
-#### `provider/inject`
 
-> ```bash
-> ## 依赖注入 provider/inject
-> - 在父组件中通过 provider 来提供变量，然后再子组件中通过 inject 来注入变量。
-> 		- provide：一个对象或返回一个对象的函数。
-> 		- inject：一个字符串数组，或一个对象，对象的 key 是本地的绑定名。
-> 		
-> 注意：
-> - 不论子组件有多深层次，只要调用了 inject 就可以注入 provider 中的数据，而不是局限于只能从当前父组件的 prop 属性来获取数据。
-> - 只要在父组件中通过 provide 注入了该变量，那么在这个父组件生效的生命周期内，其所有的子组件都可以通过调用 inject 来注入父组件中的值。
-> ```
->
-> ```js
-> // 返回一个对象的函数
-> provide() {
->   return {
->     objFun: "返回一个对象的函数",
->   }
-> },
-> 
-> // 返回一个对象
-> provide() {
->   obj: "一个对象",
-> }
-> 
-> // 注入一个字符串数组
-> inject: ["objFun"],
-> 
-> // 注入一个对象
-> inject: {
->   obj: {
->     type: String,
->     default: "一个对象",
->   }
-> },
-> ```
-
-## 模块化开发
-
-常见的模块化规范：CommonJS、AMD、CMD、ES6的Modules
-
-**ES6的模块化**
-
-```js
-/*
-使用export指令导出模块对外提供的借口，通过import命令来加载该模块
-我们引入导入导出的js文件类型必须设置为module
-导入的变量跟导出的变量名必须要一致的，不能改变
-<script src="info.js" type="module"> </script>
-*/
-
-//导入的{}中定义的变量
-import {flag, sum} from './aaa.js';
-
-//导出变量
-export function mul(num1,num2){
-    return num1*num2;
-}
-export default abc	//default只能导一个，不能多个default
-
-//导出所有接口，然后定义一个来接收
-import * as abc from './aaa.js'
-cosole.log(abc.flag);
-```
-
-### 可视化管理 `vue ui`
-
-- 在cmd中输入`vue ui`就会在浏览器中弹出可视化界面生成并管理项目。
-
-
-### 脚手架CLI
-
-- CLI是Command-Line Interface，即命令行界面，俗称脚手架；使用vue-cli可以快速搭建vue开发环境以及对应的webpack配置（注意：使用的前需要安装webpack和node）
-- NPM全程是Node Package Manager，是一个nodejs包管理和分发工具，是非官方的模块/包的标准
-
-```cmd
-# 脚手架安装
-npm install -g @vue/cli@3.2.1
-vue --version
-#拉取脚手架2.0版本
-npm install -g @vue/cli-init
-```
-
-### 脚手架2
-
-![image-20201218124600637](./image/image-20201218124600637.png)
-
-```cmd
-#创建脚手架项目，项目名为my-project
-vue in
-it webpack my-project
-```
-
-**解读生成的文件**：先从package.json中读文件运行的过程
-
-![image-20201218132217602](./image/image-20201218132217602.png)
-
-**runtime-compiler和runtime-only的区别**
-
-vue程序运行过程如下图所示：
-
-![image-20201229000721595](./image/image-20201229000721595.png)
-
-- runtime-compiler运行过程：template-->ast-->render-->virtual dom-->UI
-
-- runtime-only运行过程：render-->virtual dom-->UI，所以性能相对更高，代码量更少
-
-  注意：runtime-only中不存在template
-
-**createElement**
-
-```vue
-const cpn = {
-  template: `<div>{{message}}</div>`,
-  data() {
-    return {
-      message: '我是组件message'
-    }
-  }
-}
-
-new Vue({
-	el: '#app',
-	render: function(createElement){
-	//1.普通用法：createElemnt('标签',{标签的属性},['标签的内容，里面可以再次嵌套'])
-		//return createElement('h4',{class:'box'},['Hello,world~',createElement('button',['按钮'])])
-		
-	//2. 传入组件对象(不能再runtime-only中运行)
-	return createElement(cpn)
-	}
-})
-```
-
-**npm run build/dev运行过程**
-
-![image-20210105104406137](./image/image-20210105104406137.png)
-
-![image-20210105104341788](./image/image-20210105104341788.png)
-
-### 脚手架3
-
-```cmd
-#创建cli3项目
-vue create cliName
-
-#打开页面的项目管理器（因为cli3的配置会隐藏起来，所以这个比较好管理配置）
-vue ui
-```
-
-**vue-cli 3 与 2版本的区别**（约定大于配置）
-
-- vue-cli 3 是基于webpack 4打造，vue-cli 2 还是 webpack 3
-- vue-cli 3 的设计原则是“0配置”，移除的配置文件根目录下的build和config等目录
-- vue-cli 3 提供了vue ui 命令，提供了可视化配置，更加人性化
-- 移除了static文件，新增public文件夹，并且index.html移动到public中
-
-![image-20210105111814071](./image/image-20210105111814071.png)
 
 ## 路由
 
@@ -2253,14 +2160,14 @@ vue ui
 > ```bash
 > # 安装vue-router：
 > 	npm install vue-router --save
-> 	
-> 
+>
+>
 > # vue-router的使用
 > 	1. 导入路由对象，并且调用`Vue.use(VueRouter)`
 > 	2. 创建路由实例，并且传入路由映射配置
 > 	3. 在Vue实例中挂载创建的路由实例：通过`<router-link> 和 <router-view>`
-> 	
-> 	
+>
+>
 > # <router-link> 标签
 > <router-link>: 该标签是一个`vue-router`中一个内置的组件，会被渲染成一个`<a>`标签；
 >   - <router-link to='/home' tag='button' replace active-class="class1">
@@ -2268,16 +2175,14 @@ vue ui
 > 	  	- replace：replace不会留下history记录，所以指定replace时，后退键不能返回上一操作页面
 > 	  	- active-class：当`<router-link>`对应的路由匹配成功时，会自动给当前元素设置一个`router-link-active`的`class`，设置`active-class`可以修改默认的名称。
 >     		(在进行高亮显示的导航菜单或底部tabbar时会使用该类；但通常不会修改类的属性，会直接使用默认的router-link-active即可)
-> 
+>
 > # <router-view> 标签
 > 	- `<router-view>`:该标签会根据当前的路径，动态渲染出不同的组件(显示不同组件的页面内容)
 > 			- 网页的其他内容，比如顶部的标题/导航，或底部的一些版权信息会跟`<router-view>`处于同一个等级。
 > 			- 在路由切换时，切换的是`<router-view>`挂载的组件，其他内容不会发生改变
 > ```
 
-### 路由底层原理
-
-> ![image-20220825194922734](./image/image-20220825194922734.png)
+![image-20220825194922734](./image/image-20220825194922734.png)
 
 ### hash模式与history模式
 
@@ -2287,14 +2192,14 @@ vue ui
 >     1. Hash：使用 URL 的 hash 值来作为路由。支持所有浏览器。
 >     2. History：以 HTML5 History API 和服务器配置。
 >     3. Abstract：支持所有 JS 运行模式，如果发现没有浏览器的API，路由会自动强制进入该模式。
-> 
-> 
+>
+>
 > ### hash 模式与 history 模式
 > - `Hash`模式只可以更改`#`后面的内容，`History`模式可以通过API设置任意的同源url
 > - `History`模式可通过API添加任意类型的数据到历史记录中，`Hash`模式只能更改哈希值(即字符串)
 > - `Hash`模式无需后端配置且兼容性好。`History`模式在用户手动输入地址或刷新页面时会发起url请求，后端需要配置`index.html`页面用于匹配不到的静态资源时
-> 
-> 
+>
+>
 > ### hash 模式(window.location.hash)
 > - location.hash 的值实际是 URL 中 `#` 字符后面的字符串，它的特点在于 hash 虽然出现在 URL 中，但是不会被包含在 HTTP 请求中，对后端完全没有影响，因此改变 hash 不会重新加载页面。
 > - URL 的 hash 值只是客户端的一种状态，是由前端路由处理，即当服务端发出请求时 hash 值不包括在 http 请求中，所以改变 hash 值时不会刷新页面，也不会向服务器发送请求。
@@ -2302,8 +2207,8 @@ vue ui
 > - 可通过 a 标签并设置 href 属性，当用户点击标签后，URL 的 hash 值会发生改变，或者使用 JavaScript 来对 location.hash 进行赋值，改变 URL 的 hash 值。
 > - 可使用 hashchange 事件来监听 hash 值的变化，从而对页面进行跳转（渲染）
 > 		`window.addEventListener('hashchange', funcRef, false);`
-> 		
-> 		
+>
+>
 > ### history 模式(HTML5 的 history 模式)
 > - 整个地址重新加载，可以保存历史记录，方便前进后退。
 > - 使用 html5 和 http 服务端配置，没有后台配置，页面刷新可能会出现 404 页面。
@@ -2336,7 +2241,7 @@ vue ui
 > location.hash='aaa'	//页面不刷新但URL修改
 > history.pushState({},'','bbb')		//入栈（会保留历史记录）
 > history.replaceState({},'','ccc')	//替换（不保留历史记录）
-> 
+>
 > // back()、forward()、go()等同于浏览器界面的前进后退
 > history.back()		等价于	history.go(-1)
 > history.forward()	等价于	history.go(1)
@@ -2349,9 +2254,9 @@ vue ui
 > import Vue from 'vue'
 > import Router from 'vue-router'
 > import Home from '../components/Home'
-> 
+>
 > Vue.use(Router)
-> 
+>
 > //3.将router对象传入（导入）到VUE实例中
 > export default new Router({
 >   //配置路由和组件之间的应用关系
@@ -2359,15 +2264,66 @@ vue ui
 >     {
 >       path: '',  //路由的默认值，默认显示(配置的是根路径)
 >       redirect: '/home' //重定向，将根路径重定向到/home的路径下
->     }, 
->     { path: '/home', component: Home }, 
+>     },
+>     { path: '/home', component: Home },
 >     { path: '/about', component: () => import('../components/About') }
 >   ],
 >   mode: 'history', //把默认的hash模式改为history模式
 >   linkActiveClass: 'class1'	//index.js中active-class='class1'所统一设置的属性样式
 > })
 > ```
-> 
+>
+
+#### History模式刷新404问题的Nginx配置
+
+```bash
+如果 vue-router 采用 history 模式，当用户在浏览器中直接访问或刷新非首页路由时，会出现 404 错误。
+这是因为 vue-router 的 history 模式会产生类似 /about、/user/123 这样的 URL，当用户刷新页面时，浏览器会向服务器请求这些路径对应的文件，但服务器上实际并不存在这些文件，因此返回 404 错误。
+
+解决这个问题的核心思路是：让服务器将所有前端路由请求都指向 Vue 应用的入口文件 index.html，然后由 vue-router 接管路由处理。
+
+location / {
+	try_files $uri $uri/ /index.html;
+}
+这行配置的工作原理：
+	1. 首先尝试访问请求的文件 $uri
+	2. 如果文件不存在，尝试访问对应目录 $url/
+	3. 如果目录也不存在，最后返回 index.html
+
+注意事项：
+  1. 注释掉原有的404配置
+      error_page 404 /404.html; # 注释掉这行，避免与Vue路由冲突
+  2. 静态资源处理：对于 CSS、JS、图片等静态资源，应该直接返回404而不是index.html，避免资源加载错误。
+  3. API路由分离：如果项目有后端API，需要单独配置API路由，确保API请求不会被重定向到index.html
+```
+
+```yml
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /path/to/your/vue/dist;
+    index index.html;
+
+    # Vue Router支持
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 静态资源优化
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # API接口路由(如果有后端API)
+    location /api {
+        try_files $uri $uri/ @fallback;
+    }
+}
+```
+
+
 
 ### 通过代码修改路由
 
@@ -2441,7 +2397,7 @@ export default new Router({
 
 ```vue
 <template>
-  <div id="app"> 
+  <div id="app">
     <router-link :to="'/user/'+userid" tag="button">用户1</router-link>
     <!-- 通过v-bind绑定。带单引号里面的内容为真实的，其他为字符串/变量 -->
     <router-view></router-view>
@@ -2469,13 +2425,13 @@ export default {
 > // router/index.js
 > //方式一（不推荐）：结合Vue的异步组件和webpack的代码分析
 > const Home = resolve => {require.ensure(['../components/Home.vue'],() => { resolve(require('../components/Home.vue')) })};
-> 
+>
 > //方式二：AMD写法
 > const About = resolve => require(['../components/About.vue'],resolve);
-> 
+>
 > //方法三（推荐）：在ES6中，优化方法一来组织vue异步组件和webpack的代码分割
 > const Home = () => import('../components/Home.vue')
-> 
+>
 > //示例
 > export default new Router({
 >   routes: [
@@ -2499,7 +2455,7 @@ export default {
 > // router/index.js
 > import Home from '../components/Home.vue'
 > import About from '../components/About'
-> 
+>
 > export default new Router({
 >   routes: [
 >     {
@@ -2883,33 +2839,6 @@ const Foo = {
 11. 触发 DOM 更新。
 12. 调用 `beforeRouteEnter` 守卫中传给 `next` 的回调函数，创建好的组件实例会作为回调函数的参数传入。
 
-### `NavigationDuplicated: Avoided redundant navigation to current location`
-
-> vue项目中，点击左侧菜单栏中的项，重复点击时会报错，解决这个问题，首先找到项目中管理路由的文件，一般是router/index.js,有的直接就是router.js。
-> 然后看vue-router的引入名称，
->
-> ```js
-> //情况一：
-> import VueRouter from 'vue-router'
-> Vue.use(VueRouter)
-> // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
-> const originalPush = VueRouter.prototype.push
-> VueRouter.prototype.push = function push(location) {
->   return originalPush.call(this, location).catch(err => err)
-> }
-> 
-> //情况二：
-> import Router from 'vue-router';
-> Vue.use(Router);
-> // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
-> const originalPush = Router.prototype.push
->  
-> Router.prototype.push = function push(location) {
->   return originalPush.call(this, location).catch(err => err)
-> }
-> ```
->
-
 ## Vuex
 
 > ```bash
@@ -2919,22 +2848,22 @@ const Foo = {
 >   - Vuex也集成到Vue的官方调试工具`devtools extension`，提供了诸如零配置的`time-travel`调试，状态快照导入导出等高级调试功能。
 > - vuex就是为了提供一个在多个组件间共享状态的插件。
 > - 刷新页面vuex中的数据会丢失：vuex 数据存放在内存中，当你刷新页面后会重新加载页面，内存就会被释放，js垃圾回收，localstorage 存在本地存储中
-> 
-> 
+>
+>
 > Vuex 与其它状态管理库如 mobx、redux 不同的是，Vuex 不能单独运行，它强依赖于 Vue 并且使以 vue plugin 的形式存在的。
 > Vuex 的设计思想是将数据存放到全局的 store，再将 store 挂载到每个 vue 实例组件中，利用 Vue.js 的细粒度数据响应机制来进行高效的状态更新。
-> 
-> 
+>
+>
 > ### vue 的 store 是如何挂载注入到组件中？
 > 1. vuex 是插件，当使用 Vue.use() 会调用 vuex 暴露的 install 方法。
 > 2. vuex 利用 mixin 方法，在 beforeCreated 生命周期调用了自身的 vueInit 方法，将 $store 注入到每个实例中。
 > 3. Vue.mixin() 有个特性是当该方法被调用后，所有的 vue 实例都会被混入传入的参数。
-> 
-> 
+>
+>
 > ### vuex 的 state 和 getters 是如何映射到各个组件实例中响应式更新状态？
 > vuex 中的响应式是依赖于 vue 的 data 本身是响应式的。
 >```
-> 
+>
 
 ### 使用`vuex`管理状态
 
@@ -3026,7 +2955,7 @@ computed: {
 
   ```vue
   <button @click="addStu">新增一个指定的学生</button>
-  
+
   //methods中的方法
   addStu() {
       const stu = { id: 114, name: 'ytz', age: '35', }
@@ -3049,7 +2978,7 @@ computed: {
    addStudent() {
    	const stu = {id:117, name:'willy', age:22};
    	// this.$store.commit('addStudent',stu);	//把stu作为参数传递给mutation的addStudent函数
-   	this.$store.commit({ type: 'addStudent', stu }) //传过去的是一个对象payload（载荷）{type: 'addCount',stu：stu}	
+   	this.$store.commit({ type: 'addStudent', stu }) //传过去的是一个对象payload（载荷）{type: 'addCount',stu：stu}
    }
    ```
 
@@ -3063,30 +2992,30 @@ addCount (state, payload) { // 此时传入的就不是一个count值了，而�
 
 ### Vuex的响应式原理
 
-- 通过`Vue.set()、Vue.delete()`方法来响应式更新state中的数据
+通过`Vue.set()、Vue.delete()`方法来响应式更新state中的数据
 
-  ```js
-  // store.js
-  state: {
-    user: {  name: 'zhangsan', sex: '男' },
-  }
-  mutation: {
-    updateInfo (state, age) {
-      Vue.set(state.user, 'age', 12)
-  	}
-  }
-  ```
+```js
+// store.js
+state: {
+  user: {  name: 'zhangsan', sex: '男' },
+}
+mutation: {
+  updateInfo (state, age) {
+    Vue.set(state.user, 'age', 12)
+	}
+}
+```
 
-  ```vue
-  <!-- App.vue -->
-  <h3>{{ $store.state.user }}</h3>
-  <button @click="updateInfo()">修改信息</button>
-  
-  //methods
-  updateInfo () {
-      this.$store.commit('updateInfo', 12)
-  }
-  ```
+```vue
+<!-- App.vue -->
+<h3>{{ $store.state.user }}</h3>
+<button @click="updateInfo()">修改信息</button>
+
+//methods
+updateInfo () {
+    this.$store.commit('updateInfo', 12)
+}
+```
 
 #### mutation的类型常量
 
@@ -3296,7 +3225,7 @@ export default {
 }
 ```
 
-> 重要提示：如果使用SSR模式，请确保在 mounted 钩子中 注册模块。否则，它可能导致内存泄漏，因为beforeDestroy钩子在服务器端不能执行。
+> 重要提示：如果使用SSR模式，请确保在 mounted 钩子中注册模块。否则可能导致内存泄漏，因为beforeDestroy钩子在服务器端不能执行。
 
 ![image-20210923111020342](./image/image-20210923111020342.png)
 
@@ -3308,9 +3237,9 @@ Vuex 并不限制你的代码结构。但是，它规定了一些需要遵守的
 2. 提交 **mutation** 是更改状态的唯一方法，并且这个过程是同步的。
 3. 异步逻辑都应该封装到 **action** 里面。
 
-只要你遵守以上规则，如何组织代码随你便。如果你的 store 文件太大，只需将 action、mutation 和 getter 分割到单独的文件。
+如果 store 文件太大，只需将 action、mutation 和 getter 分割到单独的文件。
 
-对于大型应用，我们会希望把 Vuex 相关代码分割到模块中。
+对于大型应用，一般会把 Vuex 相关代码分割到模块中。
 
 ```bash
 ├── index.html
