@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年12月11日
+  - docs(后端基础): [JAVA] java基础语法
+
 ## 2025年12月9日
   - docs(前端框架): [Vue2] $nextTick原理
   - docs: organize note content
