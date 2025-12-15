@@ -310,6 +310,68 @@ public class Main {
 
 
 
+#### 导入包
+
+```bash
+为了使用不在同一包中的类，需要在 Java 程序中使用 import 关键字导入这个类：`import 包名.类名;`
+
+导入包注意：
+- 一个类同时引用两个来自不同包的同名类：
+		- 必须先通过完整类名来区分
+- package 和 import 的顺序是固定的
+		- package 必须位于第一行
+		- 只允许有一个 package 语句
+		- 其次是 import
+		- 接着是类的声明
+
+
+快捷键：Eclipse/IntelliJ IDEA：Ctrl+Shift+O 优化导入
+
+陷阱：
+	- 导入子包不能访问父包：`import java.*;`不能导入java下的所有子包
+	- 默认包：没有声明 package 的类不能被导入
+	- 循环依赖：类A导入类B，类B又导入类A
+```
+
+```java
+// 1. 标准库包
+import java.io.*;
+import java.util.*;
+
+// 2. 第三方库
+import org.springframework.*;
+import com.google.common.*;
+
+// 3. 项目内部包
+import com.mycompany.myproject.*;
+
+// 静态导入单独分组
+import static java.lang.Math.PI;
+import static org.junit.Assert.*;
+
+// 错误示例 - 冲突
+// import java.util.Date;
+// import java.sql.Date;
+
+// 解决方案1：只导入一个，另一个用全限定名
+import java.util.Date;
+
+public class Test {
+    public void method1() {
+        Date utilDate = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+    }
+
+  	// 解决方案2：都不导入，全用全限定名
+  	public void method2() {
+        java.util.Date utilDate = new java.util.Date();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+    }
+}
+```
+
+
+
 #### 接收输入Scanner
 
 ```bash
@@ -917,27 +979,6 @@ public static int abc() {
 }
 ```
 
-#### 方法重载
-
-重载是方法不变，参数的个数、参数类型、参数的多类型顺序不同
-
-![image-20201127231816069](./image/image-20201127231816069.png)
-
-**静态方法与非静态方法的区别：**
-
-1、静态方法隶属于类，既可通过对象来调用，亦可通过类名来调用；
-
-  非静态方法则只可以通过对象来调用。
-
-2、static的Method and attribute 只能是对类而言，
-  而non-static 的，是对于对象而言的。
-
-3、两者在系统分配内存的时候也是不同的：
-  前者是用栈分配内存，速度快，是在类第一次载入的时候初始化。
-  后者是用堆分配内存，速度慢些，是在对象初始化的时候，伴随着初始化的。
-
-4、所谓静态变量或方法, 就是以static修饰的变量或方法, 如static int count;它的意义是让系统分配一个静态空间给这个变量count, 那么包含这个变量的类的全部实例就会共用这个变量, 任何一个改变了count都会对其余的实例产生影响, 它是在文件编绎时就被初始化的, 比一切其它non-static 变量都要早;而non-static 变量就是每一个类实例都有自己的count, 任何实例的改变都不会 影响到其它的实例的count(也就是分配了各自的空间), 它们是第一次使用的时 候才被初始化的;  static 和non-static 的方法的区别也是差不多的, 只是一点要注注意的就是 static 成员(变量或方法), 只能调用static 成员, 而不能调用non-static成员。
-
 
 
 #### 面向对象思想
@@ -969,9 +1010,7 @@ public class Test {
 
 ```bash
 1. 类是对某一类事物的描述，是抽象的；对象是一类事物的实例，是具体的。
-	- 类是对象的模板，对象是类的实体。
-	- 对象是一个实在的个体，是类的一个实例。
-	- 比如：“人”是一个类，而“教师”则是“人”的一个实例。
+	- 类是对象的模板(抽象化)，对象是类的实体(实例化)。
 
 2. 对象是函数、变量的集合体；而类是一组函数和变量的集合体。
   - 即类是一组具有相同属性的对象集合体。
@@ -981,8 +1020,6 @@ public class Test {
   - 对象名下有一条下划线，而类名没有。
 
 4. 类的数据值是共享的，一个实例能访问它所属类的类数据值；
-  - 而实例数据属于单个对象，除共享了所在类中的数据外，
-  - 不同对象还会有不同的数据值。
 
 5. 先有类，才有类的实例——对象。
 	- 应用在创建某个类的实例（对象）之前，这个类必须被定义。
@@ -1003,50 +1040,255 @@ public class Student {
 }
 ```
 
-**导包**
+#### 类图
+
+```bash
+1.0 定义
+类图是面向对象系统建模中最常用和最重要的图，是定义其它图的基础。类图主要是用来显示系统中的类、接口以及它们之间的静态结构和关系的一种静态模型。
+这里要注意四个关键字：类、接口、静态结构、关系
+
+
+1.1 表示一个类
+第一行，表示类的名字，如 Person；
+第二行，表示类的属性，如 name:string = ""，格式为属性名：类型 = 默认值，其中可以不包含默认值；
+第三行，表示类的方法，如 sayHello(name)，格式为方法名（参数列表）：返回值，其中可以不含参数，无返回值。
+注意，+表示属性是公开(public)、-表示私有(private)、`#`表示保护(protect)，static静态方法
+
+
+1.2 表示一个接口
+第一行，明确写上<<接口>>的标识，然后换行写下接口名；
+第二行，表示接口需要实现的类方法。
+
+
+1.3 类的其他表达
+简单类、多例类、活动类等，这些在类图中并不常用，一般如何一个类只有方法没有属性，则第二行空着即可。
+
+
+
+2.0 关系
+表示类的关系总共有6种，这6种又可以分为3类。
+第一类，泛化。表达了is a的关系模型，当A以某种形式是一个B时，就是这种关系，包含了有2种关系：继承、实现。
+第二类，关联。表达了has a的关系模型，当A拥有一个B时，就是这种关系，包含了有3种关系：聚合、组合、关联。
+第三类，依赖。表达了use a的关系模型，当A使用了一个B时，就是这种关系，包含了1种关系：依赖。
+
+2.1 继承关系（鸟类继承自动物类）
+继承使用一个实线+空心三角箭头，从子类指向父类即表示一个继承
+
+2.2 实现关系（大雁实现了飞翔接口）
+实现使用一个虚线+空心三角箭头，从实例指向接口即表示一个实现。
+泛化关系（继承、实现都是空心三角箭头，指向实体是实线、指向虚有的接口则是虚线）
+
+2.3 聚合关系（大雁聚集在一起形成了雁群，但是离开雁群的大雁依然可以存在）
+聚合使用一个实线+空心菱形箭头，从整体指向局部即表示一个聚合。
+注意，聚合关系只是将一些对象聚集在一起，但他们的关联是弱关联，局部对象可以脱离整体对象而单独存在
+
+2.4 组合关系（翅膀是组成鸟的局部，翅膀不能脱离一个整体（鸟）而单独存活）
+组合使用一个实线+实心菱形箭头，从整体指向局部即表示一个组合。
+组合又叫合成，是由局部合起来才成为一个整体，他们密不可分，是强关联关系，局部脱离了整体就不存在
+
+2.5 关联关系（气候的变更影响了企鹅的生存，合适的气候能让企鹅生存。但企鹅不是气候的实例，企鹅不能使用一个气候）
+当一个关系明显是has a的拥有关系，但不是聚合也不是组合那样来描述整体与局部时，就应该考虑使用关联关系来描述，事实上，前两者都是（更加准确的）关联关系，关联使用一个实线箭头，从拥有者指向被拥有者。
+所有的关联关系都是实线箭头，只是聚合（弱）用了一个空心菱形，而组合（强）用了一个实心菱形。这里的关联是可以双向的，关联关系的一个实例。
+
+2.6 依赖关系（动物，有一个新陈代谢的功能，要工作则必须有空气和水，因此构成了他们之间的依赖关系）
+依赖关系不同于关联关系，使用一个虚线箭头，从使用者指向被使用者。
+这里要注意“使用”的概念，表达了一个物体需要通过另一个物体来完成工作，但他们之间没有包含的关系
+但在企鹅与气候的关系中，企鹅的生存方式依赖于气候的变化，但他们不是依赖关系，因为企鹅不需要气候作为参数进行某项工作，如果企鹅有一个功能是迁徙，需要传入一个气候，此时就是依赖关系。
+
+
+快捷记忆：继承实现用三角，二者皆实是实线。关联关系实箭头，依赖关系虚箭头。聚合组合有菱形，强弱判断实空心。
+```
+
+![img](./image/b195eb27b31e1ae6454c85699662c33f.png)
+
+
+
+#### 类的基础
+
+##### 权限修饰符
+
+```bash
+private关键字
+问题描述：定义数据变量时，无法阻止不合理的数值被设置进来；
+解决方案：用private关键字将需要保护的成员变量进行修饰
+一旦使用了private进行修饰，本类中可以随意访问，但是，超出本类之外就不能访问
+```
+
+![image-20201213203936235](./image/image-20201213203936235.png)
+
+
+
+##### 静态static关键字
+
+```bash
+一旦使用static关键字，则此内容属于类；所以凡是本类的对象，都共享同一份。
+如果没有static关键字，必须首先创建对象，然后通过对象调用；
+如果有static关键字，则不需创建对象，直接通过类名称来使用它。
+无论是成员变量还是成员方法，如果有static，都推荐使用类名称来进行调用：
+
+静态变量：类名称.静态变量
+静态方法：类名称.静态方法()
+
+注意：
+静态不能访问非静态。原因：因为在内存中是先有静态内容，后有非静态内容。
+静态方法中不能用this。原因：this代表当前对象，通过谁调用的方法，谁就是当前对象
+
+
+
+#### 静态成员跟非静态成员的区别
+1、静态方法属于类，既可通过对象来调用，亦可通过类名来调用；
+  	非静态方法只能通过对象来调用。
+2、静态方法和属性只对类而言，而非静态是对于对象而言的。
+3、在系统分配内存时不同：
+  	静态成员是用栈分配内存，速度快，是在类第一次载入时初始化。
+  	非静态成员是用堆分配内存，速度慢些，是在对象初始化时初始化。
+```
 
 ```java
-/*
-1、导包
-import 包名称.类名称;
-import cn.gdufe.edu.cn.student;对于和当前类属于同一个包的情况，可以省略导包语句不写
-（即不在同一个页面内，需要导包）
+public class Demo1{
+    public static void main(String[] args){
+        MyClass.MethodStatic();
+    }
+}
 
-2、创建格式：
-类名称 对象名 = new 类名称();
-Student stu = new Student();
-
-3、使用
-使用成员变量：对象名.成员变量名
-使用成员方法：对象名.成员方法名(参数)
-*/
-public static void main(String[] args){
-    Student stu = new Student();
-    System.out.println(stu.name);//null
-    System.out.println(stu.name);//0
-    stu.name = "Kobe";
-    System.out.println(stu.name);//Kobe
-    System.out.println(stu.eat("水果"));//吃：水果
+public class MyClass{
+    public static MethodStatic(){
+        System.out.println("这是静态方法");
+    }
 }
 ```
 
-**使用对象类型做方法的返回值**
+
+
+##### 成员变量和局部变量的区别
+
+```bash
+- 局部变量：在方法内部，只有方法能用；没有默认值；位于栈内存
+- 成员变量：直接写在类中；整个类都可以用；有默认起始值；位于堆内存
+```
 
 ```java
-public static void main(String[] args){
-    Student stu2 = getStudent();
-    System.out.println(stu2.name);	//June
-    System.out.println(stu2.age);	//17
-}
-public static Student getStudent(){
-    Student stu1 = new Student();
-    stu1.name = "June";
-    stu1.age = 17;
-    return stu1;
+public class Test{
+    String name;	//成员变量
+
+    public void methodA(){
+        int num = 20;	//局部变量
+        System.out.println(num);
+        System.out.println(name);
+    }
 }
 ```
 
-**匿名对象**
+
+
+##### 静态代码块
+
+```bash
+当第一次用到本类时，静态代码块执行唯一的一次。如果有多个静态块，按顺序加载。
+用途：用与对一次性对静态成员变量赋值。
+
+    public class 类名称{
+      staic {
+        //静态代码块
+      }
+    }
+```
+
+```java
+public class StaticTest {
+    static int num = 10;
+
+    static {
+        num += 10;
+        System.out.println(num);
+    }
+
+    static {
+        num += 20;
+        System.out.println(num);
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        StaticTest st1 = new StaticTest(); // 20 40
+        StaticTest st2 = new StaticTest(); // 不再执行static
+        System.out.println(StaticTest.num); // 40
+    }
+}
+```
+
+
+
+##### this
+
+```bash
+解决参数名称和成员名称重名调用问题
+this.成员变量名-->访问成员变量
+如果该方法内存在相同的变量名，会先调用方法内的变量，如果想调用成员变量，则需要this来调用
+```
+
+
+
+##### 方法重载
+
+重载是方法不变，参数的个数、参数类型、参数的多类型顺序不同
+
+```java
+public static void open(){} // 正确重载
+public static void open(int a){} // 正确重载
+static void open(int a,int b){} // 代码错误:和第8行冲突
+public static void open(double a,int b){} // 正确重载
+public static void open(int a,double b){} // 代码错误:和第6行冲突
+public void open(int i,double d){} // 代码错误:和第5行冲突
+public static void OPEN(){} // 代码正确不会报错，但是并不是有效重载
+public static void open(int i,int j){} // 代码错误:和第3行冲突
+```
+
+
+
+##### 构造方法
+
+```bash
+构造方法是专门用来创建对象的方法，当通过New关键字来创建对象时，就是在调用构造方法。
+
+
+自定义构造方法
+	- 格式：public 类名称(参数类型 参数名){方法体}
+	- 构造方法名称必须和所在类名一致
+	- 没有返回值。不能写返回值类型，包括void；不能return
+	- 一旦自定义构造方法，系统将不再提供默认的构造方法
+	- 构造方法也可以进行重载
+```
+
+```java
+public class Student {
+    String name;
+    int age;
+
+    // 自定义构造方法
+    public Student() {
+        System.out.println("这是构造方法");
+    }
+
+  	// 重载构造方法
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+        System.out.println(this.name + ',' + this.age);
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        new Student("小明", 22);
+    }
+}
+```
+
+
+
+##### 匿名对象
 
 匿名对象就是只有右边的对象，没有左边的名字和赋值运算符
 
@@ -1061,203 +1303,344 @@ public static void mian(String[] args){
 }
  ```
 
-**成员变量和局部变量的区别**
 
-局部变量：在方法内部，只有方法能用；没有默认值；位于栈内存
 
-成员变量：直接写在类中；整个类都可以用；有默认起始值；位于堆内存
+##### final关键字
+
+```bash
+finnal 可用来修饰类、方法、局部变量、成员变量
+  - 使用 finnal 修饰的类不能有子类
+  - 使用 finnal 修饰的方法不能被重写
+  - 使用 finnal 修饰的变量会变成常量
+```
+
+
+
+#### 特征-封装
+
+```bash
+封装：将类的某些信息隐藏在类内部，不允许外部程序直接访问，而是通过该类提供的方法来实现对隐藏信息的操作和访问。
+	- 隐藏类的实现细节
+	- 只能通过规定方法访问数据
+
+封装的过程
+	- 将属性的可见性设为 private
+	- 创建共有的 getter 和 setter 方法
+	- 在 getter 和 setter 方法中加入判断语句
+```
 
 ```java
-public class test{
-    String name;	//成员变量
-    public void methodA(){
-        int num = 20;	//局部变量
-        System.out.println(num);
-        System.out.println(name);
+public class Student {
+    private int age;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        if (age < 0) age = 0;
+        else this.age = age;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Student stu = new Student();
+        stu.setAge(20);
+        System.out.println(stu.getAge()); // 2
     }
 }
 ```
 
-面对对象三大特征：封装、继承、多态
 
-**封装性**
 
-将一些细节信息隐藏起来，对于外界不可见
+#### 特征-继承
 
-**继承**
+```bash
+被继承的类叫超类（superclass)，继承超类的类叫子类（subclass）
+子类是超类的一个专门用途的版本，它继承了超类定义的所有实例变量和方法，并且还展示了特定于自身的行为和特征。
+继承是多态的前提；继承主要解决问题：共性抽取。
 
-被继承的类叫超类（superclass )，继承超类的类叫子类（subclass ）。
+    public class 父亲名称{}
+    public class 子类名称 extends 父亲名称{}
 
-继承是多态的前提；继承主要解决的问题：共性抽取
-
-  子类是超类的一个专门用途的版本，它继承了超类定义的所有实例变量和方法，并且为它自己增添了独特的元素。
-
-  在继承关系当中，一个子类能够从它的超类当中继承所有的东西，子类能够吸收现有类的数据和方法。
-
-  通过继承，子类不仅仅展示了其超类的行为和特征，而且还展示了特定于自身的行为和特征。
-
-```java
-/*
-public class 父亲名称{}
-public class 子类名称 extends 父亲名称{}
-*/
-```
-
-- 变量访问
-
-  直接通过子类对象访问成员变量：
-
-  ​		等号左边是谁，就优先用谁，没有则向上找。
-
-  间接通过子类对象访问成员变量：
-
-  ​		该方法属于谁，就优先用谁，没有则向上找。
-
-- 变量调用
-
-  局部变量：变量名
-
-  本类变量：this.变量名
-
-  父类变量：super.变量名
-
-**重写**
-
-重写(Override)：方法名称一样，参数列表一样
-重载(Overload)：方法名称一样，参数列表不一样
-
-```java
-/*
-方法覆盖重写的注意事项：
-    1、必须保证父子类之间的方法名称与参数列表相同
-    2、@Override:写在方法前，检测是否有效正确覆盖重写（可不写，但要保证正确）
-    3、子类方法的返回值必须小于等于父类方法的返回值
-    4、Object类是所有类的公共最高父类（祖宗类）,java.lang.String就是Object的子类
-    5、子类方法的权限必须大于等于父类方法的权限修饰符
-        public > protected > (default) > private
-        dafault不是关键字，而是什么不写，留空
-*/
-```
-
-**四种权限修饰符**
-
-![image-20201213203936235](./image/image-20201213203936235.png)
-
-**private关键字**
-
-问题描述：定义数据变量时，无法阻止不合理的数值被设置进来；
-
-解决方案：用private关键字将需要保护的成员变量进行修饰
-
-一旦使用了private进行修饰，本类中可以随意访问，但是，超出本类之外就不能访问
-
-**final关键字**
-
-final关键字代表最终、不可改变的。
-
-不能使用final关键字修饰父类。
-
-可用来修饰类、方法、局部变量、成员变量
-
-**this**
-
-解决重名调用问题
-
-this.成员变量名-->访问成员变量
-
-如果该方法内存在相同的变量名，会先调用方法内的变量，如果想调用成员变量，则需要this来调用
-
-**getter/setter**
-
-自动生成getter/setter和构造方法：code->generate；快捷方式：alt+Insert
-
-**构造方法**
-
- 构造方法是专门用来创建对象的方法，当我们通过New关键字来创建对象时，就是在调用构造方法
-
-```java
-/*
-格式：public ；类名称(参数类型 参数名){方法体}
-注意：构造方法名称必须和所在类名一致；不能写返回值类型，包括void；不能return
-*/
-public class Student{
-    public Student(){
-        System.out.println("这是构造方法");
-    }
-}
-```
-
-**静态static关键字**
-
-一旦使用static关键字，则此内容属于类；所以凡是本类的对象，都共享同一份。
-
-如果没有static关键字，必须首先创建对象，然后通过对象调用；
-
-如果有static关键字，则不需创建对象，直接通过类名称来使用它。
-
-无论是成员变量还是成员方法，如果有static，都推荐使用类名称来进行调用：
-
-静态变量：类名称.静态变量
-
-静态方法：类名称.静态方法()
 
 注意：
+  - Java 中类只支持单继承，不支持多继承（一个类只能有一个直接父类）
+  - 子类不能继承父类的如下内容：
+      - private 成员
+      - 子类与父类不在同包，使用默认访问修饰符的成员
+      - 构造方法
 
-静态不能访问非静态。原因：因为在内存中是先有静态内容，后有非静态内容。
+初始化的顺序过程：
+	1. 父类属性
+	2. 父类构造
+	3. 子类属性
+	4. 子类构造
 
-静态方法中不能用this。原因：this代表当前对象，通过谁调用的方法，谁就是当前对象
+变量访问
+  - 直接通过子类对象访问成员变量：等号左边是谁，就优先用谁，没有则向上找。
+  - 间接通过子类对象访问成员变量：该方法属于谁，就优先用谁，没有则向上找。
+
+变量调用
+    - 局部变量：变量名
+    - 本类变量：this.变量名
+    - 父类变量：super.变量名
+```
+
+##### 方法重写
+
+```bash
+- 重写(Override)：方法名称一样，参数列表一样
+- 重载(Overload)：方法名称一样，参数列表不一样
+
+方法覆盖重写规则：
+    1、父子类之间的方法名称与参数列表相同
+    2、@Override:写在方法前，检测是否有效正确覆盖重写（可不写，但要保证正确）
+    3、子类方法的返回值相同或者是父类返回值的子类
+    4、Object类是所有类的公共最高父类（祖宗类），java.lang.String就是Object的子类
+    5、子类方法的权限必须>=父类方法的权限修饰符（比父类严格）
+        public > protected > 默认不写 > private
+```
+
+##### super
+
+```bash
+在 java 中使用 super 访问父类成员
+	- super 不能访问父类私有成员
+	- super 调用构造方法时，只能是第一句
+
+```
+
+
+
+#### Object类
+
+```bash
+Object 类是所有类的父类，任何类默认都继承自 Object 类。
+
+常被子类重写的方法：
+	- toString()：返回当前对象本身的有关信息，按字符串对象返回
+	- equals()：比较两个对象是否是同一个对象，是则返回 true
+				注意：equals 隐藏一个多态，多态弊端是无法使用子类特有的内容(属性、方法)，所以需要向下转型(强转)
+
+---> 可通过 alt+insert 键生成 equals()、hashCode()、toString()
+```
 
 ```java
-public class Demo1{
-    public static void main(String[] args){
-        MyClass.MethodStatic();
+@Override
+public String toString() { // 打印属性值
+    return "Person{name=" + name + "}";
+}
+
+@Override
+public int hashCode() {
+    int result = name != null ? name.hashCode() : 0;
+    result = 31 * result + age;
+    return result;
+}
+
+@Override
+public boolean equals(Object obj) { // 认为属性相同即为同一对象
+    //判断传递参数是否跟自身比较
+    if (obj == this) { return true; }
+
+    //判断传递的参数obj是否是null,直接返回false，提高效率
+    if (obj == null) { return false; }
+
+    //判断是否是Person类型在转换，防止类型转换异常classCastException
+    if (obj instanceof Person) {
+        Person p = (Person) obj;
+        boolean b = this.name.equals(p.name) && this.age == p.age;
+        return b;
+    }
+
+    return false;
+}
+```
+
+
+
+#### 抽象类
+
+```bash
+Java 中抽象类和抽象方法使用 abstract 修饰
+		- 抽象方法没有方法体
+		- 抽象方法必须在抽象类中
+		- 抽象方法必须在子类中被实现，除非子类是抽象类
+		- 抽象类中可以又非抽象方法
+
+
+1. 抽象类不能创建对象，如果创建，则会编译无法通过而报错，只能创建其非抽象子类对象。
+  	假设创建了抽象类的对象，调用抽象的方法，而抽象方法没有具体的方法体，没有意义
+2. 抽象类中，可以自定义构造方法，提供子类创建对象时初始化父类成员使用。
+   	子类的构造方法中，有默认的super()，需要访问父类构造方法
+3. 抽象类中，不一定包含抽象方法，但是有抽象方法的类必定是抽象类。
+    未包含抽象方法的抽象类，目的是不想让调用者创建该类对象，通常用于某些特殊的类结构设计
+4. 抽象类的子类，必须重写抽象父类中所有的抽象方法，否则，编译无法通过而报错。除非子类也是抽象类。
+    假设不重写所有抽象方法，则类中可能包含抽象方法。那么创建对象后，调用抽象的方法，没有意义
+
+
+如何使用抽象类和抽象方法：
+1、不能直接创建new抽象类对象
+2、必须用一个子类来继承抽象父类
+3、子类必须覆盖重写抽象父类当中所有的抽象方法
+	覆盖重写的实现-->子类去掉抽象方法的abstract关键字，然后补上大括号
+4、创建子类对象进行使用
+
+
+public abstract class Animal {
+    public abstract void eat();	//抽象方法，具备不确定性
+    public void normalMethod(){}	//普通成员方法
+}
+```
+
+```java
+public abstract class Fu{
+    public Fu(){
+        System.out.println("抽象父类的构造方法执行！");
+    }
+    public abstract void eat();
+}
+
+public class Zi extends Fu{
+    public void Zi(){
+        System.out.println("抽象子类的构造方法执行！");
+    }
+    @Override
+    public void eat(){
+        System.out.println("吃饭饭");
     }
 }
-public class MyClass{
-    public static MethodStatic(){
-        System.out.println("这是静态方法	");
+
+public class DemoMain{
+    piblic static void main(String[] args){
+        Zi zi = new Zi();
+        zi.eat();
     }
 }
 ```
 
-**静态代码块**
 
-当第一次用到本类时，静态代码块执行唯一的一次。
 
-静态代码块典型用途：用来一次性对静态成员变量赋值。
+#### 多态
+
+```bash
+extends继承或者implements实现，是多态性的前提。
+
+多态的定义：同一种操作，由于条件不同，产生的结果也不同。
+多态的代码理解：同一个引用类型，使用不同的实例而执行不同操作，如使用父类变量指向子类对象。
+
+父类和子类的互转：
+	1. 父类转子类（向下转型）
+			父类声明 father = new 子类();
+			子类声明 son = (子类声明)father;
+	2. 子类转父类（自动转换）
+	3. instanceof类型检测：`对象 instanceof 类`
+
+父类作为参数实现多态：
+父类作为返回值实现多态：
+```
+
+父类引用子类对象
+
+![image-20201213173832116](./image/image-20201213173832116.png)
+
+向上转型与向上转型
+
+![image-20201213180123190](./image/image-20201213180123190.png)
+
+检测向下转型时是否转换正确：instanceof()来判断
+
+![image-20201213181618683](./image/image-20201213181618683.png)
+
+##### 接口多态案例-笔记本电脑
+
+![image-20201213182248786](./image/image-20201213182248786.png)
 
 ```java
-public class 类名称{
-	staic {
-		//静态代码块
-	}
+public interface USB {
+    public abstract void open();    //打开设备
+
+    public abstract void close();   //关闭设备
 }
 ```
 
-**方法、函数、消息、变量、属性之间的关系**
+```java
+public class Computer {
+    public void powerOn(){
+        System.out.println("笔记本开机");
+    }
+    public void powerOff(){
+        System.out.println("笔记本关机");
+    }
 
-1、方法就是对象的行为，即函数；
+    //使用USB设备
+    public void useDevice(USB usb){
+        usb.open(); //打开设备
+        if(usb instanceof Mouse){
+            Mouse mouse = (Mouse) usb;  //向下转型
+            mouse.click();
+        }else if(usb instanceof Keyboard){
+            Keyboard keyboard = (Keyboard) usb; //向下转型
+            keyboard.type();
+        }
+        usb.close();    //关闭设备
+    }
+}
+```
 
-2、消息也是调用某个对象的函数，即方法。
+```java
+//鼠标是一个USB设备
+public class Mouse implements USB {
+    @Override
+    public void open(){ System.out.println("打开鼠标"); }
 
-3、变量就是对象的状态，即属性。
+    @Override
+    public void close() { System.out.println("关闭鼠标"); }
+
+    public void click(){
+        System.out.println("鼠标点击");
+    }
+}
+```
+
+```java
+//键盘是一个USB设备
+public class Keyboard implements USB {
+    @Override
+    public void open() { System.out.println("打开键盘"); }
+
+    @Override
+    public void close() { System.out.println("关闭键盘"); }
+
+    public void type(){
+        System.out.println("鼠标输入");
+    }
+}
+```
+
+```java
+public class DemoMain {
+    public static void main(String[] args) {
+        //创建一个笔记本电脑
+        Computer computer = new Computer();
+        computer.powerOn();
+
+        //准备一个鼠标
+        USB usbMouse = new Mouse();
+        computer.useDevice(usbMouse);
+
+        //准备一个键盘
+        USB usbKeyboard = new Keyboard();
+        computer.useDevice(usbKeyboard);
+    }
+}
+```
+
+
 
 ### API文档
-
-**Scanner**：输入
-
-```java
-//System.in代表从键盘输入
-Scanner sc = new Scanner(System.in);
-//获取键盘输入的int数字
-int num = sc.nextInt();
-//获取键盘输入的String字符串
-int str = sc.next();
-```
-
-**Random**：随机数
-
-**Person**：数组
 
 **ArrayList**：集合
 
@@ -1362,26 +1745,7 @@ public static void mian(String[] args){
 
 **String-->数组**：toCharArray
 
-#### Math
 
-java.util.Math类是数学相关的工具类，完成数学运算相关操作。
-
-```java
-//绝对值
-System.out.println(Math.abs(-3.14));	//3.14
-
-//向上取整
-System.out.println(Math.ceil(3.14));	//4
-
-//向下取整
-System.out.println(Math.floor(3.14));	//3
-
-//四舍五入
-System.out.println(Math.round(3.14));	//3
-
-//圆周率PI
-System.out.println(Math.PI);
-```
 
 #### 日期类Data、日历类DataFormat
 
@@ -1424,68 +1788,9 @@ sb.append("hello,").append("world~");	//hello,world~
 sb.reverse();	//将数组内容翻转
 ````
 
-### 抽象类
 
-抽象方法：就是加上abstract关键字，然后去掉大括号，直接分号结束。
-抽象类：抽象方法所在的类（需要在class前面加abstract），必须是抽象类才行。
-
-![image-20201209194721831](./image/image-20201209194721831.png)
-
-注意事项：
-1、抽象类不能创建对象，如果创建了，编译无法通过而报错，只能创建其非抽象子类对象。
-  理解：假设创建了抽象类的对象，调用抽象的方法，而抽象方法没有具体的方法体，没有意义
-2、抽象类中，可以构造方法，是供子类创建对象时，初始化父类成员使用的。
-    理解：子类的构造方法中，有默认的super()，需要访问父类构造方法
-3、抽象类中，不一定包含抽象方法，但是有抽象方法的类必定是抽象类。
-    理解：未包含抽象方法的抽象类，目的是不想让调用者创建该类对象，通常用于某些特殊的类结构设计。
-4、抽象类的子类，必须重写抽象父类中所有的抽象方法，否则，编译无法通过而报错。除非子类也是抽象类。
-    理解：假设不重写所有抽象方法，则类中可能包含抽象方法。那么创建对象后，调用抽象的方法，没有意义。
-
-```java
-/*
-如何使用抽象类和抽象方法：
-1、不能直接创建new抽象类对象
-2、必须用一个子类来继承抽象父类
-3、子类必须覆盖重写抽象父类当中所有的抽象方法
-	覆盖重写的实现-->子类去掉抽象方法的abstract关键字，然后补上大括号
-4、创建子类对象进行使用。
-
-public abstract class Animal{
-    public abstract void eat();	//抽象方法，具备不确定性
-    public void normalMethod(){}	//普通成员方法
-}
-*/
-//Fu.class
-public abstract class Fu{
-    public Fu(){
-        System.out.println("抽象父类的构造方法执行！");
-    }
-    public abstract void eat();
-}
-
-//Zi.class
-public class Zi extends Fu{
-    public void Zi(){
-        System.out.println("抽象子类的构造方法执行！");
-    }
-    @Override
-    public void eat(){
-        System.out.println("吃饭饭");
-    }
-}
-
-//DemoMain.class
-public class DemoMain{
-    piblic static void main(String[] args){
-        Zi zi = new Zi();
-        zi.eat();
-    }
-}
-```
 
 ### 接口
-
-接口是一种公共规范标准。只要符合标准，就可以通用。
 
 ![image-20201213154924305](./image/image-20201213154924305.png)
 
@@ -1515,23 +1820,7 @@ public class MyInterfaceDafaultA implements MyIntercaceDafault{
 }
 ```
 
-### 多态
 
-**多态**：extends继承或者implements实现，是多态性的前提。
-
-![image-20201213165043245](./image/image-20201213165043245.png)
-
-多态性：父类引用子类对象。
-
-![image-20201213173832116](./image/image-20201213173832116.png)
-
-向上转型与向上转型
-
-![image-20201213180123190](./image/image-20201213180123190.png)
-
-检测向下转型时是否转换正确：instanceof()来判断
-
-![image-20201213181618683](./image/image-20201213181618683.png)
 
 ### 内部类
 
@@ -1649,60 +1938,11 @@ public static void main(String[] args){
 }
 ```
 
-**类作为成员变量类型**：案例4
 
-**接口作为成员变量类型**：案例5
 
 **接口作为方法的参数或返回值**
 
-### Object类
 
---->可以通过alt+insert键生成equals() and hashCode()与toString()
-
-**重写toString()方法**：打印对象的信息
-
-重写前：打印的是包名类名@地址值；重写后：打印的是对象中的属性值
-
-```java
-//直接打印toString会是一个地址，需要重写Object类的toString方法
-//存在一个Person类，里面定义了name和age变量
-@Override
-public String toString(){
-    return "Person{"+"name=" +name +"}";
-}
-```
-
-**重写equals()方法**：比较两个对象的
-
-重写前：比较的是对象的地址值；重写后：比较的是对象中的属性值
-
-![image-20201215165655008](./image/image-20201215165655008.png)
-
-```java
-/*equals()方法默认比较的是两个对象的地址值，所以需要重写，比较两个对象的属性
-问题：隐藏着一个多态
-多态弊端：无法使用子类特有的内容（属性、方法）
-解决：向下转型（强转）
-*/
-//存在一个Person类，里面定义了name和age变量
-@Override
-public boolean equals(Object obj){
-    //判断传递参数是否跟自身比较
-    if(obj == this){ return true; }
-
-    //判断传递的参数obj是否是null,直接返回false，提高效率
-    if(obj == null){ return false; }
-
-    //判断是否是Person类型在转换，防止类型转换异常classCastException
-    if(obj instanceof Person){
-        Person p = (Person)obj;
-        boolean b = this.name.equals(p.name) && this.age == p.age;
-        return b;
-    }
-    return false;
-
-    //return (this == obj);
-```
 
 ### 包装类
 
@@ -1826,10 +2066,6 @@ public static void main(String[] args){
 
 
 
-
-
-
-
 ##  案例
 
 #### **1、生成6个1~33的随机整数，添加到集合，并遍历集合**
@@ -1848,397 +2084,4 @@ public class Demo{
 }
 ```
 
-#### **2、群主发红包，成员收红包**
 
-```User.class
-public class User {
-    private String name;    //姓名
-    private int money;  //余额（用户所拥有的钱）
-
-    public User() {
-    }
-
-    public User(String name, int money) {
-        this.name = name;
-        this.money = money;
-    }
-
-    //展示用户有多少钱
-    public void show(){
-        System.out.println("我叫："+ name + ".我有多少钱：" + money);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getMoney() {
-        return money;
-    }
-
-    public void setMoney(int money) {
-        this.money = money;
-    }
-}
-```
-
-```Manafer.class
-import java.util.ArrayList;
-//群主的类 Manager.class
-public class Manager extends User {
-    public Manager(){
-
-    }
-
-    public Manager(String name, int money) {
-        super(name, money);
-    }
-
-    public ArrayList<Integer> send(int totalMoney, int count){
-        //需要一个集合存储若干个红包的金额
-        ArrayList<Integer> redList = new ArrayList<>();
-
-        //需要看群主有多少钱
-        int leftMoney = super.getMoney();   //群主当前的余额
-        if(totalMoney > leftMoney){
-            System.out.println("余额不足");
-            return redList; //返回空集合
-        }
-        //扣钱（重新设置余额）
-        super.setMoney(leftMoney - totalMoney);
-
-        //发红包要平均拆分count份
-        int avg = totalMoney / count;
-        int mod = totalMoney % count; //余额(甩下的零头)
-
-        //除不开的零头，包在最后一个红包内
-        //下面把红包逐一让如集合中
-        for (int i = 0; i < count - 1; i++) {
-            redList.add(avg);
-        }
-
-        //最后一个红包
-        int last = avg + mod;
-        redList.add(last);
-
-        return redList;
-    }
-
-}
-```
-
-```Member.class
-import java.util.ArrayList;
-import java.util.Random;
-
-public class Member extends User {
-    public Member() {
-    }
-
-    public Member(String name, int money) {
-        super(name, money);
-    }
-
-    public void receive(ArrayList<Integer> list){
-        //从多个红包中随机抽取一个给自己
-        //随机获取一个集合当中的索引编号
-        int index = new Random().nextInt(list.size());
-        //根据索引从集合中删除，并且得到被删除的红包给自己
-        int delta = list.remove(index);
-        //当前成员本来有多少钱
-        int money = super.getMoney();
-        //加法，并且重新设置回去
-        super.setMoney(money + delta);
-    }
-}
-```
-
-```MainRedPacket.class
-import java.util.ArrayList;
-
-public class MainRedPacket {
-    public static void main(String[] args) {
-        Manager manager = new Manager("群主",100);
-        Member one = new Member("成员A",9);
-        Member two = new Member("成员B",10);
-        Member three = new Member("成员C",11);
-
-        manager.show();
-        one.show();
-        two.show();
-        three.show();
-        System.out.println("==============");
-
-        ArrayList<Integer> redList = manager.send(20,3);
-        one.receive(redList);
-        two.receive(redList);
-        three.receive(redList);
-
-        manager.show(); //100-20=80
-        //6,6,8随机分给三人
-        one.show();
-        two.show();
-        three.show();
-    }
-}
-```
-
-#### **3、接口多态的案例（笔记本电脑）**
-
-![image-20201213182248786](./image/image-20201213182248786.png)
-
-```USB.java
-public interface USB {
-    public abstract void open();    //打开设备
-
-    public abstract void close();   //关闭设备
-}
-```
-
-```Computer.java
-public class Computer {
-    public void powerOn(){
-        System.out.println("笔记本开机");
-    }
-    public void powerOff(){
-        System.out.println("笔记本关机");
-    }
-
-    //使用USB设备
-    public void useDevice(USB usb){
-        usb.open(); //打开设备
-        if(usb instanceof Mouse){
-            Mouse mouse = (Mouse) usb;  //向下转型
-            mouse.click();
-        }else if(usb instanceof Keyboard){
-            Keyboard keyboard = (Keyboard) usb; //向下转型
-            keyboard.type();
-        }
-        usb.close();    //关闭设备
-    }
-}
-```
-
-```Mouse.java
-//鼠标是一个USB设备
-public class Mouse implements USB {
-    @Override
-    public void open(){ System.out.println("打开鼠标"); }
-
-    @Override
-    public void close() { System.out.println("关闭鼠标"); }
-
-    public void click(){
-        System.out.println("鼠标点击");
-    }
-}
-```
-
-```Keyboard.java
-//键盘是一个USB设备
-public class Keyboard implements USB {
-    @Override
-    public void open() { System.out.println("打开键盘"); }
-
-    @Override
-    public void close() { System.out.println("关闭键盘"); }
-
-    public void type(){
-        System.out.println("鼠标输入");
-    }
-}
-```
-
-```Main.java
-public class DemoMain {
-    public static void main(String[] args) {
-        //创建一个笔记本电脑
-        Computer computer = new Computer();
-        computer.powerOn();
-
-        //准备一个鼠标
-        USB usbMouse = new Mouse();
-        computer.useDevice(usbMouse);
-
-        //准备一个键盘
-        USB usbKeyboard = new Keyboard();
-        computer.useDevice(usbKeyboard);
-    }
-}
-```
-
-#### 4、类作为成员变量类型
-
-```Hero.java
-public class Hero {//英雄类
-    private String name;    //英雄名字
-    private int age;    //年龄
-    private Weapon weapon;  //武器
-
-    public Hero() {
-    }
-
-    public Hero(String name, int age, Weapon weapon) {
-        this.name = name;
-        this.age = age;
-        this.weapon = weapon;
-    }
-
-    public void attack(){
-        System.out.println("年龄为"+age+"的"+name+"用"+weapon.getCode()+"攻击敌方");
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Weapon getWeapon() {
-        return weapon;
-    }
-
-    public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
-    }
-}
-```
-
-```Weapon.java
-public class Weapon {//武器类
-    private String code;    //武器的代号
-
-    public Weapon() {
-    }
-
-    public Weapon(String code) {
-        this.code = code;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-}
-```
-
-```Main.java
-public class DemoMain {
-    public static void main(String[] args) {
-        //创建一个英雄角色
-        Hero hero = new Hero();
-        //为英雄起名并设置年龄
-        hero.setName("盖伦");
-        hero.setAge(19);
-
-        //创建一个武器对象
-        Weapon weapon = new Weapon("多兰剑");
-        //为英雄配备武器
-        hero.setWeapon(weapon);
-        hero.attack();
-    }
-}
-```
-
-#### 5、接口作为成员变量类型
-
-```Hero.java
-public class Hero {
-    private String name;    //英雄名称
-    private Skill skill;    //英雄技能
-
-    public Hero() {
-    }
-    public Hero(String name, Skill skill) {
-        this.name = name;
-        this.skill = skill;
-    }
-
-    //英雄攻击别人
-    public void attack(){
-        System.out.println("我叫"+ name +", 开始释放技能");
-        skill.use();    //调用接口中的抽象方法
-        System.out.println("释放技能完成。");
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Skill getSkill() {
-        return skill;
-    }
-
-    public void setSkill(Skill skill) {
-        this.skill = skill;
-    }
-}
-```
-
-```Skill.java
-public interface Skill {
-    void use(); //释放技能的抽象方法
-}
-```
-
-```SkillImpl.java
-public class SkillImpl implements Skill {
-    @Override
-    public void use() {
-        System.out.println("Biu~Biu~Biu~");
-    }
-}
-```
-
-```Main.java
-public class DemoGame {
-    public static void main(String[] args) {
-        Hero hero = new Hero();
-        hero.setName("艾希");
-
-        //设置英雄技能
-        //hero.setSkill(new SkillImpl());
-        //还可改成匿名内部类
-        /*Skill skill = new Skill() {
-            @Override
-            public void use() {
-                System.out.println("Pia~Pia~Pia~");
-            }
-        };
-        hero.setSkill(skill);*/
-        //还可进一步简化，同时使用匿名内部类和匿名对象
-        hero.setSkill(new Skill() {
-            @Override
-            public void use() {
-                System.out.println("Piu~Piu~Piu~");
-            }
-        });
-
-        hero.attack();
-    }
-}
-```
-
-
-## Lambda 表达式
