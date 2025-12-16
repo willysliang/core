@@ -235,9 +235,10 @@ redux的reducer纯函数应用（redux的reducer必须是一个纯函数，不�
 ### JSX
 
 ```bash
-- JSX：JS+XML，XML早期用于存储和传输数据（后来因JSON格式简便且可跟字符串相互转换被JSON替代）
-- 使用JSX的原因：因为用纯js写生成的html代码，当为多层标签嵌套时，会产生很多嵌套循环语句，代码相对不简便
-- JSX是react的语法糖，它允许在html中写JS，它不能被浏览器直接识别，需要通过webpack、babel之类的编译工具转换为JS执行
+JSX（JavaScript XML） 是一个 JavaScript 的语法扩展，允许在 JavaScript 代码中通过类 HTML 语法创建 React 元素。它需要通过 Babel 等工具编译为标准的 JavaScript 代码，最终生成 React 元素对象（React Element），这些元素共同构成虚拟 DOM（Virtual DOM）树。
+    - JSX：JS+XML，XML早期用于存储和传输数据（后来因JSON格式简便且可跟字符串相互转换被JSON替代）
+    - 使用JSX的原因：因为用纯js写生成的html代码，当为多层标签嵌套时，会产生很多嵌套循环语句，代码相对不简便
+    - JSX是react的语法糖，它允许在html中写JS，它不能被浏览器直接识别，需要通过webpack、babel之类的编译工具转换为JS执行
 
 - jsx语法规则
   1. 虚拟DOM元素只能有一个根元素
@@ -259,14 +260,26 @@ jsx是js的语法扩展，允许在html中写JS；JS是原生写法，需要通�
 
 
 #### 为什么在文件中没有使用react，也要在文件顶部import React from "react"
-只要使用了jsx，就需要引用react，因为jsx本质就是React.createElement
+只要使用jsx，就需要引用react，因为jsx本质就是React.createElement
 
-注意，在React 17RC 版本后，jsx不一定会被转换为React.createElement了
+注意，在React 17RC 版本后，jsx不一定会被转换为React.createElement
 		function App(){ return <h1>hello,lyllovelemon</h1> }
 react17 将会通过编译器babel/typescript转换为
 		import {jsx as _jsx} from 'react/jsx-runtime';
 		function App() { return _jsx('h1', { children: 'hello,lyllovelemon' }); }
 此时就不需要通过 import React 就能使用jsx（用react hooks还是需要导入React）
+```
+
+```jsx
+// JSX
+const element = <h1 className="title">Hello, world!</h1>
+
+// 编译后（React 17 之前）
+const element = React.createElement('h1', { className: 'title' }, 'Hello, world!')
+
+// 编译后（React 17+，自动引入 _jsx）
+import { jsx as _jsx } from 'react/jsx-runtime'
+const element = _jsx('h1', { className: 'title', children: 'Hello, world!' })
 ```
 
 
@@ -1391,12 +1404,56 @@ const fiberNode = {
 > ReactDOM.render(<Person/>,document.getElementById('test'))
 > ```
 
+#### React组件更新和渲染过程
+
+```bash
+React 组件的渲染和更新过程包含：初始化 -> 渲染 -> 协调 -> 提交 -> 清理。
+
+1. 初始化阶段：创建 Fiber 树和 Hooks 链表
+    - 触发条件：组件首次渲染或状态/属性更新
+    - 关键函数：render、createRoot、scheduleUpdateOnFiber
+          1. 通过 ReactDOM.render 或 createRoot 初始化应用
+          2. 创建根 Fiber 节点（HostRoot）
+          3. 调用 scheduleUpdateOnFiber，将更新任务加入调度队列
+
+2. 渲染阶段：生成新的虚拟DOM（Fiber树）
+    - 触发条件：调度器开始任务
+    - 关键函数：performSyncWorkOnRoot、beginWork、renderWithHooks
+        1. 调用 performSyncWorkOnRoot，开始渲染任务
+        2. 调用 beginWork，递归处理 Fiber 节点
+        3. 对于函数组件，调用 renderWithHooks，执行组件函数并生成新的 Hooks 链表
+        4. 对于类组件，调用 instance.render，生成新的虚拟DOM
+        5. 对于 Host 组件(如div)，生成对应的 DOM 节点
+
+3. 协调阶段：对比新旧 Fiber 树，找出需要更新的部分
+		- 触发条件：新的虚拟DOM生成后
+		- 关键函数：reconcileChildren、diff
+				1. 调用 reconcileChildren 对比新旧 Fiber 节点
+				2. 根据 diff 算法找出需要更新的节点
+				3. 为需要更新的节点打上 Placement、Update、Deletion 等标记
+
+4. 提交阶段：将更新应用到真实 DOM
+		- 触发条件：协调阶段完成后
+		- 关键函数：commitRoot、commitWork
+				1. 调用 commitRoot 开始提交更新
+				2. 调用 commitWork 递归处理 Fiber 节点
+				3. 根据节点的标记，执行 DOM 操作（如插入、更新、删除）
+				4. 调用生命周期钩子（如 componentDidMount、componentDidUpdate）
+
+5. 清理阶段：重置全局变量，准备下一次更新
+		- 触发条件：提交阶段完成后
+		- 关键函数：resetHooks、resetContext
+				1. 重置全局变量（如 currentlyReneringFiber、currentHook）
+				2. 清理上下文和副作用
+				3. 准备下一次更新
+```
 
 
-### setState两种方式
+
+### setState 两种方式
 
 > ```js
-> state状态的更新是异步的，即this.setState引起后面的动作是异步的，所以不要放在for循环里面同步更新，可把`this.setState`当做函数来进行数据更新
+> state状态的更新是异步的，即this.setState引起后面的动作是异步的，所以不要放在for循环里面同步更新，可把 this.setState 当做函数来进行数据更新
 >
 > 1. 对象式的setState：setState(stateChange, [callback])
 > 		-- stateChange为状态改变对象，给对象可以体现出状态的更改
@@ -1438,11 +1495,11 @@ const fiberNode = {
 
 
 
-### `<>` 和 `React.Fragment`
+### <> 和 React.Fragment
 
 ```bash
 - 传统的jsx生成的界面标签，最外层是通过div标签包裹的，所以生成真实DOM会包含外层div（类似vue2最外层必须使用根元素标签包裹）
-- 通过Fragment包裹的外层的标签，是会把jsx的最外层`Fragment`标签去除，导致在真实DOM中只有里层的标签元素内容（类似vue3没有根元素标签）
+- 通过Fragment包裹的外层的标签，会把jsx的最外层`Fragment`标签去除，导致在真实DOM中只有里层的标签元素内容（类似vue3没有根元素标签）
 - 最外层使用Fragment标签跟空标签的区别：Fragment标签可使用key值标识该便签元素，使得其唯一存在，更有利与虚拟DOM的渲染（简写版本不支持 `key` 属性）
 
 
@@ -1480,7 +1537,6 @@ str.split('\\n').map((item, index) => {
 ```bash
 可以使用 `React.StrictMode` 内置组件，用于启用一组检查，以执行 React 并发出警告。
 
-
 该组件的主要用作自动化的最佳实践、潜在问题和弃用检查。
 它无法捕捉所有内容，但检查可以帮助解决开发问题。
 它对生产环境没有影响，因此可以始终将组件保留在代码库中。在开发中使用，它将在浏览器 JavaScript 控制台中打印有用的警告。
@@ -1502,45 +1558,108 @@ ReactDOM.render(
 
 
 
+### PureComponent
+
+```bash
+#### PureComponent 和 Component 的区别？
+- Component 需要手动实现 shouldComponentUpdate
+- PureComponent 通过浅对比默认实现 shouldComponentUpdate 方法。
+- 对于函数组件，可以使用 React.memo 来实现类似 PureComponent 的优化。
+
+注意：PureComponent 不仅会影响本身，还会影响子组件，所以 PureComponent 最佳情况是展示组件。
+```
+
+```jsx
+import React, { Component } from 'react';
+
+class RegularComponent extends Component {
+  state = { count: 0 };
+
+  handleClick = () => {
+    // 每次点击都会触发重新渲染
+    this.setState({ count: 0 }); // 即使值相同
+  };
+
+  render() {
+    console.log('RegularComponent 重新渲染了');
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.handleClick}>点击</button>
+      </div>
+    );
+  }
+}
+// 输出：每次点击都会打印 "RegularComponent 重新渲染了"
+```
+
+```jsx
+import React, { PureComponent } from 'react';
+
+class OptimizedComponent extends PureComponent {
+  state = { count: 0 };
+
+  handleClick = () => {
+    // 只有值真正变化时才重新渲染
+    this.setState({ count: 0 }); // 相同值，不会重新渲染
+  };
+
+  handleIncrement = () => {
+    this.setState({ count: this.state.count + 1 }); // 值变化，重新渲染
+  };
+
+  render() {
+    console.log('OptimizedComponent 重新渲染了');
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.handleClick}>设置相同值</button>
+        <button onClick={this.handleIncrement}>增加</button>
+      </div>
+    );
+  }
+}
+// 输出：只有点击"增加"按钮时会打印日志
+```
+
+
+
 ## React 路由
 
 > ```bash
 > - SPA单页面：整个应用只有一个完整的页面，点击页面中的链接不会刷新页面，只会做页面的局部刷新，数据都需要通过ajax请求获取，并在前端异步展现
 >
 > - 路由：一个路由就是一个映射关系(key:value)，key为路径，value可能是function或component
->
->   - 后端路由：value是function，用来处理客户端提交的请求
+>  - 后端路由：value是function，用来处理客户端提交的请求
 >     - 注册路由`router.get(path, function(req, res))`
 >     - 工作过程：当node接收到一个请求时，根据请求路径找到匹配的路由，调用路由中的函数来处理请求，返回响应数据
 >
->   - 前端路由：浏览器路由，value是component，用于展示页面内容
+>  - 前端路由：浏览器路由，value是component，用于展示页面内容
 >     - 注册路由：`<Route path="/test" component={Test}>`
 >     - 工作过程：当浏览器的path变为`/test`时，当前路由组件就会变为Test组件
 >
-> - 安装路由：`npm i react-router-dom@5`，在2021-11月已经升级为6版本
->
-> - 注意：为了保证项目的页面的路由跳转复用，把BrowserRouter或HashRouter放在`index.js`中，包住`<App/>`标签
+>- 注意：为了保证项目的页面的路由跳转复用，把BrowserRouter或HashRouter放在`index.js`中，包住`<App/>`标签
 > ```
 >
 > **路由的跳转与改变**
 >
-> ````js
+>````js
 > // 创建历史记录对象
-> let history = History.createBrowserHistory()	// 使用H5推出的history API
+>let history = History.createBrowserHistory()	// 使用H5推出的history API
 > // let history = History.createHashHistory()	// 使用hash值，锚点，兼容性好，但相对不安全
 >
 > // 页面跳转
 > - history.push(path)
-> - history.replace(path)
+>- history.replace(path)
 > - history.goBack()
 > - history.goForward()
 > ````
 >
 > **react-router-dom内置API**
 >
-> ```bash
+>```bash
 > 1. BrowserRouter：history模式路由跳转，一般包裹App标签
-> 2. HashRouter：hash模式路由跳转，一般包裹App标签
+>2. HashRouter：hash模式路由跳转，一般包裹App标签
 > 3. Route：标签包裹的是所跳转的页面内容(即所展示页面的位置)
 >    1. path属性代表与Link标签的to的路径进行匹配
 >    2. component属性代表所跳转的组件页面/内容，引入组件
@@ -1554,14 +1673,14 @@ ReactDOM.render(
 >
 > **解决多级路径刷新页面导致样式丢失问题**
 >
-> 1. `public/index.html`中引入样式时不用`./`为前缀，改用`/`或`%PUBLIC_URL%`作为前缀
+>1. `public/index.html`中引入样式时不用`./`为前缀，改用`/`或`%PUBLIC_URL%`作为前缀
 > 2. 使用HashRouter
 >
 > **一般组件与路由组件区别**
 >
-> ```bash
+>```bash
 > 存放位置不同
-> 	一般组件：components
+>	一般组件：components
 > 	路由组件：pages
 > 接收到props不同
 > 	一般组件：写组件标签时传递什么就能接收到什么
@@ -1587,7 +1706,7 @@ ReactDOM.render(
 **路由器**
 
 ```bash
-首先用 `<BrowserRouter>` 包装我们的内容，然后定义一个 `<Routes>`。一个应用程序可以有多个 `<Routes>`（本示例仅使用一个）。
+首先用 `<BrowserRouter>` 包装我们的内容，然后定义一个 `<Routes>`。一个应用程序可以有多个 `<Routes>`。
 
 <Route> 可以嵌套。第一个 <Route> 具有 `/` 组件的路径，并渲染 `Layout` 组件。
 嵌套的 `<Route>` 继承并添加到父路由。因此，`blogs` 路径与父路径合并，成为 `/blogs`。
@@ -2264,7 +2383,7 @@ function MyComponent() {
 ### 类组件遇到的问题
 1. 在组件之间复用状态逻辑很难
 可以通过拆分组件的方式做到复用 UI，但却没有一个简洁的方式在组件间复用状态的处理逻辑；
-如果我们需要抽离一些重复的状态逻辑处理，就会选择 HOC  或者 render props  的方式。
+如果需要抽离一些重复的状态逻辑处理，就会选择 HOC  或 render props 的方式。
 这类方式需要重新组织组件结构，改造麻烦的同时也使代码难以理解。
 
 2. 组件嵌套地狱问题
@@ -2298,17 +2417,16 @@ React 16.8 之前，函数式组件不能维护内部状态，如果需要一个
 - 函数式组件的底层心智模式与 Class 组件不同，函数式组件捕获了渲染所使用的值。
 - 函数组件首先是一个普通函数，每一次渲染都是函数执行一遍。函数每一次执行都会生成本次独有的执行上下文，相对应的，React 重新渲染组件时都有它自己独立的变量及函数，包括 Props 和 State 以及它自己的事件处理函数。
 - 其次 React Hooks API 赋予了函数内被 Hooks API 包裹的某些变量独特的意义：缓存值和函数、值变更触发重渲染等（通过 useMemo、useCallback、useEffect等）。
-- 每一个组件内的函数（包括事件处理函数、effects、定时器或者 API 调用等等）会捕获某次渲染中定义的 props 和 state。
+- 每一个组件内的函数（包括事件处理函数、effects、定时器或者 API 调用等）会捕获某次渲染中定义的 props 和 state。
 ```
 
 
 
-### hooks注意事项
+### hooks 使用注意事项
 
 ```bash
-### hooks 使用注意事项
-1. useState 的 setter 方法其实是异步的。
-2. 有时候使用hook 莫名其妙组件卡顿了，此时可考虑使用 useMemo。
+1. useState 的 setter 方法是异步更新。
+2. 有时使用 hook 莫名其妙组件卡顿，此时可考虑使用 useMemo。
 3. useCallback 是缓存函数，useMemo 是缓存函数的返回值。
 4. 在组件内部，会成为其他 useEffect 依赖项的方法，建议使用 useCallback 包裹，或直接编写在引用它的 useEffect 中。
 5. 如果 function 会作为 props 传递给子组件，一定要使用 useCallback 包裹。
@@ -2317,28 +2435,23 @@ React 16.8 之前，函数式组件不能维护内部状态，如果需要一个
     const [visible, setVisible] = useState(false)
     setVisible(!visible) // bad
     setVisible(visible => !visible)	// good
-8. 函数式组件自身this为undefined，函数式组件不存在声明周期，但可通过`useEffect`来模拟`componentDidMount()、componentWillUnmount()、componentDidUpdate()`此三个钩子函数。
-
-
-
-### hooks 中不能使用 if-else 逻辑判断
-确保 hook 在每一次渲染中都按照同样的顺序被调用。这让 react 能够在多次的 useState 和 useEffect 调用之间保持 hook 状态的正确。
-在 hook/src/index.js 下，找到 useState 源码，底层调用了 useReducer 是通过全局索引去获取 hook state。
-
-
-
-### 挂钩(Hooks)规则
-- Hooks 只能在 React 函数组件内部调用，在 React 类组件中不起作用。
-- Hooks 只能在组件的顶层定义，不能在条件语句中定义
+8. 函数式组件自身this为undefined，函数式组件不存在生命周期，但可通过 useEffect 来模拟componentDidMount()、componentWillUnmount()、componentDidUpdate() 此三个钩子函数。
 ```
 
-#### Hooks 使用规则
+#### 挂钩(Hooks) 使用规则
 
 ```bash
-#### 1. 只能在函数最外层调用 Hook，不要在循环、条件判断或者子函数中调用。
+- Hooks 只能在 React 函数组件内部调用，在 React 类组件中不起作用。
+- Hooks 只能在组件的顶层定义，不能在条件语句中定义
+
+
+#### 1. 只能在函数最外层调用 Hook，不要在循环、条件判断或者子函数中定义
+一个组件中的 hooks 会以链表的形式串起来，FiberNode 的 memorizedState 中保存了 Hooks 链表中的第一个 Hooks。
+在更新时，会复用之前的 Hooks，如果通过条件或循环语句增加或删除 hooks，在复用 hooks 过程中会产生复用 hooks 状态和当前 hooks 不一致的问题。
+
 react规则的限制是为了保证 react 对函数组件的正确重渲染。
 而 react 源码实现中是通过单向链表维护 list 队列的方式存储 hooks API 的调用顺序。
-因为函数式组件在每次重新渲染时，函数会重新执行，这需要保证每次执行时，hooks API 的调用顺序是保持一致的。
+因为函数式组件在每次重新渲染时，函数会重新执行，这需要保证每次执行时 hooks API 的调用顺序是保持一致的。
 
 在组件首次渲染时，hooks 依次插入链表之中；
 再次渲染时，执行中 hooks API 则从之前的链表队列中一一关联对照；
@@ -2351,7 +2464,7 @@ hooks 的基本操作可以分为 mount(首次挂载)阶段和 update(更新)阶
 以下为mount阶段-mountWorkInProgressHook函数生成hook的逻辑：
 
 
-#### 2. 只能在 React 的函数组件或自定义的 Hooks 中调用 hook，不要在其他 JavaScript 函数中调用。
+#### 2. 只能在 React 的函数组件或自定义的 Hooks 中调用 hook，不要在其他 JS 函数中调用
 2.1 不能在 react 的 Class 组件中使用
 react渲染时，判断一个组件是 Class 组合和函数组件后，是两套不同的处理逻辑，hooks API 只支持函数组件。
 Class 组件中通过声明周期函数完成，也无法达成第一准则——只能在最外层函数中调用 hooks API。
@@ -2365,26 +2478,11 @@ Class 组件中通过声明周期函数完成，也无法达成第一准则—�
 
 
 #### 需要遵从的实践规则
-- 你可能不需要派生 state，任何数据，都要保证只有一个数据来源，而且避免直接复制它。
+- 你可能不需要派生 state，任何数据都要保证只有一个数据来源，而且避免直接复制它。
 - useMemo、useCallback 是作为性能优化的方式存在，不要作为阻止渲染的语义化保证。
-- 一个 hooks 函数尽量只做一件事，每个 effect 内功能不能过于耦合，尽量控制一个 effect 只做一件事。
+- 一个 hooks 函数尽量控制只做一件事，每个 effect 内功能不能过于耦合。
 - 代码结构：功能划分优于结构化划分；逻辑聚合，获得更高的代码可读性。
-- 尽量避免过早地增加抽象逻辑。
-```
-
-#### 常用的 hooks
-
-```bash
-状态钩子 (useState): 用于定义组件的 State，类似类定义中 this.state 的功能
-useReducer：用于管理复杂状态逻辑的替代方案，类似于 Redux 的 reducer。
-生命周期钩子 (useEffect): 类定义中有许多生命周期函数，而在 React Hooks 中也提供了一个相应的函数 (useEffect)，这里可以看做componentDidMount、componentDidUpdate和componentWillUnmount的结合。
-useLayoutEffect：与 useEffect 类似，但在浏览器完成绘制之前同步执行。
-useContext: 获取 context 对象，用于在组件树中获取和使用共享的上下文。
-useCallback: 缓存回调函数，避免传入的回调每次都是新的函数实例而导致依赖组件重新渲染，具有性能优化的效果（主要优化仅在不同的传参时才去调用函数）
-useMemo: 用于缓存计算结果，避免重复计算昂贵的操作。
-useRef: 获取组件的真实节点；用于在函数组件之间保存可变的值，并且不会引发重新渲染。
-useImperativeHandle：用于自定义暴露给父组件的实例值或方法。
-useDebugValue：用于在开发者工具中显示自定义的钩子相关标签。
+- 尽量避免过早增加抽象逻辑。
 ```
 
 
@@ -2416,6 +2514,23 @@ function mountWorkInProgressHook(){
   }
   return workInProgressHook;  // 返回当前hook
 }
+```
+
+
+
+#### 常用的 hooks
+
+```bash
+状态钩子 (useState): 用于定义组件的 State，类似类定义中 this.state 的功能
+useReducer：用于管理复杂状态逻辑的替代方案，类似于 Redux 的 reducer。
+生命周期钩子 (useEffect): 可看做 componentDidMount、componentDidUpdate和componentWillUnmount 生命周期函数的结合。
+useLayoutEffect：与 useEffect 类似，但在浏览器完成绘制之前同步执行。
+useContext: 获取 context 对象，用于在组件树中获取和使用共享的上下文。
+useCallback: 缓存回调函数，避免传入的回调每次都是新的函数实例而导致依赖组件重新渲染，具有性能优化的效果（主要优化仅在不同的传参时才去调用函数）
+useMemo: 用于缓存计算结果，避免重复计算昂贵的操作。
+useRef: 获取组件的真实节点；用于在函数组件之间保存可变的值，并且不会引发重新渲染。
+useImperativeHandle：用于自定义暴露给父组件的实例值或方法。
+useDebugValue：用于在开发者工具中显示自定义的钩子相关标签。
 ```
 
 
@@ -2511,7 +2626,7 @@ export default UseEffectExample;
 
 
 
-### useState
+### useState 状态
 
 ```bash
 ### State HOOK：让函数组件可以有state状态，并进行状态数据的读写操作
@@ -2586,7 +2701,7 @@ ReactDOM.render(<FavoriteColor />, document.getElementById('root'))
 
 
 
-### useRef
+### useRef 获取节点
 
 ```bash
 ### Ref Hook：可在函数组件中存储/查找组件内的标签或任意其他数据
@@ -2623,7 +2738,7 @@ ReactDOM.render(<FavoriteColor />, document.getElementById('root'))
 
 #### 不会导致重新渲染
 
-如果我们试图计算应用程序使用 `useState` 钩子渲染的次数，将陷入无限循环，因为这个钩子本身会导致重新渲染。
+如果试图使用 useState 钩子渲染的次数，将陷入无限循环，因为这个钩子本身会导致重新渲染。
 
 为了避免这种情况，可以使用 `useRef` 钩子。
 
@@ -2718,7 +2833,34 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 
 
-### useEffect
+#### 封装 setTimeout
+
+```jsx
+// callback 回调函数， delay 延迟时间
+const useTimeout = (callback, delay) => {
+  const memorizeCallback = useRef()
+
+  useEffect(() => {
+    memorizeCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    if (typeof delay === 'number') {
+      const timer = setTimeout(() => {
+        memorizeCallback.current()
+      }, delay)
+
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [delay])
+}
+```
+
+
+
+### useEffect 生命周期钩子
 
 ```bash
 ### Effect HOOK：允许您在函数组件中执行副作用操作（用于模拟类组件中的生命周期钩子，类似vue的watch）
@@ -2982,30 +3124,76 @@ ReactDOM.render(<Timer />, document.getElementById('root'))
 
 ### React.memo()
 
-> - 包裹函数组件，避免相同对props的重复渲染，以达到优化效果（只适用于函数组件，效果类似于`React.PureComponent`）
->
-> ```jsx
-> import React from 'react'
-> /**
-> 	* - 因为通过props传过来的timer是不变的，当父组件在不断更新，该组件也会跟着更新
-> 	* - 为了不必要的渲染性能浪费，我们限制其渲染一次即可，而React.memo包裹函数组件可以达到该效果
-> 	*/
-> const Child = ({ timer }) => {
->   console.log('child render');
->   return (<p>current time:{timer}</p>)
-> }
-> export default React.memo(Child)
-> ```
+```bash
+React.memo() 是一个高阶函数（HOC），接收一个组件A作为参数并返回一个组件B，如果组件B的 props（或其中的值）没有改变，则组件B会阻止组件A重新渲染。
 
-### useMemo
+包裹函数组件，避免相同对props的重复渲染，以达到优化效果（只适用于函数组件，效果类似于`React.PureComponent`）
+
+
+
+#### React.memo() 和 JS的memorize函数 区别
+1. 适用范围：
+  - React.memo() 适用于优化 React 组件的性能表现；
+  - memorize函数 可用于任何 JS 函数的结果缓存。
+2. 实现方式：
+  - React.memo() 是 React 高阶组件(HOC)，通过浅层比较 props 是否发生变化来决定是否重新渲染组件；（重视传参的props值）
+  - memorize函数 是通过将函数的输入参数及计算结果保存到一个缓存对象中，以避免重复计算相同的结果。（重视计算结果）
+3. 缓存策略：
+  - React.memo() 的缓存是浅比较，只比较props的第一层属性值是否相等，不会递归比较深层嵌套对象或数组的内容。
+  - memorize函数 的缓存是将输入参数转换成字符串后作为缓存的键值。如果传入的参数不是基本类型时，则需要自己实现缓存键值的计算。
+4. 应用场景：
+	- React.memo() 主要适用于对不经常变化的组件进行性能优化(状态不变的组件或纯函数)
+	- memorize函数 主要适用于对计算量大、执行时间长的函数进行结果缓存(递归计算、复杂数学运算等耗时操作)
+```
+
+```jsx
+import React from 'react'
+/**
+	* - 因为通过props传过来的timer是不变的，当父组件在不断更新，该组件也会跟着更新
+	* - 为了不必要的渲染性能浪费，我们限制其渲染一次即可，而React.memo包裹函数组件可以达到该效果
+	*/
+const Child = ({ timer }) => {
+  console.log('child render');
+  return (<p>current time:{timer}</p>)
+}
+export default React.memo(Child)
+```
+
+```js
+const add = (a, b) => a + b;
+const calc = memoize(add);
+calc(10,20); // 30
+calc(10,20); // 30 缓存
+
+// memorize缓存函数
+function memoize(func, content) {
+  const cache = Object.create(null)
+  content = content || this
+
+  return (...args) => {
+    const key = JSON.stringify(args)
+    if (!cache[key]) {
+      cache[key] = func.apply(content, args)
+    }
+    return cache[key]
+  }
+}
+```
+
+
+
+### useMemo 缓存结果
 
 ```bash
-### useMemo Hooks
-- useMemo 钩子返回一个已记忆的值，它仅在其中一个依赖项更新时运行，提高性能。可以用来防止昂贵的、资源密集型的函数不必要的运行。
+- useMemo 返回一个已记忆的值，它仅在其中一个依赖项更新时运行，提高性能。
+		可以用来防止昂贵的、资源密集型的函数不必要的运行。
+		函数内部引用的每个值也应该出现在依赖项数组中。
 - useMemo 和 useCallback 区别：
 		- useMemo 返回一个已记忆的值，
 	  - useCallback 返回一个已记忆的函数。
-
+- React.memo() 和 useMemo() 的区别
+		- React.memo() 是一个高阶组件，可以使用它包装不想重新渲染的组件，除非其中的 props 发生变化
+		- useMemo() 是一个 React 钩子，可使用它在组件中包装函数，确保函数中的值仅在依赖项发生变化时才重新计算。
 
 
 ### useMemo 用法
@@ -3091,13 +3279,13 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 
 
-### useCallback
+### useCallback 缓存函数
 
 ```bash
-### `useCallback` Hooks
-React `useCallback` Hook 返回一个已记忆的回调函数。这使我们能够隔离资源密集型函数，以便它们不会在每次渲染时自动运行。
+### useCallback Hooks
+useCallback 返回一个已记忆的回调函数。使得能够隔离资源密集型函数，以便它们不会在每次渲染时自动运行。
   - 存在缓存的行为，函数的第二个参数决定是否允许第一个参数执行
-  - 作用：使用 `useCallback` 钩子可以防止组件被重新创建并渲染，除非其 `props` 已更改
+  - 作用：使用 useCallback 钩子可以防止组件被重新创建并渲染，除非其 props 已更改
 
 
 const memoizedCallback = useCallback(
@@ -3109,10 +3297,20 @@ const memoizedCallback = useCallback(
 ```
 
 ```jsx
-// main.js
-import { useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import ReactDOM from 'react-dom'
-import Todos from './Todos'
+
+const Todos = ({ todos, addTodo }) => {
+  console.log('子渲染')
+  return (
+    <>
+      <h2>Todos List</h2>
+      {todos.map((todo, index) => <p key={index}>{todo}</p>)}
+      <button onClick={addTodo}>添加 Todo</button>
+    </>
+  )
+}
+const MemoTodos = React.memo(Todos)
 
 const App = () => {
   const [count, setCount] = useState(0)
@@ -3123,15 +3321,15 @@ const App = () => {
   }
 
   /*
-  // 即使 `todos` 没有更改，`Todos` 组件也会重新渲染。
-  // 使用的是 `memo`，所以 `Todos` 组件不应该重新渲染，因为当 `count `增加时，`todos` 状态和 `addTodo` 函数都没有改变。
-  // 每次组件重新渲染时，都会重新创建其函数。因此，`addTodo` 函数实际上发生了变化
+  // 即使 todos 没有更改，Todos 组件也会重新渲染。
+  // 使用的是 memo，所以 Todos 组件不应该重新渲染，因为当 count 增加时，todos 状态和 addTodo 函数都没有改变。
+  // 每次组件重新渲染时，都会重新创建其函数。因此，addTodo 函数实际上发生了变化
   const addTodo = () => {
     setTodos((t) => [...t, 'New Todo'])
   }
   */
 
-  // 使用 `useCallback` 钩子可以防止 `Todos` 组件不必要地重新渲染
+  // 使用 useCallback 钩子可以防止 Todos 组件不必要地重新渲染
   const addTodo = useCallback(() => {
     setTodos((t) => [...t, 'New Todo'])
   }, [todos])
@@ -3139,7 +3337,7 @@ const App = () => {
 
   return (
     <>
-    <Todos todos={todos} addTodo={addTodo} />
+    <MemoTodos todos={todos} addTodo={addTodo} />
     <div>
       次数: {count}
       <button onClick={increment}>+</button>
@@ -3151,32 +3349,12 @@ const App = () => {
 ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
-```js
-// Todos.js
-import { memo } from 'react'
-
-const Todos = ({ todos, addTodo }) => {
-  console.log('子渲染')
-  return (
-    <>
-      <h2>Todos List</h2>
-      {todos.map((todo, index) => {
-        return <p key={index}>{todo}</p>
-      })}
-      <button onClick={addTodo}>添加 Todo</button>
-    </>
-  )
-}
-
-export default memo(Todos)
-```
 
 
-
-### useContext
+### useContext 上下文
 
 ```bash
-### `useContext` Hooks
+### useContext Hooks
 React Context 是一种全局管理状态的方法。
 与单独使用 `useState` 相比，它可以与 `useState` 钩子一起使用，在深度嵌套的组件之间更容易地共享状态。
 
@@ -3416,7 +3594,7 @@ ReactDOM.render(
 
 
 
-### useReducer
+### useReducer 状态管理
 
 ```bash
 ### useReducer
@@ -3467,44 +3645,41 @@ function Counter() {
 
 
 
-
-
 ### useStartTransition
 
 > ```bash
-> ## useStartTransition
 > - 用途：用以在 startTransition 加载过程中使用，防止 startTransition 一直在加载中，页面还没成功加载到相应的页面。
 > - `const [isPending, startTransition] = useTransition()`
 >
 >
-> ## startTransition
+>## startTransition
 > - 用途：
 > 		- startTransition 函数可以将 state 更新标记为 transition。
 > 		- startTransition 可以让你在不阻塞 UI 的情况下更新 state。
 >
-> - 描述
+>- 描述
 > startTransition 包裹里的更新函数被当作是非紧急事件，如果有别的紧急更新进来，则这个 startTransition 包裹里的更新会被打断。
 >
-> - react 把状态更新分成两种：
+>- react 把状态更新分成两种：
 >     - Urgent Updates：紧急更新，指直接交互，如点击、输入、滚动、拖拽等
 >     - Transition updates：过渡更新，如 UI 从一个视图向另一个视图的更新
 >
-> - 与 setTimeout 异同
+>- 与 setTimeout 异同
 > 与 setTimeout 不同的是 startTransition 并不会延迟调度，而是会立即执行，startTransition 接收的函数是同步执行的，只是这个 update 被加上一个 'transition' 的标记。而这个标记，react 内部处理更新时会作为参考信息，这就意味着，相比于 setTimeout 把一个 update 交给 startTransition 能够更早被处理。 ===> 从而导致在较快的设备上这个过渡效果是用户感知不到的。
 >
-> - 使用场景
+>- 使用场景
 > startTransition 可以用在任何你想更新的时候，但从实际来说，有以下两种典型适用场景：
 > 		- 渲染慢：如果你有很多没那么着急的内容要渲染更新。
 > 		- 网络慢：如果你的更新需要花费较多时间从服务端获取，这时候可以结合 Suspense。
 > ```
 >
-> ```jsx
+>```jsx
 > import { startTransition } from 'react';
 >
-> function TabContainer() {
+>function TabContainer() {
 >   const [tab, setTab] = useState('about');
 >
->   function selectTab(nextTab) {
+>  function selectTab(nextTab) {
 >     startTransition(() => {
 >       setTab(nextTab);
 >     });
@@ -3513,10 +3688,10 @@ function Counter() {
 > }
 > ```
 >
-> ```jsx
+>```jsx
 > import { useTransition } from 'react';
 >
-> function TabContainer() {
+>function TabContainer() {
 >   const [isPending, startTransition] = useTransition();
 >   // ...
 > }
@@ -3525,15 +3700,14 @@ function Counter() {
 ### useDeferrendValue
 
 > ```bash
-> ## useDeferrendValue
 > - 用途：延迟更新某个不重要的部分页面内容。
 > - 应用场景：如在搜索框输入值后，等待一会，再渲染相应的数据。
 > ```
 >
-> ```jsx
+>```jsx
 > import { useState, useDeferredValue } from 'react';
 >
-> function SearchPage() {
+>function SearchPage() {
 >   const [query, setQuery] = useState('');
 >   const deferredQuery = useDeferredValue(query);
 >   // ...
@@ -3657,7 +3831,6 @@ ReactDOM.render(<Home />, document.getElementById('root'))
 ### Routers
 
 > ```bash
-> ## Routes
 > 1. v6版本中移除了<Switch>，引入新的替代者<Routes>
 > 2. 必须用<Routes>包裹<Route>
 > 3. <Route>相当于一个If语句，如果其路径与当前URL匹配，则呈现其对应组件
@@ -3666,16 +3839,16 @@ ReactDOM.render(<Home />, document.getElementById('root'))
 > 6. <Route>也可嵌套，且可配合useRoutes配置“路由表”，但需要通过<Outlet>组件来渲染其子路由
 > ```
 >
-> ```jsx
+>```jsx
 > <Routes>
 >   /* path属性用于定义路径，element属性用于定义当前路径所对应的组件 */
 >   <Route path="/login" element={<Login/>}/>
 >   <Route element={<NotFound/>}/>	/* 404页面 */
 >
->   /* 路由重定向 */
+>  /* 路由重定向 */
 >   <Route path="/" element={<Navigate to="/about"/>}/>
 >
->   /* 用于定义嵌套路由，home是一级路由，对应的路径/home */
+>  /* 用于定义嵌套路由，home是一级路由，对应的路径/home */
 >   <Route path="home" element={<Home/>}>
 >     /* test1 和 test2 是二级路由，对应路径是/home/test1 */
 >     <Route path="test1" element={<Test1/>}/>
@@ -3708,17 +3881,31 @@ ReactDOM.render(<Home />, document.getElementById('root'))
 
 ### NavLink
 
-> - 修改URL，且不发送网络请求，与`LinK`主要区别是能让活动路由的内容高亮显示
-> - `end`属性是当子集路由如果匹配，则自身失去高亮效果
->
-> ```jsx
-> const computedClassName = ({isActive}) => isActive ? "list-group-item" : "";
->
-> {/* 路由链接 */}
-> {/* <NavLink className={({isActive})=> isActive ? "list-group-item" : ""} to="/about">About</NavLink> */}
-> <NavLink className={computedClassName} to="/about">About</NavLink>
-> <NavLink className="list-group-item" end to="/home">Home</NavLink>
-> ```
+```bash
+- 修改URL，且不发送网络请求，与 <Link /> 主要区别是能让活动路由的内容高亮显示。
+- end 属性是当子集路由如果匹配，则自身失去高亮效果。
+
+
+
+#### React-Router 的 <Link/> 组件和 <a> 有什么区别？
+Link 的跳转行为只会触发相匹配的对应页面内容更新，而不会刷新整个页面。
+Link 跳转做的三件事：
+	1. 有 onclick 就执行 onclick；
+	2. click 触发时阻止 a 标签默认事件；
+	3. 根据跳转 href 使用 history 跳转，此时只是链接改变，并没有刷新页面。
+
+a 标签是普通的超链接，用于从当前页面跳转到 href 指向的另一个页面(非锚点情况)。
+```
+
+```jsx
+const computedClassName = ({isActive}) => isActive ? "list-group-item" : "";
+
+{/* 路由链接 */}
+<NavLink className={computedClassName} to="/about">About</NavLink>
+<NavLink className="list-group-item" end to="/home">Home</NavLink>
+```
+
+
 
 ### 路由表useRoutes
 

@@ -3403,66 +3403,67 @@ end fn1
 任务执行结束 */
 ```
 
-### 缓存函数
+### 缓存函数 memorizition
 
-> - 缓存函数`memorizition`定义：将上次的计算结果缓存起来，当下次调用时，如果遇到相同的参数，就直接返回缓存中的数据。
-> - 应用场景：需要大量重复计算并且依赖之前的结果
->
-> ```js
-> let add = (a,b) => a + b;
-> let calc = memoize(add);
-> calc(10,20); // 30
-> calc(10,20); // 30 缓存
-> ```
->
-> 如果要实现以上功能，主要依靠 闭包 、柯里化、高阶函数
-> 实现原理：把参数和对应的结果数据存在一个对象中，调用时判断参数对应的数据是否存在，存在就返回对应的结果数据，否则就返回计算结果。
->
-> ```js
-> let memoize = function (func, content) {
->   let cache = Object.create(null)
->   content = content || this
->   return (...key) => {
->     if (!cache[key]) {
->       cache[key] = func.apply(content, key)
->     }
->     return cache[key]
->   }
-> }
-> ```
->
-> - 过程分析
->   - 在当前函数作用域定义了一个空对象，用于缓存运行结果
->   - 运用柯里化返回一个函数，返回的函数因为作用域链的原因，可以访问到`cache`
->   - 然后判断输入参数是不是在`cache`的中。如果已经存在，直接返回`cache`的内容，如果没有存在，使用函数`func`对输入参数求值，然后把结果存储在`cache`中。
->
-> ```js
-> // 例：把字符串开头转成大写
-> let cached = fn => {
->   let cache = Object.create(null);
->   return str => cache[str] || (cache[str] = fn(str))
-> }
-> let func = (str) => str.charAt(0).toUpperCase() + str.slice(1)
-> let capitalize = cached(func)('willy');
-> console.log(capitalize)
-> ```
->
+```bash
+缓存函数 memorize 定义：将上次的计算结果缓存起来，当下次调用时，如果遇到相同的参数，直接返回缓存中的数据。
+应用场景：需要大量重复计算并且依赖之前的计算结果。
+
+memorize 的实现需要依靠：闭包、柯里化、高阶函数
+实现原理：把参数和对应的结果数据存在一个对象中，调用时判断参数对应的数据是否存在，存在就返回对应的结果数据，否则就返回计算结果。
+		- 在当前函数作用域定义了一个空对象，用于缓存运行结果
+		- 运用柯里化返回一个函数，返回的函数因为作用域链的原因，可以访问到cache
+		- 然后判断输入参数是不是在cache的中。如果存在直接返回cache的内容，如果不存在，使用函数func对输入参数求值，然后把结果存储在cache中。
+```
+
+```js
+const add = (a, b) => a + b;
+const calc = memoize(add);
+calc(10,20); // 30
+calc(10,20); // 30 缓存
+
+// 缓存函数
+function memoize(func, content) {
+  const cache = Object.create(null)
+  content = content || this
+
+  return (...args) => {
+    const key = JSON.stringify(args)
+    if (!cache[key]) {
+      cache[key] = func.apply(content, args)
+    }
+    return cache[key]
+  }
+}
+```
+
+
 
 ### 惰性函数
 
 > - 惰性函数是针对优化频繁使用的函数(当再次调用相同的函数，不再执行某些判断条件)；常用于函数库的编写、单例模式中。
 >
 > ```js
-> let test = function () {
->   let t = new Date().getUTCFullYear();
->   test1 = function () {    //第一次调用之后，改变test函数，使得可以直接返回t
->     return t;
+> function getBrowserInfo() {
+>   const ua = navigator.userAgent;
+>
+>   if (/firefox/i.test(ua)) {
+>     getBrowserInfo = () => 'Firefox';
+>   } else if (/chrome/i.test(ua)) {
+>     getBrowserInfo = () => 'Chrome';
+>   } else if (/safari/i.test(ua)) {
+>     getBrowserInfo = () => 'Safari';
+>   } else {
+>     getBrowserInfo = () => 'Unknown';
 >   }
->   return test1();
+>
+>   return getBrowserInfo();
 > }
-> let a = test()
-> let b = test()
-> console.log(a, b)
+>
+> // 第一次调用：检测浏览器
+> console.log(getBrowserInfo()); // 检测并重写函数
+> // 后续调用：直接返回结果
+> console.log(getBrowserInfo()); // 使用重写后的函数
 > ```
 >
 > ```js
@@ -3479,7 +3480,7 @@ end fn1
 > function addEvent(dom, type, handle) {
 >   if (dom.addEventListener) {
 >     dom.addEventListener(type, handler, false);
->     addEvent = function (dom, type, handler) {   //第一次判断后，之后就不再判断
+>     addEvent = function (dom, type, handler) {   //第一次判断后，之后就不再判断，直接给原函数进行赋值
 >       dom.addEventListener(type, handler, false);
 >     }
 >   } else {
@@ -3499,15 +3500,15 @@ end fn1
 > let a = 2;	// 在立即表达函数前面添加分号，否则会报错(a is not a function)
 > // 调用匿名函数
 > (function() {
->   console.log(document, window, a)
+>     console.log(document, window, a)
 > }(document, window, a))
 >
 > // 调用匿名对象
 > ({
->   name: 'willy',
->   show: function () {
->     console.log(this.name)
->   }
+>     name: 'willy',
+>     show: function () {
+>        console.log(this.name)
+>     }
 > }).show();
 >
 > console.log({ a: 1 }.a);
