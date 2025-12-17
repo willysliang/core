@@ -4958,7 +4958,7 @@ console.log(fruits.unshift('Cherry', 'Grape')) // 添加 "Cherry" 和 "Grape" �
 > console.log(arrOfMethod) // [1, 2, 3, 4, 5, 6, 7, 8, 9]
 >
 >
-> /* --------------for...of遍历对象----------------- */
+> /* --------------for...in遍历对象----------------- */
 > Object.prototype.method = function () { console.log(this) }
 > let obj = { a: 1, b: 2 }, objHasPro = ["遍历原型"], objUnPro = ["不遍历原型"]
 > for (let key in obj) {
@@ -5043,19 +5043,18 @@ console.log(result);  // [ 220, 260, 120, 80, 140, 180 ]
 ### 拷贝数组元素到指定位置 copyWith()
 
 > ```bash
-> ## copyWithin()
-> - `copyWithin()`方法在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组（会修改当前数组）
+> - copyWithin() 方法在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组（会修改当前数组）
 >
-> 注意：使用这个方法，会修改当前的数组
+>注意：使用这个方法，会修改当前的数组
 >
-> - `array.copyWithIn(复制到的位置下标, 开始复制的下标, 结束复制的下标)`
+>- `array.copyWithIn(复制到的位置下标, 开始复制的下标, 结束复制的下标)`
 > - `Array.prototype.copyWithin(target, start = 0, end = this.length)`
 >       target	必需。复制到指定目标索引位置。
 >       start	可选。元素复制的起始位置。
 >       end	可选。停止复制的索引位置 (默认为 array.length)。如果为负值，表示倒数。
 > ```
 >
-> ```js
+>```js
 > let arr = [0,1,2,3,4,5,6,7,8,9];
 > arr.copyWithin(0,3,10);
 > console.log(arr)    // [ 3, 4, 5, 6, 7, 8, 9, 7, 8, 9 ]

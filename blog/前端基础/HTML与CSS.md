@@ -524,7 +524,7 @@ UTF-8					世界通用的语言编码
     - 为资源设置正确的 Accept 请求头。
 
 [内容安全策略](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
-[`Accept`请求头](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) 
+[`Accept`请求头](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept)
 [preload中as的完整列表](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/rel/preload)
 
 
@@ -886,8 +886,8 @@ location ~* .*\.(gif|jpg|jpeg|png) {
   - 检查 sizes 列表中哪个媒体条件是第一个为真
   - 查看给予该媒体查询的槽大小
   - 加载 srcset 列表中引用的最接近所选的槽大小的图像
- 
- 
+
+
 - [响应式图像：如果您只是在更改分辨率，请使用 srcset](https://css-tricks.com/responsive-images-youre-just-changing-resolutions-use-srcset/)
 - [响应式图像教程](http://www.ruanyifeng.com/blog/2019/06/responsive-images.html)
 ```
@@ -937,7 +937,7 @@ location ~* .*\.(gif|jpg|jpeg|png) {
   - method：提交数据给后台程序的方式
   - get提交数据：会将数据显示在地址栏中
   - post提交数据：会通过后台提交数据（安全性）
-  
+
 
 
 #### form 里 action 方法的 Get 和 Post 有什么区别
@@ -1025,7 +1025,7 @@ iframe 标签允许我们将来自其他来源（其他网站）的内容嵌入�
 
 注意：
 	- HTML5 不再支持使用 frame, iframe 只有 src 属性。
-	- 可以将提示文字放在 `<iframe>提示文字</iframe>` 中，来提示某些不支持 iframe 的浏览器。	
+	- 可以将提示文字放在 `<iframe>提示文字</iframe>` 中，来提示某些不支持 iframe 的浏览器。
 
 iframe 的优点：
 	1. 程序调入静态页面比较方便。
@@ -2208,12 +2208,12 @@ Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含�
 >     max-width: 220px;
 >     margin: auto;
 >   }
-> 
+>
 >   img {
 >     max-width: 220px;
 >     max-height: 150px;
 >   }
-> 
+>
 >   figcaption {
 >     background-color: #222;
 >     color: #fff;
@@ -2222,7 +2222,7 @@ Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含�
 >     text-align: center;
 >   }
 > </style>
-> 
+>
 > <figure>
 >   <img src="avatar.jpg" alt="D.O" />
 >   <figcaption>An elephant at sunset</figcaption>
@@ -2253,7 +2253,7 @@ Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含�
 >     margin-bottom: 0.5em;
 >   }
 > </style>
-> 
+>
 > <details>
 >   <summary>Details</summary>
 >   Something small enough to escape casual notice.
@@ -2378,7 +2378,7 @@ Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含�
 > ```html
 > <!-- 1. 用 src 属性定义 -->
 > <video src="video.mp4" controls></video>
-> 
+>
 > <!-- 2. 定义 source 标签 -->
 > <video controls>
 >   <source src="video.mp4" type="video/mp4" />
@@ -2390,7 +2390,7 @@ Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含�
 >
 > ```html
 > <embed src="https://juejin.cn/user/96412754251390" height="700" width="100%" />
-> 
+>
 > <embed
 >   type="video/webm"
 >   src="/media/cc0-videos/flower.mp4"
@@ -2528,7 +2528,7 @@ Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含�
 > kbd {
 >   font-family: monospace;
 > }
-> 
+>
 > kbd,
 > code {
 >   border: 1px solid gray;
@@ -2544,13 +2544,13 @@ Web 语义化是指通过 HTML 标签表示页面包含的信息，其中包含�
 >
 > ```html
 > <s>Lorem ipsum dolor sit amet.</s>
-> 
+>
 > <!-- 常使用于商品价格折扣 -->
 > <span><s>$1999</s></span>
 > <span style="color: red;">$99</span>
-> 
+>
 > <del>Lorem ipsum dolor sit amet.</del>
-> 
+>
 > <!-- 常使用于待办事项清单 -->
 > <ul>
 >   <li><del>打卡</del></li>
@@ -2900,7 +2900,7 @@ Canvas 是一个 HTML5 元素，用于在网页上绘制图形。它是一个带
 > ### 调整 `canvas` 元素
 >
 > 默认情况下，`canvas` 元素是宽 300 像素和高 150 像素，可以使用 `width` 和 `height` 属性来更改 `canvas` 的大小，推荐使用`style="width: 550px;height:150px"`的方式
-> 
+>
 > ```html
 > <canvas width="550" height="350"></canvas>
 > ```
@@ -2914,7 +2914,7 @@ Canvas 是一个 HTML5 元素，用于在网页上绘制图形。它是一个带
 > ```
 >
 > 访问 `canvas` 元素：
-> 
+>
 > ```js
 >const canvas = document.querySelector('#myCanvas')
 > ```
@@ -2934,22 +2934,22 @@ Canvas 是一个 HTML5 元素，用于在网页上绘制图形。它是一个带
 > // 绘制完后，关闭路径
 >context.closePath()
 > ```
-> 
+>
 > 指定绘制的线的厚度和颜色：
 >
 > ```js
 >context.lineWidth = 20
 > context.strokeStyle = 'plum'
 > ```
-> 
+>
 >最后，将线绘制在 `canvas` 上：
-> 
+>
 > ```js
 > context.stroke()
 >```
-> 
+>
 >最终效果如下：
-> 
+>
 > ![使用 Canvas API 画一条直线](./image/18281896-e56812325cfd2c46.png)
 
 #### 将文本写入 HTML
@@ -3521,7 +3521,7 @@ window.addEventListener('offline', function() {
 
 ```bash
 - 使用选项卡式浏览，任何给定网页都有可能在后台，因此对用户不可见。页面可见性(Page Visibility) API 提供可以观察的事件，以便了解文档何时可见或隐藏，以及查看页面当前可见性状态的功能。
-页面可见性 API 对于节省资源和提高性能特别有用，它使页面在文档不可见时避免执行不必要的任务。- 
+页面可见性 API 对于节省资源和提高性能特别有用，它使页面在文档不可见时避免执行不必要的任务。-
 
 - document.hidden 返回一个布尔值。
     - true 表示页面可见，false 则表示页面隐藏。
@@ -3670,7 +3670,7 @@ document.addEventListener('visibilitychange', function () {
 >         background: linear-gradient(0deg, #fff, #000);
 >       }
 >```
-> 
+>
 >```css
 > li{
 >   position: relative;
@@ -3690,15 +3690,15 @@ document.addEventListener('visibilitychange', function () {
 >     transform-origin: 0 0;
 >   }
 > ```
-> 
+>
 >#### 不可行的假设方案
-> 
+>
 >```bash
 > ## 实现移动端 0.5 px 的不可行方案
 > ### 1. 直接设置 0.5 px（主要是安卓浏览器不兼容）
 > 理论上 px 的最小单位是 1，但高清屏的显示是一个特例。高清屏可以绘画 0.5 px。但在不同浏览器中会出现差异现象。
 > 其中Chrome把0.5px四舍五入变成了1px，而firefox/safari能够画出半个像素的边，并且Chrome会把小于0.5px的当成0，而Firefox会把不小于0.55px当成1px，Safari是把不小于0.75px当成1px，进一步在手机上观察IOS的Chrome会画出0.5px的边，而安卓(5.0)原生浏览器是不行的。所以直接设置0.5px不同浏览器的差异比较大，并且我们看到不同系统的不同浏览器对小数点的px有不同的处理。所以如果我们把单位设置成小数的px包括宽高等，其实不太可靠，因为不同浏览器表现不一样。
-> 
+>
 >
 >### 2. svg（火狐不支持多色号）
 > 利用SVG的描边等属性的1px还是物理像素的1px，而不是高清屏的1px。
@@ -3710,7 +3710,7 @@ document.addEventListener('visibilitychange', function () {
 >       background: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='1px'><line x1='0' y1='0' x2='100%' y2='0' stroke='#000'></line></svg>");
 >     }
 >    ```
-> 
+>
 
 ### css样式优惠券
 

@@ -112,7 +112,7 @@ $client.DownloadFile('http://test.com/xxx.html','D:\index.html')
 > ```bash
 > # Nginx 概述
 > Nginx (engine x) 是一个高性能的 HTTP 和反向代理 web 服务器，同时也提供了 IMAP/POP3/SMTP 服务。
-> 
+>
 >
 > 高并发/大流量：需要面对高并发用户，大流量访问。
 > Nginx 是一个安装非常的简单、配置文件非常简洁（还能够支持perl语法）、Bug非常少的服务。
@@ -1023,7 +1023,7 @@ $ docker rmi <镜像ID>
 $ docker run -it --name my_container ubuntu:20.04 /bin/bash
 	- `-it`：交互式终端
 	- `--name`： 指定容器名称
-	
+
 2. 查看运行中的容器
 $ docker ps
 

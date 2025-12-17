@@ -19,19 +19,19 @@ Description: TypeScript
 > - 通过`npm config ge prefix`配置ts-node的环境
 > - 编译法①：先通过`tsc filename.ts`转化为js文件，然后通过`node filename.js`运行文件。
 > - 编译法②：通过安装`ts-node`来借以运行：`ts-node filename.ts`。相对于①会慢一点。
-> 
-> 
+>
+>
 > ## 概述
 > - TypeScript = Type + JavaScript(为js添加了类型系统)
 > - TypeScript是微软开发的开源编程语言，设计目标是开发大型应用,可以在任何浏览器、计算机、操作系统上运行。
 > - TypeScript相对JS的优点：类型化思维方式，减少改BUG时间；类型系统提高了代码可读性，并使维护和重构代码更容易。
 > - TypeScript 是一门静态类型、弱类型的语言，是js的超集（js有的ts都有）。
-> 
+>
 > - 静态类型：一旦定义就不可改变。（类型注解：是一种为变量添加类型约束的方式）
 >   - let 变量名 : 数据类型 = 赋值;    //静态类型不可改变，写其他类型的值，会报错。
 > - 优点：代码即注释
-> 
-> 
+>
+>
 > 参考：
 > - [TypeScript](https://wangdoc.com/typescript/)
 > ```
@@ -63,7 +63,7 @@ Description: TypeScript
 > ```ts
 > //普通声明
 > let a: string = '123'
-> 
+>
 > //也可以使用es6的字符串模板
 > let str: string = `Hello，${a}`
 > ```
@@ -75,11 +75,11 @@ Description: TypeScript
 > ```ts
 > let booleand: boolean = true //可以直接使用布尔值
 > let booleand2: boolean = Boolean(1) //也可以通过函数返回布尔值
-> 
-> 
-> // 这样会报错 应为事实上 new Boolean() 返回的是一个 Boolean 对象 
+>
+>
+> // 这样会报错 应为事实上 new Boolean() 返回的是一个 Boolean 对象
 > let createdBoolean: boolean = new Boolean(1)
-> 
+>
 > // 事实上 new Boolean() 返回的是一个 Boolean 对象 需要改成
 > let createdBoolean: Boolean = new Boolean(1)
 > ```
@@ -101,7 +101,7 @@ Description: TypeScript
 >     [],
 >     Symbol(),
 > ]
-> collection.filter(Boolean) 
+> collection.filter(Boolean)
 > // [ { name: 'willy' }, { name: 'cilly' }, function () {}, {}, [], Symbol() ]
 > ```
 >
@@ -109,7 +109,7 @@ Description: TypeScript
 >
 > ```ts
 > const x = ['1.23', 2137123, 'D.O', false, 'O.O', undefined, null]
-> 
+>
 > x.map(Number).filter(Boolean) // [1.23, 2137123]
 > ```
 >
@@ -124,8 +124,8 @@ Description: TypeScript
 > let anys:any = 123
 > anys = '123'
 > anys = true
-> 
-> 
+>
+>
 > // 声明变量的时候没有指定任意类型默认为any
 > let anys;
 > anys = '123'
@@ -148,26 +148,26 @@ Description: TypeScript
 > value = null;             // OK
 > value = undefined;        // OK
 > value = Symbol("type");   // OK
-> 
+>
 > //这样写会报错unknow类型不能作为子类型只能作为父类型 any可以作为父类型和子类型
 > //unknown类型不能赋值给其他类型
 > let names:unknown = '123'
 > let names2:string = names
-> 
+>
 > //这样就没问题 any类型是可以的
 > let names:any = '123'
-> let names2:string = names   
-> 
+> let names2:string = names
+>
 > //unknown可赋值对象只有unknown 和 any
 > let bbb:unknown = '123'
 > let aaa:any= '456'
 > aaa = bbb
-> 
-> 
+>
+>
 > // 如果是any类型在对象没有这个属性的时候还在获取是不会报错的
 > let obj:any = {b:1}
 > obj.a
-> 
+>
 > // 如果是unknow 是不能调用属性和方法
 > let obj:unknown = {b:1,ccc:():number=>213}
 > obj.b
@@ -186,14 +186,14 @@ Description: TypeScript
 > function voidFn(): void {
 >     console.log('test void')
 > }
-> 
-> 
+>
+>
 > // void也可以定义undefined 和 null类型
 > let u: void = undefined
 > let n: void = null;
 > ```
 
-#### null 和 undefined 
+#### null 和 undefined
 
 > - null和undefined是所有类型的子类型
 > - 与 void 的区别是，undefined 和 null 是所有类型的子类型。也就是说 undefined 类型的变量，可以赋值给 string 类型的变量
@@ -203,13 +203,13 @@ Description: TypeScript
 > let test: void = undefined
 > let num2: string = "1"
 > num2 = test
-> 
-> 
+>
+>
 > //这样是没问题的
 > let test: null = null
 > let num2: string = "1"
 > num2 = test
-> 
+>
 > //或者这样的
 > let test: undefined = undefined
 > let num2: string = "1"
@@ -232,26 +232,26 @@ Description: TypeScript
 > ## 概述
 > - 类型推论：在没有明确的指定类型时，TypeScript 会依照类型推论的规则推断出一个类型。
 > - 如果定义时没有赋值，不管之后有没有赋值，都会被推断成 any 类型而导致完全不被类型检查。
-> 
-> 
+>
+>
 > ## 什么是类型推论
 > 	以下代码虽然没有指定类型，但是会在编译的时候报错：
 >     let myFavoriteNumber = 'seven';
 >     myFavoriteNumber = 7;
 > 		// index.ts(2,1): error TS2322: Type 'number' is not assignable to type 'string'.
-> 
+>
 >   事实上，它等价于：
 >     let myFavoriteNumber: string = 'seven';
 >     myFavoriteNumber = 7;
 >     // index.ts(2,1): error TS2322: Type 'number' is not assignable to type 'string'.
->     
-> 
+>
+>
 > ## 注意
 > - 如果定义的时候没有赋值，不管之后有没有赋值，都会被推断成 any 类型而完全不被类型检查：
 >     let myFavoriteNumber;
 >     myFavoriteNumber = 'seven';
 >     myFavoriteNumber = 7;
-> 
+>
 > ```
 
 ### 联合类型
@@ -261,23 +261,23 @@ Description: TypeScript
 > - 联合类型（Union Types）表示取值可以为多种类型中的一种。
 > - 如果一个值是联合类型，我们只能访问此联合类型的所有类型公有的成员。(写不包含在里面类型的数据，会报错)
 > - 联合类型使用 `|` 分隔每个类型
-> 
-> 
+>
+>
 > ## 例子
 > 通过竖线`|`分隔每个类型，所以 `number | string | boolean` 表示一个值可以是number,string或boolean。
 >     let numberOrString: number | string;
 >     numberOrString = 111;
 >     numberOrString = 'abc';
->     
->     
+>
+>
 > ## 访问联合类型的属性或方法
 > 当 TypeScript 不确定一个联合类型的变量是哪个类型时，我们只能访问此联合类型的所有类型里共有的属性或方法
 >     function getString(something: string | number): string {
 >     	  console.log(something.length) // error， length 不是 string 和 number 的共有属性，所以会报错
 >         return something.toString();
 >     }
->     
->   
+>
+>
 > ## 联合类型 & 类型推论
 > 联合类型的变量在被赋值的时候，会根据类型推论的规则推断出一个类型
 >     let myFavoriteNumber: string | number;
@@ -285,11 +285,11 @@ Description: TypeScript
 >     console.log(myFavoriteNumber.length); // 5
 >     myFavoriteNumber = 7;
 >     console.log(myFavoriteNumber.length); // 编译时报错
-> 
+>
 >     // index.ts(5,30): error TS2339: Property 'length' does not exist on type 'number'.
 >     上例中，第二行的 myFavoriteNumber 被推断成了 string，访问它的 length 属性不会报错。
 > 		而第四行的 myFavoriteNumber 被推断成了 number，访问它的 length 属性时就报错了。
-> 
+>
 > ```
 
 ### 对象类型：接口
@@ -298,7 +298,7 @@ Description: TypeScript
 > ## 接口概述
 > - 在 TypeScript 中，我们使用接口（Interfaces）来定义对象的类型
 > - 在面向对象语言中，接口（Interfaces）是一个很重要的概念，它是对行为的抽象，而具体如何行动需要由类（classes）去实现（implement）
-> 
+>
 > ## 接口使用规范
 > - 接口一般首字母大写。有的编程语言中会建议接口的名称加上 `I` 前缀
 > - 赋值的时候，变量的形状必须和接口的形状保持一致。即定义的变量比接口少了一些属性是不允许的(可以通过可选属性来规避)，多一些属性也是不允许的
@@ -372,24 +372,24 @@ Description: TypeScript
 >     age?: number;
 >     [propName: string]: any; // 使用 [propName: string] 定义了任意属性取 string 类型的值
 > }
-> 
+>
 > let tom: Person = {
 >     name: 'Tom',
 >     gender: 'male'
 > };
-> 
+>
 > // 错误示例
 > let willy: Person = {
 >     name: 'willy',
 >     age: 25,	// error: Property 'age' of type 'number' is not assignable to string index type 'string'.
 >     gender: 'male'
 > };
-> 
+>
 > ------
 > 上例中，任意属性的值允许是 string，但是可选属性 age 的值却是 number，number 不是 string 的子属性，所以报错了。
 > 另外，在报错信息中可以看出，此时 { name: 'willy', age: 25, gender: 'male' } 的类型被推断成了 { [x: string]: string | number; name: string; age: number; gender: string; }，这是联合类型和接口的结合。
 > ------
-> 
+>
 > // 修正版本
 > interface Person {
 >     name: string;
@@ -464,12 +464,12 @@ const s = new Square()
 > names[names.length]="willy"		//在数组最后面添加元素
 > names[names.length]="willy1"
 > console.log(names[names.length-1])	//输出最后数组最后一个元素
-> 
-> 
+>
+>
 > /*数组泛型 Array<elemType>*/
 > let fibonacci: Array<number> = [1,2,3,4,5];
-> 
-> 
+>
+>
 > /*接口表示数组*/
 > interface NumberArray{
 > 	[index: number]: number;
@@ -519,30 +519,30 @@ const s = new Square()
 > ## 函数声明
 >   - 一个函数有输入和输出，要在 TypeScript 中对其进行约束，需要把输入和输出都考虑到，其中函数声明的类型定义较简单
 >   - 注意，输入多余的（或者少于要求的）参数，是不被允许的
-> 
->       function sum(x: number, y: number): number { 
->         return x + y; 
+>
+>       function sum(x: number, y: number): number {
+>         return x + y;
 >       }
 >       sum(1, 2);
 >       sum(1, 2, 3); // error
-> 
-> 
-> 
+>
+>
+>
 > ## 函数表达式
 >   - 在 TypeScript 的类型定义中，`=>` 用来表示函数的定义，左边是输入类型，需要用括号括起来，右边是输出类型。
 >   - 注意：（与ES6中的=>不一致）
-> 
+>
 >       let mySum: (x: number, y: number) => number = function (x: number, y: number): number {
 >           return x + y;
->       };	
-> 
-> 
+>       };
+>
+>
 > ## 接口定义函数形状
 >   - 采用函数表达式|接口定义函数的方式时，对等号左侧进行类型限制，可以保证以后对函数名赋值时保证参数个数、参数类型、返回值类型不变
 >       interface SearchFunc {
 >           (source: string, subString: string): boolean;
 >       }
-> 
+>
 >       let mySearch: SearchFunc;
 >       mySearch = function(source: string, subString: string) {
 >           return source.search(subString) !== -1;
@@ -588,7 +588,7 @@ const s = new Square()
 >     array.push(item);
 >   });
 > }
-> 
+>
 > let a = [];
 > push(a, 1, 2, 3);
 > ```
@@ -599,16 +599,16 @@ const s = new Square()
 > ## 函数重载概述
 > - 重载允许一个函数接受不同数量或类型的参数时，作出不同的处理。
 > - 比如，我们需要实现一个函数 reverse，输入数字 123 的时候，输出反转的数字 321，输入字符串 'hello' 的时候，输出反转的字符串 'olleh'
-> 
-> 
+>
+>
 > ## 利用联合类型实现重载
 >   - 联合类型实现重载的缺点：不能够精确的表达，输入为数字时，输出也应该为数字；输入为字符串时，输出也应该为字符串
 >       function reverse(x: number | string): number | string | void {
 >         if (typeof x === 'number') return Number(x.toString().split('').reverse().join(''));
 >         else if (typeof x === 'string') return x.split('').reverse().join('');
 >       }
-> 
-> 
+>
+>
 > ## 用重载定义多个同名函数
 >   - 我们重复定义了多次函数，前几次都是函数定义，最后一次是函数实现。在编辑器的代码提示中，可以正确的看到前两个提示。
 >   - 注意，TypeScript 会优先从最前面的函数定义开始匹配，所以多个函数定义如果有包含关系，需要优先把精确的定义写在前面
@@ -642,20 +642,20 @@ const s = new Square()
 > ## 类型断言概述
 > - 类型断言（Type Assertion）可以用来手动指定一个值的类型
 > - 联合类型只能访问共用的属性和方法。借助类型断言，可以告诉编辑器，你没办法判断我的代码，我比你更清楚。
-> 
+>
 > ## 类型断言语法
 > - 语法：`值 as 类型` 或 `<类型>值`
 > - 注意：在 tsx 语法中必须使用`值 as 类型`的方式
-> 
-> 
+>
+>
 > ## 类型断言的用途
 > 1. 将一个联合类型断言为其中一个类型
 >   - 当 TypeScript 不确定一个联合类型的变量到底是哪个类型的时候，我们只能访问此联合类型的所有类型中共有的属性或方法
 >   - 而有时候，我们确实需要在还不确定类型的时候就访问其中一个类型特有的属性或方法，则此时 TS 则会因为不确定类型而报错，对此我们可以使用类型断言，指定该值的准确类型
 >   - 注意：类型断言只能够「欺骗」TypeScript 编译器，无法避免运行时的错误，反而滥用类型断言可能会导致运行时错误
-> 	
+>
 > 2. 将一个父类断言为更加具体的子类
-> 
+>
 > ```
 >
 > ```ts
@@ -668,8 +668,8 @@ const s = new Square()
 > 		return number.toString().length;
 > 	}
 > }
-> 
-> 
+>
+>
 > //断言方法二：在变量前面加上一个尖括号
 > function getLength(input: string | number): number {
 > 	if((<string>input).length) return (<string>input).length;
@@ -685,13 +685,13 @@ const s = new Square()
 > - 注意：类型断言只能够「欺骗」TypeScript 编译器，无法避免运行时的错误，反而滥用类型断言可能会导致运行时错误
 >
 > ```ts
-> interface Cat { 
->   name: string; 
->   run(): void; 
+> interface Cat {
+>   name: string;
+>   run(): void;
 > }
-> interface Fish { 
->   name: string; 
->   swim(): void; 
+> interface Fish {
+>   name: string;
+>   swim(): void;
 > }
 > function swim(animal: Cat | Fish) {
 >   (animal as Fish).swim();
@@ -701,7 +701,7 @@ const s = new Square()
 >   run() { console.log('run') }
 > };
 > swim(tom); // Uncaught TypeError: animal.swim is not a function`
-> 
+>
 > // 报错原因： (animal as Fish).swim() 这段代码隐藏了 animal 可能为 Cat 的情况，将 animal 直接断言为 Fish 了，而 TypeScript 编译器信任了我们的断言，故在调用 swim() 时没有编译错误
 > ```
 
@@ -714,7 +714,7 @@ const s = new Square()
 > class HttpError extends Error {
 >   statusCode: number = 200;
 > }
-> 
+>
 > function isApiError(error: Error) {
 >   if (typeof (error as ApiError).code === 'number') { return true; }
 >   // if (error instanceof ApiError) { return true; }
@@ -728,7 +728,7 @@ const s = new Square()
 >
 > 上面的例子中，确实使用 `instanceof` 更加合适，因为 `ApiError` 是一个 JavaScript 的类，能够通过 `instanceof` 来判断 `error` 是否是它的实例。
 >
-> 但是有的情况下 `ApiError` 和 `HttpError` 不是一个真正的类，而只是一个 TypeScript 的接口（`interface`），接口是一个类型，不是一个真正的值，它在编译结果中会被删除，当然就无法使用 `instanceof` 来做运行时判断了；此时就只能用类型断言，通过判断是否存在 `code` 属性，来判断传入的参数是不是 `ApiError` 
+> 但是有的情况下 `ApiError` 和 `HttpError` 不是一个真正的类，而只是一个 TypeScript 的接口（`interface`），接口是一个类型，不是一个真正的值，它在编译结果中会被删除，当然就无法使用 `instanceof` 来做运行时判断了；此时就只能用类型断言，通过判断是否存在 `code` 属性，来判断传入的参数是不是 `ApiError`
 
 #### 用途三：将任何一个类型断言为 `any`
 
@@ -739,7 +739,7 @@ const s = new Square()
 > ```ts
 > const foo: number = 1;
 > foo.length = 1;
-> 
+>
 > // index.ts:2:5 - error TS2339: Property 'length' does not exist on type 'number'.
 > ```
 >
@@ -749,7 +749,7 @@ const s = new Square()
 >
 > ```ts
 > window.foo = 1;
-> 
+>
 > // index.ts:1:8 - error TS2339: Property 'foo' does not exist on type 'Window & typeof globalThis'.
 > ```
 >
@@ -793,12 +793,12 @@ const s = new Square()
 > function getCacheData(key: string): any {
 >     return (window as any).cache[key];
 > }
-> 
+>
 > interface Cat {
 >     name: string;
 >     run(): void;
 > }
-> 
+>
 > const tom = getCacheData('tom') as Cat;
 > tom.run();
 > ```
@@ -812,13 +812,13 @@ const s = new Square()
 > - 若 A 兼容 B，那么 A 能够被断言为 B，B 也能被断言为 A
 > - 同理，若 B 兼容 A，那么 A 能够被断言为 B，B 也能被断言为 A
 > - 总结：要使得 A 能够被断言为 B，只需要 A 兼容 B，或 B 兼容 A 即可，这也是为了在类型断言时的安全考虑，毕竟毫无根据的断言是非常危险的
-> 
-> 
+>
+>
 > ## 说明
 > - 允许 `animal as Cat` 是因为「父类可以被断言为子类」
 > - 允许 `cat as Animal` 是因为既然子类拥有父类的属性和方法，那么被断言为父类，获取父类的属性、调用父类的方法，就不会有任何问题，故「子类可以被断言为父类」
-> 
-> 
+>
+>
 > ## 综述
 > - 联合类型可以被断言为其中一个类型
 > - 父类可以被断言为子类
@@ -843,7 +843,7 @@ const s = new Square()
 > interface Fish {
 >     swim(): void;
 > }
-> 
+>
 > function testCat(cat: Cat) {
 >     return (cat as any as Fish);
 > }
@@ -865,7 +865,7 @@ const s = new Square()
 > function toBoolean(something: any): boolean {
 >     return something as boolean;
 > }
-> 
+>
 > toBoolean(1); // 返回值为 1
 > ```
 >
@@ -875,7 +875,7 @@ const s = new Square()
 > function toBoolean(something) {
 >     return something;
 > }
-> 
+>
 > toBoolean(1); // 返回值为 1
 > ```
 >
@@ -887,7 +887,7 @@ const s = new Square()
 > function toBoolean(something: any): boolean {
 >     return Boolean(something);
 > }
-> 
+>
 > toBoolean(1); // 返回值为 true
 > ```
 
@@ -897,12 +897,12 @@ const s = new Square()
 > function getCacheData(key: string): any {
 >     return (window as any).cache[key];
 > }
-> 
+>
 > interface Cat {
 >     name: string;
 >     run(): void;
 > }
-> 
+>
 > const tom = getCacheData('tom') as Cat;
 > tom.run();
 > ```
@@ -915,12 +915,12 @@ const s = new Square()
 > function getCacheData(key: string): any {
 >     return (window as any).cache[key];
 > }
-> 
+>
 > interface Cat {
 >     name: string;
 >     run(): void;
 > }
-> 
+>
 > const tom: Cat = getCacheData('tom');
 > tom.run();
 > ```
@@ -939,7 +939,7 @@ const s = new Square()
 >     name: string;
 >     run(): void;
 > }
-> 
+>
 > const animal: Animal = {
 >     name: 'tom'
 > };
@@ -957,7 +957,7 @@ const s = new Square()
 >     name: string;
 >     run(): void;
 > }
-> 
+>
 > const animal: Animal = {
 >     name: 'tom'
 > };
@@ -997,12 +997,12 @@ const s = new Square()
 > function getCacheData(key: string): any {
 >     return (window as any).cache[key];
 > }
-> 
+>
 > interface Cat {
 >     name: string;
 >     run(): void;
 > }
-> 
+>
 > const tom = getCacheData('tom') as Cat;
 > tom.run();
 > ```
@@ -1013,12 +1013,12 @@ const s = new Square()
 > function getCacheData<T>(key: string): T {
 >     return (window as any).cache[key];
 > }
-> 
+>
 > interface Cat {
 >     name: string;
 >     run(): void;
 > }
-> 
+>
 > const tom = getCacheData<Cat>('tom');
 > tom.run();
 > ```
@@ -1031,8 +1031,8 @@ const s = new Square()
 > # 声明文件
 > 当使用第三方库时，我们需要引用它的声明文件，才能获得对应的代码补全、接口提示等功能。
 > 注意：声明文件必需以 `.d.ts` 为后缀。
-> 
-> 
+>
+>
 > ## 声明定义语法
 >   - declare var 声明全局变量
 >   - declare function 声明全局方法
@@ -1041,28 +1041,28 @@ const s = new Square()
 >   - declare namespace 声明（含有子属性的）全局对象
 >   - declare global 扩展全局变量
 >   - declare module 扩展模块
->   
+>
 >   - interface 和 type 声明全局类型
->   
+>
 >   - export 导出变量
 >   - export namespace 导出（含有子属性的）对象
 >   - export default ES6 默认导出
 >   - export = commonjs 导出模块
 >   - export as namespace UMD 库声明全局变量
->   
+>
 >   - `/// <reference />` 三斜线指令
->   
->   
->   
+>
+>
+>
 > ## declare 关键字
 > declare 关键字可以给出外部变量的类型描述，用来告诉编译器某个类型是存在的，可以在当前文件中使用。
 > 它的主要作用，就是让当前文件可以使用其他文件声明的类型。举例来说，自己的脚本使用外部库定义的函数，编译器会因为不知道外部函数的类型定义而报错，这时就可以在自己的脚本里面使用declare关键字，告诉编译器外部函数的类型。这样的话，编译单个脚本就不会因为使用了外部类型而报错。
-> 
-> 
+>
+>
 > ### 第三方声明文件的识别
 > 一般来说，ts 会解析项目中所有的 `*.ts` 文件，当然也包含以 `.d.ts` 结尾的文件。所以当我们将 `jQuery.d.ts` 放到项目中时，其他所有 `*.ts` 文件就都可以获得 `jQuery` 的类型定义了。
 > 假如仍然无法解析，那么可以检查下 `tsconfig.json` 中的 `files`、`include` 和 `exclude` 配置，确保其包含了 `jQuery.d.ts` 文件。
-> 
+>
 > ```
 
 #### 书写声明文件
@@ -1089,7 +1089,7 @@ const s = new Square()
 > |  └── jQuery.d.ts
 > └── tsconfig.json
 > ```
-> 
+>
 > 如果没有生效，可以检查下 `tsconfig.json` 中的 `files`、`include` 和 `exclude` 配置，确保其包含了 `jQuery.d.ts` 文件。
 >
 > 全局变量的声明文件主要有以下几种语法：
@@ -1108,11 +1108,11 @@ const s = new Square()
 > ```ts
 > // src/jQuery.d.ts
 > declare let jQuery: (selector: string) => any;
-> 
-> 
+>
+>
 > // src/index.ts
 > jQuery('#foo');
-> 
+>
 > // 使用 declare let 定义的 jQuery 类型，允许修改这个全局变量
 > jQuery = function(selector) {
 >     return document.querySelector(selector);
@@ -1124,9 +1124,9 @@ const s = new Square()
 > ```ts
 > // src/jQuery.d.ts
 > declare const jQuery: (selector: string) => any;
-> 
+>
 > jQuery('#foo');
-> 
+>
 > // 使用 declare const 定义的 jQuery 类型，禁止修改这个全局变量
 > jQuery = function(selector) {
 >     return document.querySelector(selector);
@@ -1149,12 +1149,12 @@ const s = new Square()
 > `declare function` 用来定义全局函数的类型。在函数类型的声明语句中，函数重载也是支持的。
 >
 > 注意，这种单独的函数类型声明语句，只能用于`declare`命令后面。一方面，TypeScript 不支持单独的函数类型声明语句；另一方面，declare 关键字后面也不能带有函数的具体实现。
-> 
+>
 > ```ts
 > // src/jQuery.d.ts
 > declare function jQuery(selector: string): any;
 > declare function jQuery(domReadyCallback: () => any): any;
-> 
+>
 >
 > // src/index.ts
 >jQuery('#foo');
@@ -1172,21 +1172,21 @@ const s = new Square()
 >     // 静态成员
 >     public static s0():string;
 >     private static s1:string;
-> 
+>
 >     // 属性
 >     public a:number;
 >     private b:number;
-> 
+>
 >     // 构造函数
 >     constructor(arg:number);
-> 
+>
 >     // 方法
 >     m(x:number, y:number):number;
-> 
+>
 >     // 存取器
 >     get c():number;
 >     set c(value:number);
-> 
+>
 >     // 索引签名
 >     [index:string]:any;
 > }
@@ -1219,8 +1219,8 @@ const s = new Square()
 >        Left,
 >        Right
 > }
-> 
-> 
+>
+>
 > // src/index.ts
 > let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Right];
 > ```
@@ -1240,12 +1240,12 @@ const s = new Square()
 > ## declare namespace
 > - namespace 是 ts 早期时为了解决模块化而创造的关键字，中文称为命名空间。
 > - 注意：declare module 和 declare namespace 里面，加不加 export 关键字都可以。
-> 
-> 
+>
+>
 > 由于历史遗留原因，在早期还没有 ES6 的时候，ts 提供了一种模块化方案，使用 `module` 关键字表示内部模块。但由于后来 ES6 也使用了 `module` 关键字，ts 为了兼容 ES6，使用 `namespace` 替代了自己的 `module`，更名为命名空间。
 > 随着 ES6 的广泛应用，现在已经不建议再使用 ts 中的 `namespace`，而推荐使用 ES6 的模块化方案了。
 > `namespace` 虽然被淘汰了，但是在声明文件中，`declare namespace` 还是比较常用的，它用来表示全局变量是一个对象，包含很多子属性。
-> 
+>
 > ```
 >
 > ```ts
@@ -1255,10 +1255,10 @@ const s = new Square()
 >         eat(): void
 >         sleep(): void
 >     }
-> 
+>
 >     type Animals = "Fish" | "Dog"
 > }
-> 
+>
 > // 或者
 > declare module AnimalLib {
 >     class Animal {
@@ -1266,10 +1266,10 @@ const s = new Square()
 >         eat(): void
 >         sleep(): void
 >     }
-> 
+>
 >     type Animals = "Fish" | "Dog"
 > }
-> 
+>
 > ```
 >
 > 注意，在 `declare namespace` 内部，我们直接使用 `function ajax` 来声明函数，而不是使用 `declare function ajax`。类似的，也可以使用 `const`, `class`, `enum` 等语句：
@@ -1286,13 +1286,13 @@ const s = new Square()
 >         CustomClick,
 >     }
 > }
-> 
+>
 > // src/index.ts
 > jQuery.ajax("/api/get_something")
 > console.log(jQuery.version)
 > const e = new jQuery.Event()
 > e.blur(jQuery.EventType.CustomClick)
-> 
+>
 > ```
 
 ##### 嵌套的命名空间
@@ -1307,7 +1307,7 @@ const s = new Square()
 >            function extend(object: any): void
 >        }
 > }
->   
+>
 >   // src/index.ts
 > jQuery.ajax("/api/get_something")
 > jQuery.fn.extend({
@@ -1317,7 +1317,7 @@ const s = new Square()
 >            })
 >        },
 >    })
-> 
+>
 > ```
 >
 > 假如 `jQuery` 下仅有 `fn` 这一个属性（没有 `ajax` 等其他属性或方法），则可以不需要嵌套 `namespace`
@@ -1327,8 +1327,8 @@ const s = new Square()
 > declare namespace jQuery.fn {
 >     function extend(object: any): void;
 > }
->   
->   
+>
+>
 > // src/index.ts
 > jQuery.fn.extend({
 >     check: function() {
@@ -1348,18 +1348,18 @@ const s = new Square()
 > export interface A {
 >     x: number
 > }
-> 
+>
 > // b.ts
 > import { A } from "./a"
-> 
+>
 > declare module "./a" {
 >     interface A {
 >         y: number
 >     }
 > }
-> 
+>
 > const a: A = { x: 0, y: 0 }
-> 
+>
 > ```
 
 ##### 防止命名冲突
@@ -1381,7 +1381,7 @@ const s = new Square()
 >
 > ```ts
 > // src/index.ts
-> 
+>
 > let settings: jQuery.AjaxSettings = {
 >       method: 'POST',
 >       data: {
@@ -1401,8 +1401,8 @@ const s = new Square()
 > declare namespace jQuery {
 >     function ajax(url: string, settings?: any): void;
 > }
->   
->   
+>
+>
 > // src/index.ts
 > jQuery('#foo');
 > jQuery.ajax('/api/get_something');
@@ -1489,7 +1489,7 @@ const s = new Square()
 > ```ts
 > // src/index.ts
 > import { name, getName, Animal, Directions, Options } from 'foo';
-> 
+>
 > console.log(name);
 > let myName = getName();
 > let cat = new Animal('Tom');
@@ -1522,7 +1522,7 @@ const s = new Square()
 > interface Options {
 >        data: any;
 > }
-> 
+>
 > export { name, getName, Animal, Directions, Options };
 > ```
 >
@@ -1540,11 +1540,11 @@ const s = new Square()
 >         function baz(): string;
 >     }
 > }
->   
->   
+>
+>
 > // src/index.ts
 > import { foo } from 'foo';
-> 
+>
 > console.log(foo.name);
 > foo.bar.baz();
 > ```
@@ -1558,8 +1558,8 @@ const s = new Square()
 > ```ts
 > // types/foo/index.d.ts
 > export default function foo(): string;
-> 
-> 
+>
+>
 > // src/index.ts
 > import foo from 'foo';
 > foo();
@@ -1588,7 +1588,7 @@ const s = new Square()
 >     Left,
 >     Right
 > }
-> 
+>
 > export default Directions;
 > ```
 >
@@ -1672,7 +1672,7 @@ const s = new Square()
 > // types/foo/index.d.ts
 > export as namespace foo;
 > export = foo;
-> 
+>
 > declare function foo(): string;
 > declare namespace foo {
 >     const bar: number;
@@ -1685,7 +1685,7 @@ const s = new Square()
 > // types/foo/index.d.ts
 > export as namespace foo;
 > export default foo;
-> 
+>
 > declare function foo(): string;
 > declare namespace foo {
 >     const bar: number;
@@ -1700,7 +1700,7 @@ const s = new Square()
 > interface String {
 >     prependHello(): string;
 > }
-> 
+>
 > 'foo'.prependHello();
 > ```
 >
@@ -1714,12 +1714,12 @@ const s = new Square()
 >         bar: string;
 >     }
 > }
-> 
+>
 > interface JQueryStatic {
 >     foo(options: JQuery.CustomOptions): string;
 > }
->   
->   
+>
+>
 > // src/index.ts
 > jQuery.foo({
 >     bar: ''
@@ -1742,8 +1742,8 @@ const s = new Square()
 >     }
 > }
 > export {};
-> 
-> 
+>
+>
 > // src/index.ts
 > 'bar'.prependHello();
 > ```
@@ -1761,16 +1761,16 @@ const s = new Square()
 > ```ts
 > // types/moment-plugin/index.d.ts
 > import * as moment from 'moment';
-> 
+>
 > declare module 'moment' {
 >     export function foo(): moment.CalendarKey;
 > }
-> 
-> 
+>
+>
 > // src/index.ts
 > import * as moment from 'moment';
 > import 'moment-plugin';
-> 
+>
 > moment.foo();
 > ```
 >
@@ -1783,16 +1783,16 @@ const s = new Square()
 >         foo: string;
 >     }
 > }
-> 
+>
 > declare module 'bar' {
 >     export function bar(): string;
 > }
-> 
-> 
+>
+>
 > // src/index.ts
 > import { Foo } from 'foo';
 > import * as bar from 'bar';
-> 
+>
 > let f: Foo;
 > bar.bar();
 > ```
@@ -1804,7 +1804,7 @@ const s = new Square()
 > ```ts
 > // types/moment-plugin/index.d.ts
 > import * as moment from 'moment';
-> 
+>
 > declare module 'moment' {
 >     export function foo(): moment.CalendarKey;
 > }
@@ -1829,11 +1829,11 @@ const s = new Square()
 >
 > ```ts
 > // types/jquery-plugin/index.d.ts
-> 
+>
 > /// <reference types="jquery" />
 > declare function foo(options: JQuery.AjaxSettings): string;
-> 
-> 
+>
+>
 > // src/index.ts
 > foo({});
 > ```
@@ -1848,14 +1848,14 @@ const s = new Square()
 >
 > ```ts
 > // types/node-plugin/index.d.ts
-> 
+>
 > /// <reference types="node" />
 > export function foo(p: NodeJS.Process): string;
-> 
-> 
+>
+>
 > // src/index.ts
 > import { foo } from 'node-plugin';
-> 
+>
 > foo(global.process);
 > ```
 >
@@ -1871,13 +1871,13 @@ const s = new Square()
 >
 > ```ts
 > // node_modules/@types/jquery/index.d.ts
-> 
+>
 > /// <reference types="sizzle" />
 > /// <reference path="JQueryStatic.d.ts" />
 > /// <reference path="JQuery.d.ts" />
 > /// <reference path="misc.d.ts" />
 > /// <reference path="legacy.d.ts" />
-> 
+>
 > export = jQuery;
 > ```
 >
@@ -1930,23 +1930,23 @@ const s = new Square()
 > ```ts
 > // src/index.ts
 > export * from './bar';
-> 
+>
 > export default function foo() {
 >     return 'foo';
 > }
-> 
-> 
+>
+>
 > // src/bar/index.ts
 > export function bar() {
 >     return 'bar';
 > }
-> 
-> 
+>
+>
 > // lib/index.d.ts
 > export * from './bar';
 > export default function foo(): string;
-> 
-> 
+>
+>
 > // lib/bar/index.d.ts
 > export declare function bar(): string;
 > ```
@@ -1967,7 +1967,7 @@ const s = new Square()
 >
 > 1. 将声明文件和源码放在一起
 >2. 将声明文件发布到 `@types` 下
-> 
+>
 > 这两种方案中优先选择第一种方案。保持声明文件与源码在一起，使用时就不需要额外增加单独的声明文件库的依赖了，而且也能保证声明文件的版本与源码的版本保持一致。
 >
 > 仅当在给别人的仓库添加类型声明文件，但原作者不愿意合并 pull request 时，才需要使用第二种方案，将声明文件发布到 `@types` 下。
@@ -2029,18 +2029,18 @@ const s = new Square()
 > ```bash
 > # 内置对象
 > 内置对象是指根据标准在全局作用域（Global）上存在的对象。这里的标准是指 ECMAScript 和其他环境（比如 DOM）的标准。
-> 
+>
 > 1. ECMAScript 的内置对象：
 > 	ECMAScript 标准提供的内置对象有：`Boolean`、`Error`、`Date`、`RegExp` 等。
-> 
+>
 > 2. DOM 和 BOM 的内置对象：
 > 	DOM 和 BOM 提供的内置对象有：`Document`、`HTMLElement`、`Event`、`NodeList` 等。
-> 
+>
 > 3. TypeScript 核心库的定义文件：
 > 	TypeScript 核心库的定义文件中定义了所有浏览器环境需要用到的类型，并且是预置在 TypeScript 中的。
 > 	注意，TypeScript 核心库的定义中不包含 Node.js 部分。
-> 
-> 
+>
+>
 > 4. 用 TypeScript 写 Nodejs
 > Node.js 不是内置对象的一部分，如果想用 TypeScript 写 Node.js，则需要引入第三方声明文件：
 > $ npm install @types/node --save-dev
@@ -2051,8 +2051,8 @@ const s = new Square()
 > ```bash
 > ## 注释指令
 > 注释指令指采用 JS 双斜杠注释的形式，向编译器发出的命令。
-> 
-> 
+>
+>
 > ```
 
 #### `// @ts-nocheck`
@@ -2060,7 +2060,7 @@ const s = new Square()
 >
 > ```ts
 > // @ts-nocheck
-> 
+>
 > const element = document.getElementById(123);
 > ```
 >
@@ -2073,7 +2073,7 @@ const s = new Square()
 > ```ts
 > // @ts-check
 > let isChecked = true;
-> 
+>
 > console.log(isChceked); // 报错
 > ```
 >
@@ -2085,9 +2085,9 @@ const s = new Square()
 >
 > ```ts
 > let x:number;
-> 
+>
 > x = 0;
-> 
+>
 > // @ts-ignore
 > x = false; // 不报错
 > ```
@@ -2104,7 +2104,7 @@ const s = new Square()
 >   assert(typeof xyz === "string");
 >   // do some stuff
 > }
-> 
+>
 > // @ts-expect-error
 > expect(() => {
 >   doStuff(123, 456);
@@ -2128,12 +2128,12 @@ const s = new Square()
 > ```bash
 > ## JSDoc
 > TypeScript 直接处理 JS 文件时，如果无法推断出类型，会使用 JS 脚本里面的 JSDoc 注释。
-> 
+>
 > 使用 JSDoc 时有两个基本要求。
 > 	1. JSDoc 注释必须以 `/**` 开始，其中星号 `*` 的数量必须为两个。若使用其他形式的多行注释，则 JSDoc 会忽略该条注释。
 > 	2. JSDoc 注释必须与它描述的代码处于相邻的位置，并且注释在上，代码在下。
-> 
-> 
+>
+>
 > ### JSDoc有三种主要的注释类型：
 >     1. `@param`：用于描述函数参数的类型和名称，以及任何相关的约束条件。
 >     2. `@returns`：用于描述函数返回值的类型和名称，以及任何相关的约束条件。
@@ -2175,7 +2175,7 @@ const s = new Square()
 > /**
 >  * @typedef {(number | string)} NumberLike
 >  */
-> 
+>
 > /**
 >  * @type {NumberLike}
 >  */
@@ -2187,16 +2187,16 @@ const s = new Square()
 > ```js
 > /**@type {true | false} */
 > let a;
-> 
+>
 > /** @type {number[]} */
 > let b;
-> 
+>
 > /** @type {Array<number>} */
 > let c;
-> 
+>
 > /** @type {{ readonly x: number, y?: string }} */
 > let d;
-> 
+>
 > /** @type {(s: string, b: boolean) => number} */
 > let e;
 > ```
@@ -2243,7 +2243,7 @@ const s = new Square()
 > function foo() {
 >   return true;
 > }
-> 
+>
 > /**
 >  * @returns {number}
 >  */
@@ -2275,7 +2275,7 @@ const s = new Square()
 >    * @readonly
 >    */
 >   x = 0;
-> 
+>
 >   /**
 >    *  @protected
 >    */
@@ -2290,12 +2290,12 @@ const s = new Square()
 > ```bash
 > ## 修饰器
 > TypeScript 从早期开始，就支持装饰器。但是，装饰器的语法后来发生了变化。ECMAScript 标准委员会最终通过的语法标准，与 TypeScript 早期使用的语法有很大差异。
-> 
+>
 > 目前，TypeScript 5.0 同时支持两种装饰器语法。标准语法可以直接使用，传统语法需要打开--experimentalDecorators编译参数。
-> 
+>
 > $ tsc --target ES5 --experimentalDecorators
-> 
-> 
+>
+>
 > 装饰器的执行顺序为：属性装饰器 - 方法装饰器（从后向前） - 类装饰器（从后向前）
 > ```
 >
@@ -2316,19 +2316,19 @@ const s = new Square()
 >             | "setter"
 >             | "field"
 >             | ("accessor" & string)
-> 
+>
 >         /** 字符串或者 Symbol 值，所装饰对象的名字，比如类名、属性名等。 */
 >         name: string | symbol
-> 
+>
 >         /** 用来添加类的初始化逻辑。以前，这些逻辑通常放在构造函数里面，对方法进行初始化，现在改成以函数形式传入addInitializer()方法。注意，addInitializer()没有返回值。 */
 >         addInitializer?(initializer: () => void): void
-> 
+>
 >         /** 表示所装饰的对象是否为类的静态成员 */
 >         static?: boolean
-> 
+>
 >         /** 表示所装饰的对象是否为类的私有成员 */
 >         private?: boolean
-> 
+>
 >         /** 一个对象，包含了某个值的 get 和 set 方法 */
 >         access: {
 >             get?(): unknown
@@ -2336,7 +2336,7 @@ const s = new Square()
 >         }
 >     }
 > ) => void | ReplacementValue
-> 
+>
 > ```
 
 ### 类修饰器
@@ -2344,13 +2344,13 @@ const s = new Square()
 > ```bash
 > ## 类修饰器
 > 类修饰器：在类声明前声明，紧靠着类声明。应用于类构造函数，用来监听、修改、替换类定义，传入一个参数，用来扩展类的属性、方法。
-> 
+>
 > 类装饰器接受两个参数：value（当前类本身）和context（上下文对象）。其中，context对象的kind属性固定为字符串class。
 > 类装饰器一般用来对类进行操作，可以不返回任何值。
 > 类装饰器可以返回一个函数，替代当前类的构造方法。
-> 
-> 
-> 
+>
+>
+>
 > ### 类修饰器的类型描述
 > type ClassDecorator = (
 >     /** 当前类本身 */
@@ -2374,16 +2374,16 @@ const s = new Square()
 >         console.log('跑得快')
 >    }
 > }
-> 
+>
 > @logClass
 > class MyClass {
 >    constructor () {}
 > }
-> 
+>
 > const myClass: any = new MyClass()
 > console.log(myClass.url)
 > myClass.run()
-> 
+>
 > /* 执行结果：
 > 	class { constructor() {} }
 > 	到家
@@ -2404,16 +2404,16 @@ const s = new Square()
 >         }
 >    }
 > }
-> 
+>
 > @logClass('到家')
 > class MyClass {
 >     constructor () {}
 > }
-> 
+>
 > const myClass: any = new MyClass()
 > myClass.run()
 > console.log(myClass.url);
-> 
+>
 > /* 执行结果：
 > 	class { constructor() {} }
 > 	到家
@@ -2429,22 +2429,22 @@ const s = new Square()
 > ```ts
 > function logClass(target: any) {
 >     console.log(target) // 调用装饰器的类
-> 
+>
 >     // 返回一个 target 的继承，进行一个扩展
 >     return class extends target {
 >         url: any = "到家"
-> 
+>
 >         constructor(...args: Array<any>) {
 >             super(...args)
 >         }
-> 
+>
 >         getData() {
 >             this.url = this.url + "跑的快"
 >             console.log(this.url)
 >         }
 >     }
 > }
-> 
+>
 > @logClass
 > class MyClass {
 >     url: string
@@ -2455,17 +2455,17 @@ const s = new Square()
 >         console.log(this.url)
 >     }
 > }
-> 
+>
 > const myClass = new MyClass()
 > console.log(myClass.url)
 > myClass.getData()
-> 
+>
 > /* 执行结果
 >     class {constructor() {this.url = "willy\u5230\u5BB6";} getData() {console.log(this.url);}}
 >     到家
 >     到家跑得快
 > */
-> 
+>
 > ```
 
 #### 类修饰器重载构造方法
@@ -2473,34 +2473,34 @@ const s = new Square()
 > ```ts
 > function countInstances(value: any, context: any) {
 >     let instanceCount = 0
-> 
+>
 >     const wrapper = function (...args: Array<any>) {
 >         instanceCount++
 >         const instance = new value(...args)
 >         instance.count = instanceCount
 >         return instance
 >     } as unknown as typeof MyClass
-> 
+>
 >     // 类重定向继承
 >     wrapper.prototype = value.prototype
-> 
+>
 >     return wrapper
 > }
-> 
+>
 > @countInstances
 > class MyClass {}
-> 
+>
 > /** test */
 > const inst1 = new MyClass()
 > console.log(inst1 instanceof MyClass) // true
 > console.log(inst1.count) // 1
-> 
+>
 > /**
 >  * @desc 说明
 >  * 上面示例中，类装饰器@countInstances返回一个函数，替换了类MyClass的构造方法。新的构造方法实现了实例的计数，每新建一个实例，计数器就会加一，并且对实例添加count属性，表示当前实例的编号。
 >     注意，上例为了确保新构造方法继承定义在MyClass的原型之上的成员，特别加入 `wrapper.prototype = value.prototype` 行，确保两者的原型对象是一致的。否则，新的构造函数wrapper的原型对象，与MyClass不同，通不过instanceof运算符。
 > */
-> 
+>
 > ```
 
 #### 自动执行
@@ -2516,24 +2516,24 @@ const s = new Square()
 >         })
 >     }
 > }
-> 
+>
 > @customElement("willys-element")
 > class MyComponent extends HTMLElement {
 >     constructor() {
 >         super()
 >     }
-> 
+>
 >     /** 当元素被插入到文档时，会自动调用该方法 */
 >     connectedCallback() {
 >         this.innerHTML = `<h1>Hi~ willysliang</h1>`
 >     }
 > }
-> 
+>
 > /**
 >  * @desc 说明
 >  * 类MyComponent定义完成后，会自动执行类装饰器@customElement()给出的初始化函数，该函数会将当前类注册为指定名称（本例为<willys-element>）的自定义 HTML 元素。
 >  */
-> 
+>
 > ```
 
 ### 属性修饰器
@@ -2549,8 +2549,8 @@ const s = new Square()
 >         console.log(attr)
 >         target[attr] = params
 >     }
-> } 
-> 
+> }
+>
 > class MyClass1 {
 >     @logProperty(' 到家')
 >     url: any | undefined
@@ -2575,28 +2575,28 @@ const s = new Square()
 >         console.log(target)
 >         console.log(methodName)
 >         console.log(desc)
-> 
+>
 >         target.newUrl = params
 >         target.run = () => {
 >             console.log('run')
 >         }
 >     }
-> } 
-> 
+> }
+>
 > class MyClass {
 >     url: any | undefined
 >     constructor() {
 >     }
-> 
+>
 >     @logMethod('willy.com')
 >     getData() {
 >     }
 > }
-> 
+>
 > let myClass: any = new MyClass()
 > console.log(myClass.newUrl)
-> 
-> /** 
+>
+> /**
 > 输出结果为：
 > 	{constructor: ƒ, getData: ƒ}
 >     getData
@@ -2614,31 +2614,31 @@ const s = new Square()
 >         console.log(methodName)
 >         console.log(desc)
 >         console.log(desc.value)
-> 
+>
 >         let curMethod = desc.value
 >         desc.value = function (...args: any[]) {
 >             args = args.map((val) => {
 >                 return String(val)
 >             })
-> 
+>
 >             curMethod.call(target, ...args)
 >         }
 >     }
-> } 
-> 
+> }
+>
 > class MyClass {
 >     constructor() {
 >     }
-> 
+>
 >     @logMethod('daojia.com')
 >     getData(...args: any) {
 >         console.log(args)
 >     }
 > }
-> 
+>
 > let myClass: any = new MyClass()
 > console.log(myClass.getData(1, 2))
-> 
+>
 > /**
 > 运行结果：
 >     {constructor: ƒ, getData: ƒ}
@@ -2659,29 +2659,29 @@ const s = new Square()
 >     - 2、参数方法的名字
 >    - 3、参数在函数参数列表中的索引
 > ```
-> 
+>
 > ```ts
 > function logParams(params: any) {
 >   return function (target: any, methodName: any, paramsIndex: any) {
 >     console.log(target)
 >     console.log(methodName)
 >     console.log(paramsIndex)
-> 
+>
 >     target[methodName](params)
 >   }
-> } 
-> 
+> }
+>
 > class MyClass {
 >   constructor() {
 >   }
-> 
+>
 >   getData(@logParams(' 到家') params: any) {
 >     debugger
 >     console.log(params)
 >   }
 >}
-> 
->/** 
+>
+>/**
 > 输出结果为：
 >     {constructor: ƒ, getData: ƒ}
 >     getData
@@ -2689,7 +2689,7 @@ const s = new Square()
 >      到家
 > */
 >```
-> 
+>
 
 ## 进阶
 
@@ -2722,10 +2722,10 @@ const s = new Square()
 > function handleEvent(ele: Element, event: EventNames) {
 >     // do something
 > }
-> 
+>
 > handleEvent(document.getElementById('hello'), 'scroll');  // 没问题
 > handleEvent(document.getElementById('world'), 'dblclick'); // 报错，event 不能为 'dblclick'
-> 
+>
 > // error TS2345: Argument of type '"dblclick"' is not assignable to parameter of type 'EventNames'.
 > ```
 
@@ -2746,7 +2746,7 @@ const s = new Square()
 > let tom: [string, number];
 > tom[0] = 'Tom';
 > tom[1] = 25;
-> 
+>
 > tom[0].slice(1);
 > tom[1].toFixed(2);
 > ```
@@ -2765,7 +2765,7 @@ const s = new Square()
 > tom = ['Tom', 25];
 > let tom: [string, number];
 > tom = ['Tom'];
-> 
+>
 > // Property '1' is missing in type '[string]' but required in type '[string, number]'.
 > ```
 >
@@ -2778,7 +2778,7 @@ const s = new Square()
 > tom = ['Tom', 25];
 > tom.push('male');
 > tom.push(true);
-> 
+>
 > // Argument of type 'true' is not assignable to parameter of type 'string | number'.
 > ```
 
@@ -2793,12 +2793,12 @@ const s = new Square()
 >
 > ```ts
 > enum Days {Sun, Mon, Tue, Wed, Thu, Fri, Sat};
-> 
+>
 > console.log(Days["Sun"] === 0); // true
 > console.log(Days["Mon"] === 1); // true
 > console.log(Days["Tue"] === 2); // true
 > console.log(Days["Sat"] === 6); // true
-> 
+>
 > console.log(Days[0] === "Sun"); // true
 > console.log(Days[1] === "Mon"); // true
 > console.log(Days[2] === "Tue"); // true
@@ -2828,12 +2828,12 @@ const s = new Square()
 >
 > ```ts
 > enum Days {Sun = 3, Mon = 1, Tue, Wed, Thu, Fri, Sat};
-> 
+>
 > console.log(Days["Sun"] === 3); // true
 > console.log(Days["Wed"] === 3); // true
 > console.log(Days[3] === "Sun"); // false
 > console.log(Days[3] === "Wed"); // true
-> 
+>
 > /* 编译结果：
 > var Days;
 > (function (Days) {
@@ -2872,7 +2872,7 @@ const s = new Square()
 >
 > ```ts
 > enum Days {Sun = 7, Mon = 1.5, Tue, Wed, Thu, Fri, Sat};
-> 
+>
 > console.log(Days["Sun"] === 7); // true
 > console.log(Days["Mon"] === 1.5); // true
 > console.log(Days["Tue"] === 2.5); // true
@@ -2895,7 +2895,7 @@ const s = new Square()
 >
 > ```ts
 > enum Color {Red = "red".length, Green, Blue};
-> 
+>
 > // index.ts(1,33): error TS1061: Enum member must have initializer.
 > // index.ts(1,40): error TS1061: Enum member must have initializer.
 > ```
@@ -2928,9 +2928,9 @@ const s = new Square()
 >   Left,
 >   Right
 > }
-> 
+>
 > let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Right];
-> 
+>
 > // 编译结果： var directions = [0 /* Up */, 1 /* Down */, 2 /* Left */, 3 /* Right */];
 > ```
 >
@@ -2938,7 +2938,7 @@ const s = new Square()
 >
 > ```ts
 > const enum Color {Red, Green, Blue = "blue".length};
-> 
+>
 > // index.ts(1,38): error TS2474: In 'const' enum declarations member initializer must be constant expression.
 > ```
 
@@ -2955,9 +2955,9 @@ const s = new Square()
 >     Left,
 >     Right
 > }
-> 
+>
 > let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Right];
-> 
+>
 > // 编译结果： var directions = [0 /* Up */, 1 /* Down */, 2 /* Left */, 3 /* Right */];
 > ```
 
@@ -2986,11 +2986,11 @@ const s = new Square()
 > ```ts
 > class Animal {
 >   name: string;
->   constructor(name: string){ 
->        this.name = name; 
+>   constructor(name: string){
+>        this.name = name;
 >     }
->   run() { 
->        return `${this.name} is running`; 
+>   run() {
+>        return `${this.name} is running`;
 >     }
 > }
 > const snake = new Animal('willy');
@@ -3004,17 +3004,17 @@ const s = new Square()
 > ```ts
 > class Animal {
 >   name: string;
->   constructor(name: string){ 
->        this.name = name; 
+>   constructor(name: string){
+>        this.name = name;
 >     }
 >   run() {
->        return `${this.name} is running`; 
+>        return `${this.name} is running`;
 >     }
 > }
-> 
+>
 > class Dog extends Animal {
 >   bark() {
->        return `${this.name} is barking`; 
+>        return `${this.name} is barking`;
 >     }
 > }
 > const xiaohua = new Dog('xiaohua');
@@ -3032,10 +3032,10 @@ const s = new Square()
 >     constructor(name: string){ this.name = name; }
 >     run() { return `${this.name} is running`; }
 > }
-> 
+>
 > class Cat extends Animal {
 >     gender: string;
->     constructor(name, gender: string){ 
+>     constructor(name, gender: string){
 >        super(name);
 >        this.gender = gender;
 >     }
@@ -3062,14 +3062,14 @@ const s = new Square()
 >     this.sex = sex;
 >   }
 > }
-> 
+>
 > class Dog extends Animal {
 >   constructor(name: string, sex: string = '公') {
 >     super(name, sex);
 >     console.log(this.name, this.sex); // cilly 公
 >   }
 > }
-> 
+>
 > let a = new Animal('Jack');
 > console.log(a.name); // Jack
 > a.name = 'Tom';
@@ -3106,11 +3106,11 @@ const s = new Square()
 >        this.name = name;
 >      }
 > }
-> 
+>
 > let a = new Animal('Jack');
 > console.log(a.name); // Jack
 > a.name = 'Tom';
-> 
+>
 > // index.ts(10,3): TS2540: Cannot assign to 'name' because it is a read-only property.
 > ```
 >
@@ -3153,9 +3153,9 @@ const s = new Square()
 >   }
 >   public abstract sayHi();
 > }
-> 
+>
 > let a = new Animal('Jack');
-> 
+>
 > // index.ts(9,11): error TS2511: Cannot create an instance of the abstract class 'Animal'.
 > ```
 >
@@ -3171,15 +3171,15 @@ const s = new Square()
 >   }
 >   public abstract sayHi();
 > }
-> 
+>
 > class Cat extends Animal {
 >   public eat() {
 >     console.log(`${this.name} is eating.`);
 >   }
 > }
-> 
+>
 > let cat = new Cat('Tom');
-> 
+>
 > // index.ts(9,7): error TS2515: Non-abstract class 'Cat' does not implement inherited abstract member 'sayHi' from class 'Animal'.
 > ```
 >
@@ -3195,13 +3195,13 @@ const s = new Square()
 >   }
 >   public abstract sayHi();
 > }
-> 
+>
 > class Cat extends Animal {
 >   public sayHi() {
 >     console.log(`Meow, My name is ${this.name}`);
 >   }
 > }
-> 
+>
 > let cat = new Cat('Tom');
 > ```
 >
@@ -3219,14 +3219,14 @@ const s = new Square()
 >       }
 >       d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
 >     };
-> 
+>
 > var Animal = (function () {
 >   function Animal(name) {
 >     this.name = name;
 >   }
 >   return Animal;
 > })();
-> 
+>
 > var Cat = (function (_super) {
 >   __extends(Cat, _super);
 >   function Cat() {
@@ -3237,7 +3237,7 @@ const s = new Square()
 >   };
 >   return Cat;
 > })(Animal);
-> 
+>
 > var cat = new Cat('Tom');
 > ```
 
@@ -3250,25 +3250,25 @@ const s = new Square()
 > ```ts
 > /* class Car { switchRadio(){} }
 > class CellPhone { switchRadio(){} } */
-> interface Radio { 
->      switchRadio(trigger: boolean): void 
+> interface Radio {
+>      switchRadio(trigger: boolean): void
 > }
-> class Car implements Radio { 
->      switchRadio(){} 
+> class Car implements Radio {
+>      switchRadio(){}
 > }
-> class CellPhone implements Radio { 
->      switchRadio(){} 
+> class CellPhone implements Radio {
+>      switchRadio(){}
 > }
 > ```
 >
 > #### ②. 接口之间也有继承关系
 >
 > ```ts
-> interface Radio { 
->     switchRadio(trigger: boolean): void 
+> interface Radio {
+>     switchRadio(trigger: boolean): void
 > }
-> interface RadioWithBattery extends Radio { 
->     checkBatteryStatus() 
+> interface RadioWithBattery extends Radio {
+>     checkBatteryStatus()
 > }
 > class Car implements Radio{ switchRadio(){} }
 > class CellPhone implements RadioWithBattery{
@@ -3286,16 +3286,16 @@ const s = new Square()
 > interface Alarm {
 >      alert(): void;
 > }
-> 
+>
 > class Door {
 > }
-> 
+>
 > class SecurityDoor extends Door implements Alarm {
 >      alert() {
 >        console.log('SecurityDoor alert');
 >      }
 > }
-> 
+>
 > class Car implements Alarm {
 >      alert() {
 >        console.log('Car alert');
@@ -3309,12 +3309,12 @@ const s = new Square()
 > interface Alarm {
 >      alert(): void;
 > }
-> 
+>
 > interface Light {
 >      lightOn(): void;
 >      lightOff(): void;
 > }
-> 
+>
 > class Car implements Alarm, Light {
 >      alert() {
 >        console.log('Car alert');
@@ -3334,7 +3334,7 @@ const s = new Square()
 > interface Alarm {
 >      alert(): void;
 > }
-> 
+>
 > interface LightableAlarm extends Alarm {
 >      lightOn(): void;
 >      lightOff(): void;
@@ -3352,11 +3352,11 @@ const s = new Square()
 >        this.y = y;
 >      }
 > }
-> 
+>
 > interface Point3d extends Point {
 >      z: number;
 > }
-> 
+>
 > let point3d: Point3d = {x: 1, y: 2, z: 3};
 > ```
 >
@@ -3371,12 +3371,12 @@ const s = new Square()
 >        this.y = y;
 >      }
 >    }
->    
+>
 >    const p = new Point(1, 2);
 >    ```
-> 
+>
 > 也可以将 `Point` 当做一个类型来用（使用 `: Point` 表示参数的类型）：
-> 
+>
 > ```ts
 >class Point {
 >     x: number;
@@ -3386,16 +3386,16 @@ const s = new Square()
 >        this.y = y;
 >      }
 >    }
->    
+>
 >    function printPoint(p: Point) {
 >      console.log(p.x, p.y);
 > }
-> 
+>
 > printPoint(new Point(1, 2));
 >    ```
-> 
+>
 > 这个例子实际上可以等价于：
-> 
+>
 > ```ts
 >class Point {
 >     x: number;
@@ -3405,21 +3405,21 @@ const s = new Square()
 >        this.y = y;
 >      }
 >    }
->    
+>
 >    interface PointInstanceType {
 >      x: number;
 >     y: number;
 > }
-> 
+>
 >    function printPoint(p: PointInstanceType) {
 >      console.log(p.x, p.y);
 > }
-> 
+>
 > printPoint(new Point(1, 2));
 >    ```
-> 
+>
 > 上例中我们新声明的 `PointInstanceType` 类型，与声明 `class Point` 时创建的 `Point` 类型是等价的。
-> 
+>
 > 所以回到 `Point3d` 的例子中，我们就能很容易的理解为什么 TypeScript 会支持接口继承类了：
 >
 > ```ts
@@ -3431,22 +3431,22 @@ const s = new Square()
 >        this.y = y;
 >      }
 >    }
->    
+>
 >    interface PointInstanceType {
 >      x: number;
 >     y: number;
 > }
-> 
+>
 >    // 等价于 interface Point3d extends PointInstanceType
 >    interface Point3d extends Point {
 >     z: number;
 > }
-> 
+>
 > let point3d: Point3d = {x: 1, y: 2, z: 3};
 >    ```
-> 
+>
 > 当我们声明 `interface Point3d extends Point` 时，`Point3d` 继承的实际上是类 `Point` 的实例的类型。
-> 
+>
 > 换句话说，可以理解为定义了一个接口 `Point3d` 继承另一个接口 `PointInstanceType`。
 >
 > 所以「接口继承类」和「接口继承接口」没有什么本质的区别。
@@ -3477,17 +3477,17 @@ const s = new Square()
 >        console.log(this.x, this.y);
 >      }
 >    }
->    
+>
 >    interface PointInstanceType {
 >      x: number;
 >     y: number;
 >     printPoint(): void;
 > }
->    
+>
 >    let p1: Point;
 >    let p2: PointInstanceType;
 > ```
-> 
+>
 > 上例中最后的类型 `Point` 和类型 `PointInstanceType` 是等价的。
 > 同样的，在接口继承类的时候，也只会继承它的实例属性和实例方法。
 
@@ -3497,7 +3497,7 @@ const s = new Square()
 > ### extends
 > 1. `子类 extends 父类`：继承类只能单继承，即如果父亲属于类，那么父亲只能有一个
 > 2. `类/接口 extends 接口1, 接口2`：继承接口可以是多继承，即如果父亲是接口，那么可以有多个父亲
-> 
+>
 > 注意：
 > 1. 如果子类继承父类的前提是：父类class 不是 抽象类。
 > 2. 如果父类是抽象类，那么子类需要实现父类中的所有抽象方法，否则子类也将变成抽象类
@@ -3510,11 +3510,11 @@ const s = new Square()
 > 4. 子类不能继承父类的 private 属性和方法。
 > 5. 重写和重载：子类继承父类的方法时可以对父类的方法进行抽血，这时需要注意重写规则
 > 		(参数个数、参数类型、返回类型和父类保持一致，同时子类重写方法的修饰符范围不能小于父类的修饰符)
-> 
-> 
+>
+>
 > ### implements
 > `class类 implements interface接口1, interface接口2`：一个类可实现多个接口。
-> 
+>
 > 注意：
 > 1. 实现一个接口需要实现接口中的所有方法。
 > 2. 接口不能实现接口，接口只能继承接口。因为接口中的方法都是没有方法体的，如果接口实现接口，那么实现的过程就必定要定义方法体，对方法进行重写，所以两者是矛盾的。
@@ -3536,11 +3536,11 @@ implements- 履行契约，契约可以是interface和abstract定义
 ```ts
 abstract class Vehicle {
   // 抽象属性，必须由子类实现
-  abstract brand: string; 
+  abstract brand: string;
   // 抽象方法，只有声明，没有实现
-  abstract startEngine(): void; 
+  abstract startEngine(): void;
   // 具体方法，有实现，子类可直接继承或覆盖
-  honk(): void { 
+  honk(): void {
     console.log("Beep beep!");
   }
 }
@@ -3652,7 +3652,7 @@ class ConsoleService implements HasLogger {
 > }
 > let kp1: KeyPair<number, string> = {key:1, value:'str'};
 > let kp2: KeyPair<string, number> = {key:'test', value:123};
-> 
+>
 > //Array是TS自带的interface
 > const arr3: Array<number> = [1,2,3];
 > ```
@@ -3668,7 +3668,7 @@ class ConsoleService implements HasLogger {
 >      }
 >      return result;
 > }
-> 
+>
 > createArray(3, 'x'); // ['x', 'x', 'x']
 > ```
 >
@@ -3686,7 +3686,7 @@ class ConsoleService implements HasLogger {
 >      }
 >      return result;
 > }
-> 
+>
 > createArray<string>(3, 'x'); // ['x', 'x', 'x']
 > ```
 >
@@ -3702,7 +3702,7 @@ class ConsoleService implements HasLogger {
 >      }
 >      return result;
 > }
-> 
+>
 > createArray(3, 'x'); // ['x', 'x', 'x']
 > ```
 
@@ -3714,7 +3714,7 @@ class ConsoleService implements HasLogger {
 > function swap<T, U>(tuple: [T, U]): [U, T] {
 >      return [tuple[1], tuple[0]];
 > }
-> 
+>
 > swap([7, 'seven']); // ['seven', 7]
 > ```
 >
@@ -3725,7 +3725,7 @@ class ConsoleService implements HasLogger {
 > 在函数内部使用泛型变量时，由于其参数的类型未知，所以不能随意的操作它的属性或方法。
 >
 > 但可以向泛型中添加约束以限制允许的内容，这些约束使得在使用泛型类型时可以依赖更具体的类型（与默认值结合）
-> 
+>
 >    ```ts
 >    function foo<S extends string | number, T extends string | number>(
 >   	v1: S,
@@ -3739,9 +3739,9 @@ class ConsoleService implements HasLogger {
 >foo('a', 1) // a 1
 > foo('a', true) // Error
 > ```
->    
+>
 > 多个类型参数之间也可以互相约束：
-> 
+>
 > ```ts
 >    function copyFields<T extends U, U>(target: T, source: U): T {
 >      for (let id in source) {
@@ -3754,7 +3754,7 @@ class ConsoleService implements HasLogger {
 >
 > copyFields(x, { b: 10, d: 20 });
 > ```
->   
+>
 
 #### 泛型接口
 
@@ -3764,7 +3764,7 @@ class ConsoleService implements HasLogger {
 > interface SearchFunc {
 >      (source: string, subString: string): boolean;
 > }
-> 
+>
 > let mySearch: SearchFunc;
 > mySearch = function(source: string, subString: string) {
 >      return source.search(subString) !== -1;
@@ -3783,10 +3783,10 @@ class ConsoleService implements HasLogger {
 >      }
 >      return result;
 >    }
-> 
+>
 > createArray(3, 'x'); // ['x', 'x', 'x']
 >```
-> 
+>
 
 #### 泛型类
 
@@ -3795,22 +3795,22 @@ class ConsoleService implements HasLogger {
 > ```ts
 > class NamedValue<T> {
 >      private _value: T | undefined
-> 
+>
 >      constructor(private name: string) {}
-> 
+>
 >      public setValue(value: T) {
 >        this._value = value
 >      }
-> 
+>
 >      public getValue(): T | undefined {
 >        return this._value
 >      }
-> 
+>
 >      public toString(): string {
 >        return `${this.name}: ${this._value}`
 >      }
 > }
-> 
+>
 > let value = new NamedValue<number>('myNumber')
 > value.setValue(10)
 > console.log(value.toString()) // myNumber: 10
@@ -3836,7 +3836,7 @@ class ConsoleService implements HasLogger {
 >
 > ```ts
 > type WrapperType<T> = { value: T }
-> 
+>
 > CONST WrapperValue: WrapperType<number> = { value: 10 }
 > ```
 
@@ -3901,7 +3901,7 @@ class ConsoleService implements HasLogger {
 >      price: string;  // 类型不一致，会报错
 >      weight: number;
 > }
-> 
+>
 > // index.ts(5,3): error TS2403: Subsequent variable declarations must have the same type.  Variable 'price' must be of type 'number', but here has type 'string'.
 > ```
 >
@@ -3944,18 +3944,18 @@ class ConsoleService implements HasLogger {
 > ### 对象属性只读
 >
 > ```ts
-> const reqTranlate = { 
->     url: 'https://example.com', 
+> const reqTranlate = {
+>     url: 'https://example.com',
 >     method: 'GET',
 > } as const
-> 
-> 
-> // 相当于把这个对象转换为 
-> type reqTranlate = { 
+>
+>
+> // 相当于把这个对象转换为
+> type reqTranlate = {
 >     url: 'https://example.com',
->     method: 'GET', 
+>     method: 'GET',
 > }
-> 
+>
 > reqTranlate.name = willy // TypeError 对象限制只读，无法进行修改
 > ```
 >
@@ -3982,8 +3982,8 @@ class ConsoleService implements HasLogger {
 > ```ts
 > // 将会转换类型为： const list: readonly ['a', 'b', 'c']
 > const list = ['a', 'b', 'c'] as const
-> 
-> type NeededUnionType = type list[number] 
+>
+> type NeededUnionType = type list[number]
 > // 等同：type NeededUnionType = 'a' | 'b' | 'c'
 > ```
 >
@@ -3994,7 +3994,7 @@ class ConsoleService implements HasLogger {
 > ```ts
 >type Switch = 'On' | 'Off'
 > ```
-> 
+>
 > `const`断言允许我们将变量值标记为文字类型。
 >
 > 如定义一个变量`onSwitch`并赋值为`On`，TypeScript 通常会将变量类型推断为字符串。但是如果使用`const`断言，它将被推断为`On`的文字类型，并且不能接受除`On`之外的任何值。
@@ -4002,30 +4002,30 @@ class ConsoleService implements HasLogger {
 > ```ts
 >let onSwitch1 = 'On' // let OnSwitch1: string
 > onSwitch1 = 'Off' // success
-> 
+>
 > let onSwitch2 = 'On' as const // let onSwitch2: 'On'
 > onSwitch2 = 'off' // TypeError
 > ```
-> 
+>
 > 注意：`const`表达式只能应用于简单表达式，若想通过三元运算符这样计算出的结果使用`const`断言，则需要对三元运算符每个输出值应用`const`断言
 >
 > ```ts
 >function switchValue (input: boolean) {
 >   // let onSwitch = (input ? 'on' : 'off') as const // 错误写法
 >   let onSwitch = input ? ('on' as const) : ('off' as const) // 正确写法
->   
+>
 >     // onSwitch 变量类型将被推断为一个文本联合类型 on | off
 >     return onSwitch
 >   }
 >   ```
-> 
+>
 
 ### 方括号运算符`[]`
 
 > ```bash
 > ## 方括号运算符 `[]`
 > 方括号运算符 `[]` 用于取出对象的键值类型，比如 T[K] 会返回对象 T 的属性 K 的类型。
-> 
+>
 > - 方括号的参数如果是联合类型，那么返回的也是联合类型。
 > - 如果访问不存在的属性，会报错。
 > - 注意，方括号里面不能有值的运算。
@@ -4037,23 +4037,23 @@ class ConsoleService implements HasLogger {
 >   name: string
 >   alive: boolean
 > }
-> 
+>
 > // Age 的类型是 number
 > type Age = Person["age"]
-> 
+>
 > // number|string
 > type T = Person["age" | "name"]
-> 
+>
 > // number|string|boolean
 > type A = Person[keyof Person]
-> 
+>
 > type Obj = {
 >   [key: string]: number
 > }
-> 
+>
 > // number
 > type Ts = Obj[string]
-> 
+>
 > ```
 >
 
@@ -4066,7 +4066,7 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## keyof 提取键类型
 > keyof 作用：用于遍历某种类型的属性（可以操作接口、类以及基本数据类型）
-> 
+>
 > 注意： `keyof any` 等价于 `string | number | symbol`
 > ```
 >
@@ -4078,7 +4078,7 @@ class ConsoleService implements HasLogger {
 > }
 > const getKey = prop({name: 'willy'}, 'name') // willy
 > ```
-> 
+>
 > ### keyof 与对象的数值属性
 >
 > 在使用对象的数值属性时，也可以使用 `keyof` 关键字。
@@ -4091,20 +4091,20 @@ class ConsoleService implements HasLogger {
 >   EUR = 2,
 >   USD = 3,
 > }
-> 
+>
 > const CurrencyName = {
 >   [Currency.CNY]: "人民币",
 >   [Currency.EUR]: "欧元",
 >   [Currency.USD]: "美元"
 > };
-> 
+>
 > function getCurrencyName<T, K extends keyof T>(key: K, map: T): T[K] {
 >   return map[key];
 > }
-> 
+>
 > console.log(`name = ${getCurrencyName(Currency.CNY, CurrencyName)}`);
 > ```
-> 
+>
 > ### keyof与数组属性(提取索引类型)
 >
 > `keyof` 还可以与索引签名一起使用，以提取索引类型
@@ -4115,11 +4115,11 @@ class ConsoleService implements HasLogger {
 >interface StringIndexArray {
 >   [index: string]: string;
 > }
-> 
+>
 > interface NumberIndexArray {
 >   [index: number]: string;
 > }
-> 
+>
 > type K1 = keyof StringIndexArray // type K1 = string | number
 > type K2 = keyof NumberIndexArray // type K2 = number
 > ```
@@ -4137,7 +4137,7 @@ class ConsoleService implements HasLogger {
 > const biology: Biology = {
 >   name: '生物',
 > }
-> 
+>
 > type animal = {
 >   name: string
 >   age: number
@@ -4158,11 +4158,11 @@ class ConsoleService implements HasLogger {
 >   red: 'red',
 >   blue: 'blue',
 >   green: 'green',
-> } as const 
-> 
+> } as const
+>
 > // type Colors = "red" | "blue" | "green"
-> type Colors = keyof typeof Color 
-> 
+> type Colors = keyof typeof Color
+>
 > let color: Colors
 > color = 'red'	// true
 > color = 'green' // true
@@ -4174,20 +4174,20 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## 类型映射 in keyof
 > 映射（mapping）指的是，将一种类型按照映射规则，转换成另一种类型，通常用于对象类型。
-> 
+>
 > 在语法上，[prop in keyof A]是一个属性名表达式，表示这里的属性名需要计算得到。具体的计算规则如下：
 >     - prop：属性名变量，名字可以随便起。
 >     - in：运算符，用来取出右侧的联合类型的每一个成员。
 >     - keyof A：返回类型A的每一个属性名，组成一个联合类型。
 >  并且在转换成另一种类型的时候，可以设定属性为 readonly 或 可选。
->  
->  
+>
+>
 >  ### 映射修饰符
 >  如果要删改可选和只读这两个特性，并不是很方便。为了解决这个问题，TypeScript 引入了两个映射修饰符，用来在映射时添加或移除某个属性的?修饰符和readonly修饰符。
 > 	- `+` 修饰符：写成`+?`或`+readonly`，为映射属性添加?修饰符或readonly修饰符。
 > 	– `-` 修饰符：写成`-?`或`-readonly`，为映射属性移除?修饰符或readonly修饰符。
 > 	- 注意，`+?` 或 `-?` 要写在属性名的后面。
-> 	
+>
 > TypeScript 原生的工具类型`Required<T>`专门移除可选属性，就是使用-?修饰符实现的。
 > 注意，`–?`修饰符移除了可选属性以后，该属性就不能等于undefined了，实际变成必选属性了。但是，这个修饰符不会移除null类型。
 > 另外，`+?`修饰符可以简写成`?`，`+readonly`修饰符可以简写成`readonly`。
@@ -4198,17 +4198,17 @@ class ConsoleService implements HasLogger {
 >   readonly foo: number
 >   bar: string
 > }
-> 
+>
 > /** 循环取出属性名：获取属性值 */
 > type A1 = {
 >   [prop in keyof A]: A[prop]
 > }
-> 
+>
 > /** 将所有属性变为可选 */
 > type A2 = {
 >   [prop in keyof A]?: A[prop]
 > }
-> 
+>
 > /** 添加可选属性 */
 > type Optional<Type> = {
 >   [Prop in keyof Type]+?: Type[Prop]
@@ -4217,7 +4217,7 @@ class ConsoleService implements HasLogger {
 > type Concrete<Type> = {
 >   [Prop in keyof Type]-?: Type[Prop]
 > }
-> 
+>
 > /** 添加readonly */
 > type CreateImmutable<Type> = {
 >   +readonly [Prop in keyof Type]: Type[Prop]
@@ -4234,7 +4234,7 @@ class ConsoleService implements HasLogger {
 > ### 键名重映射
 > TypeScript 4.1 引入键名重映射（key remapping），允许改变键名。
 > 键名重映射的语法是在键名映射的后面加上 `as + 新类型` 子句。"新类型" 通常是一个模板字符串，里面可以对原始键名进行各种操作。
-> 
+>
 > ```
 >
 > ```ts
@@ -4242,17 +4242,17 @@ class ConsoleService implements HasLogger {
 >     foo: number
 >     bar: number
 > }
-> 
+>
 > type B = {
 >     [Prop in keyof A as `${Prop}ID`]: A[Prop]
 > }
-> 
+>
 > interface Person {
 >     name: string
 >     age: number
 >     location: string
 > }
-> 
+>
 > /**
 >  * Capitalize<T>：用来将 T 的首字母变成大写
 >  * string & P：一个交叉类型，其中的P是 keyof 运算符返回的键名联合类型string|number|symbol，
@@ -4261,16 +4261,16 @@ class ConsoleService implements HasLogger {
 > type Getters<T> = {
 >     [P in keyof T as `get${Capitalize<string & P>}`]: () => T[P]
 > }
-> 
+>
 > type LazyPerson = Getters<Person>
-> 
+>
 > // 等同于
 > type LazyPersons = {
 >     getName: () => string
 >     getAge: () => number
 >     getLocation: () => string
 > }
-> 
+>
 > ```
 
 #### 联合类型的映射
@@ -4278,7 +4278,7 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ### 联合类型映射
 > 由于键名重映射可以修改键名类型，所以原始键名的类型不必是string|number|symbol，任意的联合类型都可以用来进行键名重映射。
-> 
+>
 > ```
 >
 > ```ts
@@ -4291,18 +4291,18 @@ class ConsoleService implements HasLogger {
 >      kind: "circle"
 >      raduis: number
 > }
-> 
+>
 > type MyEvents<Events extends { kind: string }> = {
 >      [E in Events as E["kind"]]: (event: E) => void
 > }
 > type Config = MyEvents<S | C>
-> 
+>
 > // 等同于
 > type Configs = {
 >      square: (event: S) => void
 >      circle: (event: C) => void
 > }
-> 
+>
 > ```
 
 ### 条件类型约束 extends
@@ -4310,29 +4310,29 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## extends...?: 条件运算符
 > 条件运算符 `extends...?:` 可以根据当前类型是否符合某种条件，返回不同的类型。
-> 
-> 
+>
+>
 > ### 条件类型约束
 > 泛型约束的例子
 > 	type MessageOf<T extends { message: unknown }> = T['message']
 > 	在此示例中，使用 message:unkonwn 约束泛型 T。
-> 	
+>
 > 	如果我们想要 MessageOf 支持任何类型，我们可以将约束和条件一起使用：
 > 		type MessageOf<T> = T extends { message: unknown } ? T['message'] : never
-> 	
+>
 > 	如果条件成立，在 true 分支内，TS 知道 T 将具有一个 message 属性，否则将会返回 never 类型。
-> 
-> 
-> 
+>
+>
+>
 > ### 分布条件类型
 > 当条件类型给定联合类型时，它们将会变为分布式。
 > 	type ToArray<Type> = Type extends any ? Type[] : never
-> 
+>
 > 如果我们将联合类型传入 ToArray，则条件类型将应用于该联合的每个成员。
 > 	type ToArray<Type> = Type extends any ? Type[] : never
 > 	type StrOrNumArr = ToArray<string | number>
 > 	// 等同于：type StrOrNumArr = string[] | number[]
-> 
+>
 > 为避免这种分配性的行为。可以使用方括号将 extends 关键字的每一侧括起来
 > 	type ToArrayNonDist<Type> = [Type] extends [any] ? Type[] : never
 > 	type StrOrNumArr = ToArrayNonDist<string | number>
@@ -4355,8 +4355,8 @@ class ConsoleService implements HasLogger {
 >   if ("a" in x) return true
 >   return false
 > }
-> 
-> 
+>
+>
 > /** 在类的内部，描述类的方法的返回值 */
 > class Teacher {
 >   isStudent(): this is Student {
@@ -4378,52 +4378,52 @@ class ConsoleService implements HasLogger {
 > infer 语法的限制如下：
 >     1. infer 只能在条件类型的 extends 子句中使用
 >     2. infer 得到的类型只能在 true 语句中使用，即 X 中使用
-> 
-> 
-> 
+>
+>
+>
 > ### 1. 推断数组(或元组)的类型
 > 通过(infer U)来获取数组对应的类型。
 >     type InferArray<T> = T extends (infer U)[] ? U : never
 >     type I0 = InferArray<[number, string]>; // string | number
 >     type I1 = InferArray<string[]>; // string
 >     type I2 = InferArray<number[]>; // number
-> 
-> 
-> 
+>
+>
+>
 > ### 2. 推断数组(或者元组)第一个元素的类型
 > `[infer P, ... infer _]` 中 `infer P` 获取的是第一个元素的类型，而 `...infer _` 获取的是数组其他剩余元素的数组类型。
 >     type InferFirst<T extends unknown[]> = T extends [infer P, ...infer _] ? P : never
 >     type I3 = InferFirst<[3, 2, 1]>; // 3
-> 
-> 
-> 
+>
+>
+>
 > ### 3. 推断数组(或者元组)最后一个元素的类型
 > `...infer _` 获取的是最后一个元素之前的所有元素类型，`infer Last` 获取的是最后一个元素的类型。
 >     type InferLast<T extends unknown[]> = T extends [... infer _, infer Last] ? Last : never
 >     type I4 = InferLast<[3, 2, 1]>; // 1
-> 
-> 
-> 
+>
+>
+>
 > ### 4. 推断函数类型的参数
 > `...args` 代表的是函数参数组成的元组, `infer R` 代表的就是推断出来的这个函数参数组成的元组的类型。
 > type InferParameters<T extends Function> = T extends (...args: infer R) => any ? R : never
 > type I5 = InferParameters<((arg1: string, arg2: number) => void)> // [string, number]
-> 
-> 
-> 
+>
+>
+>
 > ### 5. 推断函数类型的返回值
 > 和前面的推断函数类型的参数类似，`=>` 后面的 `infer R` 代表的就是推断出来的函数的返回值类型。
 > type InferReturnType<T extends Function> = T extends (...args: any) => infer R ? R : never
 > type I6 = InferReturnType<() => string>; // string
-> 
-> 
-> 
+>
+>
+>
 > ### 6. 推断Promise成功值的类型
 > type InferPromise<T> = T extends Promise<infer U> ? U : never
 > type I7 = InferPromise<Promise<string>>; // string
-> 
-> 
-> 
+>
+>
+>
 > ### 7. 推断字符串字面量类型的第一个字符对应的字面量类型
 > type InferString<T extends string> = T extends `${infer First}${infer _}` ? First : []
 > type I8 = InferString<"Johnny">; // J
@@ -4431,45 +4431,45 @@ class ConsoleService implements HasLogger {
 >
 > ```ts
 > type Shift<T> = T extends [infer L, ...infer R] ? [...R] : []
-> 
+>
 > type Pop<T extends any[]> = T extends [...infer L, infer R] ? [...L] : []
-> 
+>
 > type Reverse<T extends unknown[], U extends unknown[] = []> = [] extends T
 >     ? U
 >     : T extends [infer L, ...infer R]
 >     ? Reverse<R, [L, ...U]>
 >     : U
-> 
+>
 > type FlipArguments<T extends Function> = T extends (...arg: infer R) => infer S
 >     ? (...arg: Reverse<[...R]>) => S
 >     : T
-> 
+>
 > /** 起始是否包含某字符 */
 > type StartsWith<T extends string, U extends string> = T extends `${U}${infer R}`
 >     ? true
 >     : false
-> 
+>
 > /** 去除左边空格 */
 > type TrimLeft<S extends string> = S extends `${infer L}${infer R}`
 >     ? L extends " " | "\n" | "\t"
 >         ? TrimLeft<R>
 >         : S
 >     : ""
-> 
+>
 > /** 去除两边空格 */
 > type Trim<S extends string> = S extends `${" " | "\t" | "\n"}${infer R}`
 >     ? Trim<R>
 >     : S extends `${infer L}${" " | "\t" | "\n"}`
 >     ? Trim<L>
 >     : S
-> 
+>
 > /** 字符串并集 */
 > type StringToUnion<T extends string, U = never> = T extends ""
 >     ? U
 >     : T extends `${infer L}${infer R}`
 >     ? StringToUnion<R, U | L>
 >     : U
-> 
+>
 > ```
 
 ## 内置条件类型 — Utility Types
@@ -4487,16 +4487,16 @@ class ConsoleService implements HasLogger {
 > /** Exclude 与 Extract */
 > type T00 = Exclude<"a" | "b" | "c" | "d", "a" | "c" | "f">;  // "b" | "d"
 > type T01 = Extract<"a" | "b" | "c" | "d", "a" | "c" | "f">;  // "a" | "c"
-> 
+>
 > type T02 = Exclude<string | number | (() => void), Function>;  // string | number
 > type T03 = Extract<string | number | (() => void), Function>;  // () => void
-> 
-> 
+>
+>
 > /** NonNullable */
 > type T04 = NonNullable<string | number | undefined>;  // string | number
 > type T05 = NonNullable<(() => string) | string[] | null | undefined>;  // (() => string) | string[]
-> 
-> 
+>
+>
 > /** ReturnType */
 > type T10 = ReturnType<() => string>;  // string
 > type T11 = ReturnType<(s: string) => void>;  // void
@@ -4508,8 +4508,8 @@ class ConsoleService implements HasLogger {
 > type T16 = ReturnType<never>;  // any
 > type T17 = ReturnType<string>;  // Error
 > type T18 = ReturnType<Function>;  // Error
-> 
->                       
+>
+>
 > /** InstanceType */
 > class C { x = 0; y = 0; }
 > type T20 = InstanceType<typeof C>;  // C
@@ -4529,7 +4529,7 @@ class ConsoleService implements HasLogger {
 >   x: number
 >   y: number
 > }
-> 
+>
 > let pointPart: Partial<Point> = {} // Partial 允许 x 和 y 是可选的
 > pointPart.x = 10
 > ```
@@ -4543,9 +4543,9 @@ class ConsoleService implements HasLogger {
 >     name?: string
 >     age?: number
 > }
-> 
+>
 > const user: User = { name: 'O.O' }
-> 
+>
 > const user2: Required<User> = { name: 'O.O' }
 > // 类型 "{ name: string; }" 中缺少属性 "age"，但类型 "Required<User>" 中需要该属性。ts(2741)
 > ```
@@ -4569,7 +4569,7 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## Exclude<UnionType, ExcludeMembers>
 > `Exclude` 从联合中删除某些类型，然后组成一个新的类型返回。
-> 
+>
 > ```
 >
 > ```ts
@@ -4580,11 +4580,11 @@ class ConsoleService implements HasLogger {
 > type T5 = Exclude<(() => void) | null, Function> // null
 > type T6 = Exclude<200 | 400, 200 | 201> // 400
 > type T7 = Exclude<number, boolean> // number
-> 
->                   
+>
+>
 > /** Exclude<UnionType, ExcludedMembers>的实现 */
 > type Exclude<T, U> = T extends U ? never : T
-> 
+>
 > ```
 
 ### 提取 Extract
@@ -4593,7 +4593,7 @@ class ConsoleService implements HasLogger {
 > ## 提取 Extract<UnionType, Union>
 > `Extract` 从联合类型 UnionType 中提取指定类型 Union，组成一个新类型返回。
 > 如果参数类型 Union 不包含在联合类型 UnionType 中，则返回 never 类型。
-> 
+>
 > ```
 >
 > ```ts
@@ -4603,14 +4603,14 @@ class ConsoleService implements HasLogger {
 > type T4 = Extract<string | string[], any[]> // string[]
 > type T5 = Extract<(() => void) | null, Function> // () => void
 > type T6 = Extract<200 | 400, 200 | 201> // 200
-> 
+>
 > /** 提取不存在的类型 */
 > type T = Extract<string|number, boolean>; // never
->                   
-> 
+>
+>
 > /** Extract<UnionType, Union>的实现 */
 > type Extract<T, U> = T extends U ? T : never
-> 
+>
 > ```
 
 ### 只读属性 Readonly
@@ -4630,10 +4630,10 @@ class ConsoleService implements HasLogger {
 >   id: number;
 >   sex: 0 | 1;
 > }
-> 
+>
 > // 挑选 name 和 id 属性
 > type Woman = Pick<Person, "name" | "id">;
-> 
+>
 > // 此时 Woman 等效于 Female
 > interface Female {
 >   name: string;
@@ -4647,16 +4647,16 @@ class ConsoleService implements HasLogger {
 > ### K extends keyof T 与 P in K
 > -  `K extends keyof T`：用来获取 T 类型的所有键的联合类型
 > - `P in K`：in 操作符可以遍历联合类型，枚举类型等
->       
+>
 >       interface Person {
 >         name: string;
 >         age: number;
 >         id: number;
 >       }
->       
+>
 >       // Person 所有键的联合类型
 >       type Keys = keyof Person; // 等效于 "name" | "age" | "id"
->       
+>
 >       // 此时 Man 类型与 Person 相等
 >       type Man = {
 >         [key in Keys]: Person[key];
@@ -4674,12 +4674,12 @@ class ConsoleService implements HasLogger {
 >   age: number
 >   location?: string
 > }
-> 
+>
 > const user: Omit<Person, 'age' | 'location'> = {
 >   name: 'D.O' // Omit 从类型中删除了 age 和 location，不能在此处定义
 > }
-> 
-> 
+>
+>
 > type Omit<T, K extends string | number | symbol> = {
 >   [P in Exclude<keyof T, K>]: T[P];
 > };
@@ -4694,7 +4694,7 @@ class ConsoleService implements HasLogger {
 >      x: number
 >      y: number
 > }
-> 
+>
 > const point: ReturnType<foo> = {
 >      x: 10,
 >      y: 20
@@ -4724,14 +4724,14 @@ class ConsoleService implements HasLogger {
 >
 > ```ts
 > type A = Awaited<Promise<number>> // number
-> 
+>
 > // 多重 Promise
 > type B = Awaited<Promise<Promise<string>>> // string
-> 
+>
 > // 类型参数非 Promise
 > type C = Awaited<boolean | Promise<number>> // boolean | number
-> 
-> 
+>
+>
 > /** Awaited<Type> 的实现 */
 > type Awaited<T> =
 >   T extends null | undefined ? T :
@@ -4752,7 +4752,7 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## ConstructorParameters<Type>
 > `ConstructorParameters<Type>` 提取构造方法 Type 的参数类型，组成一个元组类型返回。
-> 
+>
 > - 它可以返回一些内置构造方法的参数类型。
 > - 注意：如果参数类型不是构造方法，就会报错。
 > - any类型和never类型是两个特殊值，分别返回unknown[]和never。
@@ -4760,23 +4760,23 @@ class ConsoleService implements HasLogger {
 >
 > ```ts
 > type T1 = ConstructorParameters<new (x: string, y?: number) => object> // [x: string, y?: number | undefined]
-> 
+>
 > /** 提取内置构造方法的参数类型 */
 > type T2 = ConstructorParameters<ErrorConstructor> // [message?: string | undefined]
 > type T3 = ConstructorParameters<FunctionConstructor> // string[]
 > type T4 = ConstructorParameters<RegExpConstructor> // [pattern: string | RegExp, flags?: string | undefined]
-> 
+>
 > /** any 和 never 类型 */
 > type T5 = ConstructorParameters<any> // unknown[]
 > type T6 = ConstructorParameters<never> // never
-> 
-> 
+>
+>
 > /** ConstructorParameters<Type> 的实现 */
 > type ConstructorParameters<
 >   T extends abstract new (...args: any) => any
-> > = T extends abstract new (...args: infer P) 
+> > = T extends abstract new (...args: infer P)
 >   => any ? P : never
-> 
+>
 > ```
 
 ### InstanceType
@@ -4784,32 +4784,32 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## InstanceType<Type>
 > `InstanceType<Type>` 提取构造函数的返回值类型（即实例类型），参数 Type 是一个构造函数，等同于构造函数的 `ReturnType<Type>`。
-> 
-> 
+>
+>
 > - 如果类型参数不是构造方法，就会报错。
 > - 如果类型参数是 any 或 never 两个特殊值，分别返回 any 和 never。
-> 
+>
 > ```
 >
 > ```ts
 > type T1 = InstanceType<new () => object> // object
-> 
+>
 > type T2 = InstanceType<ErrorConstructor> // Error
 > type T3 = InstanceType<FunctionConstructor> // Function
 > type T4 = InstanceType<RegExpConstructor> // RegExp
-> 
+>
 > class C {
 >     x = 0
 >     y = 0
 > }
 > type TC = InstanceType<typeof C> // C
->                        
+>
 > /** 特殊类型 */
 > type T5 = InstanceType<any> // any
 > type T6 = InstanceType<never> // never
-> 
-> 
-> 
+>
+>
+>
 > /** InstanceType<Type>的实现 */
 > type InstanceType<
 >   T extends abstract new (...args:any) => any
@@ -4825,20 +4825,20 @@ class ConsoleService implements HasLogger {
 > 2. `Lowercase<StringType>`：将字符串的每个字符转为小写。
 > 3. `Capitalize<StringType>`：将字符串的第一个字符转为大写。
 > 4. `Uncapitalize<StringType>`：将字符串的第一个字符转为小写。
-> 
+>
 > ````
 >
 > ```ts
 > type Str = "hEllO"
-> 
+>
 > type A = Uppercase<Str> // 'HELLO'
-> 
+>
 > type B = Lowercase<A> // 'hello'
-> 
+>
 > type C = Capitalize<B> // "Hello"
-> 
+>
 > type D = Uncapitalize<C> // 'hello'
-> 
+>
 > ```
 
 ## 提升
@@ -4848,13 +4848,13 @@ class ConsoleService implements HasLogger {
 > ````ts
 > // # 在正常情况下给对象进行解构时，如下：
 > const { name, age } = obj.value
-> 
+>
 > // # 错误尝试，以下写法会将 name属性值分配给string变量，将 age 属性值分配给number
 > const { name: string, age: number } = obj.value
-> 
+>
 > // # 正确的入门写法
 > const { name, age }: { name: string, age: number } = obj.value
-> 
+>
 > // 进阶写法：为数据创建一个 type 或 interface
 > type User1 = {
 >        name: string,
@@ -4873,7 +4873,7 @@ class ConsoleService implements HasLogger {
 > ```ts
 > // # 在 TypeScript 中，通常使用相对路径导入特定文件，但当更改文件目录结构时，必须相应更新这些导入的路径，虽然VSCode有插件会自动更新路径，但这并不能正确确保顺利更改。
 > import { authService } from '../../../services/authService'
-> 
+>
 > // # 为了快速有效的维护，可以在 TypeScript的配置文件 tsConfig.json 中的 path 属性下指定路径别名
 > {
 >        "paths": {
@@ -4881,7 +4881,7 @@ class ConsoleService implements HasLogger {
 >                "@service/*": ["src/service/*"]
 >        }
 > }
-> 
+>
 > import { authService } from '@/services/authService'
 > ```
 
@@ -4912,24 +4912,24 @@ class ConsoleService implements HasLogger {
 > 	unknow 类型是在 TypeScipt 的第三版中引入，作为 any 类型的附带类型，当分配给变量时，unknow 意味着变量未知
 > unknow比any的优势：
 > 	可以确定使用unknow的变量存在什么，会产生更好、更安全的程序，因为 TypeScript 可以对生成的类型进行类型检查
-> 
-> 
-> 
+>
+>
+>
 > // # TypeScirpt 不允许使用 unknow的变量，除非将该变量强制转换为已知类型或收窄其类型
 > const x: unknow = 3
 > x * x // Error
-> 
-> 
+>
+>
 > // # 为了修复上述错误，可以使用类型保护来检查它是否是数字，然后再将其平方
 > if(type x === 'number') {
 >   console.log(x * x) // 9
 > }
-> 
-> 
+>
+>
 > // # 通过类型转换或类型缩窄来确定 unknow 的变量是什么
 > const x: unknow = {
 >   a: 'a-value',
-> 	b: 'b-value', 
+> 	b: 'b-value',
 > }
 > (x as {a: stirng, b: string}).b	// b-value
 > ```
@@ -4939,17 +4939,17 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## void 的概念：
 > 	void 是一种类型表明函数和方法在调用时不作返回
-> 
+>
 > ## js 中的 void
 > 	1. JS 中的 void 是一个运算符，用于计算它旁边的表达式，无论哪个表达式求值，void 总是返回 undefined
-> 		 	let i = void 2; 
+> 		 	let i = void 2;
 > 			i === undefined; // true
-> 
+>
 > 	2. 早期，人们能够覆盖 undefined 并赋予它一个实际值，而 void 总是返回真正意义上的 undefined
-> 
+>
 > 	3. 其次，这是调用立即执行函数的好办法
 > 			void (function (){ console.log('IFF') })()
-> 
+>
 > 	4. 还有这些赋值不会污染全局命名空间
 > 			void (function fn(i) {
 >       	if(i > 0) {
@@ -4958,7 +4958,7 @@ class ConsoleService implements HasLogger {
 >         }
 >       })(3)
 > 			console.log(typeof fn)	// undefined
-> 
+>
 > 	5. 由于 void 总是返回undefined，并且 void 总是对它旁边的表达式求值，因此有一种非常简洁的方法可以从函数返回，而不返回值，但仍然调用回调函数
 > 			button.onclick = () => void doSomething()
 > 			// 返回未定义的内容会导致应用程序崩溃
@@ -4966,23 +4966,23 @@ class ConsoleService implements HasLogger {
 >         if(condition()) {
 >           return void nextCallback();
 >         }
->       } 
+>       }
 > ```
 >
 > #### TS中的void
 >
 > ```bash
 > 1. TS 中的 void 是 undefined 的子类型，JS 中的函数总是返回一些东西（一个值 或 undefined）
-> 
-> 
+>
+>
 > 2. 由于没有返回值的函数总是返回undefined，并且 void 在 JS 中总是返回 undefined，因此 TS 中 void 是告诉开发人员此函数总是返回 undefined 的合适类型
 > 		declare function foo(i: number): void
-> 
-> 
+>
+>
 > 3. 作为类型的 void 也可用于形参和所有其他声明。唯一可以传递的值是 undefined
 > 		declare function foo(x: void): void {}
-> 
-> 
+>
+>
 > 4. void 和 undefined 基本是一样的，但 void 作为返回类型可以被不同的类型替换，以允许高级回调模式
 > 		function doSomething(callback: () => void) {
 >         // 在当前环境中，callback 总是返回 undefined
@@ -4995,8 +4995,8 @@ class ConsoleService implements HasLogger {
 >       }
 >       // 正常工作，doSomething 确保了类型安全
 >       doSomething(aNumberCallback)
-> 
-> 
+>
+>
 > 5. 错误的返回调用
 > 		function doSomething(callback: () => undefined) {
 >       /* ... */
@@ -5017,11 +5017,11 @@ class ConsoleService implements HasLogger {
 > ```bash
 > # eslint
 > npm install --save-dev eslint
-> 
+>
 > # eslint默认用espree进行语法解析，安装 @typescript-eslint/parser 解析 eslint 的语法
 > npm install --save-dev typescript @typescript-eslint/parser
-> 
-> 
+>
+>
 > # 作为 eslint 默认规则的补充 和 一些适用于ts的语法规则
 > npm install --save-dev @typescript-eslint/eslint-plugin
 > ```
@@ -5058,8 +5058,8 @@ class ConsoleService implements HasLogger {
 > ```bash
 > ## 执行下述命令， 会检查 ./server/index.ts 文件
 > ./node_modules/.bin/eslint ./server/index.ts
-> 
-> 
+>
+>
 > ## 简化检查 ts 文件步骤
 > 因为使用的是 `./node_modules/.bin/eslint`，而不是全局的 `eslint` 脚本，这是因为代码检查是项目的重要组成部分，所以我们一般会将它安装在当前项目中。所以可通过在 `package.json` 中添加一个 `script` 来创建一个 npm script 来简化这个步骤：
 >     {
@@ -5089,9 +5089,9 @@ class ConsoleService implements HasLogger {
 > 在编辑器中集成 ESLint 检查，可以在开发过程中就发现错误，甚至可以在保存时自动修复错误，极大的增加了开发效率。
 >
 > 要在 VSCode 中集成 ESLint 检查，需要先安装 ESLint 插件，点击「扩展」按钮，搜索 ESLint，然后安装即可。
-> 
+>
 >VSCode 中的 ESLint 插件默认是不会检查 `.ts` 后缀的，需要在「文件 => 首选项 => 设置 => 工作区」中（也可以在项目根目录下创建一个配置文件 `.vscode/settings.json`），添加以下配置：
-> 
+>
 >```json
 > {
 >  "eslint.validate": [
@@ -5104,11 +5104,11 @@ class ConsoleService implements HasLogger {
 > ```
 >
 > 这时再打开一个 `.ts` 文件，将鼠标移到红色提示处，即可看到这样的报错信息了：
-> 
+>
 > ![VSCode ESLint 错误信息](./image/vscode-eslint-error.png)
-> 
+>
 >我们还可以开启保存时自动修复的功能，通过配置：
-> 
+>
 >```json
 > {
 >    "eslint.autoFixOnSave": true,
@@ -5123,12 +5123,12 @@ class ConsoleService implements HasLogger {
 >    "typescript.tsdk": "node_modules/typescript/lib"
 > }
 >```
-> 
+>
 > 就可以在保存文件后，自动修复为：
-> 
+>
 > ```ts
 > let myName = 'Tom';
-> 
+>
 > interface Foo {}
 > ```
 
@@ -5136,7 +5136,7 @@ class ConsoleService implements HasLogger {
 
 > ESLint 包含了一些代码格式的检查，比如空格、分号等。然后通过`Prettier`插件来格式化代码。
 >Prettier 聚焦于代码的格式化，通过语法分析，重新整理代码的格式，让所有人的代码都保持同样的风格。
-> 
+>
 > ```bash
 >npm install --save-dev prettier
 > ```
@@ -5166,9 +5166,9 @@ class ConsoleService implements HasLogger {
 >        endOfLine: 'lf' // 换行符使用 lf
 >    };
 >    ```
->    
+>
 >    接下来安装 VSCode 中的 Prettier 插件，然后修改 `.vscode/settings.json`：
->    
+>
 >    ```json
 >    {
 >        "files.eol": "
@@ -5188,22 +5188,22 @@ class ConsoleService implements HasLogger {
 >    "typescript.tsdk": "node_modules/typescript/lib"
 > }
 > ```
-> 
+>
 > 这样就实现了保存文件时自动格式化并且自动修复 ESLint 错误。但由于 ESLint 也可以检查一些代码格式的问题，所以在和 Prettier 配合使用时，一般会把 ESLint 中的代码格式相关的规则禁用掉，否则就会有冲突。
-> 
+>
 
 ### 使用 AlloyTeam 的 ESLint 配置
 
 > ESLint 原生的规则和 `@typescript-eslint/eslint-plugin` 的规则太多了，而且原生的规则有一些在 TypeScript 中支持的不好，需要禁用掉。
 >
 > 推荐使用 [AlloyTeam ESLint 规则中的 TypeScript 版本](https://github.com/AlloyTeam/eslint-config-alloy#typescript)，它已经为我们提供了一套完善的配置规则，并且与 Prettier 是完全兼容的（eslint-config-alloy 不包含任何代码格式的规则，代码格式的问题交给更专业的 Prettier 去处理）。
-> 
+>
 >```bash
 > npm install --save-dev eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-alloy
 >```
-> 
+>
 >在你的项目根目录下创建 `.eslintrc.js`，并将以下内容复制到文件中即可：
-> 
+>
 >```js
 > module.exports = {
 >  extends: [
@@ -5232,20 +5232,20 @@ class ConsoleService implements HasLogger {
 >      }
 >    };
 >   ```
-> 
+>
 
 ### 使用 ESLint 检查 tsx 文件
 
 > 如果需要同时支持对 tsx 文件的检查，则需要对以上步骤做一些调整：
 >
 > #### 安装 `eslint-plugin-react`
-> 
+>
 >```bash
 > npm install --save-dev eslint-plugin-react
 >```
-> 
+>
 >#### package.json 中的 scripts.eslint 添加 `.tsx` 后缀
-> 
+>
 >```json
 > {
 >  "scripts": {
@@ -5253,9 +5253,9 @@ class ConsoleService implements HasLogger {
 >  }
 > }
 >```
-> 
+>
 > #### VSCode 的配置中新增 typescriptreact 检查
-> 
+>
 > ```json
 >{
 >   "files.eol": "\n",
@@ -5278,9 +5278,9 @@ class ConsoleService implements HasLogger {
 >   "typescript.tsdk": "node_modules/typescript/lib"
 > }
 > ```
-> 
+>
 > #### 使用 AlloyTeam ESLint 规则中的 TypeScript React 版本
-> 
+>
 > [AlloyTeam ESLint 规则中的 TypeScript React 版本](https://github.com/AlloyTeam/eslint-config-alloy#typescript-react)
 
 ### Troubleshootings
@@ -5288,9 +5288,9 @@ class ConsoleService implements HasLogger {
 > ### Cannot find module '@typescript-eslint/parser'[§](http://ts.xcatliu.com/engineering/lint.html#cannot-find-module-typescript-eslintparser)
 >
 > 你运行的是全局的 eslint，需要改为运行 `./node_modules/.bin/eslint`。
-> 
+>
 >### VSCode 没有显示出 ESLint 的报错
-> 
+>
 >1. 检查「文件 => 首选项 => 设置」中有没有配置正确
 > 2. 检查必要的 npm 包有没有安装
 >3. 检查 `.eslintrc.js` 有没有配置
@@ -5303,7 +5303,7 @@ class ConsoleService implements HasLogger {
 > ### 为什么有些定义了的变量（比如使用 `enum` 定义的变量）未使用，ESLint 却没有报错？
 >
 > 因为无法支持这种变量定义的检查。建议在 `tsconfig.json` 中添加以下配置，使 `tsc` 编译过程能够检查出定义了未使用的变量：
-> 
+>
 > ```json
 > {
 >  "compilerOptions": {
@@ -5312,9 +5312,9 @@ class ConsoleService implements HasLogger {
 >   }
 >}
 > ```
-> 
+>
 > ### 启用了 noUnusedParameters 之后，只使用了第二个参数，但是又必须传入第一个参数，这就会报错了
-> 
+>
 > 第一个参数以下划线开头即可
 
 ### 编译选项
@@ -5338,7 +5338,7 @@ class ConsoleService implements HasLogger {
 > │   └── index.ts
 > ├── package.json
 > └── tsconfig.json
-> 
+>
 > # 设置为 false 时，编译后的文件不包含 foo.js
 > ├── lib
 > │   └── index.js
@@ -5368,7 +5368,7 @@ class ConsoleService implements HasLogger {
 > ```ts
 > export = React;
 > export as namespace React;
-> 
+>
 > declare namespace React {
 >     // 声明 React 的类型
 > }

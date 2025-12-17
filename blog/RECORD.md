@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年12月17日
+  - docs: prettier note content
+
 ## 2025年12月16日
   - docs(前端框架): [React] hooks、memorize缓存、Fiber执行
 

@@ -1523,7 +1523,7 @@ public class DemoMain{
 
 
 
-#### 多态
+#### 特征-多态
 
 ```bash
 extends继承或者implements实现，是多态性的前提。
@@ -2067,8 +2067,6 @@ public static void main(String[] args){
 
 
 ##  案例
-
-#### **1、生成6个1~33的随机整数，添加到集合，并遍历集合**
 
 ```java
 //生成6个1~33的随机整数，添加到集合，并遍历集合

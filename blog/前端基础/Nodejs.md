@@ -1990,7 +1990,7 @@ process.nextTick 的作用是把回调函数作为微任务，放入事件循环
 
 process.nextTick(fn) 虽然跟 setTimeout(fn, 0) 类似，但实际有实现及性能上的差异：
 
-	
+
 
 
 在浏览器端，nextTick 会退化成 setTimeout(callback, 0)。
@@ -2177,7 +2177,7 @@ CustomWarning: Something Happened!
     at Function.Module.runMain (module.js:575:10)
     at startup (node.js:160:18)
     at node.js:445:3
-*/  
+*/
 ```
 
 也可以直接给个Error对象
@@ -2260,8 +2260,8 @@ process.stdin.on('end', () => {
 - process.memoryUsage()：返回进程占用的内存，单位为字节。输出内容大致如下：
 
 ```js
-{ 
-    rss: 19181568, 
+{
+    rss: 19181568,
     heapTotal: 8384512, // V8占用的内容
     heapUsed: 4218408 // V8实际使用了的内存
 }
@@ -2281,7 +2281,7 @@ console.log(process.cpuUsage(startUsage));
 // { user: 514883, system: 11226 }
 ```
 
-- process.hrtime()：一般用于做性能基准测试。返回一个数组，数组里的值为 [[seconds, nanoseconds] （1秒等10的九次方毫微秒）。 注意，这里返回的值是相对于过去一个随机的时间，所以本身没什么意义。仅当你将上一次调用返回的值做为参数传入，才有实际意义。 
+- process.hrtime()：一般用于做性能基准测试。返回一个数组，数组里的值为 [[seconds, nanoseconds] （1秒等10的九次方毫微秒）。 注意，这里返回的值是相对于过去一个随机的时间，所以本身没什么意义。仅当你将上一次调用返回的值做为参数传入，才有实际意义。
 
 ```js
 const time = process.hrtime();
@@ -2310,7 +2310,7 @@ setInterval(() => {
 - process.versions：返回node的版本，以及依赖库的版本，如下所示。
 
 ```js
-{ 
+{
   http_parser: '2.7.0',
   node: '6.1.0',
   v8: '5.0.71.35',
@@ -2414,7 +2414,7 @@ Got SIGHUP signal.
 - `process.exit([exitCode])` 可以用来立即退出进程。即使当前有操作没执行完，比如 process.exit() 的代码逻辑，或者未完成的异步逻辑。
 - 但不推荐直接使用 process.exit()，这会导致事件循环中的任务直接不被处理，以及可能导致数据的截断和丢失（例如 stdout 的写入）。
   - 写数据到 process.stdout 之后，立即调用 process.exit() 是不保险的，因为在node中往 stdout 写数据是非阻塞的，可以跨越多个事件循环，所以可能会存在写数据写到一半退出进程导致无法写入数据完成。比较保险的做法是，通过process.exitCode设置退出码，然后等进程自动退出。
-- 如果程序出现异常，必须退出不可，那么，可以抛出一个未被捕获的error，来终止进程，这个比 process.exit() 安全。 
+- 如果程序出现异常，必须退出不可，那么，可以抛出一个未被捕获的error，来终止进程，这个比 process.exit() 安全。
 
 不推荐写法
 
@@ -4364,7 +4364,7 @@ NodeJS 中的 Buffer 类用于处理二进制数据，它是 NodeJS 在处理TCP
 	- Buffer 是 V8 堆外分配的一段固定长度的连续内存，用于直接操作二进制数据流。与普通数组不同，Buffer 内存分配不经过 V8 引擎，避免了垃圾回收的延迟。
 	- Buffer 对象在创建时需指定其大小(以字节为单位)，且创建后无法改变。在使用Buffer时需要注意内存泄漏、安全及避免缓冲区溢出问题。
 	- Buffer 类可以方便地进行二进制数据的拼接、切片等操作，提高对二进制数据的处理效率。
-	
+
 
 
 #### Buffer 的作用
@@ -4511,7 +4511,7 @@ const hash = crypto.createHash('sha256').update(input).digest('hex')
 const key = Buffer.from('32bytes-long-secret-key-1234567890ab')
 const iv = crypto.randomBytes(16) // 初始化向量
 const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
-const encrypted = Buffer.concat([iv, cipher.update(input), cipher.final()]) 
+const encrypted = Buffer.concat([iv, cipher.update(input), cipher.final()])
 ```
 
 
@@ -4547,15 +4547,15 @@ crypto 模块提供了通用的加密和哈希算法。
 		- hex/base64：将字节 ↔ 文本互相转换，便于传输或存储
 
 加密过程：字符串 → utf8 编码为字节 → 加密 → 字节 → hex/base64 编码为文本
-    "hello world" (字符串) 
-    → utf8编码 → 二进制数据 (字节) 
-    → 加密 → 加密后的二进制 (字节) 
+    "hello world" (字符串)
+    → utf8编码 → 二进制数据 (字节)
+    → 加密 → 加密后的二进制 (字节)
     → hex编码 → "e221f586cf104b2d0d5d58166a8cfe69" (可传输的字符串)
 
 解密过程：文本 → hex/base64 解码为字节 → 解密 → 字节 → utf8 解码为字符串
-    "e221f586cf104b2d0d5d58166a8cfe69" (hex字符串) 
-    → hex解码 → 加密后的二进制 (字节) 
-    → 解密 → 原始二进制 (字节) 
+    "e221f586cf104b2d0d5d58166a8cfe69" (hex字符串)
+    → hex解码 → 加密后的二进制 (字节)
+    → 解密 → 原始二进制 (字节)
     → utf8解码 → "hello world" (字符串)
 
 示例1：
@@ -5195,9 +5195,9 @@ SM4 是中国国家密码管理局 (GM/T) 发布的商用分组密码标准，�
    - 大多数`assert`函数都接受一个可选的`message`参数，可以用来提供更详细的错误消息。这对于在断言失败时快速理解问题很有帮助。
 3. 与其他测试框架的结合：
    - 虽然`assert`模块可以用于简单的测试，但在实际项目中，通常会使用更强大的测试框架，如`Mocha`、`Jest`等。这些框架提供了更多的功能和更好的测试报告。
-   
-   
-   
+
+
+
 #### 用途
 1. 单元测试：
 	- 在编写单元测试时，可以使用`assert`模块来验证函数的输出是否符合预期。

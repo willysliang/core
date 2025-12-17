@@ -2,7 +2,7 @@
 Author: willysliang
 CreateTime: 2022-08-21 16:16:54
 Modifier: willysliang
-ModifiedTime: 2023-03-29 15:00:48
+ModifiedTime: 2025-12-17 11:00:48
 Description: JavaScript
 ---
 
@@ -74,8 +74,6 @@ Description: JavaScript
 
 
 
-
-
 ## V8 引擎
 
 ```bash
@@ -84,7 +82,7 @@ Description: JavaScript
  他是参照ECMAScript和WebAssembly规范进行实现，并支持跨平台使用。他可以独立运行，也可以嵌入其他由C++实现的应用中。
 
 
-### 抽象语法树`AST`
+### 抽象语法树 AST
 - 抽象语法和抽象语法树就是源代码的抽象语法结构的树状表现形式
 - 浏览器通过`javascript Parser`解析器将js代码转化为抽象语法树来进行下一步的分析等其他操作。所以将js转化为抽象语法树更利于程序的分析。
 - 常用的`javascript Parser`：esprima、traceur、acorn、shift。
@@ -99,8 +97,8 @@ Description: JavaScript
     代码打包工具webpack，rollup等
     CommonJS、AMD、CMD、UMD等代码规范之间的转化
     CoffeeScript、TypeScript、JSX等转化为原生Javascript
- 
- 
+
+
  ### V8 引擎如何执行 JS 代码
  1. 将JavaScript代码解析为AST（抽象语法树）
 		1.1 词法分析：将 JS 代码解析成一个个 token，token 就是代码中不能再拆分的小单元。
@@ -122,7 +120,7 @@ Description: JavaScript
 	- 逻辑思考：算数逻辑单元（ALU）
 	- 短期储存：寄存器（Registers）
 	- 长期储存：随机存储器（RAM）
-	
+
 
 ### 计算机基本组成
 内存：读写速度较快，断电丢失数据
@@ -173,37 +171,44 @@ ES6的优化
 ```bash
 一、概念及作用对象
 SnapShot：
-概念：它主要是针对 V8 上下文创建过程进行优化的一种机制。在 JavaScript 运行环境中，像浏览器里创建全局对象（如窗口对象）以及初始化众多内置功能到 V8 的堆中，这一初始化过程耗时较长。SnapShot 通过将先前准备好的快照直接反序列化到堆里，快速获取初始化的上下文，避免了每次都从头去创建这些内容。
+概念：主要是针对 V8 上下文创建过程进行优化的一种机制。在 JavaScript 运行环境中，像浏览器里创建全局对象（如窗口对象）以及初始化众多内置功能到 V8 的堆中，这一初始化过程耗时较长。SnapShot 通过将先前准备好的快照直接反序列化到堆里，快速获取初始化的上下文，避免了每次都从头去创建这些内容。
 作用对象：V8 引擎启动时所涉及的上下文相关内容，重点在于初始化阶段的全局对象和内置功能等在堆中的状态。
+
 Code Caching：
 概念：鉴于 V8 对 JavaScript 采用 JIT（即时编译）机制，脚本在执行前的解析和编译阶段开销较大。Code Caching 则是在首次编译脚本时，把生成的相关缓存数据存储起来，后续当 V8 需要再次编译相同脚本时（即便在不同的 V8 实例中），能直接利用这些缓存数据来重新创建编译结果，无需重新从头进行解析和编译操作。
 作用对象：JavaScript 脚本本身，确切说是脚本在解析和编译过程中产生的可用于后续快速复现编译结果的中间数据。
+
+
 二、缓存内容及侧重点
 SnapShot：
 缓存内容：包含了已经初始化好的全局对象以及各类内置功能在 V8 堆中的状态信息，是一种对 V8 上下文初始完整状态的快照式保存。
 侧重点：侧重于缩短 V8 引擎启动、创建上下文的时间，使得后续使用该上下文时能快速就绪，提升启动阶段的整体效率，比如让浏览器等 JavaScript 运行环境能更快进入可交互、可执行脚本的状态。
+
 Code Caching：
 缓存内容：是脚本在首次解析和编译过程中生成的字节码以及相关编译数据，这些数据可以帮助快速还原出之前的编译成果。
 侧重点：着重解决脚本重复编译带来的性能损耗问题，特别是在有多次执行相同脚本的场景下（比如网页多次刷新、应用多次调用相同功能模块对应的脚本等），通过复用编译结果加快脚本的执行速度。
+
+
 三、应用场景及性能提升体现
 SnapShot：
 应用场景：广泛应用于各类使用 V8 引擎的环境启动阶段，像浏览器打开新页面、Node.js 启动新的 JavaScript 运行实例等，每次需要创建新的 V8 上下文时都能发挥作用。
 性能提升体现：在不同设备上有明显的启动时间缩短效果，例如在 PC 机上可将创建上下文的时间从约 40ms 降低到 2ms，在手机端能从 270ms 降到 10ms，极大地优化了启动环节的用户体验。
+
 Code Caching：
 应用场景：只要存在脚本多次执行（且脚本内容未改变）的情况都能受益，比如网页应用中频繁调用的公共 JavaScript 函数、库文件，或者服务器端 Node.js 应用中反复运行的业务逻辑脚本等。
 性能提升体现：使得脚本再次执行时省去解析和编译的时间开销，直接利用缓存数据快速进入执行阶段，整体上让脚本执行得更快，尤其对于复杂且经常使用的脚本，对性能提升效果更为显著。
+
+
 四、缓存生命周期及管理特点
 SnapShot：
 生命周期：通常与 V8 上下文的创建和销毁关联紧密，当一个新的上下文需要被创建时，如果有可用的快照，就可以拿来快速初始化；而当上下文不再使用被销毁时，对应的快照相关资源也随之释放（具体由 V8 引擎的内存管理机制来协同处理）。
 管理特点：更多是由 V8 引擎在启动相关环节自动进行管理和调用，开发人员一般较少直接干预其快照的具体生成和使用细节，主要依赖引擎自身对不同应用场景下上下文创建需求的适配。
+
 Code Caching：
 生命周期：缓存数据的生命周期基于脚本的变化情况，只要脚本内容未改变，其缓存就可以在多次执行该脚本的不同时机被复用；一旦脚本有更新修改，之前的缓存就可能失效，需要重新生成新的缓存数据。
 管理特点：V8 引擎会根据脚本的标识等信息来判断是否能复用缓存，开发人员在一些情况下可以通过配置相关编译选项等方式来间接影响 Code Caching 的行为，例如控制缓存的大小限制、缓存的更新策略等（不过这些操作相对较底层且需要对 V8 编译机制有较深入了解）。
 总的来说，SnapShot 和 Code Caching 虽都旨在提升 JavaScript 执行效率，且都借助缓存机制，但在具体缓存对象、作用环节、性能提升侧重点以及管理特点等方面有着明显区别，各自在不同的层面助力 JavaScript 应用运行得更加高效流畅。
-
 ```
-
-
 
 ```bash
 ### SnapShot
@@ -270,7 +275,7 @@ Code Caching是缓存的Parsing和Complie的字节码，提高的是脚本的解
 #### WebAssembly 的优势
 1. 体积小：WebAssembly 在网络中传输的是二进制文件，所以与JS相比，同样逻辑的实现，WebAssembly 的 WASM 文件体积更小。
 2. 解析速度块：V8 引擎对于 JS 的运行效率非常高，但仍然是即时编译（JIT）
-3. 编译优化： 
+3. 编译优化：
 	- JS 在加载后首先会被解释器转化为 AST 语法树，然后再被进一步编译成字节码；而 Assembly 自身已经是字节码，所以省略了转化和编译步骤。
 	- 此外，WebAssembly 是有数据类型，所以不会产生不同的类型值，因此不会触发浏览器的重新优化。
 4. 执行优化：WebAssembly 面向编译前设计，执行效率更高。
@@ -462,7 +467,7 @@ WebAssembly 目前有四个主要的入口：
 > ### 浏览器是多进程的
 > - 浏览器是多线程的，如Chrome浏览器，我们每打开一个 Tab 页就会产生一个进程，每个进程又有很多线程，都会占用内存，这也让这内存等资源消耗会很大，因此当Chrome运行时间长了就会导致电脑会越来越卡。
 > - 浏览器需要多进程的原因：如果浏览器是单线程，当某个Tab页、插件崩溃，就影响了整个浏览器，影响用户体验感
-> 
+>
 >
 >### 浏览器包含的进程
 > 1. Browser 进程
@@ -471,18 +476,18 @@ WebAssembly 目前有四个主要的入口：
 >     - 负责各个页面的管理，创建和销毁其他进程。
 >     - 将渲染(Renderer)进程得到的内存中的 Bitmap(位图)，绘制到用户界面上。
 >     - 网络资源的管理、下载等。
-> 
+>
 >2. 第三方插件进程
 > 		- 每种类型的插件对应一个进程，当使用该插件时才创建。
-> 
+>
 >3. GPU 进程
 > 		- 该进程也只有一个，用于 3D 绘制等等。
-> 
+>
 >4. 渲染进程（重点）
 >     - 浏览器内核（Renderer进程，其内部是多线程）。
 >     - 每个 Tab 页面都有一个渲染进程，互不影响。
 >     - 主要作为页面渲染、脚本执行、事件处理等。
-> 
+>
 >
 >### 渲染进程 Renderer 的主要进程
 > #### GUI 渲染线程
@@ -497,7 +502,7 @@ WebAssembly 目前有四个主要的入口：
 > - GUI 渲染线程与 JS 引擎线程是互斥的
 > 		- 当 JS 引擎执行时 GUI 线程会被挂起（相当于被冻结）。
 > 		- GUI 更新会被保存在一个队列中等到 JS 引擎空闲时立即被执行。
-> 
+>
 >
 >#### JS 引擎线程
 > - JS 引擎就是 JS 内核，负责处理 JavaScript 脚本程序（例如 V8 引擎）
@@ -508,28 +513,28 @@ WebAssembly 目前有四个主要的入口：
 > - GUI 渲染线程与 JS 引擎线程是互斥的，JS 引擎线程会阻塞 GUI 渲染线程。
 > 		- 就是我们常遇到的 JS 执行时间过长，造成页面渲染不连贯，导致页面渲染加载阻塞（页面加载缓慢）
 > 		- 例如浏览器渲染时遇到 script 标签，就会停止 GUI 的渲染，然后 JS 引擎线程开始工作，执行里面的js代码，等js执行完毕，JS 引擎线程停止工作，GUI 继续渲染下面的内容。如果js执行时间太长就会造成页面卡顿的情况。
-> 
+>
 >
 >#### 事件触发线程
 > - 属于浏览器而不是 JS 引擎，用来控制事件循环，并且管理着一个事件队列（task queue）
 > - 当js执行碰到事件绑定和一些异步操作（如setTimeOut，也可来自浏览器内核的其他线程，如鼠标点击、AJAX异步请求等），会走事件触发线程将对应的事件添加到对应的线程中（比如定时器操作，便把定时器事件添加到定时器线程），等异步事件有结果，便把它们的回调操作添加到事件队列，等待 JS 引擎线程空闲时来处理。
 > - 当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待 JS 引擎的处理。
 > - 因为 JS 是单线程的，所以这些待处理队列中的事件都得排队等待 JS 引擎处理。
-> 
+>
 >
 >#### 定时触发器线程
 > - setInterval 与 setTimeout 所在的线程。
 > - 浏览器定时计数器并不是由 JavaScript 引擎计数的（因为 JS 引擎是单线程的，如果处于阻塞线程状态，就会影响计时的准确）
 > - 通过单独线程来计时并触发定时（计时完毕后，添加到事件触发线程的事件队列中，等待 JS 引擎空闲后执行），这个线程就是定时触发器线程，也叫定时器线程。
 > - W3C 在 HTML 标准中规定，规定要求 setTimeout 中低于 4ms 的时间间隔计算为 4ms。
-> 
+>
 >
 >#### 异步 http 请求线程
 > - 在XMLHttpRequest 在连接后是通过浏览器新开一个线程请求。
 > - 将检测到状态变更时。如果设置有回调函数，异步线程就产生状态变更事件，将整个回调再放入事件队列中，再由 JavaScript 引擎执行。
 > - 简单说就是当执行一个 http 异步请求时，就把异步请求事件添加到异步请求线程，等收到响应（准确说应该是http状态变化），再把回调函数添加到事件队列，等待 JS 引擎线程来执行。
 > ```
-> 
+>
 
 ### 事件循环 Event Loop
 
@@ -586,22 +591,22 @@ WebAssembly 目前有四个主要的入口：
 > 4. '执行所有微任务'(`process.nextTick、promise、MutationObserver`)
 > 5. 当执行完所有微任务后，如有必要，会'渲染页面'
 > 6. 然后开始下一轮`Event Loop`，'执行宏任务的异步代码'，即`setTimeout、setInterval`中的回调事件。
-> 
-> 
+>
+>
 > #### 宏任务（macrotask）
 > - 在 ECMAScript 中，macrotask 也被称为 task，发起者为宿主（Node、浏览器）。
 > - 我们可以将每次执行栈执行的代码当做是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行），每一个宏任务会从头到尾执行完毕，不会执行其他。
 > - 由于 'JS引擎线程' 和 'GUI渲染线程' 是互斥关系，浏览器为了能够使 '宏任务' 和 'DOM任务' 有序进行，会在一个 '宏任务' 执行结果后，在下一个 '宏任务' 执行前，'GUI渲染线程' 开始工作，对页面进行渲染。
 > - 执行顺序：'宏任务 -> GUI渲染 -> 宏任务 -> ...'
 > - 常见的宏任务：
-> 		1. script 标签的代码(可以理解为外层同步代码 / 主代码块) 
+> 		1. script 标签的代码(可以理解为外层同步代码 / 主代码块)
 > 		2. setTimeout、setInterval
 > 		3. UI rendering/UI事件
 > 		4.  postMessage，MessageChannel
 > 		5. Node的setImmediate，I/O
 > 		6. 浏览器的requestAnimationFrame
-> 
-> 
+>
+>
 > #### 微任务（maicrotask）
 > - 在ECMAScript中，`maicrotask` 也称为 `jobs`，发起者为JS自身发起（JS引擎）。
 > - 当'宏任务'结束后，会执行渲染，然后执行下一个'宏任务'，而'微任务'可以理解成在当前'宏任务'执行后立即执行的任务。
@@ -612,8 +617,8 @@ WebAssembly 目前有四个主要的入口：
 > 		2. MutaionObserver
 > 		3. Object.observe（已废弃；Proxy 对象替代）
 > 		4. Node的process.nextTick()
-> 
-> 
+>
+>
 > #### 宏任务微任务注意点
 > - 浏览器会先执行一个宏任务，紧接着执行当前执行栈产生的微任务，再进行渲染，然后再执行下一个宏任务。
 > - 微任务和宏任务不在一个任务队列。
@@ -647,17 +652,17 @@ WebAssembly 目前有四个主要的入口：
 >   console.log('promise1')
 > }).then(function () {
 >   console.log('promise2')
-> 
+>
 >   setTimeout(() => {
 >     console.log('setTimeout 2')
 >   }, 0)
-> 
+>
 >   setInterval(() => {
 >     console.log('setInterval 2')
 >   })
 > })
 > console.log('script end')
-> 
+>
 > /*
 > script start
 > async2 end
@@ -678,16 +683,16 @@ WebAssembly 目前有四个主要的入口：
 > ### 完整的事件循环 Event Loop
 > 先执行同步代码，遇到异步宏任务则将异步宏任务放入宏任务队列中，遇到异步微任务则将异步微任务放入微任务队列中。
 > 当所有同步代码执行完毕后，再将异步微任务从队列中调入主线程执行，微任务执行完毕后，再将异步宏任务从队列中调入主线程执行，一直循环直至所有任务执行完毕。
-> 
-> 
+>
+>
 > #### 事件循环的简洁版
 > 1. 先执行宏任务的同步代码
 > 2. 再执行所有的微任务
 > 3. 如果可能会渲染页面
 > 4. 再执行宏任务的异步代码
 > 5. 进入下一轮 Tick
-> 
-> 
+>
+>
 > #### EventLoop 详细版
 > 1. 首先，整体的 script 作为第一个宏任务开始执行时，会把所有代码分为 '同步任务、异步任务' 两部分。
 > 2. 同步任务会直接进入主线程依次执行。
@@ -698,14 +703,14 @@ WebAssembly 目前有四个主要的入口：
 > 5. 如果宿主为浏览器，可能会渲染页面
 > 6. 开始下一轮tick，执行宏任务中的异步代码（setTimeout等回调）
 > 7. 上述事件过程会不断重复（例如进入下一个 script 标签执行），这就是 Event Loop。
-> 
-> 
-> 
+>
+>
+>
 > #### 关于 Promise
 > - 如 `new Promise(() => ()).then()`
 > 		- 前面的 `new Promise()` 这一部分是一个构造函数，这是一个同步任务。
 > 		- 后面的 `.then()` 才是一个异步任务。
-> 
+>
 >       new Promise((resolve) => {
 >         console.log(1)
 >         resolve()
@@ -714,14 +719,14 @@ WebAssembly 目前有四个主要的入口：
 >       })
 >       console.log(3)
 >       // 会输出：1 3 2
-> 
-> 
-> 
+>
+>
+>
 > #### 关于 async/await 函数
 > - async/await 本质上是基于 Promise 的一些封装，而 Promise 是属于微任务的一种。
 > 		所以在使用 await 关键字与 Promise.then() 效果类似。
 > 		await 关键字之前的代码，相当于 new Promise() 的同步代码，await 以后的代码相当于 Promise.then() 的异步。
-> 
+>
 >     setTimeout(() => console.log(1))
 >     async function test() {
 >       console.log(2)
@@ -809,12 +814,11 @@ WebAssembly 目前有四个主要的入口：
 ### 浏览器渲染原理
 
 > ```bash
-> ## 浏览器渲染原理
 > ### 浏览器渲染流程
 > - 解析html -> 构建DOM树/CSS Rule Tree -> 构建render树 -> 布局render树 -> 绘制render树
 >
 >
-> ### 浏览器解析过程
+>### 浏览器解析过程
 > 1. DOM Tree：浏览器会将HTML解析成一个DOM树，
 > 		DOM 树的构建过程是一个深度遍历过程：当前节点的所有子节点都构建好后才会去构建当前节点的下一个兄弟节点。
 > 2. CSS rule tree：将CSS解析成树形的数据结构
@@ -826,13 +830,13 @@ WebAssembly 目前有四个主要的入口：
 > 注意：上述这个过程是逐步完成的，为了更好的用户体验，渲染引擎将会尽可能早的将内容呈现到屏幕上，并不会等到所有的html都解析完成之后再去构建和布局render树。它是解析完一部分内容就显示一部分内容，同时，可能还在通过网络下载其余内容。
 > ```
 >
-> **webkit的流程**
+>**webkit的流程**
 >
-> ![image-20210914235451051](./image/image-20210914235451051.png)
+>![image-20210914235451051](./image/image-20210914235451051.png)
 >
-> **Geoko的流程**
+>**Geoko的流程**
 >
-> ![image-20210914235521432](./image/image-20210914235521432.png)
+>![image-20210914235521432](./image/image-20210914235521432.png)
 
 ### 重绘和回流(重排)
 
@@ -874,7 +878,6 @@ WebAssembly 目前有四个主要的入口：
 ## 脚本标签 script
 
 ```bash
-## 脚本 script
 `<script type="text/javascript" src="" async></script>`
 
 当浏览器看到普通脚本标签声明时，它执行以下步骤：
@@ -924,7 +927,7 @@ defer 脚本保证执行顺序。它是等到页面渲染完毕，所有脚本�
 - load：浏览器加载完成 HTML 以及所有的外部资源（图片和样式）
 		- 外部资源已加载完成，样式已被应用，图片大小已知。
 		- 适合启动一些需要完整页面资源的操作，像初始化复杂的第三方插件
-		
+
 - beforeload/upload：页面即将卸载（刷新、关闭、跳转到新页面）触发
 		- beforeunload：用户正在离开。此时可以检查用户是否保存了更改，并询问是否真的要离开。
 		- unload：用户几乎已经离开，但现阶段仍然可以启动一些操作，常用来清理一些全局的定时器、解绑事件，防止内存泄漏，发送统计数据，不过此阶段执行的代码时间有限，应尽量精简。
@@ -944,46 +947,46 @@ pagehide：当浏览器隐藏页面时触发，和 beforeunload 有点类似，�
 
 > ```bash
 > 当初始HTML文档已完全加载和解析时，将触发DOMContentLoaded事件，而不需要等待样式表，图像和子框架页面加载（事件可以用来检测HTML页面是否完全加载完毕(fully-loaded)）。
-> 
-> 
+>
+>
 > ### DOMContentLoaded 执行时机
-> #### 1. 普通脚本/sync（等待脚本执行完后再执行DOMContentLoaded）
+> 1. 普通脚本/sync（等待脚本执行完后再执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到普通脚本 -> 加载&执行脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
-> 
-> 
-> #### 2. 异步加载脚本/async（衡量HTML加载解析的速度来执行DOMContentLoaded）
+>
+>
+> 2. 异步加载脚本/async（衡量HTML加载解析的速度来执行DOMContentLoaded）
 > 	HTML加载解析 -> 遇到async脚本 -> (HTML&async脚本)并行加载解析 ->
 > 		- 若HTML解析完后async脚本也已加载完毕 -> 停止HTML解析 -> 执行async脚本 -> 继续HTML加载解析 -> HTML解析完毕 -> DOMContentLoaded事件
 > 		- 若HTML解析完后async脚本还未加载完成 -> DOMContentLoaded事件
-> 
-> 
-> #### 3. 延时加载脚本/defer（等待脚本执行完后再执行DOMContentLoaded）
+>
+>
+> 3. 延时加载脚本/defer（等待脚本执行完后再执行DOMContentLoaded）
 > 	HTML加载解析&defer脚本加载
 > 			- 若HTML解析完后defer脚本也已加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
 > 			- 若HTML解析完后async脚本还未加载完成 -> defer脚本加载完毕 -> 执行defer脚本 -> DOMContentLoaded事件
 > ```
-> 
+>
 >![image-20230329111340256](./image/image-20230329111340256.png)
-> 
+>
 >```html
 > <script>
 >   document.addEventListener("DOMContentLoaded", () => {
 >    alert("DOM ready!");
 >   });
 > </script>
-> 
+>
 > <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.3.0/lodash.js"></script>
-> 
+>
 > <script>
 >   alert("Library loaded, inline script executed");
 > </script>
-> 
-> <!-- 
+>
+> <!--
 > 先输出 'Library loaded, inline script executed'，
 > 再输出 DOM ready!
 > -->
 > ```
-> 
+>
 
 ### DOMContentLoaded和load的区别
 
@@ -1030,7 +1033,7 @@ readystatechange 事件可以监听状态的改变。
   document.getElementById('img').onload = () => console.log('img onload');
 </script>
 
-<!-- 
+<!--
 [1] initial readyState:loading
 [2] readyState:interactive
 [2] DOMContentLoaded
@@ -1167,8 +1170,7 @@ function scriptLoaded() {
 ## DOM
 
 ```bash
-## DOM
-- DOM 为文档提供了结构化表示，并定义了如何通过脚本来访问文档结构。
+- DOM 为文档提供结构化表示，并定义如何通过脚本来访问文档结构。
 - DOM 的目的是为了能让 js 操作 html 元素而制定的一个规范。
 - DOM 是由节点组成的；所有的节点本质上都是 Object。
 - DOM对象与标签的区别
@@ -1253,14 +1255,14 @@ element.className = 'new-class'; // className is a DOMString that you can set
 ### DOM方法
 
 ```bash
-### DOM 方法
-1. get(获取)
-2. set(设置)
-3. remove(移除)
-4. create(创建)
-5. insert(插入)
-6. replace(替代)
-7. append(添加)
+DOM 方法
+    1. get(获取)
+    2. set(设置)
+    3. remove(移除)
+    4. create(创建)
+    5. insert(插入)
+    6. replace(替代)
+    7. append(添加)
 
 
 1. 创建节点
@@ -1397,7 +1399,6 @@ delete ele.dataset.message
 ### DOM访问
 
 ```bash
-### DOM 访问
 - 通过Id获取单个标签：document.getElementById，返回Object类型
 - 通过类名获取标签：document.getElementByClassName，返回一个数组
 - 通过标签名获取标签：document.getElementsByTagName，返回一个数组
@@ -1427,7 +1428,6 @@ delete ele.dataset.message
 
 document.body							:获取body节点
 document.documentElement	:获取html节点
-
 ```
 
 
@@ -1503,7 +1503,7 @@ getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav,
   function handleNodeForParent(parent) {
     const newNode = document.createElement('span');
     newNode.textContent = '这是新创建的节点。';
-    
+
     if (parent.firstChild) {
       parent.replaceChild(newNode, parent.firstChild);
     } else {
@@ -1547,7 +1547,7 @@ getParentsUntil(document.querySelector('#home-link'), 'header') // [header, nav,
 
 2. **innerHTML**
   - 在设置时会覆盖原来的内容，但是可以通过+=去解决
-  
+
 3. `document.createElement()`
 
 
@@ -1719,24 +1719,23 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 ### DOM事件
 
 > ```bash
-> ## DOM 事件
 > 1. 鼠标拖拽事件
 >     - `onmousedown`：当鼠标在被拖拽元素上按下时，开始拖拽；
 >     - `onmousemove`：当鼠标移动时被拖拽元素跟随鼠标移动；
 >     - `onmouseup`：当鼠标松开时，被拖拽元素固定在当前位置。
 >     - `oncontextmenu`：鼠标右键点击事件。
 >
-> 2. 鼠标移动事件
+>2. 鼠标移动事件
 >     - `onmousewheel`：鼠标滚轮滚动的事件，会在滚轮滚动时触发。但火狐不支持该属性
 >     - `DOMMouseScroll`：在火狐中使用该方法来绑定滚动事件。该事件需要通过addEventListener()函数来绑定。
 >
-> 3. 键盘事件
+>3. 键盘事件
 >     - `onkeydown`：按键被按下时触发
 >     - `onkeyup`：按键被松开时触发
 >     - 注意：若持续按着某键不放，该`onkeydown`事件会持续触发。此时松开键盘，`onkeyup`事件会执行一次。
 >
 >
-> - 其他事件
+>- 其他事件
 >     - onclick：点击事件
 >     - onfocus：获取聚焦事件
 >     - onblur：失去焦点事件
@@ -1744,10 +1743,9 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 >     - onunload用户离开页面
 > ```
 >
-> #### 动态创建列表
+>#### 动态创建列表
 >
-> ```js
-> // 动态创建列表
+>```js
 > const box = document.getElementById('box')
 > // 创建 ul，在内存中创建一个 DOM 对象
 > const ul = document.createElement('ul')
@@ -1755,7 +1753,7 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 > box.appendChild(ul)
 >
 > // 遍历数组，生成 li
-> for (let i = 0; i < data.length; i++) {
+>for (let i = 0; i < data.length; i++) {
 >   // 创建 li，在内存中创建一个孤立的 DOM 元素
 >   const li = document.createElement(li)
 >   // 把元素添加到 ul 中（添加到 DOM 树上）
@@ -1764,7 +1762,7 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 >   setInnerText(li, data[i].key)
 >
 >   li.onmouseover = function () {
->     this.style.backgroundColor = 'lightgray'
+>    this.style.backgroundColor = 'lightgray'
 >   }
 >   li.onmouseout = function () {
 >     this.style.backgroundColor = ''
@@ -1775,26 +1773,25 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 #### 事件
 
 > ```bash
-> ## 事件
 > 事件三要素：'事件源(触发的事件的元素标签) -> 事件名称(click) -> 事件处理程序(function：对样式和html的操作)'。
 >
-> onload && onunload
+>onload && onunload
 > - 页面加载完毕时执行(DOM元素加载完毕，当外部文件加载完毕)：`onload = function () {}`
 > - 当页面关闭时执行：`onunload = function () {}`
 >
-> mouseover && mouseenter
+>mouseover && mouseenter
 > - onmouseover/onmouseout：鼠标经过时自身触发事件，经过其子元素时也触发该事件。
 > - onmouseenter/onmouseleave：鼠标经过时自身触发事件，经过其子元素时不触发该事件。
 >
 >
-> ### 事件优先级
+>### 事件优先级
 > - ` event.stopImmediatePropagation();`
 > - `addEventListener`给某按钮同时注册了事件A、事件B。此时，如果单击按钮，就会依次执行事件A和事件B。
 > 		现在要求：单击按钮时，只执行事件A，不执行事件B。该怎么做呢？
 > 		此时可以在事件A的响应函数中加入 `stopImmediatePropagation` 方法
 >
 >
-> ### addEventListener
+>### addEventListener
 > - `element.addEventListener('事件名', callback, target)`
 > 		- 参数1：事件名的字符串（注意：没有 on 前缀）
 > 		- 参数2：回调函数（当事件触发时，该函数会被执行）
@@ -1806,7 +1803,7 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 >
 >
 >
-> ### attachEvent
+>### attachEvent
 > - `element.attachEvent('事件名', callback)`
 > 		- 参数1：事件名的字符串（注意：有 on 前缀）
 > 		- 参数2：回调函数（当事件触发时，该函数会被执行）
@@ -1819,34 +1816,33 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 #### DOM元素事件执行顺序
 
 > ```bash
-> ## DOM 元素事件执行顺序
 > HTML 页面上 DOM 元素的事件执行顺序一般有三个阶段：
 > 	1. 事件捕获
 > 	2. 事件触发
 > 	3. 事件冒泡
 >
-> DOM 标准事件流触发的先后顺序为：先捕获再冒泡，即当触发 DOM 事件时，会进行事件捕获，捕获事件源之后通过事件传播进行事件冒泡。
-> 而在 '浏览器中默认执行的是事件冒泡'，即我们一般 '观察不到事件捕获阶段'，比如 onclick 等事件。
+>DOM 标准事件流触发的先后顺序为：先捕获再冒泡，即当触发 DOM 事件时，会进行事件捕获，捕获事件源之后通过事件传播进行事件冒泡。
+> 而在 '浏览器中默认执行的是事件冒泡'，即一般 '观察不到事件捕获阶段'，比如 onclick 等事件。
 > 如果想要观察到事件的捕获阶段，那需要借助 addEventListener 接口来实现。
 >
 >
-> ### addEventListener
+>### addEventListener
 > - `element.addEventListener(type, listener, useCapture)`
 > 		- type：事件类型（事件名称，注意：没有 on 前缀）
 > 		- listener：事件触发实际执行的匿名函数（当事件触发时，该函数会被执行）
 > 		- useCapture：是否在事件捕获阶段执行（不写默认为false）
 >
-> #### 关于 listener 中的 this 和 target
+>#### 关于 listener 中的 this 和 target
 > - 当一个 EventListener 在 EventTarget 正在处理事件时被注册到 EventTarget 上，它不会被立即触发，但可能在事件流后面的事件触发阶段被触发，例如可能在捕获阶段添加，然后在冒泡阶段被触发。
 > - 通常来说 this 的值是触发事件的元素的引用，当使用 addEventListener() 为一个元素注册事件时，句柄里的 this 值是该元素的引用。其与传递给句柄的 event 参数的 currentTarget 属性的值一致。
 > ```
 >
-> ```html
+>```html
 > <div id="parent">
 >   <div id="child" class="child"> 点我 </div>
 > </div>
 >
-> <script>
+><script>
 >   document.getElementById('parent').addEventListener('click', function (e) {
 >     alert(`冒泡: parent 事件触发, this指向:` + this.id + ', 触发的id为:' + e.target.id)
 >   })
@@ -1854,7 +1850,7 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 >     alert(`冒泡: child 事件触发，this指向:` + this.id + ', 触发的id为:' + e.target.id)
 >   })
 >
->   document.getElementById('parent').addEventListener('click', function (e) {
+>  document.getElementById('parent').addEventListener('click', function (e) {
 >     alert(`捕获: parent 事件触发,this指向:` + this.id + ', 触发的id为:' + e.target.id)
 >   }, true)
 >   document.getElementById('child').addEventListener('click', function (e) {
@@ -1862,7 +1858,7 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 >   }, true)
 > </script>
 >
-> <!--
+><!--
 >   输入的结果：
 >     1. 捕获: parent 事件触发,this指向:parent, 触发的id为:child
 >     2. 捕获: child 事件触发,this指向:child, 触发的id为:child
@@ -1871,7 +1867,7 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 > -->
 > ```
 >
-> ![image-20230330174649406](./image/image-20230330174649406.png)
+>![image-20230330174649406](./image/image-20230330174649406.png)
 
 #### 兼容性事件封装
 
@@ -1914,9 +1910,9 @@ insertAfter('afterend', document.getElementById('myId'), '<p>after</p>')
 
 ```bash
 在 JavaScript 中，可以通过两种方式创建自定义事件：
- 	- 使用 [`Event`](https://developer.mozilla.org/zh-CN/docs/Web/API/Event/Event) 构造函数
-	- 使用 [`CustomEvent`](https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent) 构造函数
-	- 也可以使用 [`document.createEvent`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createEvent) 来创建自定义事件，但从函数返回的对象所公开的大多数方法已被弃用
+ 	- 使用 Event 构造函数
+	- 使用 CustomEvent 构造函数
+	- 也可以使用 document.createEvent 来创建自定义事件，但从函数返回的对象所公开的大多数方法已被弃用
 
 创建事件后，您需要能够调度它们。事件可以分派到任何扩展的对象，`EventTarget` 包括所有 HTML 元素、`document`、`window`等。要监听自定义事件，请向要监听的元素添加一个事件监听器，就像使用原生 DOM 事件一样。
 `dispatchEvent` 方法向一个指定的事件目标派发一个事件，并以合适的顺序同步调用目标元素相关的事件处理函数
@@ -2000,10 +1996,9 @@ const handleClick = () => {
 
 
 
-#### DOM实例对象`event`
+#### DOM 实例对象 event
 
 > ````bash
-> ## DOM 实例对象 event
 > - Event对象代表事件的状态，包含了与当前事件相关的一切信息。比如事件在其中发生的元素、键盘按键的状态、鼠标的位置、鼠标按钮的状态。
 >     - 获取键盘按下或弹起的按键
 >     - 获取鼠标的位置坐标
@@ -2014,31 +2009,30 @@ const handleClick = () => {
 >     - 事件句柄(Event Handlers)
 >
 >
-> - 经典应用：商品的放大镜，鼠标光点追踪
+>- 经典应用：商品的放大镜，鼠标光点追踪
 > ````
 >
-> ```js
+>```js
 > let event = event || window.event;   //获取事件信息的兼容性写法
 >
-> // 事件信息event 常见的属性
+>// 事件信息event 常见的属性
 > altKey			：返回当事件被触发时,"alt"键是否被按下
 > shiftKey		：返回当事件被触发时,"shift"键是否被按下
 > ctrlKey			：返回当事件被触发时,"ctrl"键是否被按下
 > metaKey			：返回当事件被触发时,"meta"键是否被按下
 >
-> button			：返回当事件被触发时,哪个鼠标按钮被点击
+>button			：返回当事件被触发时,哪个鼠标按钮被点击
 > relatedTarget：返回与事件的目标节点相关的结点
 >
-> clientX			：返回当事件被触发时,鼠标指针的水平坐标
+>clientX			：返回当事件被触发时,鼠标指针的水平坐标
 > clinetY			：返回当事件被触发时,鼠标指针的垂直坐标
 > screenX			：返回当某事件被触发时,鼠标指针的水平坐标
 > screenY			：返回当某事件被触发时,鼠标指针的垂直坐标
 > ```
 >
-> #### 【典例】通过 ctrl + enter 键提交信息
+>#### 【典例】通过 ctrl + enter 键提交信息
 >
-> ```html
-> <!-- 通过 ctrl + enter 键提交信息 -->
+>```html
 > <textarea id="text_comment" cols="60" rows="5"></textarea>
 > <div id="div_show"><p>CTRL + 回车 提交</p>
 >   <script>
@@ -2065,21 +2059,21 @@ const handleClick = () => {
 
 > ````bash
 > 事件传播的三个阶段：事件捕获 -> 目标 -> 事件冒泡
-> 
+>
 >1. 捕获阶段
 > 事件从祖先元素往子元素查找（DOM树结构），直到捕获到事件目标 target。在这个过程中，默认情况下，事件相应的监听函数时不会被触发的。
 > 捕获阶段事件依次传递的顺序是：'window -> document -> html -> body -> 父元素 -> 子元素 -> 目标元素'。
-> 
+>
 >
 >2. 事件目标
 > 当到达目标元素后，执行目标元素该事件相应的处理函数。如果没有绑定监听函数，那就不执行。
-> 
+>
 >
 >3. 事件冒泡
 > 事件从事件目标 target 开始，从子元素往祖先元素向上冒泡，直到页面的最顶级标签。
 > 冒泡指的是：'子元素的事件被触发时，父元素的同样的事件也会被触发'。取消冒泡就是取消这种机制。
 > 冒泡的顺序是：'div -> body -> html -> document -> window'。
-> 
+>
 >注意：
 > 以下事件不冒泡（即事件不会往父元素那里传递）：'blur、focus、load、unload、onmouseenter、onmouseleave'。
 > ````
@@ -2145,22 +2139,22 @@ const handleClick = () => {
 > ```bash
 > ### 事件委托的原理：
 > 不给每个子节点单独设置事件监听器，而是设置在其父节点上，然后利用冒泡原理设置每个子节点。
-> 
+>
 >
 >### 事件委托的应用：
 > 给 ul 注册点击事件，然后利用事件对象的 target（`event.target`） 来找到当前点击的 li ，然后事件冒泡到 ul 上， ul 有注册事件，就会触发事件监听器。
-> 
+>
 >
 >### 事件委托的好处：
 > 只操作了一次 DOM，提高了程序的性能。
 > 当该触发改事件的同一种标签过多，会过于消耗性能和内存。所以把触发事件绑定到该标签的父层，减少了事件绑定的次数，然后利用冒泡机制，在执行事件函数时利用冒泡机制再去匹配判断目标元素。
-> 
+>
 >
 >### 为什么要事件委托？
 > 在 JavaScript 中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能，因为 '需要不断地操作 DOM'，那么引起 '浏览器重绘和回流' 的可能也就更多，页面交互的时间也就变得越长，这就是为什么要 '减少 DOM 操作的原因'。
 > 每一个事件处理函数都是一个对象，若存在许多的事件处理函数，内存就会被多占用一部分。如果使用事件委托，就会将所有的操作放到 JS 程序中，'只对它的父级（如果它只有一个父级）这一个对象进行操作，此时与 DOM 的操作就只需要交互一次，这样就能大大减少与 DOM 的交互次数，以此来提高性能'。
 > ```
-> 
+>
 >```html
 > <ul id="parent-list" style="background-color: #bfa;">
 > <li><p>我是p元素</p></li>
@@ -2168,7 +2162,7 @@ const handleClick = () => {
 >   <li><a href="javascript:;" class="link">超链接二</a></li>
 >   <li><a href="javascript:;" class="link">超链接三</a></li>
 >   </ul>
-> 
+>
 ><script>
 > window.onload = function () {
 >    document.getElementById('parent-list').addEventListener('click', function (event) {
@@ -2219,14 +2213,12 @@ ele.dispatchEvent(e) // 触发事件
 
 ```bash
 contextMenu 事件并不会替换原有的右键菜单，而是将你的自定义右键菜单添加到浏览器的右键菜单里。
-
     <div id="menu">Lorem ipsum dolor sit amet.</div>
     <script>
       menu.addEventListener('contextmenu', function () {
         alert('点我！')
       })
     </script>
-   
 
 
 也可以阻止它，显示自己自定义的菜单
@@ -3014,9 +3006,9 @@ function del() {
         - `height = number` 窗口高度（像素单位）
         - `top = number` 窗口离屏幕顶部距离（像素单位）
         - `left = number` 窗口离屏幕左边距离（像素单位）
-        
 
-    
+
+
 ### 同源策略限制
 只有在窗口是同源的时，窗口才能自由访问彼此的内容（相同的协议://domain:port）。
 否则，例如，如果主窗口来自于 site.com，弹窗来自于 gmail.com，则处于安全性考虑，这两个窗口不能访问彼此的内容。
@@ -3026,7 +3018,7 @@ function del() {
 在过去很多网站滥用弹窗，所有大多数浏览器都会阻止弹窗打开来保护用户。
 如果弹窗是在用户触发的事件（如 onclick 事件）之外的地方调用，大多数浏览器都会阻止此类弹窗。
 如果在 setTimeout 中打开，有可能也会被阻止打开（Firefox 可以接受 2000ms 或更短的延迟，但是超过这个时间则移除“信任”，限制打开）
-	- 被阻止打开：`setTimeout(() => window.open('http://google.com'), 3000)` 
+	- 被阻止打开：`setTimeout(() => window.open('http://google.com'), 3000)`
 	- 允许打开：`setTimeout(() => window.open('http://google.com'), 1000)`
 
 
@@ -3039,7 +3031,7 @@ function del() {
 ### 新窗口移动和调整大小的方法
 - 新窗口.moveBy(x, y)
 		将窗口相对于当前位置向右移动 x 像素，并向下移动 y 像素。允许负值（向上/向左移动）
-		
+
 - 新窗口.moveTo(x,y)
 		将窗口移动到屏幕上的坐标 (x,y) 处
 
@@ -3159,9 +3151,9 @@ setTimeout(newWinClose, 5000);
 获取 <iframe> 的window 对象另一种方式是从命名集合 window.frames 中获取：
 	- 通过索引获取：`window.frames[0]` —— 文档中的第一个 iframe 的 window 对象。
 	- 通过名称获取：`window.frames.iframeName` —— 获取 `name="iframeName"` 的 iframe 的 window 对象。
-	
-	
-	
+
+
+
 #### iframe 内嵌
 一个 iframe 内可能嵌套了其他的 iframe。我们可以使用以下方式访问父/子窗口。
     - window.frames —— “子”窗口的集合（用于嵌套的 iframe）。
@@ -3201,7 +3193,7 @@ postMessage 接口允许两个具有任何源的窗口之间进行通信：
 			- origin —— 发送方窗口的源（比如 http://my.site.com）。
 			- source —— 对发送方窗口的引用。
 			- data —— 数据，可以是任何对象。但 IE 浏览器只支持字符串，因此需要对对象数据调用 JSON.stringify 方法进行兼容处理。
-			
+
 2. 使用 addEventListener 来在目标窗口中设置 message 事件的处理程序。
 ```
 

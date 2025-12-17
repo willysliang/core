@@ -2,7 +2,7 @@
 Author: willysliang
 CreateTime: 2024-02-19 11:34:54
 Modifier: willysliang
-ModifiedTime: 2024-02-19 16:07:25
+ModifiedTime: 2025-12-17 11:07:25
 Description: WEB API
 ---
 
@@ -145,9 +145,8 @@ observer.observe(block)
 ### MutationObserver 节点元素变化监听器
 
 ```bash
-## MutationObserver 节点元素变化监听器
-- Mutation Observer 提供了监视对 DOM 树所做更改的能力。它被设计为旧的 Mutation Events 功能的替代品，该功能是 DOM3 Events 规范的一部分。
-- 即是说这是一个 DOM 元素变化的监听器，当被观察的目标 DOM 发生改变时就可以执行指定的逻辑。
+- Mutation Observer 提供监视对 DOM 树所做更改的能力。它被设计为旧的 Mutation Events 功能的替代品。
+- 这是一个 DOM 元素变化的监听器，当被观察的目标 DOM 发生改变时就可以执行指定的逻辑。
 
 
 ## MutationObserver 的应用场景（防删除 DOM 水印）
@@ -162,10 +161,10 @@ observer.observe(block)
 ## 实例方法
 - MutationObserver是一个构造函数，他的实例会有 disconnect、observe和 takeRecords 三个方法
 
-### 1. constructor
+1. constructor
 构造函数接收一个函数，用于在 DOM 变化时执行，该函数有两个参数：一个是描述所有被触发改动的 MutationRecord 对象数组，另一个是调用该函数的 MutationObserver 对象。
 
-### 2. observe
+2. observe
 - mutationObserver.observe(target[, options])
 	- target: DOM 树中的一个要观察变化的DOM Node（可能是一个Element），或者是被观察的子节点树的根节点。
 	- options: 一个可选的 MutationObserverInit 对象，此对象的配置项描述了 DOM 的哪些变化应该提供给当前观察者的 callback
@@ -175,13 +174,12 @@ observer.observe(block)
 		- childList设为 true 以监视目标节点（如果 subtree 为 true，则包含子孙节点）添加或删除新的子节点。默认值为 false。
 		- subtree的其他值也会作用于此子树下的所有节点，而不仅仅只作用于目标节点。默认值为 false。
 
-### 3. disconnect
+3. disconnect
 阻止 MutationObserver 实例继续接收的通知，直到再次调用其 observe() 方法，该观察者对象包含的回调函数都不会再被调用。
 
-### 4. takeRecords
+4. takeRecords
 返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表，使变更队列保持为空。
 DOM 变化之后并不是立即通知执行回调，而是等主线程代码执行完毕再通知，所以 takeRecords 可以将通知提前拦截。
-
 ```
 
 ```js
@@ -214,7 +212,6 @@ observer.observe(node2, {attributes: true})
 node.setAttribute('name', 'king')
 const notices = observer.takeRecords()  // 拦截 DOM 更改的回调
 console.log(notice)
-
 ```
 
 
@@ -268,9 +265,9 @@ console.log(notice)
 ### ResizeObserver 元素大小监听器
 
 ```bash
-响应迅速的 Web 应用程序会根据视口大小调整其内容。这通常是通过 CSS 和媒体查询来实现的。当 CSS 能力不够时，我们会使用 JavaScript。Javascript DOM 操作通过侦听 `window.resize` 事件与视口大小保持同步。
-现代的 Web 应用程序通过一系列组件构成，这些组件也需要响应。以往的方法（CSS 媒体查询，JS `window.resize`，以及其他 Hack）无法跟踪组件的大小。
-随着响应式 Web 应用的普及，对响应式组件的需求也会随之增长。ResizeObserver 的出现正是为组件提供响应大小变化的方式。
+响应迅速的 Web 应用程序会根据视口大小调整其内容。一般通过 CSS 和媒体查询来实现的。当 CSS 能力不足时会使用 JS DOM 操作通过侦听 `window.resize` 事件与视口大小保持同步。
+现代的 Web 应用程序通过一系列组件构成，这些组件也需要响应。以往的方法（CSS 媒体查询，JS 的window.resize，以及其他 Hack）无法跟踪组件的大小。
+ResizeObserver 的出现是为响应式组件提供响应大小变化的方式。
 ```
 
 ```js
@@ -294,8 +291,7 @@ init()
 ## 无框架 Web 组件(Web Components)
 
 ```bash
-## 无框架 Web 组件
-Web 组件是一套不同的技术，允许创建可重复使用的定制元素（它们的功能封装在您的代码之外）并且在您的 Web 应用中使用它们，不需要任何外部库来工作。
+Web 组件是一套不同的技术，允许创建可重复使用的定制元素（它们的功能封装在您的代码之外）并且在 Web 应用中使用它们，不需要任何外部库来工作。
 
 
 ### 特性
@@ -1265,16 +1261,13 @@ const downloadBlob = (blob: Blob, fileName: string) => {
 #### Blob 与 ArrayBuffer 的区别
 
 ```bash
-### Blob 与 ArrayBuffer 的区别
 - 除非需要使用 ArrayBuffer 提供的写入/编辑能力，否则 Blob 格式是最好的。
 - Blob 对象是不可变的，而 ArrayBuffer 是可以通过 TypedArrays 或 DataView 来操作。
 - ArrayBuffer 是存在内存中的，可以直接操作。而 Blob 可以位于磁盘、高速缓存内存和其他不可用的位置。
-虽然 Blob 可以直接作为参数传递给其他函数（如 `window.URL.createObjectURL()`），但你可能仍需要 FileReader 之类的 File API 才能与 Blob 一起使用。
+虽然 Blob 可以直接作为参数传递给其他函数（如 window.URL.createObjectURL()），但可能仍需要 FileReader 之类的 File API 才能与 Blob 一起使用。
 Blob 与 ArrayBuffer 对象之间是可以相互转化的：
 	- 使用 FileReader 的 readAsArrayBuffer() 方法，可以把 Blob 对象转换为 ArrayBuffer 对象；
 	- 使用 Blob 构造函数，如 new Blob([new Uint8Array(data]);，可以把 ArrayBuffer 对象转换为 Blob 对象。
-
-
 ```
 
 ##### http 中 Blob 和 ArrayBuffer 的使用方式
@@ -1302,18 +1295,16 @@ function GET(url, callback) {
 ## Web Worker 线程
 
 ```bash
-## Web Worker 描述
-Web Worker 作用是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。在主线程运行的同时，Worker 线程在后台运行，两者互不干扰。等到 Worker 线程完成计算任务，再把结果返回给主线程。
+Web Worker 作用是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。在主线程运行的同时，Worker 线程在后台运行，两者互不干扰。
 
-在HTML 页面中，如果在执行脚本时，页面的状态是不可相应的，直到脚本执行完成后，页面才变成可响应。web worker 是运行在后台的js，独立于其他脚本，不会影响页面的性能。并且通过 postMessage 将结果回传到主线程。
+在HTML 页面中，如果在执行脚本时，页面的状态是不可相应的，直到脚本执行完成后，页面才变成可响应。web worker 是运行在后台的js，独立于其他脚本，不会影响页面的性能。
 
-使用 WebWorker 的主要作用：是为了解决大量计算而不影响页面性能。
-在进行复杂操作时，如一些计算密度型或高延迟（大量计算、耗时）的任务被 Worker 线程负担了，主线程不会被阻塞或拖慢，(通常负责UI交互)就会很流畅。
+使用 WebWorker 的主要作用：是为了解决大量计算而不影响页面性能，等到 Worker 线程完成计算任务，再通过 postMessage 把结果回传给主线程。
+在进行复杂操作时，如一些计算密度型或高延迟（大量计算、耗时）的任务被 Worker 线程负担，主线程不会被阻塞或拖慢(通常负责UI交互)就会很流畅。
 
-Worker 线程一旦新建成功，就会始终执行，不会被主线程上的活动（如用户点击按钮、表单提交）打断。这样有利于随时响应主线程的通信。但是，这也造成了 Worker 比较耗费资源，不应该过度使用，而且一旦使用完毕，就应该关闭。
+Worker 线程一旦新建成功，就会始终执行，不会被主线程上的活动（如用户点击按钮、表单提交）打断。这样有利于随时响应主线程的通信。但是这也造成 Worker 比较耗费资源，不应该过度使用，而且一旦使用完毕，就应该关闭。
 
-
-如何创建web worker：检测浏览器对于web worker 的支持性，创建web worker 文件（js，回传函数等），创建web worker 对象。
+如何创建web worker：检测浏览器对于web worker 的支持性，创建web worker 文件（js、回传函数等），创建web worker 对象。
 
 
 
@@ -1607,47 +1598,44 @@ addEventListener('message', (event) => {
 ## IndexedDB
 
 > ```bash
-> ## IndexedDB
-> ### 前言
-> 在以前和现在常用的本地存储方式一般都是 localStorage、sessionStorage 和 cookie。
-> 但它们都不能存放大量数据，在现在的业务情况下，很容易出现存放数据过大，导致超出浏览器对于 localStorage、sessionStorage 和 cookie 的存储大小（cookies 不能超过4KB，localStorage、sessionStorage一般不超过4MB），所以这些技术不太适合存放大量数据，此时就可以使用 HTML5 提供的新 API：IndexedDB。
-> 是属于 NoSQL 的一种。
+> 现在常用的本地存储方式一般都是 localStorage、sessionStorage 和 cookie。
+> 但它们都不能存放大量数据，在现在的业务情况下，很容易出现存放数据过大，导致超出浏览器对于 localStorage、sessionStorage 和 cookie 的存储大小（cookies 不能超过4KB，localStorage、sessionStorage一般不超过4MB），所以这些技术不太适合存放大量数据，此时就可以使用 HTML5 提供的新 API：IndexedDB（是属于 NoSQL 的一种）。
 >
 >
 > ### IndexedDB 的特点
-> 1. key/value 的存储方式：
-> IndexedDB 和 localStorage 的存储方式类似，都是通过一个 key 对应一个 value，而且 key 是唯一的方式进行存储的，但是 IndexedDB 和 localStorage 有很不一样的一点就是可以直接存储对象数组等，不需要像  localSotrage 那样必须转为字符串。
+>1. key/value 的存储方式：
+>IndexedDB 和 localStorage 的存储方式类似，都是通过一个 key 对应一个 value，而且 key 是唯一的方式进行存储的，但是 IndexedDB 和 localStorage 很不一样的是可以直接存储对象数组等，不需要像 localSotrage 那样必须转为字符串。
 > 2. 异步调用
-> IndexedDB 是使用异步调用的，当我们存储一个较大的数据时，不会因为写入数据慢而导致页面阻塞。
+> IndexedDB 需要使用异步调用：使得存储一个较大的数据时，不会因为写入数据慢而导致页面阻塞。
 > 3. 支持事务
-> IndexedDB 支持事务，能确保我们多个操作只要其中一步出现问题，就可以整体回滚。
+> IndexedDB 支持事务，能确保多个操作只要其中一步出现问题，就可以整体回滚。
 > 4. 同源限制
-> IndexedDB 和 localStorage 都是有同源策略的问题，不能跨协议、端口、域名使用。
+> IndexedDB 和 localStorage 都有同源策略问题，不能跨协议、端口、域名使用。
 > 5. 储存空间
-> IndexedDB 存储空间相比 localStorage 要大得多，一般不少于 250 MB。
+> IndexedDB 存储空间一般不少于 250 MB。
 > 6. 支持二进制
 > IndexedDB 不但可以存储对象、字符串等，还可以存储二进制数据。
 >
 >
 > ### 应用场景
-> 比如在对商品列表的数据进行缓存，因为在浏览器中实现后退上一个页面，不刷新页面，一般只有用单页面应用才能实现，但因为种种原因而没有使用单页面框架，所以必须要将数据缓存到本地，下次打开列表后，发现如果 url 中的 id 和缓存数据的 id 一致，那么久直接使用缓存数据，不再进行请求。
-> 如果使用 localStorage 来解决会发现在一些特定情况下，数据有可能达到接近 5MB 的数据，在 PC 端的 Chorme 中是可以存到 localStorage 中，但在 IOS 中可能会报出空间不足，导致无法放入 localStorage 中，此时可以使用 indexedDB。
+>比如在对商品列表的数据进行缓存，因为在浏览器中实现后退上一个页面，不刷新页面，一般只有用单页面应用才能实现，但因为种种原因而没有使用单页面框架，所以必须要将数据缓存到本地，下次打开列表后，发现如果 url 中的 id 和缓存数据的 id 一致，那么久直接使用缓存数据，不再进行请求。
+>如果使用 localStorage 来解决会发现在一些特定情况下，数据有可能达到接近 5MB 的数据，在 PC 端的 Chorme 中是可以存到 localStorage 中，但在 IOS 中可能会报出空间不足，导致无法放入 localStorage 中，此时可以使用 indexedDB。
 > 因为 IndexedDB 的空间足够大，可以无需去考虑数据数据大小，而且还能直接以对象的形式存入，无需转为 JSON 字符串，大大减少了转换的运算。但使用 IndexedDB 基本上都是一步操作且要考虑一些低版本的手机可能不支持的情况，所以需要封装中间件，同样的调用，根据设备对 IndexedDB 的兼容情况，自动决定使用 IndexedDB 还是 localStorage。最终完成需求，并且优化前后达到超过 70% 的优化率，页面的渲染基本是秒开。
 >
 >
 > ### localStorage 和 IndexedDB 区别
-> - 相同点：两者都是在客户端永久性存储数据，都通过键值对存储数据。
-> - 不同点：
+>- 相同点：两者都是在客户端永久性存储数据，都通过键值对存储数据。
+>- 不同点：
 >     - indexedDB 是 JS 脚本语言可以操作的数据库。
->     - 操作是异步的。
->     - indexedDB支持事务（transaction），这意味着一系列操作步骤之中，只要有一步失败，整个事务就都取消，数据库回滚到事务发生之前的状态，不存在只改写一部分数据的情况。
->     - 储存空间大。IndexedDB 的存储空间比 localStorage 大得多，一般来说不少于 250MB，甚至没有上线。
+>     - 操作是异步。
+>     - indexedDB支持事务（transaction），在一系列操作步骤中只要有一步失败，整个事务都取消，数据库回滚到事务发生之前的状态，不存在只改写一部分数据的情况。
+>     - 储存空间大。IndexedDB 的存储空间比 localStorage 大得多，一般来说不少于 250MB，甚至没有上限。
 >     - localStorage 不支持搜索。
 > ```
 >
 > ```ts
 > interface IndexedDBStore {
->   /** 对象仓库名称 */
+>  /** 对象仓库名称 */
 >   name: string
 >   /** 主键名称 */
 >   primaryKey: string
@@ -1662,7 +1650,7 @@ addEventListener('message', (event) => {
 >
 > interface IndexedDBConfig {
 >   /** 数据库名 */
->   dbName: string
+>  dbName: string
 >   /** 对象仓库集合 */
 >   stores: IndexedDBStore[]
 >   /** 数据库版本 */
@@ -1673,9 +1661,9 @@ addEventListener('message', (event) => {
 >
 > type TransactionMode = 'readonly' | 'readwrite' | 'versionchange'
 >
-> declare global {
+>declare global {
 >   interface Window {
->     webkitIndexedDB?: IDBFactory
+>    webkitIndexedDB?: IDBFactory
 >     mozIndexedDB?: IDBFactory
 >     msIndexedDB?: IDBFactory
 >   }
@@ -1683,7 +1671,7 @@ addEventListener('message', (event) => {
 >
 > /** 跳出错误函数 */
 > export function throwError (
->   name: string,
+>  name: string,
 >   content = '程序错误',
 >   data?: any,
 > ): void {
@@ -1695,7 +1683,7 @@ addEventListener('message', (event) => {
 >
 > /** IndexedDB 数据库操作帮手 */
 > export class IndexedDBHelper {
->   /** 单例模式实例 */
+>  /** 单例模式实例 */
 >   static dbInstance: IndexedDBHelper
 >   /** 数据库 */
 >   private indexedDb?: IDBFactory
@@ -1708,12 +1696,12 @@ addEventListener('message', (event) => {
 >
 >   constructor (config: IndexedDBConfig) {
 >     if (IndexedDBHelper.dbInstance) {
->       return IndexedDBHelper.dbInstance
+>      return IndexedDBHelper.dbInstance
 >     }
 >
 >     const indexedDb =
 >       window.indexedDB ||
->       window.webkitIndexedDB ||
+>      window.webkitIndexedDB ||
 >       window.mozIndexedDB ||
 >       window.msIndexedDB
 >     if (!indexedDb) {
@@ -1722,24 +1710,24 @@ addEventListener('message', (event) => {
 >
 >     this.indexedDb = indexedDb
 >     this.dbInfo = config
->     this.dbReq = this.open()
+>    this.dbReq = this.open()
 >     this.initRequestHandler()
 >     IndexedDBHelper.dbInstance = this
 >   }
 >
 >   /** 去除 proxy（主要针对 vue3 中响应式数据内置的 proxy 对象） */
 >   private removeProxy (data) {
->     return JSON.parse(JSON.stringify(data))
+>    return JSON.parse(JSON.stringify(data))
 >   }
 >
 >   /** 添加单条数据 */
 >   public add (storeName: string, data: any): Promise<any> {
->     return new Promise((resolve, reject) => {
+>    return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).add(this.removeProxy(data))
 >
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息添加成功', ...arguments)
->         resolve(event)
+>        resolve(event)
 >       }
 >       req.onerror = (event) => {
 >         throwError(IndexedDBHelper.name, '数据库信息添加失败', {
@@ -1753,12 +1741,12 @@ addEventListener('message', (event) => {
 >
 >   /** 获取单条数据 */
 >   public get (storeName: string, primaryKey: string): Promise<any> {
->     return new Promise((resolve, reject) => {
+>    return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).get(primaryKey)
 >
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息获取成功', ...arguments)
->         resolve(event)
+>        resolve(event)
 >       }
 >       req.onerror = (event) => {
 >         throwError(IndexedDBHelper.name, '数据库信息获取失败', {
@@ -1772,7 +1760,7 @@ addEventListener('message', (event) => {
 >
 >   /** 获取所有数据 */
 >   public getAll (storeName: string): Promise<any[]> {
->     return new Promise((resolve, reject) => {
+>    return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).openCursor()
 >       const res: any[] = []
 >       req.onsuccess = (event: any) => {
@@ -1797,7 +1785,7 @@ addEventListener('message', (event) => {
 >
 >   /** 通过索引获取相应数据 */
 >   public getByIndex (storeName: string, indexName: string): Promise<any> {
->     return new Promise((resolve, reject) => {
+>    return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).index(indexName).openCursor()
 >       const res: any[] = []
 >       req.onsuccess = (event: any) => {
@@ -1822,7 +1810,7 @@ addEventListener('message', (event) => {
 >
 >   /** 更新数据 */
 >   public update (
->     storeName: string,
+>    storeName: string,
 >     data: any,
 >     primaryKey?: string,
 >   ): Promise<any> {
@@ -1831,7 +1819,7 @@ addEventListener('message', (event) => {
 >
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息设置成功', ...arguments)
->         resolve(event)
+>        resolve(event)
 >       }
 >       req.onerror = (event) => {
 >         throwError(IndexedDBHelper.name, '数据库信息设置失败', {
@@ -1845,12 +1833,12 @@ addEventListener('message', (event) => {
 >
 >   /** 删除数据 */
 >   public delete (storeName: string, primaryKey: string): Promise<any> {
->     return new Promise((resolve, reject) => {
+>    return new Promise((resolve, reject) => {
 >       const req = this.beginTransaction(storeName).delete(primaryKey)
 >
 >       req.onsuccess = (event) => {
 >         console.log('数据库信息删除成功', ...arguments)
->         resolve(event)
+>        resolve(event)
 >       }
 >       req.onerror = (event) => {
 >         throwError(IndexedDBHelper.name, '数据库信息删除失败', {
@@ -1864,11 +1852,11 @@ addEventListener('message', (event) => {
 >
 >   public count (storeName: string): Promise<any> {
 >     return new Promise((resolve, reject) => {
->       const req = this.beginTransaction(storeName, 'readonly').count()
+>      const req = this.beginTransaction(storeName, 'readonly').count()
 >
 >       req.onsuccess = (event) => {
 >         console.log('数据库条数获取成功', ...arguments)
->         resolve(event)
+>        resolve(event)
 >       }
 >       req.onerror = (event) => {
 >         throwError(IndexedDBHelper.name, '数据库条数获取失败', {
@@ -1882,13 +1870,13 @@ addEventListener('message', (event) => {
 >
 >   /** 打开数据库 */
 >   private open (): IDBOpenDBRequest {
->     const { dbName, version } = this.dbInfo as IndexedDBConfig
+>    const { dbName, version } = this.dbInfo as IndexedDBConfig
 >     return this.indexedDb!.open(dbName, version)
 >   }
 >
 >   /** 初始化助手 */
 >   private initRequestHandler (): void {
->     const dbReq = this.dbReq
+>    const dbReq = this.dbReq
 >     /** 连接被阻止 */
 >     dbReq!.onerror = (event) => {
 >       throwError(IndexedDBHelper.name, 'IndexedDB数据库连接失败', event)
@@ -1896,19 +1884,19 @@ addEventListener('message', (event) => {
 >
 >     /** 连接被阻止 */
 >     dbReq!.onblocked = (event) => {
->       throwError(IndexedDBHelper.name, 'IndexedDB数据库连接被阻止', event)
+>      throwError(IndexedDBHelper.name, 'IndexedDB数据库连接被阻止', event)
 >     }
 >
 >     /** 成功打开数据库 */
 >     dbReq!.onsuccess = (event) => {
->       console.log('数据库连接成功')
+>      console.log('数据库连接成功')
 >       this.db = dbReq!.result
 >       this.dbInfo!.initCb?.()
 >     }
 >
 >     /** 如果指定的版本号，大于数据库的实际版本号，就会发生数据库升级事件 */
 >     dbReq!.onupgradeneeded = (event) => {
->       const db: IDBDatabase = (event as any).target?.result
+>      const db: IDBDatabase = (event as any).target?.result
 >       const dbInfo = this.dbInfo
 >       dbInfo!.stores.forEach((store) => {
 >         const { isClear, name } = store
@@ -1926,7 +1914,7 @@ addEventListener('message', (event) => {
 >
 >   /** 建表 */
 >   private createStore (store: IndexedDBStore, db: IDBDatabase = this.db!): void {
->     const { name, primaryKey, indexList } = store
+>    const { name, primaryKey, indexList } = store
 >     const newStore = db.createObjectStore(name, {
 >       keyPath: primaryKey, // 主键
 >       autoIncrement: true, // 自增
@@ -1940,20 +1928,20 @@ addEventListener('message', (event) => {
 >
 >   private beginTransaction (
 >     storeName: string,
->     mode: TransactionMode = 'readwrite',
+>    mode: TransactionMode = 'readwrite',
 >   ): IDBObjectStore {
 >     const transaction = this.db?.transaction(storeName, mode)
 >
 >     transaction!.onerror = (event) => {
 >       throwError(IndexedDBHelper.name, '事务创建失败!', event)
->     }
+>    }
 >     transaction!.oncomplete = (event) => {
 >       console.log('数据库修改结束，事务完成')
 >     }
 >
 >     return transaction!.objectStore(storeName)
 >   }
-> }
+>}
 > ```
 
 
@@ -2096,10 +2084,9 @@ caches.delete('my-cache').then(() => {
 ## Push API
 
 ```bash
-## Push API
 [Push API](https://developer.mozilla.org/zh-CN/docs/Web/API/Push_API)
 
-Push API 允许服务器向用户的设备发送通知，即使用户当前没有打开网站。这意味着即使用户的浏览器是关闭的，只要设备能连接到互联网，服务器也可以推送通知。
+Push API 允许服务器向用户的设备发送通知，即使用户当前没有打开网站。这意味着即使用户的浏览器关闭，只要设备能连接到互联网，服务器也可以推送通知。
 
 Service Workers 是在 Web 浏览器中运行的一种脚本，可以在没有页面或用户界面的情况下运行。因此即使应用程序没有打开，Service Workers 也可以接收来自服务器的推送消息，并相应地对用户显示通知。
 
@@ -2178,7 +2165,6 @@ Push 是工作在 serviceWorker 线程下的，所以不关系浏览器窗口是
 #### Push API 接口
 
 ```bash
-### Push API 接口
 - PushManager
 - PushEvent
 - PushMessageData
@@ -2192,7 +2178,7 @@ Push 是工作在 serviceWorker 线程下的，所以不关系浏览器窗口是
 PushManager 接口用于操作推送订阅，通过 ServiceWorkerRegistration.PushManager 获取
 
 
-#### `PushManager.subscribe()`：用于订阅推送服务。
+#### PushManager.subscribe()：用于订阅推送服务。
 返回一个 Promise 形式的  PushSubscription 对象，该对象包含推送订阅的详情。如果当前 service worker 没有已存在的订阅，则会创建一个新的推送订阅。
 语法： `PushManager.subscribe(options).then(function(pushSubscription){ ... } )`
 options 参数：
@@ -2200,12 +2186,12 @@ options 参数：
 	- applicationServerKey：推送服务器用来向客户端应用发送消息的公钥。该值是应用程序服务器生成的签名密钥对的一部分，可使用在 P-256 曲线上实现的椭圆曲线数字签名（ECDSA）。若是使用 VAPID 协议（Voluntary Application Server Identification：自主应用服务器标识），则需要将 Base64 的公钥转为 Uint8 的数组。
 
 
-#### `PushSubscription.getSubscription()`：用于获取订阅对象 PushSubscription
+#### PushSubscription.getSubscription()：用于获取订阅对象 PushSubscription
 返回一个 Promise 用来处理一个包含已经发布的分支的细节的PushSubscription 对象。如果没有已经发布的分支存在，返回null。
 语法：`PushManager.getSubscription().then(function(pushSubscription){ ... })`
 
 
-#### `PushSubscription.permissionState()`： 用于获取 PushManager 的权限状态
+#### PushSubscription.permissionState()： 用于获取 PushManager 的权限状态
 语法：`PushManager.permissionState(options).then(function(PushMessagingState){ ... })`
 options 参数:
 	- userVisibleOnly
@@ -2466,14 +2452,12 @@ Authorization 对 JWT 签名的格式要求：`Authorization: 'WebPush <JWT Info
 ##### VAPID key 生成
 
 ```bash
-### VAPID key 生成
 密钥使用 ECDSA（椭圆曲线迪菲-赫尔曼金钥交换）的 ES256 算法（ECDSA使用 P-256 曲线和 SHA-256 哈希算法的缩写）。
 
 
 基于 node 实现：
 $ npm install -g web-push
 $ web-push generate-vapid-keys
-
 ```
 
 ###### 基于浏览器 JS 实现
@@ -2586,7 +2570,7 @@ webpush
 ### 显示消息 Notification API
 
 ```bash
-Notifications API 是浏览器向开发人员公开的接口，允许在用户允许的情况下向用户显示消息，即使网站/Web 应用未在浏览器中打开。
+Notifications API 允许在用户允许的情况下向用户显示消息，即使网站/Web 应用未在浏览器中打开。
 这些消息是一致的和原生的，这意味着接收者习惯于它们的 UI 和 UX（用户界面和用户体验），是系统范围的，而不是特定于您的网站。
 	- 与 Push API 相结合，这项技术可以成为提高用户参与度和增强应用功能的成功途径。
 	- Notifications API 与 Service Worker 进行了大量的交互，因为它是推送通知所需要的。您可以使用 Notifications API 而不使用 Push API，但是它的用例是有限的。
@@ -2607,12 +2591,12 @@ if (window.Notification && Notification.permission !== 'denied') {
         body: '我是正文内容!',
         icon: '/path/to/icon.png' // 可选
       })
-      
+
       // 关闭通知
 			setTimeout(n.close(), 1000)
     }
   }
-  
+
   // 调用请求此权限
   // 因为过去对 `Notification.requestPermission()` 的不同实现，我们现在必须支持它，因为我们事先不知道浏览器中运行的是哪个版本（是 Promise 还是同步调用回调函数不确定）
   Notification.requestPermission((status) => {
@@ -2881,7 +2865,7 @@ speak('点个关注不迷路')
 ### 访问网络摄像头 MediaDevices API
 
 ```bash
-MediaDevices API 接口提供访问连接媒体输入的设备，如照相机和麦克风，以及屏幕共享等。它可以使你取得任何硬件资源的媒体数据。
+MediaDevices API 接口提供访问连接媒体输入的设备，如照相机和麦克风，以及屏幕共享等。它可以取得任何硬件资源的媒体数据。
 
 把获取到的摄像头内容显示到页面中
 	使用 getUserMedia 获取 mediaStream，接着将获取到的 mediaStream 设置到需要显示的 video 标签中。
@@ -2984,9 +2968,8 @@ const stop = () => {
 
 `mediaDevices.getUserMedia(constraints)`中的 `constraints` 指定了请求的媒体类型和相对应的参数。
 
-以下同时请求不带任何参数的音频和视频：
-
 ```js
+// 同时请求不带任何参数的音频和视频
 const constraints = {
   audio: true,
   video: true
@@ -3002,14 +2985,14 @@ const constraints = {
 浏览器会试着满足这个请求参数，但是如果无法准确满足此请求中参数要求或者用户选择覆盖了请求中的参数时，有可能返回其它的分辨率。
 
 ```js
-// 使用 `1280 x 720` 的摄像头分辨率
+// 使用 1280 x 720 的摄像头分辨率
 const constraints = {
   audio: true,
   video: { width: 1280, height: 720 }
 }
 ```
 
-强制要求获取特定的尺寸时，可以使用关键字 `min`，`max` 或者 `exact`（就是 `min == max`）。
+强制要求获取特定的尺寸时，可以使用关键字 min，max或exact（就是 min == max）。
 
 ```js
 // 获取最低为 `1280 x 720` 的分辨率
@@ -3169,7 +3152,7 @@ function report() {
 ### 分享  Web Share API
 
 ```bash
-运作机制：Web Share API 借助浏览器原生的能力，为网页提供系统级别的分享入口。当用户触发分享操作时，网站能直接调用底层操作系统的分享功能，把网页中的指定内容，像链接、文本、图片等发送倒其他应用里。诸如社交媒体应用、电子邮件、即时消息、以及本地系统安装的、且接受分享的应用，都会出现在系统的分享弹窗，这对手机网页尤其有用。
+运作机制：Web Share API 借助浏览器原生的能力，为网页提供系统级别的分享入口。当用户触发分享操作时，网站能直接调用底层操作系统的分享功能，把网页中的指定内容，像链接、文本、图片等发送到其他应用里。诸如社交媒体应用、电子邮件、即时消息、以及本地系统安装的、且接受分享的应用，都会出现在系统的分享弹窗，这对手机网页尤其有用。
 
 注意：Web Share API 只有通过 HTTPS 提供内容时才能使用。
 
@@ -3284,7 +3267,7 @@ if ('navigator.vibrate' in window) {
   const vibration = navigator.vibrate(500);
   // 假设过一段时间后要停止振动
   setTimeout(() => {
-    navigator.vibrate(0); 
+    navigator.vibrate(0);
   }, 300);
 }
 ````
@@ -3321,13 +3304,13 @@ const startPeristentVibrate = (duration, interval) => {
 
 ```bash
 Picture in Picture（画中画）功能允许用户在一个小的叠加窗口中弹出网页中播放的视频，用于在浮动窗口上显示内容。它允许用户在与背景页面和其他网站交互时继续查看内容。
- 
+
 
 - 进入画中画: `videoEle.requestPictureInPicture()`，异步API，返回Promise
 - 退出画中画: `document.exitPictureInPicture()`，异步API，返回Promise
 - 画中画生效的 video 元素: `document.pictureInPictureElement`，如果没有开启画中画，那么返回值是 `null`
 
- 
+
  [Picture-in-picture](https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API)
 ```
 
@@ -3387,5 +3370,3 @@ Picture in Picture（画中画）功能允许用户在一个小的叠加窗口�
 ```
 
 
-
-## 结语

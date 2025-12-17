@@ -2,7 +2,7 @@
 Author: willysliang
 CreateTime: 2023-03-31 16:56:31
 Modifier: willysliang
-ModifiedTime: 2023-03-31 16:57:29
+ModifiedTime: 2025-12-17 10:57:29
 Description: ES6+语法Ⅱ
 ---
 
@@ -222,12 +222,11 @@ Description: ES6+语法Ⅱ
 ### ES Modules（浏览器）
 
 > ```bash
-> ## ES Modules
-> ES6 Module 是 JavaScript 中官方支持的模块化方案，它采用 import 和 export 关键字导入和导出模块。
+> ES6 Module 是 JS 中官方支持的模块化方案，它采用 import 和 export 关键字导入和导出模块。
 > ES6 模块化支持静态分析，在编译时就能够确定模块的依赖关系，因此可以进行更加高效的打包和压缩。
 >
 >
-> ### ES6 Module 的使用
+>### ES6 Module 的使用
 > 通过 script 添加 `type=module` 的属性使用 ES Modules。
 >     1. ESM 自动采用严格模式，忽略 'use strict'。
 >     2. 每个 ES Module 都是运行在单独的私有作用域中。
@@ -235,7 +234,7 @@ Description: ES6+语法Ⅱ
 >     4. ESM 的 script 标签会延迟执行脚本。
 >
 >
-> ### CommonJS 与 ES Modules 的区别
+>### CommonJS 与 ES Modules 的区别
 > 1. 使用语法层面，CommonJs是通过module.exports，exports导出，require导入；ESModule则是export导出，import导入
 > 2. CommonJs是运行时加载模块，ESModule是在静态编译期间就确定模块的依赖
 > 3. ESModule在编译期间会将所有import提升到顶部，CommonJs不会提升require
@@ -244,19 +243,19 @@ Description: ES6+语法Ⅱ
 > 6. CommonJS加载的是整个模块，将所有的接口全部加载进来，ESModule可以单独加载其中的某个接口
 >
 >
-> ### 导出字面量和导出模块的区别
+>### 导出字面量和导出模块的区别
 >     导出字面量(如:对象):export default { name, age }
 >     注意: import {name, age} from 'modulename'导入模块无法使用到name和age的值
 >
->     导出模块:
+>    导出模块:
 >       export { name, age }
 >       import {name, age} from 'modulename' 导入模块可以使用到name和age的值
 > 		原因：import导入的是对模块内部的使用
 >
-> 		注意：export暴露的是模块的引用关系(地址)，并且只读不可修改(尝试修改会报错误)
+>		注意：export暴露的是模块的引用关系(地址)，并且只读不可修改(尝试修改会报错误)
 >
 >
-> ### 导出
+>### 导出
 > 1. CommonJS 中是先将模块整体导入为一个对象，然后从对象中结构出需要的成员
 > 			const { name, age } = require('./module.js')
 > 2. ES Module 中 { } 是固定语法，就是直接提取模块导出成员
@@ -269,7 +268,7 @@ Description: ES6+语法Ⅱ
 > 			name.xxx = 'xxx' // 正常
 > ```
 >
-> ```js
+>```js
 > // ModuleA.js
 > var id = 1;
 > // 可以直接导出变量
@@ -280,7 +279,7 @@ Description: ES6+语法Ⅱ
 > export default { getId };
 >
 >
-> // ModuleB.js
+>// ModuleB.js
 > import moduleA from 'moduleA.js'
 > moduleA.id; // undefined
 > moduleA.getId(); // 1
@@ -289,13 +288,12 @@ Description: ES6+语法Ⅱ
 #### ES Modules in Node.js - 与 CommonJS 的差异
 
 > ```bash
-> ## ES Modules in Node.js - 与 CommonJS 的差异
 > 1、ESM 中无法引用 CommonJS 中的那些模块全局成员
 > 2、require, module, exports 可通过 import 和 export 代替
 > 3、__filename 和 __dirname 通过 import 对象的 meta 属性获取
 > ```
 >
-> ```js
+>```js
 > /** CommonJS */
 > console.log(require) // 加载模块函数
 > console.log(module) // 模块对象
@@ -304,7 +302,7 @@ Description: ES6+语法Ⅱ
 > console.log(__dirname) // 当前文件所在目录
 >
 >
-> /** ES Modules */
+>/** ES Modules */
 > // 通过 url 模块的 fileURLToPath 方法转换为路径
 > import { fileURLToPath } from 'url'
 > import { dirname } from 'path'
@@ -319,7 +317,6 @@ Description: ES6+语法Ⅱ
 #### ES Module工作原理
 
 > ```bash
-> ## ES Module 的工作原理
 > 浏览器通过Module Record的数据结构。每个 Module Record 包含：
 >     - ECMAScript Code: AST 语法树
 >     - 需要请求的模块
@@ -330,22 +327,22 @@ Description: ES6+语法Ⅱ
 >     - 其它属性和方法
 >
 >
-> Module Record 再转换成为包含 code 和 state 的 Module Instance。转换的过程分三步：
+>Module Record 再转换成为包含 code 和 state 的 Module Instance。转换的过程分三步：
 >     1. 构造（Construction）
 >     2. 实例化（Instantiation）
 >     3. 求值（Evaluation）
 >
-> ES modules: A cartoon deep-dive 构造每个 Module 在构造阶段要执行三个操作：
+>ES modules: A cartoon deep-dive 构造每个 Module 在构造阶段要执行三个操作：
 >     1. 找到包含模块的文件
 >     2. 下载文件
 >     3. 将文件解析为 Module Record
 >
 >
-> 上述这两个步骤和运行时相关，例如浏览器中文件通过 script 标签引入的；而 Node.js 中文件从文件系统中引入。
+>上述这两个步骤和运行时相关，例如浏览器中文件通过 script 标签引入的；而 Node.js 中文件从文件系统中引入。
 >
-> 浏览器会建立一个 Module Map，当请求一个 URL 时，浏览器把这个 URL 放入 Module Map，并将其打上标记来标识正在下载该文件。之后就发送请求获取该文件，然后继续获取下一个文件；同时 Module Map 也充当起模块缓存的作用，当请求的 URL 已存在时，会直接从 Map 中取得模块。
+>浏览器会建立一个 Module Map，当请求一个 URL 时，浏览器把这个 URL 放入 Module Map，并将其打上标记来标识正在下载该文件。之后就发送请求获取该文件，然后继续获取下一个文件；同时 Module Map 也充当起模块缓存的作用，当请求的 URL 已存在时，会直接从 Map 中取得模块。
 >
-> 当文件下载完成后，浏览器会将文件转换为 Module Record，然后保存在 Module Map 中。实例化是给各个 Module Record 中 export 的变量和函数分配内存地址，接着将其它模块中对应的 import 部分，指向对应的 export 内存地址。JS 引擎会深度优先遍历模块树，此时变量和函数只分配内存地址，没有值。赋值在最后一步进行。
+>当文件下载完成后，浏览器会将文件转换为 Module Record，然后保存在 Module Map 中。实例化是给各个 Module Record 中 export 的变量和函数分配内存地址，接着将其它模块中对应的 import 部分，指向对应的 export 内存地址。JS 引擎会深度优先遍历模块树，此时变量和函数只分配内存地址，没有值。赋值在最后一步进行。
 > ```
 
 ### 闭包实现模块化
@@ -403,7 +400,7 @@ Description: ES6+语法Ⅱ
 
 ### 动态导入 `import()`
 
-> 在此之前，我们只能使用静态导入，它只接受模块路径的字符串。使用动态导入，我们必须使用 Promise 有条件地导入模块。
+> 使用静态导入，它只接受模块路径的字符串。使用动态导入，必须使用 Promise 有条件地导入模块。
 >
 > ```html
 > <nav>
@@ -418,17 +415,17 @@ Description: ES6+语法Ⅱ
 > ```js
 > const main = document.querySelector('main')
 > for (const link of document.querySelectorAll('nav > a')) {
->     link.addEventListener('click', (e) => {
+>      link.addEventListener('click', (e) => {
 >        e.preventDefault()
 >
 >        import(`./section-modules/${link.dataset.entryModule}.js`)
 >          .then((module) => {
->          module.loadPageInto(main)
->        })
->          .catch((err) => {
->          main.textContent = err.message
->        })
->     })
+>            module.loadPageInto(main)
+>          })
+>            .catch((err) => {
+>            main.textContent = err.message
+>          })
+>      })
 > }
 > ```
 >
@@ -496,40 +493,35 @@ export default es6
 ## 正则表达式  RegExp
 
 > ```bash
-> ### 正则表达式 RegExp
->
 > ### 正则作用
->     - 检索、替换符合某个模式（规则）的文本
+>    - 检索、替换符合某个模式（规则）的文本
 >     - 过滤页面内容中的一些敏感词（替换）
 >     - 从字符串中获取特定部分（提取）
 >
 >
->
-> ### 创建正则表达式
-> 1. 通过 `RegExp` 对象的构造函数创建正则表达式
-> 		- `let reg = new RegExp(/正则表达式/)`
+>### 创建正则表达式
+>1. 通过 `RegExp` 对象的构造函数创建正则表达式
+>		- `let reg = new RegExp(/正则表达式/)`
 > 		- `let reg = new RegExp(字符串, 匹配模式修饰符Flag)`
 >
 > 2. 通过字面量创建
 > 		- `let reg = /表达式/`
-> 		- `let reg = /正则表达式/匹配模式`
+>		- `let reg = /正则表达式/匹配模式`
 >
 >
 >
-> ### 字符串的正则方法
-> 字符串对象共有 4 个方法，可以使用正则表达式：match()、replace()、search()和split()。
-> ES6 将这 4 个方法，在语言内部全部调用RegExp的实例方法，从而做到所有与正则相关的方法，全都定义在RegExp对象上。
+>### 字符串的正则方法
+>字符串对象共有 4 个方法，可以使用正则表达式：match()、replace()、search()和split()。
+>ES6 将这 4 个方法，在语言内部全部调用RegExp的实例方法，从而做到所有与正则相关的方法，全都定义在RegExp对象上。
 >     - String.prototype.match 调用 RegExp.prototype[Symbol.match]
 >     - String.prototype.replace 调用 RegExp.prototype[Symbol.replace]
 >     - String.prototype.search 调用 RegExp.prototype[Symbol.search]
 >     - String.prototype.split 调用 RegExp.prototype[Symbol.split]
->
 > ```
 
 ### 匹配模式（标志）
 
 ```bash
-## 匹配模式
 ### `i`：忽略大小写 ignore(Case Insensitive)
 - 修饰语 `i` 用于忽略大小写。
 - 如：`'The fat cat sat on the mat.'.match(/The/gi)` 会返回 `['The', 'the']`
@@ -1452,9 +1444,8 @@ const pattern = /\p{Script=Han}/u
 ### Map
 
 ```bash
-## Map 数据结构
-- `Map` 数据结构是为了**解决对象无法使用非字符串作为键**而提出的数据结构（即Map可使用各种类型的值作为键，包括对象也可作为键）
-- `Map`本质上是一个二维数组，其中数组元素是只包含两个元素(键值对)的数组。
+- Map 数据结构是为了 '解决对象无法使用非字符串作为键' 而提出的数据结构（即Map可使用各种类型的值作为键，包括对象也可作为键）
+- Map 本质上是一个二维数组，其中数组元素是只包含两个元素(键值对)的数组。
 
     - 设置键值对：`set(key, value)`
     - 获得值：`get(key)`
@@ -1523,7 +1514,6 @@ for (const y of map3.entries()) {
 #### Map和 Object 的区别
 
 ```bash
-### Map 和 Object 的区别
 1. Key 的类型：
 对象（Object）的键必须是字符串或者Symbols。尽管当你使用非字符串作为键时，它会被转换为字符串。
 Map可以使用任何类型作为键，包括对象、函数、原始类型。
@@ -1562,76 +1552,69 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 
 ### WeakMap
 
-> - `WeakMap`是为了**解决频繁变动对象垃圾回收（GC）**而引入的Map弱引用数据结构。
->
-> - `WeakMap`只接受对象作为键名(null 除外)。当对象只被`WeakMap`引用到而没被其他对象引用时，则会被垃圾回收机制回收并释放内存，相应的`WeakMap`这一键值对会被删除。
->
->   - 即把键重定义为`null`，会清除之前键的引用，可以释放该出的内存；
->     把值定义为`null`，只是清除值的引用，而键还在，所以不会被垃圾回收。
->
-> - 键名是弱引用，键值可以是任意的，键名所指向的对象可以被垃圾回收，此时键名是无效的
->
-> - 不能遍历，方法有 get、set、has、delete
->
-> - （WeakMap的特点很适合给DOM对象关联一些信息存储在`WeakMap`中，DOM对象一旦被删除，则其内存会被回收，WeakMap的这一键值对会消失）
->
->   ```js
->   var m = new WeakMap();
->   var x = { id: 1 }, y = { id: 2 }, z = { id: 3 }, w = { id: 4 };
->   m.set(x, y);
->   m.set(z, w);
->   x = null; // {id: 1}不再由变量x引用，只有m才能引用，此时，{id: 1}会被垃圾回收，这一键值对会被删除；
->   w = null; // 尽管值{id: 4}也不再由w引用，但m对值的引用是强引用，所以{id: 4}不会被回收
->   ```
->
->   ```js
->   /**
->    * 使用DOM节点作为键名
->    * 每当发生click，就更新状态，并把这个状态作为键值放在WeakMap，对应键名就是这个节点对象
->    * 一旦这个DOM节点删除，该状态就会消失，不存在内存泄漏风险
->    */
->   let weakMap = new WeakMap();
->   weakMap.set(
->     document.getElementById('logo'),
->     { timesClicked: 0 }
->   );
->   document.getElementById('logo').addEventListener('click', function () {
->     let logoData = weakMap.get(document.getElementById('logo'));
->     logoData.timesClicked++;
->   }, false);
->   ```
->
->
->   /**
->    * 使用WeakMap 部署私有属性
->       */
->
->     const _counter = new WeakMap();
->     const _action = new WeakMap();
->
->   class Countdown {
->     constructor(counter, action) {
->       _counter.set(this, counter);
->       _action.set(this, action);
->     }
->     dec() {
->       let counter = _counter.get(this);
->       if (counter < 1) return;
->       counter--;
->       _counter.set(this, counter);
->       if (counter === 0) {
->         _action.get(this)();	// 当counter为0时，则执行action函数
->       }
->     }
->   }
->
->   const c = new Countdown(2, () => console.log("DONE"));
->   c.dec();
->   c.dec();
->   // DONE
->   ```
->
->   ```
+- `WeakMap`是为了**解决频繁变动对象垃圾回收（GC）**而引入的Map弱引用数据结构。
+- `WeakMap`只接受对象作为键名(null 除外)。当对象只被`WeakMap`引用到而没被其他对象引用时，则会被垃圾回收机制回收并释放内存，相应的`WeakMap`这一键值对会被删除。
+
+  - 即把键重定义为`null`，会清除之前键的引用，可以释放该出的内存；
+    把值定义为`null`，只是清除值的引用，而键还在，所以不会被垃圾回收。
+- 键名是弱引用，键值可以是任意的，键名所指向的对象可以被垃圾回收，此时键名是无效的
+- 不能遍历，方法有 get、set、has、delete
+- （WeakMap的特点很适合给DOM对象关联一些信息存储在`WeakMap`中，DOM对象一旦被删除，则其内存会被回收，WeakMap的这一键值对会消失）
+
+```js
+var m = new WeakMap();
+var x = { id: 1 }, y = { id: 2 }, z = { id: 3 }, w = { id: 4 };
+m.set(x, y);
+m.set(z, w);
+x = null; // {id: 1}不再由变量x引用，只有m才能引用，此时，{id: 1}会被垃圾回收，这一键值对会被删除；
+w = null; // 尽管值{id: 4}也不再由w引用，但m对值的引用是强引用，所以{id: 4}不会被回收
+```
+
+```js
+/**
+ * 使用DOM节点作为键名
+ * 每当发生click，就更新状态，并把这个状态作为键值放在WeakMap，对应键名就是这个节点对象
+ * 一旦这个DOM节点删除，该状态就会消失，不存在内存泄漏风险
+ */
+let weakMap = new WeakMap();
+weakMap.set(
+  document.getElementById('logo'),
+  { timesClicked: 0 }
+);
+document.getElementById('logo').addEventListener('click', function () {
+  let logoData = weakMap.get(document.getElementById('logo'));
+  logoData.timesClicked++;
+}, false);
+```
+
+```js
+/**
+ * 使用WeakMap 部署私有属性
+ */
+const _counter = new WeakMap();
+const _action = new WeakMap();
+
+class Countdown {
+  constructor(counter, action) {
+    _counter.set(this, counter);
+    _action.set(this, action);
+  }
+  dec() {
+    let counter = _counter.get(this);
+    if (counter < 1) return;
+    counter--;
+    _counter.set(this, counter);
+    if (counter === 0) {
+      _action.get(this)();	// 当counter为0时，则执行action函数
+    }
+  }
+}
+
+const c = new Countdown(2, () => console.log("DONE"));
+c.dec();
+c.dec();
+// DONE
+```
 
 ### WeakRef
 
@@ -1746,21 +1729,14 @@ Map不支持直接转换为JSON，需要先转换为数组或者其他结构。
 - 高阶函数是对其他函数进行操作的函数，它接受函数作为参数或将函数作为返回值输出。
 - 函数也是一种数据类型，可作为参数传递给另一个参数使用。如：回调函数。
 
-```html
-<div style="width: 200px;height: 200px;position: absolute;background-color: pink;"></div>
-
-<script src="../lib/jquery-3.2.1.js"></script>
-<script>
+```js
 function fn(a, b, callback) {
-    console.log(a + b);
-    callback && callback();
+  console.log(a + b);
+  callback && callback();
 }
 fn(1, 2, function() {
-    console.log("我是最后调用的");
+  console.log("我是最后调用的");
 });
-$("div").animate({left: 500}, function(){
-    $("div").css("background","purple");
-})
 ```
 
 
@@ -1768,7 +1744,6 @@ $("div").animate({left: 500}, function(){
 ## 象征属性 Symbol
 
 ```bash
-## 象征属性 Symbol
 只有两种原始类型可以用作对象属性键：
 	1. 字符串类型（数字会被自动转换为字符串）
 	2. Symbol 类型
@@ -1795,7 +1770,6 @@ JS 中的大多数值都支持字符串的隐式转换，但 symbol 不会被自
 显示一个 symbol 值的方法：
 	1. 通过 `Symbol('symbol定义的值').toString()` 转换。
 	2. 通过获取 `symbol.desciption` 属性，只显示描述。
-
 ```
 
 
@@ -1823,14 +1797,13 @@ console.log(s1.toString() == s2.toString());  // true
 > user[id] = 1
 >
 > console.log(user[id]) // 可以使用 symbol 作为键来访问数据
+>```
 >
-> ```
+>在上述代码中，由于 `user` 对象属于另一个代码库，所以向它添加字段是不安全的，因为我们可能会影响代码库中的其他预定义行为。但 symbol 属性不会被意外访问到。第三方代码不会知道新定义的 symbol，因此将 symbol 添加到 `user` 对象是安全的。
 >
-> 在上述代码中，由于 `user` 对象属于另一个代码库，所以向它添加字段是不安全的，因为我们可能会影响代码库中的其他预定义行为。但 symbol 属性不会被意外访问到。第三方代码不会知道新定义的 symbol，因此将 symbol 添加到 `user` 对象是安全的。
+>另外，假设另一个脚本希望在 `user` 中有自己的标识符，以实现自己的目的。
 >
-> 另外，假设另一个脚本希望在 `user` 中有自己的标识符，以实现自己的目的。
->
-> - 使用 symbol 作为标识符，标识符与标识符之前不会冲突，因为 symbol 总是不同的，即使它们有相同的名字。
+>- 使用 symbol 作为标识符，标识符与标识符之前不会冲突，因为 symbol 总是不同的，即使它们有相同的名字。
 > - 但如果使用字符串`flag`而不是用 symbol，就会出现冲突，后者会覆盖前者的内容。
 
 #### 避免值重复
@@ -2087,27 +2060,32 @@ while (true) {
   if (result.done) break
   console.log(result.value) // // 一个接一个地输出字符
 }
-
 ```
 
 
 
 ## 生成器 generator
 
-- generator 生成器是ES6引入的新数据类型，**可返回多次值**。
+```bash
+- generator 生成器是ES6引入的新数据类型，'可返回多次值'。
+
 - generator 与一般函数的区别
-    - 一般函数在执行过程中，如果没有遇到`return `语句(函数末尾如果没有`return`，默认为`return undefined;`)，控制权无法返回被调用的代码。
-    - generator与一般函数不同的是，generator由`function*`定义，并且除了`return`语句，还可用`yield`返回多次。
-- `yield*`表达式用于委托给另一个generator或可迭代对象。其表达式本身的值是当迭代器关闭时返回值(即done为true时)
+  - 一般函数在执行过程中，如果没有遇到 return 语句(函数末尾如果没有return，默认为return undefined;)，控制权无法返回被调用的代码。
+  - generator 与一般函数不同的是，generator 由`function*`定义，并且除了 return 语句，还可用 `yield` 返回多次。
+- `yield*` 表达式用于委托给另一个generator或可迭代对象。其表达式本身的值是当迭代器关闭时返回值(即done为true时)
 - 调用一个生成器函数并不会马上执行它里面的语句，而是返回一个这个生成器的迭代器对象，当这个迭代器的`next()` 方法被调用时，其内的语句会执行到出现 `yield` 的位置为止（让执行处于**暂停状态**），`yield` 后紧跟迭代器要返回的值。或者如果用的是 `yield*`，则表示将执行权移交给另一个生成器函数（当前生成器**暂停执行**），调用 `next()`方法时如果传入参数，则此参数会作为**上一条执行的 `yield` 语句的返回值**
+
 - 调用 generator 对象由两个方法：
-    1. 不断地调用generator对象的`next()`方法。
-        `next()`方法会执行generator的代码，然后每次遇到`yield x;`就返回一个对象`{value:x, done:true/false}`，然后“暂停”。返回的`value`就是`yield`的返回值，`done`表示这个generator是否已经执行结束；如果`done`为`true`，则`value`就是`return`的返回值。
-    2. 用`for...of`循环迭代 generator 对象，这种方式不需要判断`done`
+  1. 不断地调用generator对象的`next()`方法。
+     `next()`方法会执行generator的代码，然后每次遇到`yield x;`就返回一个对象`{value:x, done:true/false}`，然后“暂停”。返回的`value`就是`yield`的返回值，`done`表示这个generator是否已经执行结束；如果`done`为`true`，则`value`就是`return`的返回值。
+  2. 用`for...of`循环迭代 generator 对象，这种方式不需要判断`done`
+
+
 - generator应用场景
-    1. 每次返回一个值：在同一场合下，函数只能返回一次，所以必须返回一个`Array`；但是换成generator，就**可以一次返回一个数，不断返回多次**。
-    2. 用一个对象来保存状态：因为generator可以在执行过程中多次返回，所以它就像一个可记住执行状态的函数。
-    3. 可把ajax的异步回调变成同步式ajax，优化了传统的 then式产生的回调地狱
+  1. 每次返回一个值：在同一场合下，函数只能返回一次，所以必须返回一个`Array`；但是换成generator，就**可以一次返回一个数，不断返回多次**。
+  2. 用一个对象来保存状态：因为generator可以在执行过程中多次返回，所以它就像一个可记住执行状态的函数。
+  3. 可把ajax的异步回调变成同步式ajax，优化了传统的 then式产生的回调地狱
+```
 
 ```js
 function* another() {
@@ -2304,21 +2282,17 @@ generator.next(4); // --> 将结果传递到 generator 中
 
 
 
-
-
 ## 代理对象 Proxy
 
 ```bash
-### 代理对象 Proxy
-- `Proxy`用于修改某些操作的默认行为，等同于对编程语言进行编程做出修改，所以属于一种“元编程”。
-- Proxy给目标对象设置一层“拦截”，外界对该对象的访问必须通过这层拦截，可对外界的访问进行过滤和改写等自定义操作（代理完成对数据的处理、对构造函数的处理，对数据的验证）
+- Proxy 用于修改某些操作的默认行为，等同于对编程语言进行编程做出修改，所以属于一种“元编程”。
+- Proxy 给目标对象设置一层“拦截”，外界对该对象的访问必须通过这层拦截，可对外界的访问进行过滤和改写等自定义操作（代理完成对数据的处理、对构造函数的处理，对数据的验证）
 
 
 ### 反射 Reflect
   - `Reflect`是一个内置对象，它提供拦截`JavaScript`操作的方法。这些方法与`Proxy handlers`的方法相同
   - `Reflect`不是一个函数对象，因此它是不可构造的，所以不能通过`new`来对其进行调用，或作为一个函数来调用。
   - `Reflect`的所有属性和方法都是静态的
-
 
 
  let p = new Proxy(target, handler);
@@ -2389,7 +2363,7 @@ froxy.foo === "foo" // true
 >
 > ```js
 > let numbers = [0, 1, 2];
-> 
+>
 > numbers = new Proxy(numbers, {
 >   get(target, prop) {
 >     if (prop in target) {
@@ -2399,7 +2373,7 @@ froxy.foo === "foo" // true
 >     }
 >   }
 > });
-> 
+>
 > alert( numbers[1] ); // 1
 > alert( numbers[123] ); // 0（没有这个数组项）
 > ```
@@ -2502,21 +2476,21 @@ new Promise((resolve, reject) => {
 
 > ```js
 > new Promise((resolve, reject) => {
->   setTimeout(() => {
->     resolve('a')
->   }, 1000)
+>     setTimeout(() => {
+>        resolve('a')
+>     }, 1000)
 > }).then(res => {
->   console.log(res)
->   return Promise.resolve(res + '111')
->   // return Promise.reject('error message（返回异常）');
->   // throw "error message（抛出异常）";
+>     console.log(res)
+>     return Promise.resolve(res + '111')
+>     // return Promise.reject('error message（返回异常）');
+>     // throw "error message（抛出异常）";
 > }).then(res => {
->   console.log(res)
->   return Promise.resolve(res + '222')
+>     console.log(res)
+>     return Promise.resolve(res + '222')
 > }).then(res => {
->   console.log(res)
+>     console.log(res)
 > }).catch(err => {
->   console.log(err)
+>     console.log(err)
 > })
 > // 输出 a a111 a111222
 > ```
@@ -2525,27 +2499,27 @@ new Promise((resolve, reject) => {
 >
 > ```js
 > new Promise((resolve, reject) => {
->     setTimeout(() => {
+>      setTimeout(() => {
 >        resolve('Hello World')
->     }, 1000)
+>      }, 1000)
 > }).then(res => {
->     console.log(res + 'start')
->     return res + '111'
+>      console.log(res + 'start')
+>      return res + '111'
 > }).then(res => {
->     console.log(res)
->     return res + '222'
+>      console.log(res)
+>      return res + '222'
 > }).then(res => {
->     console.log(res)
->     return Promise.reject(res + 'error')
+>      console.log(res)
+>      return Promise.reject(res + 'error')
 > }).then(res => {
->     // 此部分不执行，所以不输出
->     console.log(res)
->     return res + '333'
+>      // 此部分不执行，所以不输出
+>      console.log(res)
+>      return res + '333'
 > }).catch(err => {
->     console.log(err)
->     return err + '4 44'
+>      console.log(err)
+>      return err + '4 44'
 > }).then(res => {
->     console.log(res + 'end');
+>      console.log(res + 'end');
 > })
 >
 > /* Hello Worldstart
@@ -2596,12 +2570,11 @@ new Promise((resolve, reject) => {
 ### Promise.all
 
 > ```bash
-> ## Promise.all()
-> `Promsie.all([p1, p2, p3])`：并发处理多个异步任务，所有任务都执行成功，才算成功（才会走到 then）；只要有一个任务失败，就会马上走到 catch，整体都算失败。
+> Promsie.all([p1, p2, p3])：并发处理多个异步任务，所有任务都执行成功，才算成功（才会走到 then）；只要有一个任务失败，就会马上走到 catch，整体都算失败。
 > - 传递的参数是多个 promise 实例组成的数组。
 > ```
 >
-> ```js
+>```js
 > Promise.all([
 >   new Promise((resolve, reject) => {
 >     setTimeout(() => {
@@ -2619,10 +2592,9 @@ new Promise((resolve, reject) => {
 > })
 > ```
 >
-> ### Promise.all() 的实现
+>### Promise.all() 的实现
 >
-> ```bash
-> ## Promise.all() 的实现
+>```bash
 > 1. 如果传入的参数是一个空的可迭代对象，那么此promise对象回调完成(resolve)，只有此情况，是同步执行的，其它都是异步返回的。
 > 2. 如果传入的参数不包含任何 promise，则返回一个异步完成。 promises 中所有的promise都“完成”时或参数中不包含 promise 时回调完成。
 > 3. 如果参数中有一个promise失败，那么Promise.all返回的promise对象失败。
@@ -2630,7 +2602,7 @@ new Promise((resolve, reject) => {
 > ```
 >
 > ```js
-> Promise.all = function (promises) {
+>Promise.all = function (promises) {
 >   return new Promise((resolve, reject) => {
 >     let index = 0;
 >     let result = [];
@@ -2693,16 +2665,15 @@ Promise.race([]).then((res) => {
 ### Promise.any 和 AggregateError
 
 > ```bash
-> ## Promise.any() 与 AggregateError
 > - Promise.any() 接收一个 Promise 可迭代对象(如数组)，只要其中一个 Promise 成功，就返回那个已经成功的 Promise
 >
-> - 如果传入的可迭代对象中的所有 Promise 都失败，将返回一个包含所有拒绝值的 `AggregateError` 实例。它是 Error 的一个子类，用于把单一的错误集合在一起。
+>- 如果传入的可迭代对象中的所有 Promise 都失败，将返回一个包含所有拒绝值的 `AggregateError` 实例。它是 Error 的一个子类，用于把单一的错误集合在一起。
 >
-> - 只要一个成功就返回成功，如果所有的都失败才会报错；
+>- 只要一个成功就返回成功，如果所有的都失败才会报错；
 > - 如果 Promise.any 接收的是一个非 promise 数组，则返回成功。
 > ```
 >
-> ````js
+>````js
 > const promise1 = new Promise((resolve, reject) => { setTimeout(reject, 100, 'promise 1 rejected') })
 > const promise2 = new Promise((resolve, reject) => { setTimeout(resolve, 400, 'promise 2 resolved at 400 ms') })
 > const promise3 = new Promise((resolve, reject) => { setTimeout(resolve, 700, 'promise 3 resolved at 800 ms') })
@@ -2717,7 +2688,7 @@ Promise.race([]).then((res) => {
 > //Output - "promise 2 resolved at 400 ms"
 > ````
 >
-> ```js
+>```js
 > // 示例伪代码
 > /* 返回成功的 */
 > const promises1 = [
@@ -2726,14 +2697,14 @@ Promise.race([]).then((res) => {
 >   Promise.resolve('result'),
 > ]
 >
-> Promise.any(promises1).then((value) => {
+>Promise.any(promises1).then((value) => {
 >   console.log('value: ', value)
 > }).catch((err) => {
 >   console.log('err: ', err)
 > })
 > // 输出结果：value:  result
 >
-> /* 传入的所有Promises都失败 */
+>/* 传入的所有Promises都失败 */
 > const promises2 = [
 >   Promise.reject('ERROR A'),
 >   Promise.reject('ERROR B'),
@@ -2778,30 +2749,30 @@ Promise.race([]).then((res) => {
 
 > ```js
 > function ajax(URL) {
->   return new Promise(function (resolve, reject) {
->     const req = new XMLHttpRequest();
->     req.open('GET', URL, true);
->     req.send();
->     req.onload = function () {
->       if (req.status === 200) {
->         resolve(req.responseText);
->       } else {
->         reject(new Error(req.statusText));
->       }
->     };
+>     return new Promise(function (resolve, reject) {
+>        const req = new XMLHttpRequest();
+>        req.open('GET', URL, true);
+>        req.send();
+>        req.onload = function () {
+>          if (req.status === 200) {
+>            resolve(req.responseText);
+>          } else {
+>            reject(new Error(req.statusText));
+>          }
+>        };
 >
->     req.onerror = function () {
->       reject(new Error(req.statusText));
->     };
->   });
+>        req.onerror = function () {
+>          reject(new Error(req.statusText));
+>        };
+>     });
 > }
 >
 > // 返回的还是一个 Promise对象，所以需要用then/catch
 > ajax("./test.php")
->   .then(function onFulfilled(value) {
->     document.write('内容是：' + value);
+>     .then(function onFulfilled(value) {
+>      document.write('内容是：' + value);
 >   }).catch(function onRejected(error) {
->     document.write('错误：' + error);
+>      document.write('错误：' + error);
 >   });
 > ```
 
@@ -2864,26 +2835,23 @@ Promise.race([]).then((res) => {
 > ```
 >
 
-### 捕获异常 `try/catch`
+### 捕获异常  try...catch
 
 > ```bash
-> ## 捕获异常 try...catch
 > - try-catch 主要用于捕获 '同步函数' 的异常，无法捕获异步函数的异常
 > 原因是当异步函数抛出异常时，
 >     - 对于宏任务而言，执行函数时已经将该函数推入栈，此时并不在 try-catch 所在的栈，所以 try-catch 并不能捕获到错误。
 >     - 对于微任务而言（如 Promise 的构造函数的异常只能被自带的 reject（.catch函数）捕获到）
 >
 >
->
-> ### `promiseA().then().catch()` 和 `promiseA.catch().then()` 的区别
-> 		- 前者可以捕获到 `then` 里面的异常；
+>### promiseA().then().catch() 和 promiseA.catch().then() 的区别
+>		- 前者可以捕获到 `then` 里面的异常；
 > 		- 后者不能捕获到 `then` 里面的异常。
 >
 >
->
-> ### 可选 catch 绑定
-> 在 ES10 之前，语法迫使我们为 `catch` 子句绑定一个异常变量，不管它是否必要。
-> 很多时候可以注意到，`catch` 块只是多余的。ES10 提案使我们能够完全忽略变量，让我们少关心一件事。
+>### 可选 catch 绑定
+>在 ES10 之前，语法迫使我们为 `catch` 子句绑定一个异常变量，不管它是否必要。
+>很多时候可以注意到，`catch` 块只是多余的。ES10 提案使我们能够完全忽略变量，让我们少关心一件事。
 >         try {
 >           const data = JSON.parse(obj)
 >           return true
@@ -2895,18 +2863,14 @@ Promise.race([]).then((res) => {
 ### 异步函数 async/await
 
 > ```bash
-> ## 异步函数 async/await
-> - `async/await` 是 Generator 的语法糖，是一个自执行的 generate 函数。
-> 		`async function` 代替了 `function *`，`await` 代替了 `yield`，同时也无需自己手写一个自动执行器 run。
->
->
->
+> `async/await` 是 Generator 的语法糖，是一个自执行的 generate 函数。
+> `async function` 代替了 `function *`，`await` 代替了 `yield`，同时也无需自己手写一个自动执行器 run。
 > ```
 >
-> ```js
-> /** Generator */
+>```js
+>/** Generator */
 > run(function* () {
->   const res1 = yield readFile(path.resolve(__dirname, './test.css'), { encoding: 'utf8' });
+>  const res1 = yield readFile(path.resolve(__dirname, './test.css'), { encoding: 'utf8' });
 >   console.log(res1);
 >   const res2 = yield readFile(path.resolve(__dirname, './json.js'), { encoding: 'utf8' });
 >   console.log(res2);
@@ -2915,8 +2879,8 @@ Promise.race([]).then((res) => {
 >
 > /** async...await */
 > const readFile = async () => {
->   const res1 = await readFile(path.resolve(__dirname, './test.css'), { encoding: 'utf8' });
->   console.log(res1);
+>  const res1 = await readFile(path.resolve(__dirname, './test.css'), { encoding: 'utf8' });
+>  console.log(res1);
 >   const res2 = await readFile(path.resolve(__dirname, './json.js'), { encoding: 'utf8' });
 >   console.log(res2);
 >   return 'done';
@@ -3034,16 +2998,15 @@ async reqHttp = () => {
 #### 异步迭代器`for await...of`
 
 > ```bash
-> ## 异步迭代器 for-await...of
 > -  ES2018 引入异步迭代器（asynchronous iterators），这就像常规迭代器，除了`next()` 方法返回一个 Promise。因此 `await` 可以和 `for...of` 循环一起使用，以串行的方式运行异步操作。
 >
-> - for-await...of 主要用于遍历异步可迭代对象。其会在异步或同步可迭代对象中创建一个迭代循环（String/Array/类数组/Map/Set/自定义可迭代对象）
+>- for-await...of 主要用于遍历异步可迭代对象。其会在异步或同步可迭代对象中创建一个迭代循环（String/Array/类数组/Map/Set/自定义可迭代对象）
 >
-> - 注意1：for-await...of 语句只能在 async function 内使用。
+>- 注意1：for-await...of 语句只能在 async function 内使用。
 > - 注意2：如果是寻常的同步遍历方法进行循环，其执行顺序不会按顺序执行。
 > ```
 >
-> ```js
+>```js
 > function Gen(time) {
 >   return new Promise((resolve, reject) => {
 >     setTimeout(function () {
@@ -3052,7 +3015,7 @@ async reqHttp = () => {
 >   })
 > }
 >
-> /** 正确代码示例 */
+>/** 正确代码示例 */
 > async function test1() {
 >   const arr = [Gen(2000), Gen(100), Gen(3000)]
 >   for await (let item of arr) {
@@ -3062,7 +3025,7 @@ async reqHttp = () => {
 > test1()	// 输出：2000, 100, 3000
 >
 >
-> /** 正确代码示例：for-await...of 的实现原理 */
+>/** 正确代码示例：for-await...of 的实现原理 */
 > async function test2() {
 >   const arr = [Gen(2000), Gen(100), Gen(3000)]
 >   for (let i of arr) {
@@ -3072,7 +3035,7 @@ async reqHttp = () => {
 > }
 > test2()	// 输出：100, 2000, 3000
 >
-> /** 错误代码示例：不会有效执行的循环（不会按顺序执行） */
+>/** 错误代码示例：不会有效执行的循环（不会按顺序执行） */
 > async function test3() {
 >   const arr = [Gen(2000), Gen(100), Gen(3000)]
 >   arr.forEach(async (i) => {

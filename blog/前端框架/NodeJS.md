@@ -11,7 +11,7 @@ Description: NodeJS 进阶
 ### 原生路由
 
 ```ts
-/** 
+/**
  * @file main.ts 入口文件
  */
 
@@ -30,8 +30,8 @@ server.start()
 ```
 
 ```js
-/** 
- * @file server.ts 服务开关 
+/**
+ * @file server.ts 服务开关
  */
 
 const http = require("http")
@@ -381,11 +381,11 @@ setImmediate(() => {
 
 fs.readFile('test.txt', (err, data) => {
   console.log('文件读取完成');
-  
+
   setTimeout(() => {
     console.log('定时器2');
   }, 0);
-  
+
   setImmediate(() => {
     console.log('setImmediate 2');
   });
@@ -2043,7 +2043,7 @@ console.log(doc instanceof User) // true
 console.log(doc.name) // 'O.O'
 ```
 
-`create()` 方法是 `save()` 方法的封装。上述 `create()` 调用相当于： 
+`create()` 方法是 `save()` 方法的封装。上述 `create()` 调用相当于：
 
 ```js
 const doc = new User({ name: 'O.O' })
@@ -2090,7 +2090,7 @@ await session.withTransaction(async () => {
 
 因此，如果要在事务中使用 `create()`，则**必须**将文档作为数组传递，即使只创建一个文档也是如此。
 
-```js  
+```js
 const session = await User.startSession()
 
 await session.withTransaction(async () => {
@@ -2839,7 +2839,7 @@ $ db.articles.remove({})
 中间件在 schema 上指定，类似静态方法或实例方法等。
   - pre()：在执行某些操作前执行。
   - post()：在执行某些操作前后执行，不可以使用 next()。
-  
+
 `save()` 中间件是递归的，因此对父文档调用 `save()` 也会触发子文档的 `save()` 中间件。
 ```
 
@@ -3773,7 +3773,7 @@ crontab 语法如下所示：
 │ │ │ │ │ ┌──── 一个星期中星期几 (day of week，0 - 6) 注意：星期天为 0，或 Jan、Feb...
 │ │ │ │ │ │
 │ │ │ │ │ │
-* * * * * *			
+* * * * * *
 ```
 
 单个星号的行为类似于通配符。这意味着该任务将针对该时间单位的每个实例运行。五个星号（`* * * * *`）表示 crontab 默认每分钟运行一次。
@@ -3789,13 +3789,13 @@ crontab 语法如下所示：
 语法：`cron.schedule(cronExpression: string, task: Function, options: Object)`
 		- `scheduled`：一个布尔值（`boolean`），用于设置创建的任务是否已安排（默认值为 `true`）
 		- `timezone`：用于任务调度的时区
-		
+
 
 #### 任务调度技巧
 在某些情况下，您可能需要每两小时、三小时或四小时运行一次任务。可以通过将小时数除以所需的时间间隔来完成此操作。
 	- 例如，每四小时 `*4`，或在上午 12 点到下午 12 点之间每三小时运行 `0-12/3`。
 	- 分钟也可以用同样的方法划分。例如，`minutes` 位置的表达式为 `*/10`，表示每 10 分钟运行一次任务。
-	
+
 每个季度（1 月、4 月、7 月和 10 月）运行一次数据库备份。crontab 语法没有一个月的最后一天选项，因此可以使用下个月的第一天
 ```
 

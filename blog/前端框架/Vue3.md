@@ -661,11 +661,11 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > ```bash
 > 组件中的 data 为什么是一个函数返回一个对象，而不是一个对象？
 > 1. vue中组件是用来复用的，为了防止data复用，将其定义为函数。
-> 
+>
 > 2. vue组件中的data数据都应该是相互隔离，互不影响的，组件每复用一次，data数据就应该被复制一次，之后，当某一处复用的地方组件内data数据被改变时，其他复用地方组件的data数据不受影响，就需要通过data函数返回一个对象作为组件的状态。
-> 
+>
 > 3. 当我们将组件中的data写成一个函数，数据以函数返回值形式定义，这样每复用一次组件，就会返回一份新的data，拥有自己的作用域，类似于给每个组件实例创建一个私有的数据空间，让各个组件实例维护各自的数据。
-> 
+>
 > 4. 当我们组件的date单纯的写成对象形式，这些实例用的是同一个构造函数，由于JavaScript的特性所导致，所有的组件实例共用了一个data，就会造成一个变了全都会变的结果。
 > ```
 >
@@ -797,33 +797,33 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 > ## scoped 属性
 > - scoped 代表作用域。
 > - 在 `<style scoped></stype>` 中添加scope属性，该style中的css样式只会针对当前组件起效果；若不添加，其他组件中的css样式相同样式，会在该组件中其效果。
-> 
-> 
+>
+>
 > ### scoped 的原理
 > Vue 中 scoped CSS 的核心原理是通过为每个组件生成一个唯一的属性（如 data-v-hash），并将这个属性附加到组件的根元素以及组件模板中的每个元素上。然后，Vue 编译器会在编译 scoped 样式时，将这些样式规则限定在带有相应属性的元素范围内（而这个工作是由过PostCSS转译实现的），达到样式私有化模块化的目的。
 > PostCSS会给一个组件中的所有dom添加了一个独一无二的动态属性data-v-xxxx，然后，给CSS选择器额外添加一个对应的属性选择器来选择该组件中dom，这种做法使得样式只作用于含有该属性的dom——组件内部dom, 从而达到了'样式模块化'的效果。
-> 
-> 
+>
+>
 > ### scoped 渲染规则
 > 1. 给HTML的DOM节点加一个不重复data属性(形如：data-v-123)来表示他的唯一性
 > 2. 在每句css选择器的末尾（编译后的生成的css语句）加一个当前组件的data属性选择器（如[data-v-123]）来私有化样式
 > 3. 如果组件内部包含有其他组件，只会给其他组件的最外层标签加上当前组件的data属性
-> 
-> 
-> 
+>
+>
+>
 > ### scoped 的不足
 > 1. 全局样式和第三方库的冲突问题：
 > scoped CSS 不能完全避免全局样式或第三方库样式对组件的影响。如果全局样式或第三方库样式具有较高的优先级，可能会覆盖 scoped 样式。
->  
+>
 > 2. 在子组件中的样式穿透
 > scoped 样式默认不穿透子组件。这意味着不能直接在父组件的 scoped 样式中修改子组件的样式，但可以通过深度选择器（`:deep()`）来实现，这会引入一定的复杂性。
-> 
+>
 > 3. scoped 样式的冗长 css 选择器：
 > scoped 样式生成的选择器通常比较冗长，这可能会影响性能，特别是在大型项目中
-> 
+>
 > 4. 动态插入的内容无法自动应用 scoped 样式：
 > 动态插入的 DOM 内容不会自动应用 scoped 样式，需要手动处理。这限制了某些动态内容的样式控制。
-> 
+>
 > 5. 互动性和高级选择器的限制：
 > 某些复杂的选择器或者伪类在 scoped 样式中使用会有一些限制和不便。如 `:hover` 或 `:nth-child` 这样的伪类选择器在使用时需要更加小心。
 > ```
@@ -1439,7 +1439,7 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >     <div>内容</div>
 >   </div>
 > </template>
-> 
+>
 > <script setup lang='ts'>
 >import { Directive } from "vue";
 > const vMove: Directive = {
@@ -1464,7 +1464,7 @@ vue 在内部对异步队列尝试使用原生的 `Promise.then`、`MutationObse
 >   },
 > };
 > </script>
-> 
+>
 > <style lang='less'>
 >.box {
 >   position: fixed;
@@ -3552,7 +3552,7 @@ export default defineComponent({
 >     </>
 >   )
 > }
-> 
+>
 >export default renderDom;
 > ```
 
@@ -3905,7 +3905,7 @@ export default defineComponent({
 >        }
 >      }
 >    })
->   
+>
 > export default MenuItem
 >```
 
@@ -6408,42 +6408,42 @@ export { add, read, readAll, update, remove, searchByName, addMany, getInfo }
 > # 什么是 CSS 原子化
 > 	https://zhuanlan.zhihu.com/p/425814828
 > 	相对于 TailWind CSS 更快速
-> 
+>
 > # CSS原子化的优缺点
 > 1.减少了css体积，提高了css复用
 > 2.减少起名的复杂度
 > 3.增加了记忆成本：将css拆分为原子后，势必要记住一些class才能书写，哪怕tailwindcss提供了完善的工具链， background，也要记住开头是bg
-> 
+>
 > # 装入 unocss 依赖
 > 	npm i -D unocss
-> 
+>
 > # presetIcons Icon图标预设
 > 图标集合安装：npm i -D @iconify-json/ic
-> 
+>
 > 首先我们去icones官网[https://icones.js.org/]（方便浏览和使用iconify）浏览我们需要的icon，比如这里我用到了Google Material Icons图标集里面的baseline-add-circle图标
 > <div  class="i-ic-baseline-backspace text-3xl bg-green-500" />
-> 
+>
 > 2.presetAttributify 属性化模式支持
 > 属性语义化 无须class
 > <div font="black">
 >  btn
 > </div>
-> 
-> 
+>
+>
 > 3.presetUno 工具类预设
-> 
+>
 > 默认的 @unocss/preset-uno 预设（实验阶段）是一系列流行的原子化框架的 通用超集，包括了 Tailwind CSS，Windi CSS，Bootstrap，Tachyons 等。
-> 
+>
 > 例如，ml-3（Tailwind），ms-2（Bootstrap），ma4（Tachyons），mt-10px（Windi CSS）均会生效。
 > ```
 >
 > ```ts
 > // vite.config.ts
 > import unocss from 'unocss/vite'
-> 
+>
 > plugins: [
->   vue(), 
->   vueJsx(), 
+>   vue(),
+>   vueJsx(),
 >   unocss({
 >     rules: [	// 转换规则
 >       [/^m-(\d+)$/, ([, d]) => ({ margin: `${Number(d) * 10}px` })],
