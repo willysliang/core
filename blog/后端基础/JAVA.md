@@ -1,35 +1,6 @@
 ## JAVA
 
-## 基础
-
-### JDK
-
-```bash
-JVM（Java Virtual Machine），Java虚拟机
-JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）
-JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具
-```
-
-![image-20201118004738408](./image/image-20201118004738408.png)
-
-
-
-### java编译
-
-```bash
-javac 是 Java 编译器的命令行工具，用于将 Java 源代码文件(.java)编译成 Java 字节码文件(.class)。
-Java 字节码文件可以在虚拟机(JVM)上运行。
-
-注意：执行 .class 文件时，不需要加 .class 后缀
-
-
-$ javac HelloWorld.java # 根据 HelloWorld.java 文件编译成 HelloWorld.class 文件
-$ java HelloWorld	# 执行 HelloWorld.class 文件
-```
-
-
-
-### 基础语法
+## 基础语法
 
 ```bash
 - 注释：单行注释、多行注释、文档注释
@@ -81,7 +52,62 @@ $ java HelloWorld	# 执行 HelloWorld.class 文件
 			2. 在使用自己写的同一个包中的类时
 ```
 
-#### 注释
+### java编译
+
+```bash
+javac 是 Java 编译器的命令行工具，用于将 Java 源代码文件(.java)编译成 Java 字节码文件(.class)。
+Java 字节码文件可以在虚拟机(JVM)上运行。
+
+注意：执行 .class 文件时，不需要加 .class 后缀
+
+
+$ javac HelloWorld.java # 根据 HelloWorld.java 文件编译成 HelloWorld.class 文件
+$ java HelloWorld	# 执行 HelloWorld.class 文件
+
+
+
+JVM（Java Virtual Machine），Java虚拟机
+JRE（Java Runtime Environment），Java运行环境，包含了JVM和Java的核心类库（Java API）
+JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工具
+```
+
+![image-20201118004738408](./image/image-20201118004738408.png)
+
+### idea快捷键
+
+```bash
+模板补全：输入缩写后按 Tab键可快速生成代码。
+  psvm + Tab：生成 main方法 。
+  sout + Tab：生成 System.out.println();。
+  fori + Tab：生成 for循环 。
+  Ctrl+J：查看所有可用的动态模板 。
+
+后缀补全：
+  表达式.fori：生成遍历循环。
+  表达式.null：生成空值检查 if (expression == null)。
+  new MyClass().var：自动生成变量声明 MyClass obj = new MyClass();
+ 
+
+重构生成
+  Alt + Insert：生成代码，快速生成 Getter/Setter、构造函数、toString()等方法 。
+  Shift + F6：安全重命名，重命名变量、方法、类等，并自动更新所有引用 。
+  Ctrl + Alt + M：提取方法，将选中的代码块提取成一个独立的方法 。
+  Ctrl + Alt + V：提取变量，将表达式结果提取为一个新变量 。
+  Ctrl + Alt + T：包裹代码，用 if、try-catch、for等环绕选中的代码
+
+调试：
+  Shift + F10：运行当前程序
+  Shift + F9：以调试模式运行 。
+  F8：步过，逐行执行，不进入方法内部 。
+  F7：步入，进入当前行所调用的方法内部 。
+  Shift + F8：步出，从当前方法跳出到调用处 。
+  F9：恢复程序，继续运行直到下一个断点 。
+  Alt + F8：在调试时，选中变量或表达式，按此快捷键可计算其值
+```
+
+
+
+### 注释
 
 ```java
 // 这是单行注释文字
@@ -99,7 +125,9 @@ $ java HelloWorld	# 执行 HelloWorld.class 文件
 */
 ```
 
-#### 关键字
+
+
+### 关键字
 
 ```bash
 修饰符关键字：public、protected、private、static、final、abstract
@@ -112,7 +140,7 @@ $ java HelloWorld	# 执行 HelloWorld.class 文件
 其他关键字：new、instanceof、synchronized、transient、volatile、assert
 ```
 
-#### 字面量
+### 字面量
 
 ```bash
 整数字面量：表示整数值，可以使用十进制、八进制（以0开头）和十六进制（以0x或0X开头）表示法。例如：42, 012, 0xFF。
@@ -139,7 +167,9 @@ public class Demo {
 }
 ```
 
-#### 变量
+
+
+### 变量
 
 ```java
 public class VariableDemo2{
@@ -162,7 +192,7 @@ public class VariableDemo2{
 }
 ```
 
-#### 数据类型
+### 数据类型
 
 ```bash
 Java 数据类型是用来定义变量或表达式可以存储的数据类型的分类
@@ -262,7 +292,7 @@ enum Day {
 Day today = Day.WEDNESDAY;
 ```
 
-#### 数据内存划分
+### 数据内存划分
 
 ![image-20201128010728114](./image/image-20201128010728114.png)
 
@@ -270,7 +300,7 @@ Day today = Day.WEDNESDAY;
 
 
 
-#### 类型转换
+### 类型转换
 
 ```bash
 1. 自动类型转换
@@ -310,7 +340,98 @@ public class Main {
 
 
 
-#### 导入包
+### 包装类
+
+```bash
+包装类定义：使用一个类把基本数据类型的数据包装起来，在包装类中可定义方法来操作基本类型的数据
+
+int->Integer		char->Character		（其余数据类型都是首字母大写（byte、short、long、float、double、boolean））
+
+装箱：把基本类型的数据包装到包装类中（基本类型的数据->包装类）
+		0、基本类型转成包装类(直接赋值，自动转换)
+				Interger num=2;	Double num2=1.5;
+    1、构造方法：
+      	Integer(int value) 构造一个新分配的Integer对象，它表示指定的int值。
+      	Integer(String s) 构造一个新分配的Integer对象，它表示String参数所指示的int值。
+      			(传递的字符串必须是字符串化的数值，否则会抛出异常		如："100"值正确，“a”异常)
+    2、静态方法:
+      	static Integer valueOf(int i) 返回一个表示指定的int值的Integer实例
+      	static Integer valueOf(String s) 返回保存指定的String的值的Integer对象
+拆箱：在包装类中去除基本类型的数据（包装类->基本类型的数据）
+    1、成员方法（XXXValue()系列方法）：如`intValue()`以int类型返回该Integer的值
+```
+
+```java
+public static void main(String[] args){
+    //构造方法
+    Integer in1 = new Integer(1);	//1
+    Integer in2 = new Integer("1")	//1
+
+    //静态方法（手动装箱）
+    Integer in3 = Integer.valueOf(1);	//1
+    //Integer in4 = Integer.valueOf("a");	//NumberFormatException数字格式化异常
+    Integer in5 = Integer.valueOf("1");	//1
+
+    //拆箱（手动拆箱）
+    int i = in1.intValue();
+
+    //自动装箱与拆箱
+    Integer in = 1;		//等同 Integer in = new Integer(1);
+    in = in + 2;	//等同 new Integer(in.intValue() + 2) = 3;
+
+
+  	//ArratList集合无法直接存储整数，可以存储Integer包装类
+    ArrayList<Integer> list = new ArrayList<Integer>();
+    list.add(1);	//自动装箱 list.add(new Integer(1));
+    int a = list.get(0);	//自动拆箱 list.get(0).intValue();
+}
+```
+
+#### 类型转换
+
+- 基本类型-->字符串
+
+  1. 基本类型数据的值+""	（最简单的方式）
+  2. 使用包装类中的静态方法 static String toString(int i) 返回一个表示指定整数的 String 对象。
+  3. 使用 String 类中的静态方法 static StringvalueOf(int i) 返回 int 参数的字符串表示形式。
+
+- 字符串-->基本类型
+
+  使用包装类的静态方法 parseXX("字符串")
+
+  ​	Integer类：static int parseInt(String s)
+
+  ​	Double类：static double parseDouble(String s)
+
+```java
+//基本类型-->字符串
+String s1 = 100 + "";
+String s2 = Integer.toString(100);
+String s3 = String.valueOf(100);
+
+//字符串-->基本类型
+int i1 = Integer.parseInt("100");
+//int i2 = Integer.parseInt("a");	//数字格式化异常
+```
+
+
+
+### 系统类System
+
+```java
+//测试程序的效率System.currentTimeMillis()
+System.out.println(System.currentTimeMillis());	//获取当前时间毫秒值（可用来计算运行程序所需要的时间、或者当做文件名来使用-因为不会使文件名重复）
+
+//复制数组（覆盖）System.arraycopy(int[],src,int srcIndex,int[] dest,int destIndex,int count);
+int[] arr1 = {1,2,3,4,5,6,7,8,9};
+int[] arr2 = {9,8,7,6,5,4,3,2,1};
+System.arraycopy(arr1,0,arr2,0,4);	//把arr1数组的前4个数字复制到arr2数组中
+System.out.println(arr2);	  //1,2,3,4,5,4,3,2,1
+```
+
+
+
+### 导入包
 
 ```bash
 为了使用不在同一包中的类，需要在 Java 程序中使用 import 关键字导入这个类：`import 包名.类名;`
@@ -372,7 +493,7 @@ public class Test {
 
 
 
-#### 接收输入Scanner
+### 接收输入Scanner
 
 ```bash
 如果想接收用户从键盘上输入的内容，在 Java 中可以使用 Scanner（扫描仪）
@@ -413,7 +534,7 @@ public class Main {
 
 
 
-#### 程序的三大结构
+### 程序的三大结构
 
 ```bash
 - 顺序结构：程序只能从第一行开始执行，中间不能跳过某一行代码去执行后续代码。
@@ -785,11 +906,192 @@ public class ControlStructureDemo {
 }
 ```
 
-#### 数组
+
+
+### 异常处理
 
 ```bash
-数组是一组相同类型的变量，它们往往是为了表示同一批对象的统一属性。如一个班级的所有同学成绩、全球所有国家的人口数等。
+处理异常的关键字：try、catch、finally、throw、throws
+  - try：执行可能产生异常的代码
+  - catch：捕获异常
+  - finally：表示在最后，无论是否发生异常，代码都会执行
+  - throws：声明方法可能要抛出的各种异常
+  - throw：手动抛出异常
 
+异常的方法（Exception）
+	- void printStackTrace()：输出异常的堆栈信息
+	- String getMessage()：返回异常信息描述字符串，是 printStackTrace() 输出信息的一部分
+
+多路异常捕获
+	- 排列 catch 语句的顺序：先子类后父类
+	- 发生异常时按顺序逐个匹配
+	- 只执行第一个与异常类型匹配的 catch 语句
+
+
+
+	  try {
+      // 代码段 1
+      // 可能产生异常的代码段 2
+    } catch (异常类型 ex) {
+      // 对异常进行处理的代码段 3
+      System.out.println(ex.getMessage());
+      ex.printStackTrace();
+    } finally {
+      // 最后执行的代码段 4
+    }
+```
+
+![img](./image/670909dbe023be430fd0665e35107023aa689761.png)
+
+```java
+Scanner input = new Scanner(System.in);
+int result = 0;
+
+// 多路异常捕获
+try {
+    System.out.println("请输入被除数");
+    int num1 = input.nextInt();
+    System.out.println("请输入除数");
+    int num2 = input.nextInt();
+    result = num1 / num2;
+    System.out.println(result);
+} catch (InputMismatchException ex) { // 捕获类型错误
+  	System.err.println("被除数和除数必须是整数");
+} catch (ArithmeticException ex) {// 捕获算数异常
+  	System.err.println("除数不能为0");
+} catch (Exception ex) { // 捕获其他异常
+		System.err.println("其他异常");
+} finally {
+		System.out.println("程序结束");
+}
+```
+
+#### 自定义异常
+
+```java
+public class CustomException extends Exception {
+    public CustomException(String msg) {
+        super(msg);
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        try {
+            throw new CustomException("自定义错误");
+        } catch (CustomException e) {
+            System.out.println(e.getMessage()); // 自定义错误
+        }
+    }
+}
+```
+
+
+
+### 字符串
+
+```bash
+程序中所有的双引号字符串，都是String类的对象
+
+
+- 将int[]数组转变为字符串格式：String intStr = Arrays.toString(intArray);
+- String-->数组：toCharArray
+- 数组重新排序：Arrays.sort(数组);	//默认字母/从小到大排序
+```
+
+```java
+//使用空参构造
+String str1 = new String();//str1是空的字符串
+
+//根据字符数组创建
+char[] arr = {'A','B','C'};
+String str2 = new String(arr);//str2为ABC
+
+//根据字节数组创建字符串
+byte[] arr2 = {97,98,99};
+String str3 = new String(arr2);//str3为abc
+
+//直接创建
+String str = "hello";
+```
+
+#### 内容比较 equals与equalsIgnoreCase
+
+```java
+//区分大小写 equals()
+String str1 = "Hello";
+String str2 = "hello";
+System.out.println(str1.equals(str2));	//false
+Sysytem.out.println("Hello".equals(str1));	//true
+
+//不区分大小写equalsIgnoreCase()
+System.out.println(str1.equalsIgnoreCase(str2));	//true
+```
+
+#### 索引查找
+
+```java
+String str1 = "Hello";
+String str2 = "World";
+//拼接字符串
+String str3 = str1.concat(str2);	//HelloWorld
+
+//获取指定索引位置的单个字符
+char ch = "Hello".chatAt(1);	//e
+
+//查找参数字符串在本来字符串当中出现的第一次索引位置（-1代表没有）
+str1.indexOf("llo");	//2
+```
+
+#### 字符串转换
+
+```java
+String str1 = "HelloWorld";
+//字符串截取	substring
+String str2 = str1.subsring(5);	//World
+
+//字符串替换	replace()
+String str3 = str1.replace("l","*");	//He**oW*rld
+
+//分割字符串	splice
+String str4 = "aaa,bbb,ccc";
+String[] array1 = str1.splice(",");
+```
+
+
+
+#### String类与StringBuilder类
+
+![image-20201228224638118](./image/image-20201228224638118.png)
+
+```java
+/*StringBuilder常用方法
+public StringBuilder append(...);	//添加任意类型数据的字符串形式，并返回当前对象本身
+public String toString();	//将当前StringBuilder对象转换为String对象
+*/
+
+/*1.构造方法*/
+StringBilder();	//创建一个空的字符串
+StringBuilder(String s);	//根据传入的内容创建一个字符串缓冲区
+
+/*2.成员方法*/
+StringBuilder append(Object obj);	//添加内容
+StringBuilder reverse();	//反转内容
+String toString();	//将缓冲区内容转为字符串
+```
+
+````java
+StringBuilder sb = new StringBuilder();
+sb.append("hello,").append("world~");	//hello,world~
+sb.reverse();	//将数组内容翻转
+````
+
+
+
+### 数组
+
+```bash
+数组是一组相同类型的变量，它们往往是为了表示同一批对象的统一属性。
 
 数组的特性
   - 数组是一种引用数据类型
@@ -852,7 +1154,7 @@ public static calculate(int a,int b,int c){
 }
 ```
 
-##### 数组插入
+#### 数组插入
 
 ```java
 import java.util.Scanner;
@@ -894,7 +1196,7 @@ public class ArrayInsert {
 }
 ```
 
-##### 二分法查找
+#### 二分法查找
 
 ```java
 import java.util.Scanner;
@@ -936,7 +1238,31 @@ public class BinarySearch {
 
 
 
-### 面向对象
+### 枚举类型
+
+```bash
+枚举指由一组固定的常量组成的类型，当某种类型只能取固定范围内的值时，可以定义为枚举类型。
+
+[访问修饰符] enum 枚举名称 {
+	值1, 值2, ...
+}
+```
+
+```java
+public class Test {
+    public enum WeekDay {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+    }
+
+    public static void main(String[] args) {
+        System.out.println(WeekDay.MONDAY); // MONDAY
+    }
+}
+```
+
+
+
+## 面向对象
 
 ```bash
 1. 方法定义
@@ -981,7 +1307,7 @@ public static int abc() {
 
 
 
-#### 面向对象思想
+### 面向对象思想
 
 ```bash
 面向过程：（强调步骤）当需要实现一个功能时，每一个步骤都需要详细处理
@@ -1006,7 +1332,7 @@ public class Test {
 }
 ```
 
-#### 类与对象的区别
+### 类与对象的区别
 
 ```bash
 1. 类是对某一类事物的描述，是抽象的；对象是一类事物的实例，是具体的。
@@ -1040,7 +1366,7 @@ public class Student {
 }
 ```
 
-#### 类图
+### 类图
 
 ```bash
 1.0 定义
@@ -1103,9 +1429,9 @@ public class Student {
 
 
 
-#### 类的基础
+### 类的基础
 
-##### 权限修饰符
+#### 权限修饰符
 
 ```bash
 private关键字
@@ -1118,7 +1444,7 @@ private关键字
 
 
 
-##### 静态static关键字
+#### 静态static关键字
 
 ```bash
 一旦使用static关键字，则此内容属于类；所以凡是本类的对象，都共享同一份。
@@ -1160,7 +1486,7 @@ public class MyClass{
 
 
 
-##### 成员变量和局部变量的区别
+#### 成员变量和局部变量的区别
 
 ```bash
 - 局部变量：在方法内部，只有方法能用；没有默认值；位于栈内存
@@ -1181,7 +1507,7 @@ public class Test{
 
 
 
-##### 静态代码块
+#### 静态代码块
 
 ```bash
 当第一次用到本类时，静态代码块执行唯一的一次。如果有多个静态块，按顺序加载。
@@ -1220,7 +1546,7 @@ public class Test {
 
 
 
-##### this
+#### this
 
 ```bash
 解决参数名称和成员名称重名调用问题
@@ -1230,7 +1556,7 @@ this.成员变量名-->访问成员变量
 
 
 
-##### 方法重载
+#### 方法重载
 
 重载是方法不变，参数的个数、参数类型、参数的多类型顺序不同
 
@@ -1247,7 +1573,7 @@ public static void open(int i,int j){} // 代码错误:和第3行冲突
 
 
 
-##### 构造方法
+#### 构造方法
 
 ```bash
 构造方法是专门用来创建对象的方法，当通过New关键字来创建对象时，就是在调用构造方法。
@@ -1288,7 +1614,7 @@ public class Test {
 
 
 
-##### 匿名对象
+#### 匿名对象
 
 匿名对象就是只有右边的对象，没有左边的名字和赋值运算符
 
@@ -1305,7 +1631,7 @@ public static void mian(String[] args){
 
 
 
-##### final关键字
+#### final关键字
 
 ```bash
 finnal 可用来修饰类、方法、局部变量、成员变量
@@ -1316,7 +1642,7 @@ finnal 可用来修饰类、方法、局部变量、成员变量
 
 
 
-#### 特征-封装
+### 特征-封装
 
 ```bash
 封装：将类的某些信息隐藏在类内部，不允许外部程序直接访问，而是通过该类提供的方法来实现对隐藏信息的操作和访问。
@@ -1354,7 +1680,7 @@ public class Test {
 
 
 
-#### 特征-继承
+### 特征-继承
 
 ```bash
 被继承的类叫超类（superclass)，继承超类的类叫子类（subclass）
@@ -1388,7 +1714,7 @@ public class Test {
     - 父类变量：super.变量名
 ```
 
-##### 方法重写
+#### 方法重写
 
 ```bash
 - 重写(Override)：方法名称一样，参数列表一样
@@ -1403,18 +1729,17 @@ public class Test {
         public > protected > 默认不写 > private
 ```
 
-##### super
+#### super
 
 ```bash
 在 java 中使用 super 访问父类成员
 	- super 不能访问父类私有成员
 	- super 调用构造方法时，只能是第一句
-
 ```
 
 
 
-#### Object类
+### Object类
 
 ```bash
 Object 类是所有类的父类，任何类默认都继承自 Object 类。
@@ -1461,7 +1786,7 @@ public boolean equals(Object obj) { // 认为属性相同即为同一对象
 
 
 
-#### 抽象类
+### 抽象类
 
 ```bash
 Java 中抽象类和抽象方法使用 abstract 修饰
@@ -1471,13 +1796,13 @@ Java 中抽象类和抽象方法使用 abstract 修饰
 		- 抽象类中可以又非抽象方法
 
 
-1. 抽象类不能创建对象，如果创建，则会编译无法通过而报错，只能创建其非抽象子类对象。
+1. 抽象类不能创建对象，如果创建，则会编译无法通过而报错
   	假设创建了抽象类的对象，调用抽象的方法，而抽象方法没有具体的方法体，没有意义
 2. 抽象类中，可以自定义构造方法，提供子类创建对象时初始化父类成员使用。
    	子类的构造方法中，有默认的super()，需要访问父类构造方法
-3. 抽象类中，不一定包含抽象方法，但是有抽象方法的类必定是抽象类。
+3. 抽象类中，不一定包含抽象方法
     未包含抽象方法的抽象类，目的是不想让调用者创建该类对象，通常用于某些特殊的类结构设计
-4. 抽象类的子类，必须重写抽象父类中所有的抽象方法，否则，编译无法通过而报错。除非子类也是抽象类。
+4. 抽象类的子类，必须重写抽象父类中所有的抽象方法，除非子类也是抽象类。
     假设不重写所有抽象方法，则类中可能包含抽象方法。那么创建对象后，调用抽象的方法，没有意义
 
 
@@ -1523,7 +1848,7 @@ public class DemoMain{
 
 
 
-#### 特征-多态
+### 特征-多态
 
 ```bash
 extends继承或者implements实现，是多态性的前提。
@@ -1554,7 +1879,7 @@ extends继承或者implements实现，是多态性的前提。
 
 ![image-20201213181618683](./image/image-20201213181618683.png)
 
-##### 接口多态案例-笔记本电脑
+#### 接口多态案例-笔记本电脑
 
 ![image-20201213182248786](./image/image-20201213182248786.png)
 
@@ -1640,175 +1965,55 @@ public class DemoMain {
 
 
 
-### API文档
+### 接口 interface
 
-**ArrayList**：集合
-
-数组的长度可以发生改变，但是ArrayList集合的长度是可以改变的
-
-ArrayList，有一个`<E>`代表泛型
-
-泛型：装在集合当中的所有元素（统一数据类型，泛型只能是引用类型，不能是基本类型）
-
-ArrayList打印出来的是内容，不是地址；如果内容为空，则输出[]
-
-```java
-/*
-常用方法：
-public boolean add(E e);向集合添加元素，参数类型和泛型一直
-public E get(int,index);从集合获取元素，参数是索引编号，返回值是对应位置的元素
-public E remove(int index);从集合中删除元素，参数时索引编号，返回值是被删掉的元素
-public int size(); 获取集合的长度，返回值为元素个数
-（返回值代表是否执行成功）
-*/
-```
-
-```java
-//从JDK1.7+开始，右侧<>内部可以不写内容，但<>本身需要写
-ArrayList<String> list = new ArrayList<String>();
-//向集合添加数据
-list.add("Kobe");
-list.add("June");
-System.out.println(list);	//[Kobe,June]
-```
-
-#### 字符串
-
-程序中所有的双引号字符串，都是String类的对象。
-
-```java
-public static void main(String[] args){
-    //使用空参构造
-    String str1 = new String();//str1是空的字符串
-
-    //根据字符数组创建
-    char[] arr = {'A','B','C'};
-    String str2 = new String(arr);//str2为ABC
-
-    //根据字节数组创建字符串
-    byte[] arr2 = {97,98,99};
-    String str3 = new String(arr2);//str3为abc
-
-    //直接创建
-    String str = "hello";
-}
-```
-
-**内容比较 equals()与equalsIgnoreCase()**
-
-```java
-//区分大小写 equals()
-String str1 = "Hello";
-String str2 = "hello";
-System.out.println(str1.equals(str2));	//false
-Sysytem.out.println("Hello".equals(str1));	//true
-
-//不区分大小写equalsIgnoreCase()
-System.out.println(str1.equalsIgnoreCase(str2));	//true
-```
-
-**索引查找**
-
-```java
-String str1 = "Hello";
-String str2 = "World";
-//拼接字符串
-String str3 = str1.concat(str2);	//HelloWorld
-
-//获取指定索引位置的单个字符
-char ch = "Hello".chatAt(1);	//e
-
-//查找参数字符串在本来字符串当中出现的第一次索引位置（-1代表没有）
-str1.indexOf("llo");	//2
-```
-
-**字符串转换**
-
-```java
-public static void mian(String[] args){
-    String str1 = "HelloWorld";
-    //字符串截取	substring
-    String str2 = str1.subsring(5);	//World
-
-    //字符串替换	replace()
-    String str3 = str1.replace("l","*");	//He**oW*rld
-
-    //分割字符串	splice
-    String str4 = "aaa,bbb,ccc";
-    String[] array1 = str1.splice(",");
-}
-```
-
-**将int[]数组转变为字符串格式**：String intStr = Arrays.toString(intArray);
-
-**数组重新排序**：Arrays.sort(数组);	//默认字母/从小到大排序
-
-**String-->数组**：toCharArray
+```bash
+1. 接口的常量
+		格式: [public] [static] [final] 数据类型 常量名称 =数据值; // 不可改变,可省略public static final
+		常量必须进行赋值，而且一旦赋值不能改变，常量名称完全大写，用下划线进行分隔。
+2. 接口的抽象方法
+		格式: [public] [abstract] 返回值类型 方法名称(参数列表);
+		抽象方法的两个关键字public abstract可以省略
+		实现类必须覆盖重写接口所有的抽象方法，除非实现类是抽象类
+3. 接口的默认方法
+		格式: [public] default 返回值类型 方法名称(参数列表) { 方法体 }
+		默认方法也可以被覆盖重写
+		作用：可以实现接口拼接
+4. 接口的静态方法
+		格式: [public] static 返回值类型 方法名称(参数列表) { 方法体 }
+		应该通过接口名称进行调用，不能通过实现类对象调用接口静态方法
+		不能通过接口实现类的对象来调用接口的静态方法（可通过 接口名称.静态方法名(参数) 来调用）
+5. 接口的私有化
+		普通私有方法: private 返回值类型 方法名称(参数列表) { 方法体 }
+		静态私有方法: private static 返回值类型 方法名称(参数列表) { 方法体 }
+		private的方法只有接口自己才能调用，不能被实现类或别人使用。
 
 
-
-#### 日期类Data、日历类DataFormat
-
-#### 系统类System
-
-```java
-//测试程序的效率System.currentTimeMillis()
-System.out.println(System.currentTimeMillis());	//获取当前时间毫秒值（可用来计算运行程序所需要的时间、或者当做文件名来使用-因为不会使文件名重复）
-
-//复制数组（覆盖）System.arraycopy(int[],src,int srcIndex,int[] dest,int destIndex,int count);
-int[] arr1 = {1,2,3,4,5,6,7,8,9};
-int[] arr2 = {9,8,7,6,5,4,3,2,1};
-System.arraycopy(arr1,0,arr2,0,4);	//把arr1数组的前4个数字复制到arr2数组中
-System.out.println(arr2);	  //1,2,3,4,5,4,3,2,1
-```
-
-#### String类与StringBuilder类
-
-![image-20201228224638118](./image/image-20201228224638118.png)
-
-```java
-/*StringBuilder常用方法
-public StringBuilder append(...);	//添加任意类型数据的字符串形式，并返回当前对象本身
-public String toString();	//将当前StringBuilder对象转换为String对象
-*/
-
-/*1.构造方法*/
-StringBilder();	//创建一个空的字符串
-StringBuilder(String s);	//根据传入的内容创建一个字符串缓冲区
-
-/*2.成员方法*/
-StringBuilder append(Object obj);	//添加内容
-StringBuilder reverse();	//反转内容
-String toString();	//将缓冲区内容转为字符串
-```
-
-````java
-StringBuilder sb = new StringBuilder();
-sb.append("hello,").append("world~");	//hello,world~
-sb.reverse();	//将数组内容翻转
-````
-
-
-
-### 接口
-
-![image-20201213154924305](./image/image-20201213154924305.png)
-
-```java
-/*
 接口不能直接使用，必须用一个“实现类”来实现接口
-接口的实现类必须覆盖重写(实现)接口中所有的抽象方法（如果少写，本身必须是抽象类）
+接口的实现类必须覆盖重写(实现)接口中所有的抽象方法，除非实现类是抽象类
 public class 实现类名称 implements 接口名称{}
-可以在接口中写的内容：
-1、抽象方法
-接口中中抽象方法的两个关键字public abstract可以省略，方法三要素也可随意定义
-2、java8的默认方法-->作用：可以实现接口拼接
-默认方法会被通过接口实现类直接调用(调用接口)
-3、接口的常量
-public static final 数据类型 常量名称 = 数据值;	//不可改变,可省略public static final
-注意：不能通过接口实现类的对象来调用接口的静态方法（可通过接口名称.静态方法名(参数)来调用）
-*/
-public interface MyIntercaceDafault{
+
+
+
+#### 接口和抽象类的区别
+接口：
+		- 接口不可以被实例化
+		- 实现类必须实现接口的所有方法
+		- 一个类可以实现多个接口
+		- 接口中变量都是静态变量
+		- 接口应用场景是 has-a
+抽象类：
+		- 抽象类不可以被实例化
+		- 抽象类中可以有普通方法
+		- 抽象类可以有构造方法
+		- 抽象类中可以有实例成员变量
+		- 符合 is-a 关系的使用抽象类
+一个类只能继承一个直接的父类，但可以实现多个接口。
+接口的抽象程度比抽象类高，因为接口中所有方法都是抽象类。
+```
+
+```java
+public interface MyIntercaceDafault {
     //抽象方法
     void methodsAbs();	//可省略public abstract
 }
@@ -1826,7 +2031,7 @@ public class MyInterfaceDafaultA implements MyIntercaceDafault{
 
 成员内部类与局部内部类（包含匿名内部类）
 
-**成员内部类**
+#### 成员内部类
 
 内用外，随意访问；外用内，需要内部类对象。
 
@@ -1872,6 +2077,8 @@ public class InnerClass {
 }
 ```
 
+#### 局部内部类
+
 **局部内部类**：定义在一个方法内部的类（只有当前方法能使用它）。
 
 局部内部类如果希望访问所在方法的局部变量，那么变量必须是【有效的final关键字的】
@@ -1891,7 +2098,7 @@ public class Outer{
 }
 ```
 
-**匿名内部类**
+#### 匿名内部类
 
 如果接口的实现类（或父类的子类），只石永红唯一一次。那么这种情况下可以省略该类的定义，而改为使用【匿名内部类】
 
@@ -1901,11 +2108,10 @@ public class Outer{
 在{}里面的才是匿名内部类的内容，且{}后需要加;结束
 在创建对象时，只能使用一次
 
-
 @Override
-        public void method(){
-            System.out.println("匿名内部类实现的方法！");
-        }
+public void method(){
+	System.out.println("匿名内部类实现的方法！");
+}
 */
 //MyInterface.java
 public interface MyInterface{
@@ -1940,142 +2146,97 @@ public static void main(String[] args){
 
 
 
-**接口作为方法的参数或返回值**
+## 集合 Collection
 
-
-
-### 包装类
-
-包装类定义：使用一个类把基本数据类型的数据包装起来，在包装类中可定义方法来操作基本类型的数据
-
-int->Integer		char->Character		（其余数据类型都是首字母大写）
-
-```java
-/*
-装箱：把基本类型的数据包装到包装类中（基本类型的数据->包装类）
-1、构造方法：
-	Integer(int value)构造一个新分配的Integer对象，它表示指定的int值。
-	Integer(String s)构造一个新分配的Integer对象，它表示String参数所指示的int值。
-	(传递的字符串必须是基本类型的字符串，否则会抛出异常		如："100"值正确，“a”异常)
-2、静态方法:
-	static Integer valueOf(int i) 返回一个表示指定的int值的Integer实例
-	static Integer valueOf(String s)返回保存指定的String的值的Integer对象
-
-拆箱：在包装类中去除基本类型的数据（包装类->基本类型的数据）
-1、成员方法：
-	int intValue() 以int类型返回该Integer的值
-*/
-public static void main(String[] args){
-    //构造方法
-    Integer in1 = new Integer(1);	//1
-    Integer in2 = new Integer("1")	//1
-
-    //静态方法
-    Integer in3 = Integer.valueOf(1);	//1
-    //Integer in4 = Integer.valueOf("a");	//NumberFormatException数字格式化异常
-    Integer in5 = Integer.valueOf("1");	//1
-
-    //拆箱
-    int i = in1.intValue();
-
-    //自动装箱与拆箱	（JDK1.5之后出现的新特性）
-	Integer in = 1;		//等同 Integer in = new Integer(1);
-	in = in + 2;	//等同 new Integer(in.intValue() + 2) = 3;
-}
-```
-
-```java
-//ArratList集合无法直接存储整数，可以存储Integer包装类
-ArrayList<Integer> list = new ArrayList<>();
-list.add(1);	//自动装箱 list.add(new Integer(1));
-int a = list.get(0);	//自动拆箱 list.get(0).intValue();
-```
-
-#### 类型转换
-
-- 基本类型-->字符串
-
-  1. 基本类型数据的值+""	（最简单的方式）
-  2. 使用包装类中的静态方法 static String toString(int i) 返回一个表示指定整数的 String 对象。
-  3. 使用 String 类中的静态方法 static StringvalueOf(int i) 返回 int 参数的字符串表示形式。
-
-- 字符串-->基本类型
-
-  使用包装类的静态方法 parseXX("字符串")
-
-  ​	Integer类：static int parseInt(String s)
-
-  ​	Double类：static double parseDouble(String s)
-
-```java
-//基本类型-->字符串
-String s1 = 100 + "";
-String s2 = Integer.toString(100);
-String s3 = String.valueOf(100);
-
-//字符串-->基本类型
-int i1 = Integer.parseInt("100");
-//int i2 = Integer.parseInt("a");	//数字格式化异常
-```
-
-### Collection集合
-
-- 集合与数组区别
+```bash
+集合与数组区别
   - 数组长度是固定的，集合的长度是可变的；
   - 数组中存储的是同一类型的元素，可以存储基本数据类型值。集合存储的是对象，而且对象的类型可以不一致。
   - 在开发中一般当对象多时，使用集合存储。
-- 集合按照存储结构分两大类：
+
+
+- ArrayList 实现长度可变的数组，在内存中分配连续的空间。遍历元素和随机访问元素的效率比较高。
+- LinkedList 采用链表存储方式。插入、删除元素时效率比较高。
+
+
+集合按照存储结构分两大类：
   - 单列集合 java.util.Collection
   - 双列集合 java.util.Map
 
+  Collection：接口存储一组不唯一、无序的对象
+    |—— List（ArrayList、LinkedList）：接口存储一组不唯一、有序的对象
+    |—— Set（HashSet）：接口存储一组唯一、无序的对象
+  Map：接口存储一组键值对象，提供key到value的映射
+    |—— HashMap
+    |—— TreeMap
+```
+
 ![image-20210324124037323](./image/image-20210324124037323.png)
 
+### 有序数组 ArrayList
+
+```bash
+数组的长度可以发生改变，但是ArrayList集合的长度是可以改变的
+
+ArrayList，有一个`<E>`代表泛型
+泛型：装在集合当中的所有元素（统一数据类型，泛型只能是引用类型，不能是基本类型）
+
+ArrayList打印出来的是内容，不是地址；如果内容为空，则输出[]
+
+
+
+常用方法：
+  添加元素：boolean add(E e)
+  插入数据：boolean add(int index, E e)
+  删除数据：boolean remove(E e)
+  删除指定位置的元素：E remove(int index)
+  获取固定位置的元素：E get(int,index)
+  判断是否存在指定元素：boolean contains(E e)
+  获取集合的长度：int size()
+  清空集合所有的元素：void clear()
+  判断集合是否为空：boolean isEmpty()
+  将集合转成一个数组：E[] toArray()
+```
+
 ```java
-/*
-	boolean add(E e);		//向集合添加元素
-	boolean remove(E e);	//删除集合中的某个元素
-	void clear();			//清空集合所有的元素
-	boolean isEmpty();		//判断集合是否为空
-	boolean contains(E e);	//判断集合中是否包含某个元素
-	int size();				//获取集合的长度
-	Object[] toArray();		//将集合转成一个数组
-*/
-public static void main(String[] args){
-    Collection<String> coll = new ArrayList<>();
-    coll.add("hello");
-    coll.add("world");
-    boolean result = coll.remove("hello");
-    //cool.clear();
-    boolean result2 = coll.contains("java");	//false
-    Object[] arr = coll.toArray();	//转换成数组
+//从JDK1.7+开始，右侧<>内部可以不写内容，但<>本身需要写
+ArrayList<String> list = new ArrayList<String>();
+
+//向集合添加数据
+list.add("Kobe");
+list.add("June");
+list.add("hello");
+
+boolean result = list.remove("hello");
+System.out.println(result); // true
+boolean result2 = list.contains("java");
+System.out.println(result2); // false
+
+System.out.println(list);	//[Kobe,June]
+for (int i = 0; i < list.size(); i++) {
+  	System.out.print(list.get(i) + '\t'); // Kobe June
 }
+for (String s : list) {
+  	System.out.printf(s+ '\t'); // Kobe June
+}
+
+Object[] arr = list.toArray();	//转换成数组
+for(Object str: arr) {
+  	System.out.println(str);
+}
+
+list.clear();
+System.out.println(list); // []
 ```
-
-### Iterator迭代器
-
-- java.util.Iterator。Collection接口与Map接口主要用于存储元素，而Iterator主要用于迭代访问（即遍历）Collection中的元素，因此Iterator对象也被称为迭代器。
-- 迭代：即Collection集合元素的通用获取方式。在取元素之前要判断集合中有没有元素，如果有，就把这个元素取出来，继续再判断，如果还有救再取出来。一直把集合中的所有元素全部取出——这种取出方式称为迭代。
-
-```
-/* Iterator接口常用方法：
-	public E next():返回迭代的下个元素
-	public boolean hasNext()：如果仍有元素可以迭代，则返回true
-*/
-
-```
-
-
-
-##  案例
 
 ```java
-//生成6个1~33的随机整数，添加到集合，并遍历集合
+// 生成6个1~33的随机整数，添加到集合，并遍历集合
 public class Demo{
     public static void main(String[] args){
         ArrayList<Integer> list = new ArrayList();
         Random r = new Random();
-        for(int i=0;i<6;i++){
-            int num = r.nextInt(33)+1;
+        for (int i=0; i<6; i++) {
+            int num = r.nextInt(33) + 1;
             list.add(num);
         }
     }
@@ -2083,3 +2244,505 @@ public class Demo{
 ```
 
 
+
+### 链表 LinkedList
+
+```bash
+LinkedList 提供对头部和尾部元素进行添加和删除操作的方法。
+	首部添加元素：void addFirst(Object obj)
+	末尾添加元素：void addLast(Object obj)
+	获取头部元素：Object.getFirst()
+	获取末尾元素：Object.getLast()
+	删除并返回第一个元素：removeFirst()
+	删除并返回最后一个元素：removeLast()
+```
+
+```java
+import java.util.LinkedList;
+
+public class Test {
+    class Book {
+        private String name;
+        private int price;
+
+        public Book(String name, int price) {
+            this.name = name;
+            this.price = price;
+        }
+    }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        Book b1 = test.new Book("我的阿泰勒", 60);
+        Book b2 = test.new Book("平凡的认识", 50);
+        Book b3 = test.new Book("你是我的四月天", 70);
+
+        LinkedList<Book> list = new LinkedList<Book>();
+        list.add(b1);
+        list.addFirst(b2);
+        list.addLast(b3);
+
+        Book first = list.getFirst();
+        System.out.println(first); // Book{name='平凡的认识', price=50}
+
+        Book last = list.getLast();
+        System.out.println(last); // Book{name='你是我的四月天', price=70}
+
+        list.removeFirst();
+        list.removeLast();
+
+        for(Book b: list) {
+            System.out.println(b); // Book{name='我的阿泰勒', price=60}
+        }
+    }
+}
+```
+
+
+
+### 唯一对象组 HashSet
+
+```bash
+Set 接口存储一组唯一、无序的对象。
+Set 存放对象的引用。
+```
+
+```java
+import java.util.HashSet;
+
+public class Test {
+    class Book {
+        private String name;
+        private int price;
+
+        public Book(String name, int price) {
+            this.name = name;
+            this.price = price;
+        }
+    }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        Book b1 = test.new Book("我的阿泰勒", 60);
+
+        HashSet<Book> set = new HashSet<Book>();
+        Book b2 = b1;
+        set.add(b1);
+        set.add(b2);
+
+        System.out.println(set.size()); // 1
+    }
+}
+```
+
+
+
+### HashMap
+
+```java
+import java.util.HashMap;
+
+HashMap<String, String> map = new HashMap<String, String>();
+map.put("CBC", "中国建设银行");
+map.put("ABC", "中国农业银行");
+map.put("ICBC", "中国工商银行");
+
+String value = map.get("CBC");
+System.out.println(value);
+
+System.out.println(map.keySet()); // 获取键的集合
+System.out.println(map.values()); // 获取值的集合
+System.out.println(map); // 获取键+值集合
+System.out.println(map.size()); // 获取长度
+boolean result = map.containsKey("ICBC");
+System.out.println(result ? "存在" : "不存在");
+```
+
+
+
+### Iterator迭代器
+
+```bash
+Iterator迭代器：java.util.Iterator
+Collection 接口与 Map 接口主要用于存储元素，而 Iterator 主要用于迭代访问（即遍历）Collection中的元素，因此 Iterator 对象也被称为迭代器。
+迭代：即 Collection 集合元素的通用获取方式。在取元素之前要判断集合中有没有元素，如果有，就把这个元素取出来，继续再判断，如果还有就再取出来。一直把集合中的所有元素全部取出——这种取出方式称为迭代。
+
+如何使用 Iterator
+	- 获取迭代器对象，Collection 接口的 iterator 方法
+	- hasNext()：判断是否仍有元素可以迭代
+	- next()：返回下一个迭代的元素
+```
+
+```java
+import java.util.HashMap;
+import java.util.Iterator;
+
+public class Test {
+    public static void main(String[] args) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("CBC", "中国建设银行");
+        map.put("ABC", "中国农业银行");
+        map.put("ICBC", "中国工商银行");
+
+        Iterator iterator = map.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            String value = map.get(key);
+            System.out.println(key + "=" + value);
+        }
+    }
+}
+```
+
+### 循环遍历
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test {
+    class Book {
+        private String name;
+
+        public Book(String name) {
+            this.name = name;
+        }
+        public String getName() { return this.name; }
+    }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+
+        Book b1 = test.new Book("我的阿泰勒");
+        Book b2 = test.new Book("平凡的认识");
+        Book b3 = test.new Book("你是我的四月天");
+
+        HashMap<String, Book> map = new HashMap<String, Book>();
+        map.put(b1.getName(), b1);
+        map.put(b2.getName(), b2);
+        map.put(b3.getName(), b3);
+        map.put(b1.getName(), b1);
+
+        System.out.println("======================");
+        for (Book book: map.values()) {
+            System.out.printf(book.getName() + '\t');
+        }
+
+        System.out.println("======================");
+        for (Map.Entry<String, Book> item: map.entrySet()) {
+            System.out.println(item.getKey() + '=' + item.getValue().getName());
+        }
+
+        System.out.println("======================");
+        map.entrySet().stream().forEach(entry -> System.out.println(entry.getKey() + "=" + entry.getValue().getName()));
+    }
+}
+```
+
+
+
+## IO流
+
+```bash
+- File 类访问文件和目录
+- 字节流的使用
+- 字符流的使用
+- 缓冲流的使用
+- 读写二进制文件
+- 序列化和反序列化
+
+
+IO流
+  - 输入流 (Input Stream)：从外部读取数据到程序中
+  - 输出流 (Output Stream)：从程序输出数据到外部
+  - 流的特点：数据像水流一样连续传输
+
+
+核心概念
+	- 数据源/数据目的地：File、内存、网络、控制台、设备
+	- 数据传输单位
+			- 字节流：处理所有类型数据（文本、图片、音视频）
+			- 字符流：专门处理文本数据
+	- 流的角色
+			- 节点流：直接链接数据源/目的地
+			- 处理流（包装流）：对节点流进行包装、提供增强功能
+
+
+字节流：FileInputStream读取文件，FileOutputStream写入文件
+字符流：FileReader读取文件，FileWriter写入文件
+缓冲流：BufferedReader读取文本文件，BufferedWriter写入文本文件
+读写二进制文件：DataInputStream与FileInputStream结合读取二进制文件，DataOutputStream与FileOutputStream结合写二进制文件
+序列化：对象写入到特定流中
+		- 序列化可以保存对象的全景图
+		- 实现Serializable接口
+反序列化：从特定的流中获取数据重新还原成对象
+```
+
+### IO流层次
+
+```bash
+#### 字节流继承体系
+Object
+├── InputStream（抽象类）
+│   ├── FileInputStream        // 文件字节输入流
+│   ├── ByteArrayInputStream   // 字节数组输入流
+│   ├── FilterInputStream      // 过滤字节输入流
+│   │   ├── BufferedInputStream    // 缓冲字节输入流
+│   │   ├── DataInputStream        // 数据输入流
+│   │   └── ObjectInputStream      // 对象输入流
+│   └── 其他...
+└── OutputStream（抽象类）
+    ├── FileOutputStream       // 文件字节输出流
+    ├── ByteArrayOutputStream  // 字节数组输出流
+    ├── FilterOutputStream     // 过滤字节输出流
+    │   ├── BufferedOutputStream   // 缓冲字节输出流
+    │   ├── DataOutputStream       // 数据输出流
+    │   ├── PrintStream            // 打印输出流
+    │   └── ObjectOutputStream     // 对象输出流
+    └── 其他...
+
+
+字符流继承体系
+Object
+├── Reader（抽象类）
+│   ├── InputStreamReader      // 字节流转字符流
+│   │   └── FileReader         // 文件字符输入流
+│   ├── BufferedReader         // 缓冲字符输入流
+│   ├── StringReader           // 字符串输入流
+│   └── 其他...
+└── Writer（抽象类）
+    ├── OutputStreamWriter     // 字符流转字节流
+    │   └── FileWriter         // 文件字符输出流
+    ├── BufferedWriter         // 缓冲字符输出流
+    ├── PrintWriter            // 打印字符输出流
+    ├── StringWriter           // 字符串输出流
+    └── 其他...
+```
+
+### File类 - 访问文件
+
+```bash
+File类：java.io.File
+    判断文件或目录是否存在：boolean exists()
+    判断是否是文件：boolean isFile()
+    判断是否是目录：boolean isDirectory()
+    获取文件的相对路径：String getPath()
+    获取文件的绝对路径：String getAbsolutePath()
+    获取文件/目录名称：String getName()
+    删除此对象指定的文件/目录：boolean delete()
+    创建名称的空文件，不创建文件夹：boolean createNewFile()
+    获取文件大小(单位为字节)：long  length()
+```
+
+```java
+import java.io.File;
+import java.io.IOException;
+
+public class Test {
+    public static void main(String[] args) {
+        File file = new File("D:\\项目\\JavaTest\\src\\1.txt");
+
+        if (file.exists()) { // 判断文件是否存在
+            if (file.isFile()) { // 如果是文件
+                System.out.println("名称:" + file.getName());
+                System.out.println("相对路径:" + file.getPath());
+                System.out.println("绝对路径:" + file.getAbsolutePath());
+                System.out.println("文件大小:" + file.length() + "字节");
+            } else if (file.isDirectory()) { // 如果是目录
+                System.out.println("此文件是目录");
+            }
+        } else { // 此文件不存在
+            System.out.println("此文件不存在");
+            try {
+                file.createNewFile();
+                System.out.println("文件已创建！");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+
+
+### 字节流 - FileInputStream
+
+```java
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class Test {
+    public static void main(String[] args) {
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+
+        try {
+            fis = new FileInputStream("D:\\项目\\JavaTest\\src\\1.txt");
+            fos = new FileOutputStream("D:\\项目\\JavaTest\\src\\2.txt", true); // // true表示追加，false表示覆盖
+
+            byte[] buffer = new byte[1024];  // 1KB缓冲区
+            while(fis.available() != 0) {
+                int read = fis.read(buffer);
+                fos.write(buffer, 0, read);  // 写入实际读取的字节数
+
+                String str = new String(buffer, 0, read);
+                System.out.println(str);
+            }
+            fos.write("\nNew log entry\n".getBytes());
+        } catch (FileNotFoundException e) {
+            System.out.println("文件不存在");
+        } catch (IOException e) {
+            System.out.println("文件不存在");
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+
+
+### 字符流 - FileReader
+
+```java
+import java.io.*;
+
+public class Test {
+    public static void main(String[] args) {
+        try (FileReader fr = new FileReader("D:\\项目\\JavaTest\\src\\1.txt");
+             FileWriter fw = new FileWriter("D:\\项目\\JavaTest\\src\\2.txt")) {
+
+            char[] buffer = new char[1024];
+            int len;
+            while ((len = fr.read(buffer)) != -1) {
+                fw.write(buffer, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### 缓冲流 - BufferedReader
+
+```java
+import java.io.*;
+
+public class Test {
+    public static void main(String[] args) {
+        // 按行读取（需要BufferedReader包装）
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\项目\\JavaTest\\src\\1.txt"));
+             BufferedWriter bw = new BufferedWriter(new FileWriter("D:\\项目\\JavaTest\\src\\2.txt"))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                bw.write(line);
+                bw.newLine();  // 写入换行符
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 带编码的读写
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream("D:\\项目\\JavaTest\\src\\1.txt"), "GB2312"));
+             BufferedWriter bw = new BufferedWriter(
+                     new OutputStreamWriter(
+                             new FileOutputStream("D:\\项目\\JavaTest\\src\\2.txt"), "UTF-8"))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### 序列化
+
+```java
+import java.io.*;
+import java.util.Date;
+
+// 必须实现 Serializable 接口
+class Student implements Serializable {
+    // 序列化版本号，防止序列化兼容性问题
+    private static final long serialVersionUID = 1L;
+    
+    private String name;
+    private int age;
+    private transient String password;  // transient 修饰的字段不会被序列化
+    
+    public Student(String name, int age, String password) {
+        this.name = name;
+        this.age = age;
+        this.password = password;
+    }
+}
+
+public class ObjectStreamExample {
+    public static void main(String[] args) {
+        // 序列化对象
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("student.dat"))) {
+            
+            Student student = new Student("张三", 20, "123456");
+            oos.writeObject(student);
+            oos.writeObject(new Date());  // 序列化其他对象
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // 反序列化对象
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream("student.dat"))) {
+            
+            Student student = (Student) ois.readObject();
+            Date date = (Date) ois.readObject();
+            
+            System.out.println(student);  // password 为 null
+            System.out.println(date);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        // 序列化多个对象到集合
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("students.dat"))) {
+            
+            List<Student> students = Arrays.asList(
+                new Student("张三", 20, "111"),
+                new Student("李四", 22, "222"),
+                new Student("王五", 21, "333")
+            );
+            
+            oos.writeObject(students);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+
+## 多线程
+
+```bash
+
+```
+
+![image-20251222100540671](./image/image-20251222100540671.png)
