@@ -1,3 +1,11 @@
+---
+Author: willysliang
+CreateTime: 2020-11-18 13:24:51
+Modifier: willysliang
+ModifiedTime: 2025-12-22 15:15:52
+Description: JAVA
+---
+
 ## JAVA
 
 ## 基础语法
@@ -86,7 +94,7 @@ JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工�
   表达式.fori：生成遍历循环。
   表达式.null：生成空值检查 if (expression == null)。
   new MyClass().var：自动生成变量声明 MyClass obj = new MyClass();
- 
+
 
 重构生成
   Alt + Insert：生成代码，快速生成 Getter/Setter、构造函数、toString()等方法 。
@@ -2681,11 +2689,11 @@ import java.util.Date;
 class Student implements Serializable {
     // 序列化版本号，防止序列化兼容性问题
     private static final long serialVersionUID = 1L;
-    
+
     private String name;
     private int age;
     private transient String password;  // transient 修饰的字段不会被序列化
-    
+
     public Student(String name, int age, String password) {
         this.name = name;
         this.age = age;
@@ -2698,37 +2706,34 @@ public class ObjectStreamExample {
         // 序列化对象
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream("student.dat"))) {
-            
             Student student = new Student("张三", 20, "123456");
             oos.writeObject(student);
             oos.writeObject(new Date());  // 序列化其他对象
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         // 反序列化对象
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream("student.dat"))) {
-            
             Student student = (Student) ois.readObject();
             Date date = (Date) ois.readObject();
-            
+
             System.out.println(student);  // password 为 null
             System.out.println(date);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         // 序列化多个对象到集合
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream("students.dat"))) {
-            
             List<Student> students = Arrays.asList(
                 new Student("张三", 20, "111"),
                 new Student("李四", 22, "222"),
                 new Student("王五", 21, "333")
             );
-            
+
             oos.writeObject(students);
         } catch (IOException e) {
             e.printStackTrace();
@@ -2739,10 +2744,1073 @@ public class ObjectStreamExample {
 
 
 
-## 多线程
+## 多线程 & JUC
 
 ```bash
+理解线程生命周期：新建、就绪、运行、阻塞、死亡
+掌握同步机制：synchronized、Lock、volatile、原子类
+熟悉并发工具：CountDownLatch、CyclicBarrier、Semaphore、Exchanger
+善用线程池：合理配置参数，避免资源耗尽
+了解并发集合：ConcurrentHashMap、CopyOnWriteArrayList等
+掌握CompletableFuture：异步编程的强大工具
+理解JMM：内存模型、happens-before原则
+遵循最佳实践：避免死锁、减少锁竞争、使用不可变对象等
+学会调试监控：线程转储、性能监控、死锁检测
+
+
+线程和进程的区别？
+什么是线程安全？如何保证线程安全？
+synchronized和Lock的区别？
+wait()和sleep()的区别？
+什么是死锁？如何避免死锁？
+volatile关键字的作用？
+ThreadLocal的原理和内存泄漏问题？
+线程池的核心参数有哪些？
+线程池的拒绝策略有哪些？
+CAS的原理和ABA问题？
+ConcurrentHashMap的实现原理？
+如何实现生产者-消费者模式？
+
+
+性能调优
+减少锁的粒度：尽量使用细粒度锁。
+减少锁的持有时间：只在必要的时候加锁。
+使用读写锁：读多写少的场景使用ReadWriteLock。
+使用无锁数据结构：如AtomicXXX类。
+合理设置线程池参数：根据任务类型和系统资源设置。
+避免创建过多线程：使用线程池复用线程。
+使用异步编程：如CompletableFuture。
+监控线程状态：使用JConsole、VisualVM等工具。
+```
+
+### 多线程概念
+
+```bash
+- 进程(Process)：程序的一次执行过程，是系统运行程序进行资源分配和调度的基本单位。每个进程都有自己的独立内存空间。
+- 线程(Thread)：进程中执行运算的最小单位，可完成一个独立的顺序控制流程。一个进程可以包含多个线程。线程共享进程的内存空间。
+
+- 并发：同一时间段内，多个任务交替执行。
+- 并行：同一时刻，多个任务同时执行（需要多核CPU）
+
+
+#### 多线程
+多线程：一个进程中同时运行多个线程。多线程是多个线程交替占用CPU资源，并非真正的并行运行。
+多线程的优点
+		- 提高程序响应速度（GUI应用）
+		- 提高多核CPU利用率
+		- 改善程序结构，将复杂任务分解为多个进程独立运行
+多线程的缺点
+		- 线程间共享数据可能导致数据不一致
+		- 线程的创建和销毁需要开销
+		- 过多的线程会消耗大量系统资源，可能导致系统崩溃
+
+
+
+#### JAVA 中的线程
+主线程：
+	main() 所在的线程称为主线程。
+	主线程是产生其他子线程的线程。
+	主线程必须最后完成执行，因为它需要执行各种关闭操作。
+创建线程：
+	- 继承 java.lang.Thread 类（继承Thread类，重写run方法，创建线程对象调用start()启动线程）-适用单继承
+	- 实现 java.lang.Runnable 接口（实现Runnable接口，实现run方法，创建线程对象调用start()启动线程）-避免单继承局限性
+线程的同步：
+	- 多个线程操作同一共享资源时，将引发数据不安全问题
+	- 解决方法：使用同步方法，用 synchronized 修饰方法，为当前的线程声明一个锁，让代码块变为同步执行
+      - Vector：线程安全，效率低，适用多线程并发共享资源
+      - ArrayList：线程不安全，效率高，适用单线程
+      - Hashtable：线程安全，效率低，适用多线程并发共享资源
+      - HashMap：线程不安全，效率高，适用单线程
+```
+
+#### 线程的生命周期
+
+```bash
+线程的六种状态（Thread.State）
+    NEW：新建
+    RUNNABLE：可运行（包括就绪和运行中）
+    BLOCKED：阻塞（等待监视器锁）
+    WAITING：等待（无限期等待，直到被唤醒）
+    TIMED_WAITING：超时等待（有限时间的等待）
+    TERMINATED：终止
+
+
+状态转换
+	- NEW --start()--> RUNNABLE
+	- RUNNABLE --获取CPU时间片--> 运行
+	- 运行 --yield()/时间片用完--> 就绪
+	- 运行 --sleep()/wait()/join()/IO等待--> TIMED_WAITING/WAITING
+	- 运行 --等待获取锁--> BLOCKED
+	- 运行 --run()结束/异常退出--> TERMINATED
+```
+
+![image-20251224153718605](./image/image-20251224153718605.png)
+
+#### 线程常用的方法
+
+```bash
+如果不用 setName() 设置线程名字，则会由默认的线程名（以序号为值）
+
+sleep() 因为是静态方法，所以可以使用 类名.sleep() 来调用（Thread.sleep()）
+		sleep 方法会让线程睡眠，睡眠时间完毕，不会立马执行下面的代码，因为仍然需要等待CPU的执行权
+
+线程的默认优先级一样，setPriority() 设置优先级越高，抢到CPU的概率越大，但是其他线程仍然可能优先执行完毕
+
+setDaemon(true) 设置为守护线程后，在其他的非守护线程执行完毕后，守护线程会陆续结束
+		守护线程是逐渐结束，仍然会执行，但不一定能全部执行完毕
+		例如：聊天窗口是线程1，传送文件是线程2，如果聊天窗口关闭，传送文件就没必要存在，因此可把线程2设置为守护线程
+
+yield() 出让线程只是尽可能出让线程，但是该线程仍然可能在中间穿插执行
+
+join() 插入线程，比如在 main方法中对线程进行插入，则先执行插入的线程，再执行 main 下面的代码
+```
+
+![image-20251224142222050](./image/image-20251224142222050.png)
+
+### 线程的创建方式
+
+#### 继承Thread类
+
+```java
+public class MyThread implements Runnable {
+    @Override
+    public void run() {
+        // 线程执行体
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+        }
+    }
+
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        MyThread t2 = new MyThread();
+        t1.start(); // 启动线程
+        t2.start();
+    }
+}
+
+/*
+Thread-1: 0
+Thread-1: 1
+Thread-0: 0
+Thread-1: 2
+Thread-1: 3
+Thread-0: 1
+Thread-0: 2
+Thread-1: 4
+Thread-0: 3
+Thread-0: 4
+*/
+```
+
+#### 实现Runnable接口
+
+```java
+public class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+        }
+    }
+
+    public static void main(String[] args) {
+        MyRunnable mr = new MyRunnable();
+        Thread t1 = new Thread(mr, "线程1");
+        Thread t2 = new Thread(mr, "线程2");
+        t1.start();
+        t2.start();
+
+      	// 获取活动线程数
+        System.out.println("活动线程数: " + Thread.activeCount());
+        // 获取所有活动线程
+        Thread[] threads = new Thread[Thread.activeCount()];
+        Thread.enumerate(threads);
+        for (Thread t : threads) {
+            if (t != null) {
+                System.out.println("活动线程: " + t.getName());
+            }
+        }
+    }
+}
+```
+
+#### 实现Callable接口（有返回值）
+
+```java
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+public class MyCallable implements Callable<Integer> {
+    @Override
+    public Integer call() throws Exception {
+        int sum = 0;
+        for (int i = 1; i <= 5; i++) {
+            sum += i;
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) throws Exception {
+        MyCallable mc = new MyCallable();
+        FutureTask<Integer> ft = new FutureTask<>(mc);
+        Thread t = new Thread(ft, "Callable线程");
+        t.start();
+        System.out.println("线程返回值: " + ft.get()); // 线程返回值: 15
+    }
+}
+```
+
+#### 使用线程池
+
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ThreadPoolDemo {
+    public static void main(String[] args) {
+        // 创建固定大小的线程池
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        // 提交任务
+        for (int i = 0; i < 5; i++) {
+            executor.execute(() -> {
+                System.out.println(Thread.currentThread().getName() + " 执行任务");
+            });
+        }
+
+        // 关闭线程池
+        executor.shutdown();
+    }
+}
+```
+
+
+
+### 线程的同步与锁
+
+#### 同步 synchronized
+
+```bash
+同步代码块：把操作共享数据的代码锁起来
+	- 锁默认打开，由一个进程进去，锁自动关闭
+	- 里面的代码全部执行完毕，线程出来，锁自动打开
+	- 注意：锁一般是创建一个 Object 变量来设定，且要保证唯一（单例模式）锁不唯一，那就不能保证同步的稳定性
+
+      synchronized (锁) {
+        操作共享数据的代码
+      }
+```
+
+```java
+// 同步方法
+public synchronized void method() {
+    // 同步代码
+}
+
+// 同步代码块
+public void method() {
+    synchronized (this) { // 同步锁对象
+        // 同步代码
+    }
+}
+
+// 同步静态方法（锁的是类对象）
+public static synchronized void staticMethod() {
+    // 同步代码
+}
+```
+
+
+
+#### 锁 Lock
+
+```java
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class LockDemo {
+    private final Lock lock = new ReentrantLock();
+
+    public void method() {
+        lock.lock(); // 获取锁
+        try {
+            // 同步代码
+        } finally {
+            lock.unlock(); // 释放锁
+        }
+    }
+}
+```
+
+
+
+#### 死锁
+
+```bash
+锁的本质是，当其他线程运行到上锁的代码时，若发现锁没有解开，就会让出cpu执行权。
+
+本质上是锁的理解问题。锁并不能保证锁内的代码块在一个cpu时间片内完成
+```
+
+```java
+public class DeadLockDemo {
+    private static Object lockA = new Object();
+    private static Object lockB = new Object();
+
+    public static void main(String[] args) {
+        new Thread(() -> {
+            synchronized (lockA) {
+                System.out.println("线程1持有lockA");
+                try { Thread.sleep(100); } catch (InterruptedException e) {} // 代码执行到这里就卡死，无法往下执行
+                synchronized (lockB) {
+                    System.out.println("线程1持有lockB");
+                }
+            }
+        }).start();
+
+        new Thread(() -> {
+            synchronized (lockB) {
+                System.out.println("线程2持有lockB");
+                try { Thread.sleep(100); } catch (InterruptedException e) {} // 代码执行到这里就卡死，无法往下执行
+                synchronized (lockA) {
+                    System.out.println("线程2持有lockA");
+                }
+            }
+        }).start();
+    }
+}
+```
+
+
+
+### 【典例】售卖电影票
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        /*
+         * 需求：某电影院某个电影共有100张票，分别在三个窗口售卖
+         * */
+
+        // 创建线程对象
+        MyThread t1 = new MyThread();
+        MyThread t2 = new MyThread();
+        MyThread t3 = new MyThread();
+
+        // 线程命名
+        t1.setName("窗口1");
+        t2.setName("窗口2");
+        t3.setName("窗口3");
+
+        // 开启线程
+        t1.start();
+        t2.start();
+        t3.start();
+
+        System.out.println("==================");
+        MyRunnable mr = new MyRunnable();
+        Thread t11 = new Thread(mr, "窗口11");
+        Thread t22 = new Thread(mr, "窗口22");
+        Thread t33 = new Thread(mr, "窗口33");
+        t11.start();
+        t22.start();
+        t33.start();
+    }
+}
+```
+
+##### 使用继承 + synchronized
+
+```java
+public class MyThread extends Thread {
+    // 使用 static 表示这个类的所有的对象，都共享 ticket 数据
+    static int ticket = 0; // 售卖的电影票 0~100张
+
+    // 锁对象，一定要是唯一的
+    static Object obj = new Object();
+
+    @Override
+    public void run() {
+        while (true) {
+            synchronized (obj) { // 锁要在循环里面，不然必然是第一个进来的线程把while执行完再出去
+                if (ticket < 100) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    ticket++;
+                    System.out.println(getName() + "正在售卖第" + ticket + "张票");
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+}
+```
+
+##### 使用抽象类 + synchronized
+
+```java
+public class MyRunnable implements Runnable {
+    // 不用写成 static，因为只会创建一次；如果定义了 static 则会让变量一直占用内存
+    int ticket = 0;
+
+    @Override
+    public void run() {
+        while (true) {
+            synchronized (MyRunnable.class) {
+                if (ticket == 100) {
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    ticket++;
+                    System.out.println(Thread.currentThread().getName() + "在卖第" + ticket + "张票");
+                }
+            }
+        }
+    }
+}
+```
+
+##### 使用继承类 + Lock
+
+```java
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class MyThread extends Thread {
+    // 使用 static 表示这个类的所有的对象，都共享 ticket 数据
+    static int ticket = 0;
+
+    // 需要使用 static 共享锁
+    static Lock lock = new ReentrantLock();
+
+
+    @Override
+    public void run() {
+        while (true) {
+            lock.lock();
+            try {
+                if (ticket < 100) {
+                    ticket++;
+                    System.out.println(getName() + "正在售卖第" + ticket + "张票");
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock(); // 必须在 finally，否则报错或者 break 无法解锁
+            }
+        }
+    }
+}
+```
+
+
+
+### 生产者-消费者模式(等待唤醒机制)
+
+```bash
+使用 生产者-消费者模式（等待唤醒机制）实现线程轮流交替效果
+	- 当缓冲区满时，生产者等待，直到缓冲区有空位
+	- 当缓冲区空时，消费者等待，直到缓冲区有数据
+
+生产者：产生数据的线程
+消费者：处理数据的线程
+共享缓冲区：生产者和消费者之间的数据存储区域
+核心问题：解决生产者和消费者的同步和互斥问题
+
+
+涉及的方法
+  - void wait()：当前线程等待，直到被其他线程唤醒
+  - void notify()：随机唤醒单个线程
+  - void notifyAll()：唤醒所有线程
+```
+
+
+
+```java
+/* 共享缓冲区：控制生产者和消费者的执行 */
+public class Desk {
+    public static int foodFlag = 0; // 是否有面条 1:是 0:否
+    public static int count = 10; // 可以吃的上限
+    public static Object lock = new Object(); // 锁对象
+}
+
+
+// 生产者
+public class Cook extends Thread {
+    @Override
+    public void run() {
+        /**
+         * 判断桌子上是否有食物
+         * 如果有，就等待
+         * 如果没有，就制作食物，制作完成后修改食物状态
+         */
+        while (true) {
+            synchronized (Desk.lock) {
+                if (Desk.count == 0) {
+                    break;
+                } else if (Desk.foodFlag == 1) {
+                    try {
+                        Desk.lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("正在制作食物");
+                    Desk.foodFlag = 1;
+                    Desk.lock.notifyAll();
+                }
+            }
+        }
+    }
+}
+
+
+// 消费者
+public class Foodie extends Thread {
+    @Override
+    public void run() {
+        /**
+         * 如果没有面条，就等待
+         * 如有有面条，就吃(就餐)
+         * 吃完之后，把吃的上限-1，并通知厨师(生产者)继续做
+         * 修改桌子状态(等吃)
+         */
+        while (true) {
+            synchronized (Desk.lock) {
+                if (Desk.count == 0) {
+                    break;
+                } else if (Desk.foodFlag == 0) {
+                    try {
+                        Desk.lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Desk.count--;
+                    System.out.println("正在就餐，还能再吃" + Desk.count + "碗");
+                    Desk.lock.notifyAll();
+                    Desk.foodFlag = 0;
+                }
+            }
+        }
+    }
+}
+
+
+// 主线程
+public class ThreadDemo {
+    public static void main(String[] args) {
+        Cook c = new Cook();
+        Foodie f = new Foodie();
+
+        c.setName("厨师");
+        f.setName("食客");
+
+        c.start();
+        f.start();
+    }
+}
+```
+
+
+
+### 线程池
+
+```bash
+// 固定大小线程池
+ExecutorService fixedPool = Executors.newFixedThreadPool(3);
+
+// 单线程线程池
+ExecutorService singlePool = Executors.newSingleThreadExecutor();
+
+// 可缓存线程池
+ExecutorService cachedPool = Executors.newCachedThreadPool();
+
+// 定时任务线程池
+ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(3);
+
+// 定时执行
+scheduledPool.schedule(() -> {
+    System.out.println("延迟3秒执行");
+}, 3, TimeUnit.SECONDS);
+
+// 定期执行
+scheduledPool.scheduleAtFixedRate(() -> {
+    System.out.println("延迟1秒后，每2秒执行一次");
+}, 1, 2, TimeUnit.SECONDS);
+```
+
+```java
+import java.util.concurrent.*;
+
+public class ThreadPoolExecutorDemo {
+    public static void main(String[] args) {
+        // 创建线程池
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            2, // 核心线程数
+            5, // 最大线程数
+            60, // 空闲线程存活时间
+            TimeUnit.SECONDS, // 时间单位
+            new ArrayBlockingQueue<>(10), // 工作队列
+            Executors.defaultThreadFactory(), // 线程工厂
+            new ThreadPoolExecutor.AbortPolicy() // 拒绝策略
+        );
+
+        // 提交任务
+        for (int i = 0; i < 15; i++) {
+            final int taskId = i;
+            executor.execute(() -> {
+                System.out.println(Thread.currentThread().getName() +
+                    " 执行任务 " + taskId);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        // 关闭线程池
+        executor.shutdown();
+    }
+}
+```
+
+
+
+## Socket
+
+```bash
+Socket = IP地址 + 端口号
+客户端Socket：主动连接服务器
+	需要提供服务端的IP和端口号，通过 Socket 对象的 getInputStream 和 getOutputStream 获取到输入输出流，然后获取和发送数据。
+服务器ServerSocket：监听端口，接受连接
+	通过 ServerSocket 的 accept() 创建，一旦被客户端连接，服务端就会创建一个用于通信的 Socket 等待用户发送数据。
+
+java.net.Socket - 客户端Socket
+java.net.ServerSocket - 服务器Socket
+java.net.InetAddress - IP地址处理
+java.net.URL/URLConnection - 高层网络API
+
+
+在Java I/O中，为了减少I/O操作的次数，OutputStream（包括其子类）通常会将数据先存储在缓冲区中，当缓冲区满或者流关闭时才会自动将数据发送出去。
+os.flush() 的作用：强制将缓冲区中的数据发送出去，即使缓冲区还没有满
+	1. 强制将缓冲区中的数据写入目标
+	2. 确保数据被实际发送/写入
+	3. 清空输出缓冲区
+
+
+对象类型数据的发送和接收
+要发送的类型必须实现 Serializable 接口。
+在发送端组合出一个对象数据，然后转序列化，通过 ObjectOutputStream 发送对象数据
+在接收端通过 ObjectInputStream 反序列化出一个对象，然后拆解出对象的各个属性
+```
+
+```java
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
+    private String uname;
+    private String upwa;
+
+    public String getUname() {
+        return uname;
+    }
+
+    public String getUpwa() {
+        return upwa;
+    }
+
+    public void setUname(String uname) {
+        this.uname = uname;
+    }
+
+    public void setUpwa(String upwa) {
+        this.upwa = upwa;
+    }
+}
+```
+
+```java
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+// 服务器端启动
+public class Server {
+    public static void main(String[] args) {
+        ServerSocket serverSocket = null;
+        Socket socket = null;
+        InputStream is = null;
+        OutputStream os = null;
+        ObjectInputStream ois = null;
+
+        try {
+            serverSocket = new ServerSocket(50000);
+            // 创建负责通信的Socket
+            socket = serverSocket.accept();
+
+            // 输入流对象，获取数据
+            is = socket.getInputStream();
+            // 输出流对象，用于发送数据
+            os = socket.getOutputStream();
+
+          	// 对象类型的数据接收
+            ois = new ObjectInputStream(is);
+            try {
+                UserInfo info = (UserInfo) ois.readObject();
+                System.out.println("接收到的消息：" + info.getUname() + "\t" + info.getUpwa());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            socket.shutdownInput();
+
+          	// 字符串类型的数据发送
+            String msg = "这是服务器返回的消息";
+            os.write(msg.getBytes());
+            System.out.println("已发送响应给客户端");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ois != null) ois.close();
+                if (is != null) is.close();
+                if (os != null) os.close();
+                if (socket != null) socket.close();
+                if (serverSocket != null) serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+```java
+import java.io.*;
+import java.net.Socket;
+import java.util.Scanner;
+
+// 客户端启动
+public class Client {
+    public static void main(String[] args) {
+        Socket socket = null;
+        InputStream is = null;
+        OutputStream os = null;
+        ObjectOutputStream oos = null;
+        BufferedReader br = null;
+
+        Scanner input = new Scanner(System.in);
+        System.out.println("请输入内容");
+
+        try {
+            socket = new Socket("localhost", 50000);
+            is = socket.getInputStream();
+            os = socket.getOutputStream();
+            oos = new ObjectOutputStream(os);
+
+          	// 对象类型的数据发送
+            String uname = input.next();
+            String upwd = input.next();
+            UserInfo info = new UserInfo();
+            info.setUname(uname);
+            info.setUpwa(upwd);
+            oos.writeObject(info);
+            socket.shutdownOutput();
+
+          	// 字符串类型的数据接收
+            br = new BufferedReader(new InputStreamReader(is));
+            String msg = "";
+            while ((msg = br.readLine()) != null) {
+                System.out.println("服务器的响应：" + socket.getLocalPort() + msg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                oos.close();
+                os.close();
+                is.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+
+
+### 响应多个客户端
+
+```bash
+#### 一个服务器，多个客户端
+通过在服务端开启线程的方式，来服务多个客户端。每个客户端发起连接，服务端就开启一个线程为它服务。
+
+
+while (true) {
+    socket = serverSocket.accept();
+    MyThread t1 = new MyThread(socket);
+    t1.start();
+}
+```
+
+```java
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+
+public class MyThread extends Thread {
+    Socket socket = null;
+
+    public MyThread(Socket socket) {
+        this.socket = socket;
+    }
+
+    public void run() {
+        InputStream is = null;
+        OutputStream os = null;
+        ObjectInputStream ois = null;
+        UserInfo info = null;
+
+        try {
+            is = socket.getInputStream();
+            os = socket.getOutputStream();
+            ois = new ObjectInputStream(is);
+            try {
+                info = (UserInfo) ois.readObject();
+                System.out.println("接收到的消息：" + info.getUname() + "\t" + info.getUpwa());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            socket.shutdownInput();
+
+            String msg = "这是服务器返回的消息";
+            os.write(msg.getBytes());
+            System.out.println("已发送响应给客户端");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ois != null) ois.close();
+                if (is != null) is.close();
+                if (os != null) os.close();
+                if (socket != null) socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+```java
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+// 服务器端启动
+public class Server {
+    public static void main(String[] args) {
+        ServerSocket serverSocket = null;
+        Socket socket = null;
+
+        try {
+            serverSocket = new ServerSocket(50000);
+            while (true) {
+                socket = serverSocket.accept();
+                MyThread t1 = new MyThread(socket);
+                t1.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+
+### 基于 UDP 的 Socket
+
+```bash
+基于 UDP 协议的 Socket 网络编程步骤：
+    1、利用 DatagramPacket 对象封装数据报
+    2、利用 DatagramSocket 发送数据报
+    3、利用 DatagramSocket 接收数据报
+    4、利用 DatagramPacket 处理数据报
 
 ```
 
-![image-20251222100540671](./image/image-20251222100540671.png)
+
+
+## XML
+
+```bash
+XML（Extensible markup Language）可扩展标记语言
+- 特点：与操作系统和开发语言无关
+- 作用：数据交互、网站的配置文件
+- 标签语法：`<元素名 属性名="属性值">元素内容</元素名>`
+
+XML文档是由一系列标签组成。
+	- 一个元素可以有多个属性值
+	- 属性值必须双引号包裹
+	- 必须有结束标签
+	- 标签大小写敏感
+	- 标签必须正确嵌套
+	- 特殊字符需适用CDATA节点（`<`用`&lt;`、`>`用`&gt;`、`"`用`&quot;`、`'`用`&apos;`、`&`用`&amp;`）
+
+
+
+#### XML的解析
+Java中XML的四种解析方式：DOM、SAX、JDOM、DOM4J
+DOM：将整个XML文档加载到内存，形成一棵DOM树，然后对树进行遍历和操作。适用于需要频繁操作文档的场景，但内存消耗大
+SAX：基于事件驱动的解析方式，逐行读取XML文档，触发事件。适用于大型文档，内存消耗小，但只能顺序读取，不能随机访问
+JDOM：第三方开源库，使用Java集合类，简化了XML的解析过程。但已不活跃，被DOM4J取代
+DOM4J：第三方开源库，性能优异，功能强大，支持XPath。是许多开发者的首选
+
+DOM：基于XML文档树结构的解析，解析XML文档的步骤：
+	1. 创建解析器工厂对象 DocumentBuilderFactory
+	2. 创建解析器对象 DocumentBuilder
+	3. 通过 parse 方法获取 Document 对象
+	4. 进行解析操作
+
+DOM4J是 dom4j.org 出品的一个开源 XML 解析包。
+  1、创建读取器SAXReader
+  2、获取文档对象Document
+  3、获取根节点
+  4、进行解析操作
+```
+
+```java
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import java.io.File;
+
+public class XMLParser {
+  	// 解析DOM读取内容
+    public void parseXMLWithDOM(String filePath) throws Exception {
+        // 1. 创建DocumentBuilderFactory
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+        // 安全设置，防止XXE攻击
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        factory.setXIncludeAware(false);
+        factory.setExpandEntityReferences(false);
+
+        // 2. 创建DocumentBuilder
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        // 3. 解析XML文件
+        Document document = builder.parse(new File(filePath));
+
+        // 4. 标准化文档
+        document.getDocumentElement().normalize();
+
+        // 5. 获取根元素
+        Element root = document.getDocumentElement();
+        System.out.println("根元素: " + root.getNodeName());
+
+        // 6. 遍历节点
+        NodeList nodeList = root.getElementsByTagName("book");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                System.out.println("书名: " + element.getElementsByTagName("title")
+                        .item(0).getTextContent());
+            }
+        }
+    }
+
+  	// 用 dom 创建 xml
+    public void domCreateXML() throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.newDocument();
+
+        // 创建根元素
+        Element root = document.createElement("bookstore");
+        document.appendChild(root);
+
+        // 创建子元素
+        Element book = document.createElement("book");
+        book.setAttribute("category", "COOKING");
+        root.appendChild(book);
+
+        Element title = document.createElement("title");
+        title.setTextContent("Everyday Italian");
+        book.appendChild(title);
+
+        // 写入文件
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        DOMSource source = new DOMSource(document);
+        StreamResult result = new StreamResult(new File("src/output.xml"));
+        transformer.transform(source, result);
+    }
+
+    public static void main(String[] args) throws Exception {
+        XMLParser parser = new XMLParser();
+        try {
+            // 使用相对路径，或者从命令行参数获取路径
+            String filePath = "src/books.xml";
+            parser.parseXMLWithDOM(filePath);
+
+            parser.domCreateXML();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+
+## MySQL
+
+
+
+## Reids
+
+
+
+## SSM
+
+```bash
+Spring
+Spring MVC
+Mybatis
+Sping Cloud
+
+java guide———— github项目
+```
+
+
+
+## Spring Boot

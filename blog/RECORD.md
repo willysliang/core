@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年12月24日
+  - docs: [JAVA] 多线程、Socket、XML
+
 ## 2025年12月22日
   - docs: [JAVA] 集合Collection和IO流
 
