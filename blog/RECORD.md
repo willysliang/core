@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2025
 
+## 2025年12月30日
+  - docs: [JAVA] 日期Date、lambda表达式、Arrays方法、Collection遍历、阻塞队列JUC
+
 ## 2025年12月24日
   - docs: [JAVA] 多线程、Socket、XML
 

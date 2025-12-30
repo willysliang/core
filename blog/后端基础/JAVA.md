@@ -192,7 +192,6 @@ public class VariableDemo2{
 		//System.out.println(a);//?
 		//System.out.println(b);//?
 
-
 		//3.变量在使用之前必须要赋值
 		int a = 30;
 		System.out.println(a);
@@ -206,16 +205,16 @@ public class VariableDemo2{
 Java 数据类型是用来定义变量或表达式可以存储的数据类型的分类
 
 #### 基本数据类型：
-整数类型（Integer Types）：
+整数类型：
 		byte：8位，范围为 -128 到 127
 		short：16位，范围为 -32,768 到 32,767
 		int：32位，范围为 -2^31 到 2^31 - 1
 		long：64位，范围为 -2^63 到 2^63 - 1
-浮点类型（Floating-Point Types）：
+浮点类型：
 		float：32位，用于表示单精度浮点数
 		double：64位，用于表示双精度浮点数
-字符类型（Character Type）：char：16位，用于存储一个 Unicode 字符
-布尔类型（Boolean Type）：boolean：用于表示布尔值，只有两个取值：true 和 false
+字符类型：char：16位，用于存储一个 Unicode 字符
+布尔类型：boolean：用于表示布尔值，只有两个取值：true 和 false
 
 注意：
 - byte类型的取值范围： -128 ~ 127
@@ -420,21 +419,6 @@ String s3 = String.valueOf(100);
 //字符串-->基本类型
 int i1 = Integer.parseInt("100");
 //int i2 = Integer.parseInt("a");	//数字格式化异常
-```
-
-
-
-### 系统类System
-
-```java
-//测试程序的效率System.currentTimeMillis()
-System.out.println(System.currentTimeMillis());	//获取当前时间毫秒值（可用来计算运行程序所需要的时间、或者当做文件名来使用-因为不会使文件名重复）
-
-//复制数组（覆盖）System.arraycopy(int[],src,int srcIndex,int[] dest,int destIndex,int count);
-int[] arr1 = {1,2,3,4,5,6,7,8,9};
-int[] arr2 = {9,8,7,6,5,4,3,2,1};
-System.arraycopy(arr1,0,arr2,0,4);	//把arr1数组的前4个数字复制到arr2数组中
-System.out.println(arr2);	  //1,2,3,4,5,4,3,2,1
 ```
 
 
@@ -1096,7 +1080,7 @@ sb.reverse();	//将数组内容翻转
 
 
 
-### 数组
+### 数组 Arrays
 
 ```bash
 数组是一组相同类型的变量，它们往往是为了表示同一批对象的统一属性。
@@ -1246,6 +1230,224 @@ public class BinarySearch {
 
 
 
+## 常用API
+
+### 系统 System
+
+```java
+// System.currentTimeMillis() 获取当前时间毫秒值（可用来计算运行程序所需要时间、或用作文件命名-防止文件重名）
+long start = System.currentTimeMillis();
+// ...中间执行的代码(计算该段代码的执行时间)
+long end = System.currentTimeMillis();
+System.out.println(end - start);	// xx毫秒
+
+
+// 终止当前运行的虚拟机
+System.exit(0); // 当前虚拟机是正常停止
+System.exit(1); // 非0：当前虚拟机异常停止
+
+
+// 拷贝数组：System.arraycopy(数据源数组, 起始索引, 目标数组, 起始索引, 拷贝个数);
+int[] arr1 = {1,2,3,4,5,6,7,8,9};
+int[] arr2 = {9,8,7,6,5,4,3,2,1};
+System.arraycopy(arr1, 0, arr2, 0, 4);	//把arr1数组的前4个数字复制到arr2数组中
+System.out.println(arr2);	  //1,2,3,4,5,4,3,2,1
+```
+
+### 运行 Runtime
+
+```bash
+常用方法：
+  - 当前系统的运行环境对象：public static Runtime getRuntime()
+  - 停止虚拟机：public void exit(int status)
+  - 获取CPU的线程数：public int availableProcessors()
+  - JVM能从系统中获取总内存大小(单位byte)：public long maxMemory()
+  - JVM已经从系统中获取总内存大小(单位byte)：public long totalMemory()
+  - JVM剩余内存大小(单位byte)：public long freeMemory()
+  - 运行cmd命令：public Process exec(String command)
+```
+
+```java
+import java.io.IOException;
+
+public class Test {
+    public static void main(String[] args) {
+        // 获取当前运行环境对象
+        Runtime r1 = Runtime.getRuntime();
+        Runtime r2 = Runtime.getRuntime();
+        System.out.println(r1 == r2); // true
+
+        // 获取CPU的线程数
+        System.out.println(r1.availableProcessors()); // 24
+        System.out.println(Runtime.getRuntime().maxMemory() / 1024 / 1024);
+        System.out.println(Runtime.getRuntime().totalMemory() / 1024 / 1024);
+        System.out.println(Runtime.getRuntime().freeMemory() / 1024 / 1024);
+
+        /**
+         * 运行cmd命令
+         *  shutdown：关机（加上下述参数才能执行）
+         *      -s：默认在1分子后执行
+         *      -s -t 指定秒：指定关机时间
+         *      -a：取消关机操作
+         *      -r：关机并重启
+         */
+        try {
+            Runtime.getRuntime().exec("shutdown -s -t 36000");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 停止虚拟机
+        Runtime.getRuntime().exit(0);
+    }
+}
+```
+
+
+
+### 高精度数值 BigDecimal
+
+```bash
+BigDecimal 作用：
+	- 解决小数运算精度丢失问题（浮点数直接运算会出现精度误差）
+	- 表示较大的小数（int和long数值范围有限，BigDecimal无数值范围限制(仅受JVM内存限制)）
+	- 灵活控制小数位数与舍入规则（针对金额格式化(保留2位小数)、四舍五入）
+
+
+初始化 BigDecimal
+  1. 构造方法：精准初始化，无精度丢失
+  		传入参数格式推荐为正数或字符串，如果传入浮点数可能会出现结果偏差(因此可把浮点数转化为字符串传入)
+      		BigDecimal num1 = new BigDecimal("0.1");
+  2. 静态工厂方法：
+  		底层自动将 double 转为字符串后再调用new BigDecimal，规避精度问题（小数常用）
+      		BigDecimal num2 = BigDecimal.valueOf(0.2);
+  注意：
+    - 如果表示的数，没超double的取值范围，建议使用 valuleOf。
+    - 如果表示的数，超出double的取值范围，建议使用 new BigDecimal。
+    - 如果使用valueof，且传递的是 0~10之间的整数，包含0和10，方法会返回已经创建好的对象，不会重新 new。
+    		BigDecimal.valueOf(10) == BigDecimal.valueOf(10); // true
+    		BigDecimal.valueOf(10.0) == BigDecimal.valueOf(10.0); // false
+
+
+加减乘除运算
+  - 加法：add
+      BigDecimal sum = num1.add(num2);
+  - 减法：subtract
+      BigDecimal diff = num1.subtract(num2);	// num1-num2
+  - 乘法：multiply
+      BigDecimal product = num1.multiply(num2);	// num1 * num2
+  - 除法：divide(除数)。若除不尽会抛出 ArithmeticException，不推荐直接使用
+      BigDecimal quotient = num1.divide(num2);
+  - 安全除法：divide(除数, 保留小数位数, 舍入规则)
+      BigDecimal quotient = num1.divide(num2, 2, RoundingMode.HALF_UP);
+
+
+舍入规则
+	- 四舍五入：RoundingMode.HALF_UP
+  - 五舍六入：RoundingMode.HALF_DOWN
+  - 向上取整：RoundingMode.UP
+  - 向下取整：RoundingMode.DOWN
+  - 向零取整：RoundingMode.TOWARD_ZERO
+```
+
+```java
+// 正确初始化
+BigDecimal a = BigDecimal.valueOf(0.1);
+BigDecimal b = new BigDecimal("0.2");
+BigDecimal num = new BigDecimal("123.456");
+
+/**
+ * 加减乘除运算
+ */
+// 加法
+BigDecimal sum = a.add(b); // 0.1 + 0.2 = 0.3
+
+// 减法
+BigDecimal diff = a.subtract(b); // 0.1 - 0.2 = -0.1
+
+// 乘法
+BigDecimal product = a.multiply(b); // 0.1 * 0.2 = 0.02
+
+// 安全除法（保留2位小数，四舍五入）
+BigDecimal quotient = new BigDecimal("10").divide(new BigDecimal("3"), 2, RoundingMode.HALF_UP);
+System.out.println("10 / 3 = " + quotient); // 10 / 3 = 3.33
+
+
+
+/**
+ * 设置小数位数
+ */
+// 保留2位小数，四舍五入
+BigDecimal num2 = num.setScale(2, RoundingMode.HALF_UP); // 123.45
+int scale = num2.scale(); // 获取小数位数，输出 2
+
+
+/**
+ * 比较大小 compareTo
+ *  返回值 0：两个数值相等；
+ *  返回值 >0：当前对象大于参数对象；
+ *  返回值 <0：当前对象小于参数对象
+ */
+if (a.compareTo(b) < 0) {
+    System.out.println(a + " 小于 " + b);
+} else if (a.compareTo(b) == 0) {
+    System.out.println(a + " 等于 " + b);
+} else {
+    System.out.println(a + " 大于 " + b); // 0.1 小于 0.2
+}
+
+
+/**
+ * 类型转换
+ */
+// 1. BigDecimal → 字符串
+String str = num.toString(); // 输出 "123.456"
+
+// 2. BigDecimal → int（需确保数值在int范围内，否则抛异常）
+int intVal = num.intValue(); // 输出 123（小数部分直接舍去）
+
+// 3. BigDecimal → long（同理，需在long范围内）
+long longVal = num.longValue(); // 输出 123
+
+// 4. BigDecimal → double（可能丢失精度，仅在非高精度场景使用）
+double doubleVal = num.doubleValue(); // 输出 123.456
+
+// 5. 字符串/基本类型 → BigDecimal（参考初始化部分）
+BigDecimal fromStr = new BigDecimal("123.456");
+BigDecimal fromLong = BigDecimal.valueOf(123L);
+
+
+/**
+ * 常用方法
+ */
+// 1. 获取绝对值
+BigDecimal negativeNum = new BigDecimal("-123.456");
+BigDecimal absNum = negativeNum.abs(); // 输出 123.456
+
+// 2. 获取最大值/最小值
+BigDecimal maxNum = a.max(b); // 输出 0.2
+BigDecimal minNum = a.min(b); // 输出 0.1
+
+// 3. 取反（正负转换）
+BigDecimal negNum = a.negate(); // 输出 -0.1
+
+// 4. 判断是否为零
+boolean isZero = a.equals(BigDecimal.ZERO); // false
+```
+
+#### BigDecimal 底层存储方式
+
+```bash
+BigDecimal 会先把传入的值转换成字符串，然后将每个字符转化成 ASCII 中所对应的数字，并存储到一个数组中。
+
+例如：BigDecimal bd = new BigDecimal("0.226");
+			内部转化顺序：'0.226' -> ['0', '.', '2', '2', '6']  -> [48, 46, 50, 50, 54]
+```
+
+![image-20251226172405923](./image/image-20251226172405923.png)
+
+
+
 ### 枚举类型
 
 ```bash
@@ -1264,6 +1466,196 @@ public class Test {
 
     public static void main(String[] args) {
         System.out.println(WeekDay.MONDAY); // MONDAY
+    }
+}
+```
+
+
+
+### 时间 Date
+
+```bash
+格林尼治时间(Greenwich Mean Time) 简称 GMT。
+目前时间标准时间（UTC） 已经替换为：原子钟。
+中国标准时间：世界标准时间 + 8小时
+
+
+Calendar 代表系统当前时间的日历对象，可以单独修改、获取时间中的年、月、日。
+注意：Calendar 是一个抽象类，不能直接创建对象。
+
+
+JDK8增加的时间类（不提供变更时间的类）
+  Date类
+      - ZoneId：时区
+      - Instant：时间戳
+      - ZoneDateTime：带时区的时间
+  日期格式化类-SimpleDateFormat
+      - DateTimeFormatter：用于时间的格式化和解析
+  - 日历类 Calendar
+      - LocalDate：年、月、日
+      - LocalTime：时、分、秒
+      - LocalDateTime：年、月、日、时、分、秒
+  - 工具类
+      - Duration：时间间隔（秒、纳秒）
+      - Period：时间间隔（年、月、日）
+      - ChronoUnit：时间间隔（所有单位）
+```
+
+```java
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
+
+public class Test {
+    public static void main(String[] args) throws ParseException {
+        // 时间格式化
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss EE");
+        Date d = new Date(0L);
+        String str = sdf.format(d);
+        System.out.println(str); // 1970年01月01日 08:00:00 周四
+
+        // 字符串转时间
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        Date d2 = sdf2.parse("2025-12-30");
+        System.out.println(d2); // Tue Dec 30 00:00:00 CST 2025
+
+        // 日期提取
+        Calendar c = Calendar.getInstance(); // 把时间中的纪元、年、月、日、时、分、秒等放入一个数组
+        Date day = new Date();
+        c.setTime(day);
+
+        c.set(Calendar.YEAR, 2025);
+        c.set(Calendar.MONTH, 12 - 1); // 设置为12月份(月份需减一，如果不设置-1且超出12月份，则会对年份转换)
+        c.set(Calendar.DAY_OF_MONTH, 31);
+
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH) + 1;
+        int date = c.get(Calendar.DAY_OF_MONTH);
+        int week = c.get(Calendar.DAY_OF_WEEK);
+        String[] weekList = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+        System.out.println(year + "-" + month + "-" + date + " " + weekList[week - 1]); // 2025-12-31 周三
+    }
+}
+
+```
+
+
+
+### 数组 Arrays
+
+```bash
+- 数组拼接成字符串：static String toString(数组)
+
+- 二分法查找元素：static int binarySearch(数组, 查找的元素)
+		注意：如果查找的数在数组中不存在，则返回值是 `- arrLength - 1`；否则返回数组下标
+
+- 拷贝数组：static int[] copyOf(原数组, 新数组长度)
+			如果新数组长度小于老数组长度，会部分拷贝；
+			如果新数组长度大于老数组长度，会补上默认初始值
+
+- 指定范围内拷贝数组：static int[] copyOfRange(原数组, 起始索引, 结束索引)
+			包左不包右：包含起始索引下标的数据，不包含结束索引的数据
+
+- 填充数组：static void fill(数组, 元素)
+
+- 使用快速排序进行升序排列：static void sort(数组)
+
+- 按指定规则排序：static void sort(数组, 排序规则)
+		第二个参数是一个接口，在调用方法时需传递这个接口的实现类对象作为排序规则。
+		这个实现的底层原理：插入排序 + 二分查找方式进行排序
+			1. 默认把0索引的数据当作有序序列，1索引到最后的数据都是无序序列；
+			2. 逐个遍历无序序列得到每个元素(假设为A元素)，把这些元素逐个在有序序列中根据二分查找进行插入数据。
+			3. 把A元素使用二分查找跟插入点的元素进行比较（比较规则为 compare方法的方法体）
+					3-1. 如果方法返回值是负数，拿A继续跟二分的左边数据进行比较
+					3-2. 如果方法返回值是正数，拿A继续跟二分的右边元素进行比较
+					3-3. 如果方法返回值是0，也拿A跟二分的后边元素进行比较
+					直到能确定A的最终位置为止。
+		compare(o1,o2)的参数：
+			o1：表示在无序序列中，遍历得到的每一个元素
+			o2：有序序列中的元素
+```
+
+````java
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class Test {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        System.out.println(Arrays.binarySearch(arr, 10)); // 9
+        System.out.println(Arrays.binarySearch(arr, 20)); // -11
+
+        int[] newArr1 = Arrays.copyOf(arr, 2); // [1, 2]
+        int[] newArr2 = Arrays.copyOf(arr, 12); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0]
+        System.out.println(Arrays.toString(newArr1));
+        System.out.println(Arrays.toString(newArr2));
+
+        int[] newArr3 = Arrays.copyOfRange(arr, 0, 9); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        System.out.println(Arrays.toString(newArr3));
+
+        // 自定义排序
+        Integer[] array = {2, 3, 6, 7, 5, 1, 4, 9, 8};
+        Arrays.sort(array, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
+            }
+        });
+        System.out.println(Arrays.toString(array)); // [9, 8, 7, 6, 5, 4, 3, 2, 1]
+    }
+}
+````
+
+
+
+### Lambda表达式
+
+```bash
+函数式编程（Functional programming）是一种思想特点，忽略面对对象的复杂语法，强调做什么，而不是谁去做。
+Lambda 表达式是 JDK8 开始的一种新语法形式，是函数式思想的体现。
+
+函数式接口：有且仅有一个抽象方法的接口叫函数式接口，接口上方可加 `@FunctionalInterface` 注解。
+
+作用：
+	- 用来简化匿名内部类的书写
+	- 只能简化函数式接口的匿名内部类的写法
+
+
+语法：`() -> { 方法体 }`
+		- `()`：对应方法的形参
+		- `->`：固定格式
+		- `{}`：对应方法的方法体
+
+lambda 的省略规则：
+	1. 参数类型可省略不写
+	2. 如果只有一个参数，参数类型可省略，同时 `()` 也可省略
+	3. 如果 lambda 表达式的方法提只有一行，大括号、分号、return 可以同时省略不写
+```
+
+```java
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class Test {
+    public static void main(String[] args) {
+        Integer[] array = {2, 3, 6, 7, 5, 1, 4, 9, 8};
+
+        // 函数式接口的匿名内部类实现
+        Arrays.sort(array, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
+            }
+        });
+
+        // lambda 写法
+        Arrays.sort(array, (o1, o2) -> {
+            return o2 - o1;
+        });
+
+        // lambda 简写
+        Arrays.sort(array, (o1, o2) -> o2 - o1);
     }
 }
 ```
@@ -1752,6 +2144,17 @@ public class Test {
 ```bash
 Object 类是所有类的父类，任何类默认都继承自 Object 类。
 
+判断是否为null：Object.isNull()
+判断是否不为null：Object.nonNull()
+
+注意：对两个对象使用 equals() 判断，需要先做非空判断。
+Object.equals(s1, s2)判断两个对象是否相同：
+	1. 先判断 s1 是否为 null，如果为 null，直接返回 false
+	2. 如果 s1 不为 null，则利用 s1 再次调用 equals 方法
+	3. 如果 s1 为 Student（创建对象实例）类型，所以最终会调用 Student 中的 equals 方法。
+	如果不重写则会比较地址值；如果重写就比较属性值
+
+
 常被子类重写的方法：
 	- toString()：返回当前对象本身的有关信息，按字符串对象返回
 	- equals()：比较两个对象是否是同一个对象，是则返回 true
@@ -1789,6 +2192,73 @@ public boolean equals(Object obj) { // 认为属性相同即为同一对象
     }
 
     return false;
+}
+```
+
+#### 对象克隆
+
+```bash
+对象浅克隆的实现：
+	1. 重写 Object 的 clone 方法
+	2. 让 javabean 类实现 Cloneable 接口
+	3. 创建原对象并调用 clone()
+
+需要实现Cloneable的缘由：
+	如果一个接口里面没有抽象方法，表示当前接口是一个标记性接口。
+	Cloneable 表示一旦实现，则当前类的对象就可以被克隆；如果没有实现，当前类的对象就不能克隆
+
+
+对象深克隆实现：
+0. 通过深度遍历数组/对象来重新赋值
+1. 三方工具 Gson：gson.fromJson(gson.toJson(u1), User.class);
+2. 序列化/反序列化
+```
+
+```java
+import java.util.Arrays;
+import java.util.StringJoiner;
+
+public class User implements Cloneable {
+    private String username;
+    private String[] hobby;
+
+    public User(String username, String[] hobby) {
+        this.username = username;
+        this.hobby = hobby;
+    }
+
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", hobby=" + Arrays.toString(hobby) +
+                '}' + arrToString();
+    }
+
+    public String arrToString() {
+        StringJoiner sj = new StringJoiner("，", "[", "]");
+        for (int i = 0; i < hobby.length; i++) {
+            sj.add(hobby[i] + "");
+        }
+        return sj.toString();
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        // 调用父类的clone方法
+        return super.clone();
+    }
+}
+
+public class Test {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        String[] data = {"打篮球", "跳舞"};
+        User u1 = new User("小明", data);
+
+        // 克隆对象
+        User u2 = (User) u1.clone();
+        System.out.println(u1); // User{username='小明', hobby=[打篮球, 跳舞]}[打篮球，跳舞]
+        System.out.println(u2); // User{username='小明', hobby=[打篮球, 跳舞]}[打篮球，跳舞]
+    }
 }
 ```
 
@@ -2172,8 +2642,8 @@ public static void main(String[] args){
   - 双列集合 java.util.Map
 
   Collection：接口存储一组不唯一、无序的对象
-    |—— List（ArrayList、LinkedList）：接口存储一组不唯一、有序的对象
-    |—— Set（HashSet）：接口存储一组唯一、无序的对象
+    |—— List（ArrayList、LinkedList）：接口存储一组不唯一、有序、有索引的对象
+    |—— Set（HashSet）：接口存储一组唯一、无序、无索引的对象
   Map：接口存储一组键值对象，提供key到value的映射
     |—— HashMap
     |—— TreeMap
@@ -2221,33 +2691,76 @@ boolean result2 = list.contains("java");
 System.out.println(result2); // false
 
 System.out.println(list);	//[Kobe,June]
-for (int i = 0; i < list.size(); i++) {
-  	System.out.print(list.get(i) + '\t'); // Kobe June
-}
-for (String s : list) {
-  	System.out.printf(s+ '\t'); // Kobe June
-}
-
-Object[] arr = list.toArray();	//转换成数组
-for(Object str: arr) {
-  	System.out.println(str);
-}
 
 list.clear();
 System.out.println(list); // []
+
+
+// 生成6个1~33的随机整数，添加到集合，并遍历集合
+ArrayList<Integer> list2 = new ArrayList();
+Random r = new Random();
+for (int i=0; i<6; i++) {
+    int num = r.nextInt(33) + 1;
+    list2.add(num);
+}
 ```
 
+#### 列表的遍历
+
+````bash
+1. 普通for循环
+2. 增强for
+3. lambda表达式forEach
+4. 迭代器
+5. 列表迭代器
+6. 转换成数组
+````
+
 ```java
-// 生成6个1~33的随机整数，添加到集合，并遍历集合
-public class Demo{
-    public static void main(String[] args){
-        ArrayList<Integer> list = new ArrayList();
-        Random r = new Random();
-        for (int i=0; i<6; i++) {
-            int num = r.nextInt(33) + 1;
-            list.add(num);
-        }
-    }
+ArrayList<String> list = new ArrayList<String>();
+list.add("Kobe");
+list.add("June");
+list.add("hello");
+
+// 普通for循环
+for (int i = 0; i < list.size(); i++) {
+    System.out.print(list.get(i) + '\t'); // Kobe June
+}
+System.out.println();
+
+
+// 增强for
+for (String s : list) {
+    System.out.printf(s + '\t'); // Kobe June
+}
+System.out.println();
+
+
+// lambda表达式
+list.forEach(item -> System.out.printf(item + '\t'));
+System.out.println();
+
+
+// 迭代器
+Iterator<String> it = list.iterator();
+while (it.hasNext()) {
+    System.out.printf(it.next() + '\t');
+}
+System.out.println();
+
+
+// 列表迭代器
+ListIterator<String> listIt = list.listIterator();
+while (listIt.hasNext()) {
+    System.out.printf(listIt.next() + '\t');
+}
+System.out.println();
+
+
+// 转换数组
+Object[] arr = list.toArray();    //转换成数组
+for (Object str : arr) {
+    System.out.println(str);
 }
 ```
 
@@ -2372,8 +2885,8 @@ System.out.println(result ? "存在" : "不存在");
 
 ```bash
 Iterator迭代器：java.util.Iterator
-Collection 接口与 Map 接口主要用于存储元素，而 Iterator 主要用于迭代访问（即遍历）Collection中的元素，因此 Iterator 对象也被称为迭代器。
-迭代：即 Collection 集合元素的通用获取方式。在取元素之前要判断集合中有没有元素，如果有，就把这个元素取出来，继续再判断，如果还有就再取出来。一直把集合中的所有元素全部取出——这种取出方式称为迭代。
+Collection 与 Map 用于存储元素，而 Iterator 用于迭代访问（遍历）Collection中的元素，因此 Iterator 对象也被称为迭代器。
+迭代：即 Collection 集合元素的通用获取方式。在取元素之前要判断集合中有没有元素，如果有，就把这个元素取出来，继续再判断，如果还有就再取出来，直到把集合中的所有元素全部取出为止——这种取出方式称为迭代。
 
 如何使用 Iterator
 	- 获取迭代器对象，Collection 接口的 iterator 方法
@@ -2402,7 +2915,22 @@ public class Test {
 }
 ```
 
-### 循环遍历
+
+
+### Collection 的遍历方式
+
+```bash
+Collection 的遍历方式有三种：
+1. 迭代器遍历
+
+2. 增强式for遍历：底层为迭代器，为了简化迭代器书写
+    所有的单列集合和数组才能使用增强式for遍历。
+    修改增强for中定义的变量，不会改变集合中原本的数据。
+    语法：`for(元素数据类型 变量名: 数组或集合) { }`
+
+3. lambda表达式遍历：
+		语法：default void forEach(Consumer<? super T> action)
+```
 
 ```java
 import java.util.HashMap;
@@ -2415,7 +2943,10 @@ public class Test {
         public Book(String name) {
             this.name = name;
         }
-        public String getName() { return this.name; }
+
+        public String getName() {
+            return this.name;
+        }
     }
 
     public static void main(String[] args) {
@@ -2432,17 +2963,19 @@ public class Test {
         map.put(b1.getName(), b1);
 
         System.out.println("======================");
-        for (Book book: map.values()) {
+        for (Book book : map.values()) {
             System.out.printf(book.getName() + '\t');
         }
 
         System.out.println("======================");
-        for (Map.Entry<String, Book> item: map.entrySet()) {
+        for (Map.Entry<String, Book> item : map.entrySet()) {
             System.out.println(item.getKey() + '=' + item.getValue().getName());
         }
 
         System.out.println("======================");
-        map.entrySet().stream().forEach(entry -> System.out.println(entry.getKey() + "=" + entry.getValue().getName()));
+        map.entrySet().stream().forEach(entry -> {
+            System.out.println(entry.getKey() + "=" + entry.getValue().getName());
+        });
     }
 }
 ```
@@ -2844,7 +3377,7 @@ ConcurrentHashMap的实现原理？
 	- 运行 --run()结束/异常退出--> TERMINATED
 ```
 
-![image-20251224153718605](./image/image-20251224153718605.png)
+![image-20251225103710538](./image/image-20251225103710538.png)
 
 #### 线程常用的方法
 
@@ -3238,8 +3771,6 @@ public class MyThread extends Thread {
   - void notifyAll()：唤醒所有线程
 ```
 
-
-
 ```java
 /* 共享缓冲区：控制生产者和消费者的执行 */
 public class Desk {
@@ -3320,6 +3851,77 @@ public class ThreadDemo {
         c.setName("厨师");
         f.setName("食客");
 
+        c.start();
+        f.start();
+    }
+}
+```
+
+##### 阻塞队列（JUC）
+
+阻塞队列内部方法用锁实现，是安全线程
+
+但如果在队列方法外操作，则不在锁的范围内，所以进行日志输出则有问题
+
+```java
+import java.util.concurrent.ArrayBlockingQueue;
+
+public class ThreadDemo {
+    // 生产者
+    public class Cook extends Thread {
+        ArrayBlockingQueue<String> queue;
+
+        public Cook(ArrayBlockingQueue<String> queue) {
+            this.queue = queue;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                // 不断把面条放入阻塞队列
+                try {
+                    queue.put("面条"); // 内部实现了锁
+                    System.out.println("厨师放入一碗面条"); // 这个不在阻塞队列的锁中，所以打印不会卡着
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // 消费者
+    public class Foodie extends Thread {
+        ArrayBlockingQueue<String> queue;
+
+        public Foodie(ArrayBlockingQueue<String> queue) {
+            this.queue = queue;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                // 不断从阻塞队列中取出面条
+                try {
+                    String food = queue.take(); // 内部实现了锁
+                    System.out.println(food); // 这个不在阻塞队列的锁中，所以打印不会卡着
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // 主线程
+    public static void main(String[] args) {
+        // 利用阻塞队列 实现 生产者和消费者（等待唤醒）
+
+        // 1. 创建阻塞队列的对象
+        ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(1);
+
+        ThreadDemo t = new ThreadDemo();
+        // 创建实例传递阻塞队列（共用队列）
+        Cook c = t.new Cook(queue);
+        Foodie f = t.new Foodie(queue);
         c.start();
         f.start();
     }
