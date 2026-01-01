@@ -95,7 +95,10 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 
 # 2026
-  docs: [数据结构] 二叉查找树、平衡二叉树、红黑树
+
+## 2026年1月1日
+  - docs: [数据结构] 二叉查找树、平衡二叉树、红黑树
+  - docs: [JAVA] JavaBean、泛型、源码解读
 
 # 2025
 

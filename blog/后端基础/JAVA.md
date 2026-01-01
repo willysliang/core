@@ -115,6 +115,77 @@ JDK（Java Development Kit）称为Java开发工具，包含了JRE和开发工�
 
 
 
+#### JavaBean 类快速生成
+
+```bash
+JavaBean 是一个遵循特定写法的Java类，它具备特点：
+	- 这个Java类必须具有一个无参的构造函数
+	- 属性必须私有化。
+	- 私有化的属性必须通过public类型的方法暴露给其它程序，并且方法的命名也必须遵守一定的命名规范。
+
+
+- ptg插件，直接生成标准 javaBean
+创建类，定义好成员变量后，通过 `右键 -> Ptg to JavaBean` 来生成 get/post 方法
+```
+
+![image-20260101145705984](./image/image-20260101145705984.png)
+
+````java
+public class Animal {
+    private String name;
+    private int num;
+
+
+  	//------------------类的构造方法--------------------------------------
+    public Animal() {
+    }
+
+    public Animal(String name, int num) {
+        this.name = name;
+        this.num = num;
+    }
+
+  	//------------------类对外提供的用于访问私有属性的public方法-----------------------------------
+    /**
+     * 获取
+     * @return name 
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * 设置
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 获取
+     * @return num 
+     */
+    public int getNum() {
+        return num;
+    }
+
+    /**
+     * 设置
+     * @param num
+     */
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public String toString() {
+        return "Animal{name = " + name + ", num = " + num + "}";
+    }
+}
+````
+
+
+
 ### 注释
 
 ```java
@@ -1667,7 +1738,7 @@ public class Test {
 ```bash
 1. 方法定义
 方法是若干语句的功能集合。
-定义方法格式：修饰符 返回值类型 方法名称(参数类型  参数，...){方法体     return 返回值；}
+定义方法格式：`修饰符 返回值类型 方法名称(参数类型  参数，...){方法体     return 返回值；}`
 
 修饰符-->（public、static）
 
@@ -2627,6 +2698,13 @@ public static void main(String[] args){
 ## 集合 Collection
 
 ```bash
+数据结构
+	- 栈：先进后出
+	- 队列：先进先出
+	- 数组：内存连续区域，查询快，增删慢
+	- 链表：元素是游离的，查询慢，首尾操作极快
+
+
 集合与数组区别
   - 数组长度是固定的，集合的长度是可变的；
   - 数组中存储的是同一类型的元素，可以存储基本数据类型值。集合存储的是对象，而且对象的类型可以不一致。
@@ -2654,13 +2732,8 @@ public static void main(String[] args){
 ### 有序数组 ArrayList
 
 ```bash
-数组的长度可以发生改变，但是ArrayList集合的长度是可以改变的
-
-ArrayList，有一个`<E>`代表泛型
-泛型：装在集合当中的所有元素（统一数据类型，泛型只能是引用类型，不能是基本类型）
-
+数组 Array 的长度不可变，但 ArrayList 集合的长度是可变的]
 ArrayList打印出来的是内容，不是地址；如果内容为空，则输出[]
-
 
 
 常用方法：
@@ -2690,8 +2763,14 @@ System.out.println(result); // true
 boolean result2 = list.contains("java");
 System.out.println(result2); // false
 
-System.out.println(list);	//[Kobe,June]
+System.out.println(list);    //[Kobe,June]
 
+// 将list的数据全部添加到新定义的list中
+ArrayList<String> newList = new ArrayList<>();
+newList.addAll(list);
+System.out.println(newList);    //[Kobe,June]
+
+// 清除数组
 list.clear();
 System.out.println(list); // []
 
@@ -2699,11 +2778,27 @@ System.out.println(list); // []
 // 生成6个1~33的随机整数，添加到集合，并遍历集合
 ArrayList<Integer> list2 = new ArrayList();
 Random r = new Random();
-for (int i=0; i<6; i++) {
+for (int i = 0; i < 6; i++) {
     int num = r.nextInt(33) + 1;
     list2.add(num);
 }
+System.out.println(list2);
 ```
+
+
+
+#### ArrayList底层源码
+
+```bash
+1. 利用空参创建的集合，在底层创建一个默认长度为0的数组
+2. 添加第一个元素时，底层会创建一个新长度为0的数组
+3. 存满时，会扩容1.5倍
+4. 如果一次添加多个元素，1.5倍还放不下，则新创建数组的长度以实际为准
+```
+
+![image-20260101140357083](./image/image-20260101140357083.png)
+
+
 
 #### 列表的遍历
 
@@ -2769,14 +2864,18 @@ for (Object str : arr) {
 ### 链表 LinkedList
 
 ```bash
+LinkedList 底层结构式双链表，查询慢，增删快，如果操作首尾元素速度更快。
+
 LinkedList 提供对头部和尾部元素进行添加和删除操作的方法。
-	首部添加元素：void addFirst(Object obj)
-	末尾添加元素：void addLast(Object obj)
-	获取头部元素：Object.getFirst()
-	获取末尾元素：Object.getLast()
-	删除并返回第一个元素：removeFirst()
-	删除并返回最后一个元素：removeLast()
+	添加首部元素：void addFirst(E e)
+	添加末尾元素：void addLast(E e)
+	获取头部元素：E Object.getFirst()
+	获取末尾元素：E Object.getLast()
+	删除并返回第一个元素：E removeFirst()
+	删除并返回最后一个元素：E removeLast()
 ```
+
+![image-20260101141840470](./image/image-20260101141840470.png)
 
 ```java
 import java.util.LinkedList;
@@ -2892,7 +2991,13 @@ Collection 与 Map 用于存储元素，而 Iterator 用于迭代访问（遍历
 	- 获取迭代器对象，Collection 接口的 iterator 方法
 	- hasNext()：判断是否仍有元素可以迭代
 	- next()：返回下一个迭代的元素
+
+注意：
+		因为创建集合的迭代器后，集合每次调用 add 或 remove 方法都会被统计变化次数。
+		所以为了避免并发修改一次，在使用迭代器或增强 for 遍历集合过程中，不要使用集合的方法去添加或修改元素。
 ```
+
+![image-20260101142847569](./image/image-20260101142847569.png)
 
 ```java
 import java.util.HashMap;
@@ -2978,6 +3083,40 @@ public class Test {
         });
     }
 }
+```
+
+
+
+### 泛型
+
+```bash
+泛型：是JDK5引入的特性，可以在编译阶段约束操作的数据类型，并进行检查
+泛型的格式：`<数据类型>`
+作用与注意：统一数据类型，泛型只能是引用数据类型，不能是基本数据类型
+		- 因为传入基本数据类型，也需要转化为 Object（基本数据类型不支持多态）
+		- 指定泛型的具体类型后，传递数据时，可以传入该类类型或者其子类类型
+		- 如果不写泛型，类型默认是 Object
+
+泛型不具备继承型，但数据具备继承性
+
+泛型方法：在定义方法时不确定类型的值
+		修饰符 <类型> 返回值类型 方法名(类型 变量名) {}
+		public static<T> void show(T t) {}
+
+泛型接口：
+		修饰符 interface 接口名<类型> {}
+		public interface List<E> {}
+
+泛型通配符：
+    `?` 表示不确定的类型，它可以进行类型的限定
+    `? extends E`：表示可以传递E或者E所有的子类型
+    `? super E`：表示可传递E或者E所有的父类型
+    public static void method(ArrayList<? extends E> list) {}
+		public static void method(ArrayList<? super E> list) {}
+
+泛型的使用场景：
+		- 定义类、方法、接口时，如果类型不确定，可以定义泛型
+		- 如果类型不确定，但能知道是哪个继承体系，就可以使用泛型的通配符
 ```
 
 
