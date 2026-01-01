@@ -94,6 +94,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
   - wip 开发中
 
 
+# 2026
+  docs: [数据结构] 二叉查找树、平衡二叉树、红黑树
+
 # 2025
 
 ## 2025年12月30日
