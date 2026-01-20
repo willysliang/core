@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2026
 
+## 2026年1月20日
+  - docs: [JAVA] 反射、代理、注解、HashMap原理、UDP
+
 ## 2026年1月1日
   - docs: [数据结构] 二叉查找树、平衡二叉树、红黑树
   - docs: [JAVA] JavaBean、泛型、源码解读

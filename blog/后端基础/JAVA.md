@@ -148,7 +148,7 @@ public class Animal {
   	//------------------类对外提供的用于访问私有属性的public方法-----------------------------------
     /**
      * 获取
-     * @return name 
+     * @return name
      */
     public String getName() {
         return name;
@@ -164,7 +164,7 @@ public class Animal {
 
     /**
      * 获取
-     * @return num 
+     * @return num
      */
     public int getNum() {
         return num;
@@ -620,6 +620,8 @@ public class Main {
 2. break和continue
 3. while 循环结构
 4. do-while 循环结构
+
+注意：switch 中省略 break 会触发「case 穿透」，程序从匹配的 case 开始依次执行后续所有 case 代码，直到遇到 break 或 switch 结束。
 ```
 
 ![image-20251211101650222](./image/image-20251211101650222.png)
@@ -716,40 +718,39 @@ public class ControlStructureDemo {
     // 3. switch 选择结构演示
     public static void demoSwitchStructure() {
         System.out.println("\n=== 3. switch 选择结构演示 ===");
-
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("请输入星期几 (1-7): ");
-        int day = scanner.nextInt();
-
-        // switch 基本用法
-        System.out.print("今天是: ");
-        switch (day) {
+      	int num = 2;
+        switch (num) {
             case 1:
-                System.out.println("星期一");
+                System.out.println("执行case 1");
                 break;
             case 2:
-                System.out.println("星期二");
+                System.out.println("执行case 2");
                 break;
             case 3:
-                System.out.println("星期三");
-                break;
-            case 4:
-                System.out.println("星期四");
-                break;
-            case 5:
-                System.out.println("星期五");
-                break;
-            case 6:
-            case 7:
-                System.out.println("周末");
+                System.out.println("执行case 3");
                 break;
             default:
-                System.out.println("输入错误，请输入 1-7 的数字");
+                System.out.println("执行default");
+        }
+
+				// 无 break产生的异常
+      	switch (num) {
+            case 1:
+                System.out.println("执行case 1");
+                // 无break
+            case 2:
+                System.out.println("执行case 2");
+                // 这里没有break，会发生case穿透
+            case 3:
+                System.out.println("执行case 3");
+                break; // 直到这里才跳出，中断循环执行
+            default:
+                System.out.println("执行default");
         }
 
         // Java 12+ 新的 switch 表达式（语法糖）
         System.out.println("\n--- switch 表达式 (Java 12+) ---");
+      	int day = 2;
         String dayType = switch (day) {
             case 1, 2, 3, 4, 5 -> "工作日";
             case 6, 7 -> "休息日";
@@ -765,19 +766,7 @@ public class ControlStructureDemo {
         System.out.println("\n=== 4. for 循环演示 ===");
 
         // 4.1 基本 for 循环
-        System.out.println("--- 基本 for 循环 (1-5) ---");
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("i = " + i);
-        }
-
-        // 4.2 倒序循环
-        System.out.println("\n--- 倒序循环 (5-1) ---");
-        for (int i = 5; i >= 1; i--) {
-            System.out.println("i = " + i);
-        }
-
-        // 4.3 步长为 2
-        System.out.println("\n--- 步长为 2 (1-10 的奇数) ---");
+        System.out.println("--- 基本 for 循环 (1-10的奇数) ---");
         for (int i = 1; i <= 10; i += 2) {
             System.out.print(i + " ");
         }
@@ -855,17 +844,7 @@ public class ControlStructureDemo {
     // 6. do-while 循环演示
     public static void demoDoWhileLoop() {
         System.out.println("\n=== 6. do-while 循环演示 ===");
-
-        // 6.1 基本 do-while
-        System.out.println("--- 基本 do-while 循环 ---");
-        int i = 1;
-        do {
-            System.out.println("i = " + i);
-            i++;
-        } while (i <= 5);
-
-        // 6.2 至少执行一次的特点
-        System.out.println("\n--- 验证 do-while 至少执行一次 ---");
+        // 至少执行一次的特点
         int j = 10;
         do {
             System.out.println("j = " + j);  // 即使条件不满足，也会执行一次
@@ -873,56 +852,8 @@ public class ControlStructureDemo {
         } while (j < 5);
     }
 
-    // 7. break 和 continue 演示
+    // 7. 带标签的 break 和 continue 演示
     public static void demoBreakContinue() {
-        System.out.println("\n=== 7. break 和 continue 演示 ===");
-
-        // 7.1 break 语句
-        System.out.println("--- break 语句演示 ---");
-        System.out.println("在 1-10 中查找第一个能被3整除的数:");
-        for (int i = 1; i <= 10; i++) {
-            if (i % 3 == 0) {
-                System.out.println("找到第一个能被3整除的数: " + i);
-                break;  // 找到后立即退出循环
-            }
-            System.out.println("检查: " + i);
-        }
-
-        // 7.2 continue 语句
-        System.out.println("\n--- continue 语句演示 ---");
-        System.out.println("打印 1-10 中的奇数:");
-        for (int i = 1; i <= 10; i++) {
-            if (i % 2 == 0) {
-                continue;  // 跳过偶数
-            }
-            System.out.print(i + " ");
-        }
-        System.out.println();
-
-        // 7.3 break 在 while 循环中
-        System.out.println("\n--- break 在 while 循环中 ---");
-        int num = 0;
-        while (num < 10) {
-            num++;
-            if (num == 5) {
-                System.out.println("遇到5，提前结束循环");
-                break;
-            }
-            System.out.println("当前值: " + num);
-        }
-
-        // 7.4 continue 在 while 循环中
-        System.out.println("\n--- continue 在 while 循环中 ---");
-        int count = 0;
-        while (count < 10) {
-            count++;
-            if (count % 3 == 0) {
-                continue;  // 跳过3的倍数
-            }
-            System.out.print(count + " ");
-        }
-        System.out.println();
-
         // 7.5 带标签的 break (跳出多层循环)
         System.out.println("\n--- 带标签的 break ---");
         outerLoop:  // 标签
@@ -947,23 +878,6 @@ public class ControlStructureDemo {
                 }
                 System.out.println("i=" + i + ", j=" + j);
             }
-        }
-
-        // 7.7 break 在 switch 中
-        System.out.println("\n--- break 在 switch 中的使用 ---");
-        int option = 2;
-        switch (option) {
-            case 1:
-                System.out.println("选项1");
-                break;  // 防止case穿透
-            case 2:
-                System.out.println("选项2");
-                // 这里没有break，会发生case穿透
-            case 3:
-                System.out.println("选项3");
-                break;
-            default:
-                System.out.println("默认选项");
         }
     }
 }
@@ -1201,20 +1115,6 @@ System.out.println(arrayB);	//输出数组的首地址
 System.out.println(arrayB[0]);	//输出数组第一位数：1
 //数组的长度
 int len = arrayB.length;
-
-
-//通过数组存储多个返回值
-public static void main(String[] args){
-    int[] result = calculate(10,20,30);
-    System.out.println("总和："+result[0]);
-    System.out.println("平均数："+result[1]);
-}
-public static calculate(int a,int b,int c){
-    int sum = a + b + c;
-    int avg = sum / 3;
-    int[] array = {sum, avg };
-    return array;	//返回一个数组
-}
 ```
 
 #### 数组插入
@@ -2649,7 +2549,7 @@ public class Outer{
 
 #### 匿名内部类
 
-如果接口的实现类（或父类的子类），只石永红唯一一次。那么这种情况下可以省略该类的定义，而改为使用【匿名内部类】
+如果接口的实现类（或父类的子类），只使用唯一一次。那么这种情况下可以省略该类的定义，而改为使用【匿名内部类】
 
 ```java
 /*
@@ -2662,12 +2562,10 @@ public void method(){
 	System.out.println("匿名内部类实现的方法！");
 }
 */
-//MyInterface.java
 public interface MyInterface{
     void method();	//抽象方法
 }
 
-//MyInterfaceImpl.java
 public class MyInterfaceImpl implements MyInterface{
     @Override
     public void method(){
@@ -2678,16 +2576,18 @@ public class MyInterfaceImpl implements MyInterface{
 //Main.java
 public static void main(String[] args){
     MyInterface obj = new MyInterface(){
-       	//重写了两次（即调用两次）
+        //重写了两次（即调用两次）
         @Override
         public void method1(){
-            System.out.println("匿名内部类实现的方法！");
+          	System.out.println("匿名内部类实现的方法！");
         }
-		@Override
+
+        @Override
         public void method2(){
-            System.out.println("匿名内部类实现的方法！");
+          	System.out.println("匿名内部类实现的方法！");
         }
-    };	//需要一个;结束
+    };
+
     obj.method1();
     obj.method2();
 }
@@ -2695,7 +2595,359 @@ public static void main(String[] args){
 
 
 
-## 集合 Collection
+### 反射
+
+```bash
+定义：在程序运行时(非编译时)获取类的信息、对象信息，并且可动态操作类的构造器、成员变量、成员方法，还可打破类的封装访问私有成员。
+本质：Java 类加载完成后，会在 JVM 堆内存中生成对应的 Class 类对象(属于 java.lang.Class 的实例)，这个 Class 对象包含该类的所有完整信息(类名、父类、接口、构造器、字段、方法等)。反射的本质是通过操作这个 Class 对象，间接获取和操作目标类/对象的成员。
+
+获取 Class 对象的方式：
+	- `类名.class`：编译时已知目标类
+	- `对象.getClass()`：已拥有目标类对象
+	- `Class.forName("全类名")`：与逆行时动态获取
+
+
+适用场景
+	- 框架开发（Spring、MyBatis等）：需要动态加载、实例化类，实现配置化和解耦
+	- 工具类开发（BeanUtils、Json 序列化）：需要动态操作对象的字段和方法
+	- 动态代理、插件化开发：需要在运行时动态扩展类的功能
+
+不适用场景
+	- 普通业务开发：优先直接调用类的成员，避免反射带来的性能开销和代码复杂度
+	- 高并发、高性能要求（如秒杀系统、高频交易系统）：反射的性能开销可能成为系统瓶颈
+	- 对安全性要求极高（如金融系统）：反射打破封装可能带来恶意访问风险
+
+
+API
+	T newInstance(Object... initargs)：创建类的实例，传入构造器所需参数
+	void setAccessible(boolean flag)：设置是否跳过访问权限检查，true表示跳过(可访问私有构造器)
+	Object get(Object obj)：获取指定对象的该字段值
+	void set(Object obj, Object value)：设置指定对象的该字段值
+	Object invoke(Object obj, Object... args)：调用指定对象的该方法，传入方法所需参数，返回方法的返回
+```
+
+```java
+// 方式 1：类名.class（编译时已知，最优）
+Class<User> clazz1 = User.class;
+System.out.println("方式 1：" + clazz1.getName());
+
+// 方式 2：对象.getClass()（已拥有实例对象）
+User user = new User();
+Class<?> clazz2 = user.getClass();
+System.out.println("方式 2：" + clazz2.getName());
+
+// 方式 3：Class.forName()（运行时动态获取，需全限定名）
+Class<?> clazz3 = Class.forName("com.example.reflect.User");
+System.out.println("方式 3：" + clazz3.getName());
+
+// 验证 3 种方式获取的 Class 对象是否为同一个（JVM 唯一）
+System.out.println("clazz1 == clazz2：" + (clazz1 == clazz2));
+System.out.println("clazz1 == clazz3：" + (clazz1 == clazz3));
+```
+
+```java
+// 1. 获取 Class 对象并创建实例
+Class<User> userClass = User.class;
+// User user = userClass.getConstructor().newInstance();
+User user = userClass.getConstructor(String.class, int.class).newInstance("钱七", 28);
+
+/* 通过反射操作成员变量 */
+// 场景 1：操作公共字段（若有），此处以私有字段 name 为例
+Field nameField = userClass.getDeclaredField("name");
+nameField.setAccessible(true); // 跳过访问检查，访问私有字段
+
+// 设置字段值
+nameField.set(user, "赵六");
+System.out.println("设置私有字段 name 后：" + user.getName());
+
+// 获取字段值
+Object nameValue = nameField.get(user);
+System.out.println("获取私有字段 name 值：" + nameValue);
+
+
+/* 通过反射操作成员方法 */
+// 场景 1：调用公共方法 getName()（无参，有返回值）
+Method getNameMethod = userClass.getMethod("getName");
+Object nameResult = getNameMethod.invoke(user); // 无参方法，传入空数组或不传入参数
+System.out.println("调用公共方法 getName() 返回值：" + nameResult);
+
+// 场景 2：调用公共方法 setName()（有参，无返回值）
+Method setNameMethod = userClass.getMethod("setName", String.class);
+setNameMethod.invoke(user, "孙八"); // 传入方法所需参数
+System.out.println("调用 setName() 后，getName() 返回值：" + user.getName());
+
+// 场景 3：调用私有方法 sayHello()（无参，无返回值）
+Method sayHelloMethod = userClass.getDeclaredMethod("sayHello");
+sayHelloMethod.setAccessible(true); // 跳过访问检查，调用私有方法
+sayHelloMethod.invoke(user);
+```
+
+
+
+### 动态代理
+
+```java
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+/**
+ * 测试类：生成明星代理并调用
+ */
+public class ProxyDemo {
+    public static void main(String[] args) {
+        // 1. 创建目标类实例（大明星：周杰伦）
+        BigStar bigStar = new BigStar("周杰伦");
+
+        // 2. 生成动态代理对象（经纪人）
+        Star starProxy = (Star) Proxy.newProxyInstance(
+                ProxyDemo.class.getClassLoader(), // 参数1：类加载器（加载代理类字节码）
+                new Class[]{Star.class},          // 参数2：代理类要实现的接口（和目标类一致）
+                new InvocationHandler() {         // 参数3：方法调用处理器（增强逻辑）
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        // 🔍 增强逻辑：根据方法名添加前置操作
+                        if ("sing".equals(method.getName())) {
+                            System.out.println("准备话筒，收钱 200 万！");
+                        } else if ("dance".equals(method.getName())) {
+                            System.out.println("准备场地，收钱 150 万！");
+                        }
+
+                        // 🎯 核心：调用目标类的真实方法（明星唱歌/跳舞）
+                        Object result = method.invoke(bigStar, args);
+
+                        return result;
+                    }
+                }
+        );
+
+        // 3. 调用代理对象的方法（触发增强逻辑 + 目标方法）
+        System.out.println("===== 调用唱歌方法 =====");
+        String singResult = starProxy.sing("晴天");
+        System.out.println(singResult);
+
+        System.out.println("\n===== 调用跳舞方法 =====");
+        starProxy.dance();
+    }
+}
+
+
+/**
+ * 目标接口：明星的演出服务规范
+ */
+public interface Star {
+    // 唱歌
+    String sing(String songName);
+    // 跳舞
+    void dance();
+}
+
+/**
+ * 目标类：大明星（真正执行业务逻辑的类）
+ */
+public class BigStar implements Star {
+    private String name;
+
+    public BigStar(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String sing(String songName) {
+        System.out.println(name + " 正在演唱：《" + songName + "》");
+        return "演唱结束，掌声雷动！";
+    }
+
+    @Override
+    public void dance() {
+        System.out.println(name + " 正在跳劲爆舞蹈！");
+    }
+}
+```
+
+
+
+### 注解
+
+```bash
+注解(Annotation) 是一种特殊的标记接口，本身不直接执行任何逻辑，仅用于为程序元素(类、方法、字段、参数等)附加额外的元数据(描述数据的数据)作传递，需通过注解解析器(编译器、JVM或自定义代码)发挥作用。
+本质：所有注解最终会被编译为继承 java.lang.annotation.Annotation 接口的特殊接口，其成员方法对应注解的属性
+
+
+作用：
+	- 解耦：将配置信息与业务代码分离，无需手动编写繁琐配置（如 Spring 注解替代 XML 配置）
+	- 自动化：通过解析注解实现自动化处理（如 MyBatis 注解自动生成 SQL、JUnit 注解自动执行测试方法）
+	- 编译检查：提供编译期语法校验，提前规避错误（如 @Override 校验方法重写的正确性）
+	- 简化代码：减少重复模板代码
+
+
+JDK 中常见注解：
+	@Override：方法重写
+	@Deprecated：修饰的方法已过时
+	@SuppressWarnings("all")：压制警告
+
+元注解：
+	@Target：指定注解可修饰的类型，默认可修饰所有程序元素
+			TYPE、METHOD、FIELD、PARAMETER、CONSTRUCTOR、LOCAL_VARIABLE、ANNOTATION_TYPE
+	@Retention：定义注解的保留周期
+			- SOURCE：源码注解，仅存在源码中，编译后被丢弃(不进入字节码)
+			- CLASS：编译时注解，保留到编译后的字节码文件中，JVM加载类时丢弃
+			- RUNTIME：运行时注解，保留到字节码文件，且JVM加载类后仍存在于内存中
+	@Document：指定注解是否会被 javadoc 工具提取到API文档
+	@Inherited：指定注解是否具有继承性
+
+
+自定义注解格式：
+    public @interface 注解名称 {
+      public 属性类型 属性名() default 默认值;
+    }
+    public @interface Anno {
+      String show() default "show...";
+      String show2() default "B";
+    }
+
+自定义注解 @MyAnnotation 反编译后等价于
+    public interface MyAnnotation extends java.lang.annotation.Annotation {
+        String value();
+        int age() default 18;
+    }
+```
+
+```java
+import java.lang.annotation.*;
+
+/**
+ * 自定义标记注解：标记核心业务类
+ */
+// 元注解1：仅可修饰类/接口/枚举
+@Target(ElementType.TYPE)
+// 元注解2：保留到运行时，可通过反射解析
+@Retention(RetentionPolicy.RUNTIME)
+// 元注解3：生成 javadoc 文档时包含该注解
+@Documented
+public @interface MyMarker {
+    // 无任何属性，标记注解
+}
+```
+
+```java
+import java.lang.annotation.*;
+
+/**
+ * 自定义数据注解：记录用户操作日志
+ */
+// 元注解1：仅可修饰方法
+@Target(ElementType.METHOD)
+// 元注解2：保留到运行时，可通过反射解析
+@Retention(RetentionPolicy.RUNTIME)
+// 元注解3：生成 javadoc 文档时包含该注解
+@Documented
+public @interface UserLog {
+    // 注解属性1：操作模块（无默认值，使用时必须赋值）
+    String module();
+
+    // 注解属性2：操作描述（有默认值，使用时可省略）
+    String desc() default "无详细描述";
+
+    // 注解属性3：操作类型（枚举类型，有默认值）
+    OperationType type() default OperationType.QUERY;
+
+    // 内部枚举：操作类型
+    enum OperationType {
+        QUERY, // 查询
+        ADD,   // 新增
+        UPDATE, // 修改
+        DELETE  // 删除
+    }
+}
+```
+
+```java
+/**
+ * 注解使用示例：用户服务类
+ */
+// 使用标记注解 @MyMarker，标记该类为核心业务类
+@MyMarker
+public class UserService {
+    // 使用数据注解 @UserLog，指定模块和描述，类型默认 QUERY
+    @UserLog(module = "用户管理", desc = "根据用户ID查询用户信息")
+    public String queryUserById(Integer userId) {
+        return "用户ID：" + userId + "，用户名：张三";
+    }
+
+    // 使用数据注解 @UserLog，指定所有属性（覆盖默认值）
+    @UserLog(module = "用户管理", desc = "新增用户信息", type = UserLog.OperationType.ADD)
+    public void addUser(String userName) {
+        System.out.println("新增用户成功：" + userName);
+    }
+}
+```
+
+```java
+import java.lang.reflect.Method;
+
+/**
+ * 注解解析器：反射解析运行时注解
+ */
+public class AnnotationParser {
+    public static void main(String[] args) throws Exception {
+        // 1. 获取目标类的 Class 对象
+        Class<UserService> userServiceClass = UserService.class;
+
+        // 2. 解析类上的 @MyMarker 注解
+        parseClassAnnotation(userServiceClass);
+
+        // 3. 解析方法上的 @UserLog 注解
+        parseMethodAnnotation(userServiceClass);
+    }
+
+    /**
+     * 解析类上的注解
+     */
+    private static void parseClassAnnotation(Class<UserService> clazz) {
+        System.out.println("===== 解析类上的注解 =====");
+        // 判断类是否被 @MyMarker 注解修饰
+        if (clazz.isAnnotationPresent(MyMarker.class)) {
+            // 获取 @MyMarker 注解实例
+            MyMarker myMarker = clazz.getAnnotation(MyMarker.class);
+            System.out.println("该类是核心业务类，注解信息：" + myMarker.annotationType().getName());
+        } else {
+            System.out.println("该类不是核心业务类");
+        }
+    }
+
+    /**
+     * 解析方法上的注解
+     */
+    private static void parseMethodAnnotation(Class<UserService> clazz) throws Exception {
+        System.out.println("\n===== 解析方法上的注解 =====");
+        // 获取类中所有的方法
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
+            // 判断方法是否被 @UserLog 注解修饰
+            if (method.isAnnotationPresent(UserLog.class)) {
+                // 获取 @UserLog 注解实例
+                UserLog userLog = method.getAnnotation(UserLog.class);
+
+                // 提取注解属性信息
+                String module = userLog.module();
+                String desc = userLog.desc();
+                UserLog.OperationType type = userLog.type();
+
+                // 模拟日志记录逻辑（注解的核心作用：传递元数据，驱动业务逻辑）
+                System.out.println("  操作模块：" + module);
+                System.out.println("  操作描述：" + desc);
+                System.out.println("  操作类型：" + type);
+                System.out.println("  执行方法：" + method.getName());
+            }
+        }
+    }
+}
+```
+
+
+
+## 集合
 
 ```bash
 数据结构
@@ -2718,27 +2970,24 @@ public static void main(String[] args){
 集合按照存储结构分两大类：
   - 单列集合 java.util.Collection
   - 双列集合 java.util.Map
-
-  Collection：接口存储一组不唯一、无序的对象
-    |—— List（ArrayList、LinkedList）：接口存储一组不唯一、有序、有索引的对象
-    |—— Set（HashSet）：接口存储一组唯一、无序、无索引的对象
-  Map：接口存储一组键值对象，提供key到value的映射
-    |—— HashMap
-    |—— TreeMap
 ```
 
-![image-20210324124037323](./image/image-20210324124037323.png)
 
-### 有序数组 ArrayList
+
+### 单列集合 Collection
 
 ```bash
-数组 Array 的长度不可变，但 ArrayList 集合的长度是可变的]
-ArrayList打印出来的是内容，不是地址；如果内容为空，则输出[]
+Collection：接口存储一组不唯一、无序的对象
+    |—— List（ArrayList、LinkedList）：接口存储一组不唯一、有序、有索引的对象
+    |—— Set（HashSet）：接口存储一组唯一、无序、无索引的对象
+    		|—— HashSet：无序、唯一、无索引
+    		|—— LinkedHashSet：有序、不重复、无索引
+    		|—— TreeSet：可排序、不重复、无索引
+    		因为无索引，所以不能使用普通 for 循环遍历，也不能通过索引来获取元素
 
 
 常用方法：
   添加元素：boolean add(E e)
-  插入数据：boolean add(int index, E e)
   删除数据：boolean remove(E e)
   删除指定位置的元素：E remove(int index)
   获取固定位置的元素：E get(int,index)
@@ -2746,8 +2995,38 @@ ArrayList打印出来的是内容，不是地址；如果内容为空，则输�
   获取集合的长度：int size()
   清空集合所有的元素：void clear()
   判断集合是否为空：boolean isEmpty()
-  将集合转成一个数组：E[] toArray()
+
+  批量添加元素：boolean addAll(Collection<T> c, T... elements)
+  打乱List集合顺序：void shuffle(List<?> list)
+  填充集合：int fill(List<T> list, T obj)
+  获取最大/最小值：void max/min(Collection<T> coll)
+  交换集合中指定位置的元素：void swap(List<?> list, int i, int j)
 ```
+
+![image-20210324124037323](./image/image-20210324124037323.png)
+
+
+
+#### 有序数组 ArrayList
+
+```bash
+数组 Array 的长度不可变，但 ArrayList 集合的长度是可变的]
+ArrayList打印出来的是内容，不是地址；如果内容为空，则输出[]
+
+
+常用方法：
+  插入数据：boolean add(int index, E e)
+  将集合转成一个数组：E[] toArray()
+
+
+#### ArrayList底层源码
+1. 利用空参创建的集合，在底层创建一个默认长度为0的数组
+2. 添加第一个元素时，底层会创建一个新长度为0的数组
+3. 存满时，会扩容1.5倍
+4. 如果一次添加多个元素，1.5倍还放不下，则新创建数组的长度以实际为准
+```
+
+![image-20260101140357083](./image/image-20260101140357083.png)
 
 ```java
 //从JDK1.7+开始，右侧<>内部可以不写内容，但<>本身需要写
@@ -2787,18 +3066,626 @@ System.out.println(list2);
 
 
 
-#### ArrayList底层源码
+#### 链表 LinkedList
 
 ```bash
-1. 利用空参创建的集合，在底层创建一个默认长度为0的数组
-2. 添加第一个元素时，底层会创建一个新长度为0的数组
-3. 存满时，会扩容1.5倍
-4. 如果一次添加多个元素，1.5倍还放不下，则新创建数组的长度以实际为准
+LinkedList 底层结构式双链表，查询慢，增删快，如果操作首尾元素速度更快。
+
+LinkedList 提供对头部和尾部元素进行添加和删除操作的方法。
+	添加首部元素：void addFirst(E e)
+	添加末尾元素：void addLast(E e)
+	获取头部元素：E Object.getFirst()
+	获取末尾元素：E Object.getLast()
+	删除并返回第一个元素：E removeFirst()
+	删除并返回最后一个元素：E removeLast()
 ```
 
-![image-20260101140357083](./image/image-20260101140357083.png)
+![image-20260101141840470](./image/image-20260101141840470.png)
+
+```java
+import java.util.LinkedList;
+
+public class Test {
+    class Book {
+        private String name;
+        private int price;
+
+        public Book(String name, int price) {
+            this.name = name;
+            this.price = price;
+        }
+    }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        Book b1 = test.new Book("我的阿泰勒", 60);
+        Book b2 = test.new Book("平凡的认识", 50);
+        Book b3 = test.new Book("你是我的四月天", 70);
+
+        LinkedList<Book> list = new LinkedList<Book>();
+        list.add(b1);
+        list.addFirst(b2);
+        list.addLast(b3);
+
+        Book first = list.getFirst();
+        System.out.println(first); // Book{name='平凡的认识', price=50}
+
+        Book last = list.getLast();
+        System.out.println(last); // Book{name='你是我的四月天', price=70}
+
+        list.removeFirst();
+        list.removeLast();
+
+        for(Book b: list) {
+            System.out.println(b); // Book{name='我的阿泰勒', price=60}
+        }
+    }
+}
+```
 
 
+
+#### 无序去重 HashSet
+
+```bash
+Set 接口存储一组唯一、无序、无索引的对象。
+Set 存放对象的引用。
+
+遍历：
+	- 迭代器遍历
+	- 增强 for 循环
+	- lambda 表达式
+
+
+#### HashSet 底层原理：采取哈希表存储数据
+  哈希表是一种增删改查数据性能都较好的结构
+      - JDK8前：数组 + 链表
+      - JDK8后：数组 + 链表 + 红黑树
+  哈希值：
+      - 根据 hashCode 方法算出来的 int 类型的整数
+      - 该方法定义在 Object 类中，所有对象都可调用，默认使用地址值进行计算
+      - 一般情况下，会重写 hashCode 方法，利用对象内部的属性值计算哈希值
+  对象的哈希值特点：
+  		- 如果没有重写 hashCode 方法，不同对象计算出的哈希值不同
+  		- 如果重写 hashCode 方法，不同对象只要属性值相同，计算的哈希值也一样
+  		- 小部分情况下，不同属性值或不同地址值计算出的哈希值可能一样（哈希碰撞）
+
+
+#### HashSet 添加元素底层原理：
+	1. 创建一个默认长度16，默认加载因子为 0.75 的数组，数组名为 table
+			- 底层依赖 HashMap 实现，HashMap 初始时 table 数组为 null(懒加载)，首次添加元素时才会真正创建长度 16 的数组
+			- 扩容触发条件：元素数量(size) ≥ 容量x加载因子，扩容后容量为原来的2倍(保证2的整数幂)
+						如：16×0.75=12，当 元素数≥12 时触发扩容，扩容后容量为 32（2倍）
+			- 加载因子0.75是内存与效率的平衡：如果0.5则扩容浪费内存，若结束扩容，效率低；1 则冲突率高、效率低；所以采取0.75，若存的长度等于 0.75就扩容
+	2. 根据元素的哈希值跟数组的长度计算出应存入的数组索引位置
+			- 调用hashCode方法获取原始哈希值；
+			- 计算索引：`int index = (数组长度 - 1) & 哈希值;`
+			- 索引位置计算的位运算替代模运算的前提：数组长度必须为2的整数幂，否则会导致索引的范围可能不完全覆盖整个哈希表；并且在数组扩容时，是扩容为原来的2倍，以确保数组长度一定满足2的整数幂
+	3. 判断当前位置是否为 null，如果是 null 直接存入
+	4. 如果位置不为 null，表示有元素(哈希冲突)，则调用 equals 方法比较属性值
+			- 先比较哈希值：若当前元素哈希值 ≠ 已有节点哈希值  ➡ 哈希冲突但元素不同；
+			- 若哈希值相同，调用 equals 方法比较元素属性值。
+	5. 如果比较属性值一致(元素重复)，则不存；如果不一样，则存入数组，形成链表
+			- JDK8前：新元素存入数组(头插法)，老元素挂在新元素 next 上，形成链表；
+			- JDK8后：新元素直接挂在老元素下面(链表尾部➡尾插法)；
+			- 注意：在JDK8+，当 链表长度≥8 且 数组容量≥64 时，链表自动转为红黑树；若数组容量＜64，先扩容再继续链表存储
+
+
+#### 问题
+1. HashSet 为什么存和取的顺序不一样？
+		存数据是根据 元素的哈希值和数组长度 来计算出存储的位置进行存入的，以及其中可能还存在链表
+		取数据是根据数组的下标索引进行按顺序取的
+		➡ 无序是因为 hash 值导致
+2. HashSet 为什么没有索引？
+		因为多个元素可能在同一个数组索引下标存储的链表中，多个元素共用同一个索引不合适
+3. HashSet 利用什么机制保证数据去重？
+		如果集合存储的是自定义对象，必须要重写 hashCode 和 equals 方法
+      - 重写 hashCode：根据属性值去计算哈希值
+      - 重写 equals：需要在比较时使用对象的内部属性值比较
+```
+
+![image-20260106172258173](./image/image-20260106172258173.png)
+
+```java
+import java.util.HashSet;
+import java.util.Objects;
+
+public class Test {
+    class Book {
+        private String name;
+        private int price;
+
+        public Book(String name, int price) {
+            this.name = name;
+            this.price = price;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            Book book = (Book) o;
+            return price == book.price && Objects.equals(name, book.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, price);
+        }
+    }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        Book b1 = test.new Book("我的阿泰勒", 60);
+
+        HashSet<Book> set = new HashSet<Book>();
+        Book b2 = b1;
+        set.add(b1);
+        set.add(b2);
+        System.out.println(set.size()); // 1
+
+        HashSet<Book> set2 = new HashSet<>();
+        set2.add(b1);
+        System.out.println(set.hashCode()); // 603463375
+        System.out.println(set2.hashCode()); // 603463375
+    }
+}
+```
+
+
+
+#### 插入有序+去重 LinkedHashSet
+
+```bash
+LinkedHashSet 继承自 HashSet，底层同样依赖 HashMap，但额外通过「双向链表」维护元素的插入顺序。
+	- 复用 HashSet 的 add() 逻辑，通过「自定义 HashMap 的节点类型」实现顺序维护
+	- 使用双向链表记录插入顺序，
+
+
+LinkedHashSet 集合
+	- 有序、不重复、无索引
+	- 底层基于哈希表，使用双链表记录添加顺序（在遍历时可以通过链表来按顺序获取）
+如果要数据去重：
+	- 默认使用 HashSet
+	- 如果要求去重且存取有序，才使用 LinkedHashSet（因为比 HashSet 额外增加双链表，效率比 HashSet 相对低）
+```
+
+```java
+// 1. HashSet：无序（输出顺序≠插入顺序）
+Set<String> hashSet = new HashSet<>();
+hashSet.add("A");
+hashSet.add("B");
+hashSet.add("C");
+System.out.println("HashSet: " + hashSet); // 可能输出 [A, C, B]
+
+// 2. LinkedHashSet：有序（输出顺序=插入顺序）
+Set<String> linkedHashSet = new LinkedHashSet<>();
+linkedHashSet.add("A");
+linkedHashSet.add("B");
+linkedHashSet.add("C");
+System.out.println("LinkedHashSet: " + linkedHashSet); // 必输出 [A, B, C]
+```
+
+
+
+#### 排序+去重 TreeSet
+
+```bash
+特性：
+	- 有序：元素会按指定规则排序，而非插入顺序（默认升序）
+	- 唯一：依赖元素的 自然排序compareTo() 或 自定义排序Comparator 判断是否重复
+	- 底层依赖红黑树，增删查效率为 O（log n）
+	- 不允许 null：自然排序时元素为 null 会抛 NullPointerException（自定义排序可处理，但不推荐）
+
+使用场景：
+	1. 有序去重
+	2. 范围查询：利用 subSet()、headSet()、tailSet() 快速获取指定范围元素
+
+注意：
+	- TreeSet 不依赖 equals() 和 hashCode()，是通过 compareTo() 或 Comparator.compare() 是否返回 0 来判断重复
+	- 自定义排序时，规则需和 equals() 保持一致（否则违反 Set 语义）
+	- 对于数值类型(Integer、Double)默认按从小到大排序，字符和字符串按字符在ASCII码中的数字升序。
+
+性能对比：
+	- 插入/删除：TreeSet O(log n) > HashSet O(1)
+	- 有序遍历：TreeSet 更高效（无需额外排序）
+	- 需有序用 TreeSet，需插入顺序选 LinkedHashSet，仅需去重选 HashSet
+```
+
+```java
+// 1. 创建 TreeSet（默认自然排序：整数升序）
+TreeSet<Integer> numSet = new TreeSet<>();
+
+// 2. 添加元素（自动去重+排序）
+numSet.add(5);
+numSet.add(2);
+numSet.add(9);
+numSet.add(4);
+numSet.add(6);
+numSet.add(2); // 重复元素，不会存入
+
+// 3. 遍历（输出：[2, 4, 5, 6, 9]，已排序）
+System.out.println("自然排序结果：" + numSet);
+
+// 4. 常用方法（TreeSet 特有，利用有序性）
+System.out.println("第一个元素：" + numSet.first()); // 2
+System.out.println("最后一个元素：" + numSet.last()); // 9
+System.out.println("小于5的最大元素：" + numSet.lower(5)); // 4
+System.out.println("大于5的最小元素：" + numSet.higher(5)); // 6
+System.out.println("删除并返回第一个元素：" + numSet.pollFirst()); // 2
+System.out.println("删除后集合：" + numSet); // [4, 5, 6, 9]
+```
+
+##### 自定义类（实现 Comparable）
+
+```java
+import java.util.TreeSet;
+
+// 自定义类：学生（按年龄升序排序）
+class Student implements Comparable<Student> {
+    private String name;
+    private int age;
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // 核心：重写 compareTo 定义排序规则
+    @Override
+    public int compareTo(Student o) {
+        // 规则：按年龄升序；年龄相同则按姓名字典序
+        if (this.age != o.age) {
+            return this.age - o.age; // 升序（负数：当前对象小；正数：当前对象大；0：重复）
+        }
+        return this.name.compareTo(o.name);
+    }
+
+    // 重写 toString 方便打印
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', age=" + age + "}";
+    }
+}
+
+public class TreeSetCustomClass {
+    public static void main(String[] args) {
+        TreeSet<Student> studentSet = new TreeSet<>();
+        studentSet.add(new Student("张三", 20));
+        studentSet.add(new Student("李四", 18));
+        studentSet.add(new Student("王五", 20)); // 年龄相同，按姓名排序
+        studentSet.add(new Student("李四", 18)); // 重复元素（age+name 都相同），不存入
+
+        // 输出：[Student{name='李四', age=18}, Student{name='王五', age=20}, Student{name='张三', age=20}]
+        System.out.println("自定义类排序结果：" + studentSet);
+    }
+}
+```
+
+##### 自定义排序（使用 Comparator 接口）
+
+```java
+import java.util.Comparator;
+import java.util.TreeSet;
+
+public class TreeSetComparator {
+    public static void main(String[] args) {
+        // 1. 创建 TreeSet 时传入 Comparator（Lambda 简化）
+        TreeSet<Integer> descNumSet = new TreeSet<>(Comparator.reverseOrder()); // 降序
+        // 或手动写 Lambda：(a, b) -> b - a
+
+        // 2. 添加元素
+        descNumSet.add(5);
+        descNumSet.add(2);
+        descNumSet.add(8);
+
+        // 输出：[8, 5, 2]（降序）
+        System.out.println("自定义排序结果：" + descNumSet);
+
+        // 扩展：自定义类的多规则排序（按学生年龄降序，年龄相同按姓名降序）
+        TreeSet<Student> studentDescSet = new TreeSet<>((s1, s2) -> {
+            if (s1.getAge() != s2.getAge()) {
+                return s2.getAge() - s1.getAge(); // 年龄降序
+            }
+            return s2.getName().compareTo(s1.getName()); // 姓名降序
+        });
+        studentDescSet.add(new Student("张三", 20));
+        studentDescSet.add(new Student("李四", 18));
+        studentDescSet.add(new Student("王五", 20));
+        // 输出：[Student{name='张三', age=20}, Student{name='王五', age=20}, Student{name='李四', age=18}]
+        System.out.println("学生降序排序：" + studentDescSet);
+    }
+}
+
+// 注意：Student 类需添加 getAge()、getName() 方法
+class Student {
+    private String name;
+    private int age;
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public int getAge() { return age; }
+    public String getName() { return name; }
+
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', age=" + age + "}";
+    }
+}
+```
+
+
+
+### 双列集合 Map
+
+```bash
+Map：接口存储一组键值对象，提供key到value的映射，键值对对象 又称 Entry对象
+    |—— HashMap：无序(按哈希值存储)
+    |—— LinkedHashMap：有序(插入顺序)
+    |—— TreeMap：有序(自定义排序)
+    |—— ConcurrentHashMap：无序、多线程首选
+
+特性：
+	- 键：唯一（通过 hashCode() + equals() 或 compareTo() 保证）
+	- 值：可重复、可为 null
+
+注意：
+	- HashMap/LinkedHashMap：Key/Value 都可 null；
+	- TreeMap：Key 不可 null（会抛 NPE），Value 可 null；
+	- Hashtable/ConcurrentHashMap：Key/Value 都不可 null
+
+常用方法：
+	- 添加/覆盖元素：V put(K key, V value)
+	- 根据键删除键值对元素：V remove(Object key)
+	- 判断集合是否包含指定键：boolean containsKey(Object key)
+	- 判断集合是否包含指定值：boolean containsValue(Object value)
+	- 判断集合是否为空：boolean isEmpty()
+	- 获取键值对数量：int size()
+  - 移除所有键值对：void clear()
+
+	- 获取所有键的集合：Set<K> keySet()
+	- 获取所有值的集合：Collection<V> values()
+	- 获取所有键值对的集合：Set<Map.Entry<K,V>> entrySet()
+```
+
+
+
+#### HashMap
+
+```java
+HashMap<String, String> map = new HashMap<>();
+map.put("CBC", "测试");
+map.put("CBC", "中国建设银行"); // 将覆盖
+map.put("ABC", "中国农业银行");
+map.put("ICBC", "中国工商银行");
+
+String value = map.get("CBC");
+System.out.println(value);
+
+System.out.println(map.keySet()); // 获取键的集合
+System.out.println(map.values()); // 获取值的集合
+System.out.println(map); // 获取键+值集合
+System.out.println(map.size()); // 获取长度
+boolean result = map.containsKey("ICBC");
+System.out.println(result ? "存在" : "不存在");
+```
+
+
+
+#### HashMap 源码
+
+```bash
+#### hashMap 存储流程（put(K key, V value)）
+计算哈希值 -> 定位数组索引 -> 处理哈希冲突 -> 插入数据 -> 扩容判断
+
+1. 计算键的哈希值：hash()
+HashMap 并非使用 key.hashCode() 的返回值，而是对其进行二次哈希处理，以减少哈希冲突，让哈希值的分布更均匀
+注：key 为 null 时，固定存入数组索引 0 的位置，且只能由一个 null 键（后续存入会覆盖原值）
+
+2. 定位数组索引(确认哈希桶)
+通过哈希值计算出键值对应在数组中的索引位置，保证索引值在数组长度范围内(不会越界)：`int index = (n - 1) & hash;`
+用 `(n - 1) & hash` 而非 `hash % n` 的原因：当n是2的幂次时，`(n - 1) & hash` 和 `hash % n` 结果等价，但位运算的执行效率远高于取模运算。
+
+3. 处理哈希冲突，插入数据
+遍历对应索引位置的链表/红黑树，根据 key 是否存在执行 覆盖/新增 操作：
+	- 若该索引位置为 null（无哈希冲突），直接创建新 Node 节点，存入该索引位置（作为链表头节点）
+	- 若该索引不为 null（存在哈希冲突），分三种情况：
+			- 头节点的 key 与待插入的 key 相等（hash相同且 key.equals() 为 true），新值覆盖就值；
+			- 头节点是红黑树节点TreeNode，调用红黑树的插入方法putTreeVal()，插入新节点并维持红黑树平衡；
+			- 头节点是链表节点Node，遍历链表：
+					- 遍历过程找到 key 相等的节点，覆盖旧值；
+					- 遍历到链表末尾仍未找到，创建新节点插入链表尾部(尾插法)；
+					- 插入后判断链表长度是否 ≥ 8，若是则触发 链表转红黑树 的逻辑；
+
+4. 扩容判断：resize()
+插入数据后，判断当前元素个数是否超出「负载因子 × 数组容量」，若是则执行扩容操作，将数组长度翻倍。
+
+
+
+#### hashMap 查询流程（get(Object key)）
+计算哈希值 → 定位数组索引 → 遍历链表 / 红黑树 → 返回结果
+
+1. 若 HashMap 为空（数组为 null 或长度为 0），直接返回 null；
+2. 计算 key 的哈希值，通过 (n-1) & hash 定位数组索引；
+3. 遍历对应索引位置的链表 / 红黑树：
+	- 若头节点的 key 与查询 key 相等，直接返回头节点的 value；
+	- 若头节点是红黑树节点，调用红黑树的查询方法getTreeNode()，返回匹配的 value；
+	- 若头节点是链表节点，遍历链表找到 key 相等的节点，返回 value；
+	- 遍历结束未找到匹配的 key，返回 null。
+```
+
+```bash
+Node<K,V>[] table：哈希表结构中数组的名字
+DEFAULT_INITIAL_CAPACITY：数组默认长度16
+DEFAULT_LOAD_FACTOR：默认加载因子0.75
+
+HashMap 中每一个对象包含的内容：
+  1. 链表中的键值对对象
+      int hash：键的哈希值
+      final K key：键
+      V value：值
+      Node<K,V> next：下一个节点的地址值
+
+  2. 红黑树中的键值对对象
+      int hash：键的哈希值
+      final K key：键
+      V value：值
+      TreeNode<K,V> parent：父节点的地址值
+      TreeNode<K,V> left：左子节点的地址值
+      TreeNode<K,V> right：右子节点的地址值
+      boolean red：节点的颜色
+
+添加元素时硬考虑三种情况：
+	1. 数组位置为 null
+	2. 数组位置不为 null，键重复，元素覆盖
+  3. 数组位置不为 null，键不重复，挂在下面形成链表或红黑树
+```
+
+```java
+// 获取被覆盖元素的值
+public v put(K key, V value) {
+  return putVal(hash(key), key, value, false, true);
+}
+
+// 利用键计算对应的哈希值
+static final int hash(Object key) {
+  int h;
+  return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>>> 16);
+}
+
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) {
+  Node<K, V>[] tab; // 局部变量，记录哈希表中数组的地址值
+  Node<K, V>[] p; // 临时变量，记录键值对对象的地址值
+
+  int n; // 数组长度
+  int i; // 索引
+
+  tab = table; // 把哈希表中数组的地址值赋值给局部变量
+  if (tab == null || (n = tab.length) == 0) {
+    // 1.如果当时是第一次添加数据，底层会创建一个默认长度为 16，加载因子为 0.75 的数组
+    // 2.如果不是第一次添加数据，会看数组中元素是否达到扩容条件
+    // 如果达到扩容条件，底层会把数组扩容为原先的两倍，并把数据全部转移到新的哈希表中
+    tab = resize();
+    n = tab.length;
+  }
+
+  // 使用数组长度与键的哈希值进行计算，计算出当前键值对对象，在数组中应存入的位置
+  // n 为数组长度（必须是 2 的幂次，这是 HashMap 的核心设计）
+  // 当n是2的幂次时，(n-1) & hash 与 hash % n 结果等价，但位运算的执行效率远高于取模运算，这是 HashMap 的性能优化点。
+  i = (n - 1) & hash;
+
+  p = tab[i];
+
+  if (p == null) {
+    // 底层常见一个键值对对象直接存放到数组中
+    tab[i] = newNode(hash, key, value, null);
+  } else {
+    Node<K, V> e;
+    K k;
+    if (p.hash == hash && (k = p.key) == key || (key != null && key.equals(k))) {
+      e = p;
+    } else if (p instanceof TreeNode) {
+      // 红黑树节点：表示挂载的是链表
+      for (int binCount = 0; ; ++binCount) {
+        if ((e = p.next) === null) {
+          // 创建新节点
+          p.next = newNode(hash, key, value, null);
+          // 链表长度判断是否超出8 + 数组长度≥64，则转化链表为红黑树
+          if (binCount >= TREEIFY_THRESHOLD - 1)
+            treeIfyBin(tab, hash);
+          break;
+        }
+        if (e.hash == hash && (k = e.key) == key || (key != null && key.equals(k)))
+          break;
+        p = e;
+      }
+    }
+
+    if (e != null) {
+      V oldValue = e.value;
+      if (!onlyIfAbsent || oldValue == null) {
+        e.value = value;
+      }
+      afterNodeAccess(e);
+      return oldValue;
+    }
+  }
+
+  ++modCount;
+  // threshold = 数组长度 * 0.75。哈希表的扩容时机
+  if (++size > threshold) {
+    resize();
+  }
+  afterNodeInsertion(evict);
+
+  // 当前没有覆盖任何元素
+  return null;
+}
+```
+
+
+
+### Iterator迭代器
+
+```bash
+Iterator迭代器：java.util.Iterator
+Collection 与 Map 用于存储元素，而 Iterator 用于迭代访问（遍历）Collection中的元素，因此 Iterator 对象也被称为迭代器。
+迭代：即 Collection 集合元素的通用获取方式。在取元素之前要判断集合中有没有元素，如果有，就把这个元素取出来，继续再判断，如果还有就再取出来，直到把集合中的所有元素全部取出为止——这种取出方式称为迭代。
+
+如何使用 Iterator
+	- 获取迭代器对象，Collection 接口的 iterator 方法
+	- hasNext()：判断是否仍有元素可以迭代
+	- next()：返回下一个迭代的元素
+
+注意：
+		因为创建集合的迭代器后，集合每次调用 add 或 remove 方法都会被统计变化次数。
+		所以为了避免并发修改一次，在使用迭代器或增强 for 遍历集合过程中，不要使用集合的方法去添加或修改元素。
+```
+
+![image-20260101142847569](./image/image-20260101142847569.png)
+
+```java
+import java.util.HashMap;
+import java.util.Iterator;
+
+public class Test {
+    public static void main(String[] args) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("CBC", "中国建设银行");
+        map.put("ABC", "中国农业银行");
+        map.put("ICBC", "中国工商银行");
+
+        Iterator iterator = map.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            String value = map.get(key);
+            System.out.println(key + "=" + value);
+        }
+    }
+}
+```
+
+
+
+### 集合遍历
+
+```bash
+1. 迭代器遍历
+
+2. 增强式for遍历：底层为迭代器，为了简化迭代器书写
+    所有的单列集合和数组才能使用增强式for遍历。
+    修改增强for中定义的变量，不会改变集合中原本的数据。
+    语法：`for(元素数据类型 变量名: 数组或集合) { }`
+
+3. lambda表达式遍历：
+		语法：default void forEach(Consumer<? super T> action)
+
+
+- Collection：普通for循环 > 迭代器 ≈ forEach  > Stream（非必要不使用）；
+- Map：entrySet() > forEach > keySet()+get() > values()
+```
 
 #### 列表的遍历
 
@@ -2859,227 +3746,62 @@ for (Object str : arr) {
 }
 ```
 
-
-
-### 链表 LinkedList
+#### Map遍历
 
 ```bash
-LinkedList 底层结构式双链表，查询慢，增删快，如果操作首尾元素速度更快。
-
-LinkedList 提供对头部和尾部元素进行添加和删除操作的方法。
-	添加首部元素：void addFirst(E e)
-	添加末尾元素：void addLast(E e)
-	获取头部元素：E Object.getFirst()
-	获取末尾元素：E Object.getLast()
-	删除并返回第一个元素：E removeFirst()
-	删除并返回最后一个元素：E removeLast()
+1. keySet() + get()：仅需Key 时适用；先遍历 Key，再通过 Key 查 Value；效率低(二次查询)
+2. entrySet()：需同时操作 Key和Value 时适用；直接遍历键值对；效率高(一次遍历)
+3. forEach：简单遍历 Key+Value 时适用；Lambda 直接接收 Key+Value；效率高(简洁)
+4. values()：只需处理 Value 时适用；仅遍历 Value；效率中等
 ```
-
-![image-20260101141840470](./image/image-20260101141840470.png)
-
-```java
-import java.util.LinkedList;
-
-public class Test {
-    class Book {
-        private String name;
-        private int price;
-
-        public Book(String name, int price) {
-            this.name = name;
-            this.price = price;
-        }
-    }
-
-    public static void main(String[] args) {
-        Test test = new Test();
-        Book b1 = test.new Book("我的阿泰勒", 60);
-        Book b2 = test.new Book("平凡的认识", 50);
-        Book b3 = test.new Book("你是我的四月天", 70);
-
-        LinkedList<Book> list = new LinkedList<Book>();
-        list.add(b1);
-        list.addFirst(b2);
-        list.addLast(b3);
-
-        Book first = list.getFirst();
-        System.out.println(first); // Book{name='平凡的认识', price=50}
-
-        Book last = list.getLast();
-        System.out.println(last); // Book{name='你是我的四月天', price=70}
-
-        list.removeFirst();
-        list.removeLast();
-
-        for(Book b: list) {
-            System.out.println(b); // Book{name='我的阿泰勒', price=60}
-        }
-    }
-}
-```
-
-
-
-### 唯一对象组 HashSet
-
-```bash
-Set 接口存储一组唯一、无序的对象。
-Set 存放对象的引用。
-```
-
-```java
-import java.util.HashSet;
-
-public class Test {
-    class Book {
-        private String name;
-        private int price;
-
-        public Book(String name, int price) {
-            this.name = name;
-            this.price = price;
-        }
-    }
-
-    public static void main(String[] args) {
-        Test test = new Test();
-        Book b1 = test.new Book("我的阿泰勒", 60);
-
-        HashSet<Book> set = new HashSet<Book>();
-        Book b2 = b1;
-        set.add(b1);
-        set.add(b2);
-
-        System.out.println(set.size()); // 1
-    }
-}
-```
-
-
-
-### HashMap
-
-```java
-import java.util.HashMap;
-
-HashMap<String, String> map = new HashMap<String, String>();
-map.put("CBC", "中国建设银行");
-map.put("ABC", "中国农业银行");
-map.put("ICBC", "中国工商银行");
-
-String value = map.get("CBC");
-System.out.println(value);
-
-System.out.println(map.keySet()); // 获取键的集合
-System.out.println(map.values()); // 获取值的集合
-System.out.println(map); // 获取键+值集合
-System.out.println(map.size()); // 获取长度
-boolean result = map.containsKey("ICBC");
-System.out.println(result ? "存在" : "不存在");
-```
-
-
-
-### Iterator迭代器
-
-```bash
-Iterator迭代器：java.util.Iterator
-Collection 与 Map 用于存储元素，而 Iterator 用于迭代访问（遍历）Collection中的元素，因此 Iterator 对象也被称为迭代器。
-迭代：即 Collection 集合元素的通用获取方式。在取元素之前要判断集合中有没有元素，如果有，就把这个元素取出来，继续再判断，如果还有就再取出来，直到把集合中的所有元素全部取出为止——这种取出方式称为迭代。
-
-如何使用 Iterator
-	- 获取迭代器对象，Collection 接口的 iterator 方法
-	- hasNext()：判断是否仍有元素可以迭代
-	- next()：返回下一个迭代的元素
-
-注意：
-		因为创建集合的迭代器后，集合每次调用 add 或 remove 方法都会被统计变化次数。
-		所以为了避免并发修改一次，在使用迭代器或增强 for 遍历集合过程中，不要使用集合的方法去添加或修改元素。
-```
-
-![image-20260101142847569](./image/image-20260101142847569.png)
 
 ```java
 import java.util.HashMap;
 import java.util.Iterator;
-
-public class Test {
-    public static void main(String[] args) {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("CBC", "中国建设银行");
-        map.put("ABC", "中国农业银行");
-        map.put("ICBC", "中国工商银行");
-
-        Iterator iterator = map.keySet().iterator();
-        while (iterator.hasNext()) {
-            String key = (String) iterator.next();
-            String value = map.get(key);
-            System.out.println(key + "=" + value);
-        }
-    }
-}
-```
-
-
-
-### Collection 的遍历方式
-
-```bash
-Collection 的遍历方式有三种：
-1. 迭代器遍历
-
-2. 增强式for遍历：底层为迭代器，为了简化迭代器书写
-    所有的单列集合和数组才能使用增强式for遍历。
-    修改增强for中定义的变量，不会改变集合中原本的数据。
-    语法：`for(元素数据类型 变量名: 数组或集合) { }`
-
-3. lambda表达式遍历：
-		语法：default void forEach(Consumer<? super T> action)
-```
-
-```java
-import java.util.HashMap;
 import java.util.Map;
 
 public class Test {
-    class Book {
-        private String name;
-
-        public Book(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-    }
-
     public static void main(String[] args) {
-        Test test = new Test();
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("张三", 90);
+        map.put("李四", 85);
+        map.put("王五", 95);
 
-        Book b1 = test.new Book("我的阿泰勒");
-        Book b2 = test.new Book("平凡的认识");
-        Book b3 = test.new Book("你是我的四月天");
-
-        HashMap<String, Book> map = new HashMap<String, Book>();
-        map.put(b1.getName(), b1);
-        map.put(b2.getName(), b2);
-        map.put(b3.getName(), b3);
-        map.put(b1.getName(), b1);
-
-        System.out.println("======================");
-        for (Book book : map.values()) {
-            System.out.printf(book.getName() + '\t');
+        // ========== Map 遍历 ==========
+        // 方式1：keySet() + get()（效率低，不推荐）
+        for (String name : map.keySet()) {
+            Integer score = map.get(name);
+            System.out.println(name + "：" + score);
         }
 
-        System.out.println("======================");
-        for (Map.Entry<String, Book> item : map.entrySet()) {
-            System.out.println(item.getKey() + '=' + item.getValue().getName());
+        // 方式3：forEach + Lambda（简洁）
+        map.forEach((name, score) -> System.out.println(name + "：" + score));
+
+        // 方式4：values()（仅遍历 Value）
+        for (Integer score : map.values()) {
+            System.out.println("分数：" + score);
         }
 
-        System.out.println("======================");
+        // 方式2：entrySet()（推荐，效率最高）
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + "：" + entry.getValue());
+        }
+
+        // 方式2扩展：entrySet() + 迭代器（支持安全删除）
+        Iterator<Map.Entry<String, Integer>> entryIterator = map.entrySet().iterator();
+        while (entryIterator.hasNext()) {
+            Map.Entry<String, Integer> entry = entryIterator.next();
+            if (entry.getValue() < 90) {
+                entryIterator.remove(); // 安全删除分数<90的元素
+            } else {
+                System.out.println(entry.getKey() + "：" + entry.getValue());
+            }
+        }
+        System.out.println("删除后 Map：" + map); // {张三=90, 王五=95}
+
+        // 方式2扩展：entrySet() + forEach
         map.entrySet().stream().forEach(entry -> {
-            System.out.println(entry.getKey() + "=" + entry.getValue().getName());
+            System.out.println(entry.getKey() + "=" + entry.getValue());
         });
     }
 }
@@ -4072,6 +4794,11 @@ public class ThreadDemo {
 ### 线程池
 
 ```bash
+线程池初始化创建时是空的，在提交任务时，池子会创建新的线程对象，任务执行完毕，线程归还给池子，下回再次提交任务时，不需要再创建新的线程，直接复用已有线程即可。
+如果提交任务时，池子没有空闲线程，也无法创建新的线程，任务就会排队等待。
+```
+
+```bash
 // 固定大小线程池
 ExecutorService fixedPool = Executors.newFixedThreadPool(3);
 
@@ -4093,6 +4820,9 @@ scheduledPool.schedule(() -> {
 scheduledPool.scheduleAtFixedRate(() -> {
     System.out.println("延迟1秒后，每2秒执行一次");
 }, 1, 2, TimeUnit.SECONDS);
+
+// 提交线程任务
+fixedPool.submit(new MyRunnable());
 ```
 
 ```java
@@ -4398,6 +5128,277 @@ public class Server {
     3、利用 DatagramSocket 接收数据报
     4、利用 DatagramPacket 处理数据报
 
+UDP 支持三种核心通信模式：
+	1. 单播(Unicast)
+	2. 广播(Broadcast)
+	3. 组播(Multicast)
+
+单播
+	- 一对一通信，发送端向唯一的接收端发送数据
+	- 单台主机的合法 IP（如 127.0.0.1、192.168.1.100），无限制(局域网/广域网均可)
+	- 精准投递、仅目标主机接收、开销小
+广播
+	- 一对所有通信，发送端向同一网络所有主机发送数据
+	- 有限广播(255.255.255.255)；直接广播(如192.168.1.255(网段广播地址))；仅同一局域网(广域网禁止广播，路由器会丢弃广播包)
+	- 无需知道目标主机IP，所有主机均可接收、开销大
+组播
+	- 一对一组通信，发送端向指定「组播组」发送数据，仅加入该组的主机可接收
+	- 组播地址：D类IP地址(224.0.0.0 ~ 239.255.255.255)；局域网/广域网(需路由器支持IGMP协议)
+	- 兼顾单播和广播的优点、仅组内主机接收、开销适中
+
+注意：广播需开启 setBroadcast(true)，组播需使用 MulticastSocket 并调用 socket.joinGroup() 加入组播组
+三种通信模式区别是数据传输范围不同
+```
+
+#### 单播
+
+```bash
+发送端将数据报发送到唯一的目标主机 IP + 端口，仅该主机的对应端口能接收数据。
+
+适用场景：
+  - 客户端与服务端的点对点通信（如单个设备的指令查询、简单数据上报）
+  - 广域网中的 UDP 通信（如跨地域的游戏客户端与服务器心跳包）
+  - 对数据投递精准度有要求
+```
+
+```java
+// 单播发送端（与之前的 UDP 发送端一致，目标 IP 为单台主机）
+public class UdpUnicastSender {
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket()) {
+            String sendData = "UDP 单播数据";
+            byte[] sendBytes = sendData.getBytes(StandardCharsets.UTF_8);
+            // 目标 IP：单台主机（本地回环地址 127.0.0.1）
+            InetAddress targetIp = InetAddress.getByName("127.0.0.1");
+            DatagramPacket packet = new DatagramPacket(sendBytes, sendBytes.length, targetIp, 8888);
+            socket.send(packet);
+            System.out.println("单播发送成功：" + sendData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+// 单播接收端（绑定固定端口，仅该端口接收单播数据）
+public class UdpUnicastReceiver {
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket(8888)) {
+            byte[] buf = new byte[1024];
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            System.out.println("单播接收端已启动，等待接收数据...");
+            socket.receive(packet);
+            String receiveData = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
+            System.out.println("收到单播数据：" + receiveData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+#### 广播
+
+```bash
+发送端向「广播地址」发送数据报，同一局域网内的所有主机都会收到该数据报，只有绑定了对应端口的主机能解析处理，其余主机直接丢弃。
+
+关键广播地址：
+	- 有限广播地址：255.255.255.255（仅在当前局域网内广播，路由器不会转发，最常用）
+	- 直接广播地址：对应网段的广播地址（如 192.168.1.0 网段的广播地址是 192.168.1.255，仅向该网段内所有主机广播）
+
+适用场景
+	- 局域网设备发现（如打印机、摄像头的局域网自动识别）
+	- 局域网内的通知推送（如会议室广播、校园网内的公告）
+	- 小型局域网内的批量数据同步（无需维护目标主机列表）
+
+前提说明
+	- 运行多个接收端（同一局域网内的不同主机，或同一主机的不同端口）；
+	- 先启动接收端，再启动发送端，所有接收端都会收到广播数据。
+```
+
+```java
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * UDP 广播发送端
+ */
+public class UdpBroadcastSender {
+    public static void main(String[] args) {
+        int broadcastPort = 9999; // 广播端口（需与接收端端口一致）
+        String sendData = "UDP 广播数据：欢迎加入局域网通信！"; // 广播数据
+        String broadcastIp = "255.255.255.255"; // 广播地址（有限广播：255.255.255.255）
+
+        try (DatagramSocket socket = new DatagramSocket()) {
+            // 关键：设置 DatagramSocket 允许发送广播包（默认可能关闭）
+            socket.setBroadcast(true);
+
+            // 4. 封装广播数据报
+            byte[] sendBytes = sendData.getBytes(StandardCharsets.UTF_8);
+            InetAddress broadcastInetAddress = InetAddress.getByName(broadcastIp);
+            DatagramPacket packet = new DatagramPacket(
+                    sendBytes,
+                    sendBytes.length,
+                    broadcastInetAddress,
+                    broadcastPort
+            );
+
+            // 5. 发送广播数据
+            socket.send(packet);
+            System.out.println("广播数据已发送：" + sendData);
+            System.out.println("广播地址：" + broadcastIp + "，广播端口：" + broadcastPort);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+/**
+ * UDP 广播接收端
+ */
+public class UdpBroadcastReceiver {
+    public static void main(String[] args) {
+        int broadcastPort = 9999; // 1. 绑定广播端口（必须与发送端的广播端口一致）
+        byte[] buf = new byte[1024]; // 2. 数据缓冲区
+
+        try (DatagramSocket socket = new DatagramSocket(broadcastPort)) {
+            System.out.println("广播接收端已启动，绑定端口：" + broadcastPort + "，等待接收广播...");
+
+            // 3. 封装接收数据报
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
+            // 4. 阻塞接收广播数据
+            socket.receive(packet);
+
+            // 5. 解析数据
+            String receiveData = new String(
+                    packet.getData(),
+                    0,
+                    packet.getLength(),
+                    StandardCharsets.UTF_8
+            );
+            String senderIp = packet.getAddress().getHostAddress();
+            int senderPort = packet.getPort();
+
+            // 6. 打印结果
+            System.out.println("收到广播数据：" + receiveData);
+            System.out.println("发送端 IP：" + senderIp + "，发送端端口：" + senderPort);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+#### 组播
+
+```bash
+介于单播和广播之间的通信模式，发送端向「组播地址」发送数据报，只有主动加入该组播组的主机才能接收数据，未加入的主机无法感知该数据报
+
+
+关键信息
+  - 组播地址：D 类 IP 地址，范围 224.0.0.0 ~ 239.255.255.255
+      - 保留地址：224.0.0.0 ~ 224.0.0.255（用于本地局域网，路由器不转发，如224.0.0.1表示局域网内所有主机，224.0.0.2表示局域网内所有路由器）
+      - 可用组播地址：224.0.1.0 ~ 239.255.255.255（支持跨网段，需路由器开启 IGMP 协议(互联网组管理协议)）
+  - Java 提供 MulticastSocket 类(继承自 DatagramSocket)，专门用于组播通信，支持「加入组播组」「离开组播组」操作
+
+
+适用场景
+  - 实时音视频推送（如直播、视频会议，仅订阅用户接收数据）
+  - 批量数据分发（如股票行情、天气数据，仅关注该数据的主机接收）
+  - 跨网段的组内通信（如企业分部之间的批量数据同步，需路由器支持 IGMP）
+```
+
+```java
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * UDP 组播发送端
+ */
+public class UdpMulticastSender {
+    public static void main(String[] args) {
+        // 1. 组播配置：组播地址、组播端口
+        String multicastIp = "224.0.0.100"; // 局域网可用组播地址
+        int multicastPort = 7777;
+        // 2. 组播数据
+        String sendData = "UDP 组播数据：仅组内成员可见！";
+
+        // 3. MulticastSocket 无需绑定固定端口（自动分配随机端口）
+        try (MulticastSocket socket = new MulticastSocket()) {
+            // 4. 封装组播数据报
+            byte[] sendBytes = sendData.getBytes(StandardCharsets.UTF_8);
+            InetAddress multicastInetAddress = InetAddress.getByName(multicastIp);
+            DatagramPacket packet = new DatagramPacket(
+                    sendBytes,
+                    sendBytes.length,
+                    multicastInetAddress,
+                    multicastPort
+            );
+
+            // 5. 发送组播数据（无需额外配置，直接发送到组播地址）
+            socket.send(packet);
+            System.out.println("组播数据已发送：" + sendData);
+            System.out.println("组播地址：" + multicastIp + "，组播端口：" + multicastPort);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+/**
+ * UDP 组播接收端
+ */
+public class UdpMulticastReceiver {
+    public static void main(String[] args) {
+        // 1. 组播配置：组播地址、组播端口
+        String multicastIp = "224.0.0.100";
+        int multicastPort = 7777;
+        // 2. 数据缓冲区
+        byte[] buf = new byte[1024];
+
+        // 3. 绑定组播端口（必须与发送端的组播端口一致）
+        try (MulticastSocket socket = new MulticastSocket(multicastPort)) {
+            // 关键：加入组播组（才能接收该组的组播数据）
+            InetAddress multicastInetAddress = InetAddress.getByName(multicastIp);
+            socket.joinGroup(multicastInetAddress);
+
+            System.out.println("组播接收端已启动，加入组播组：" + multicastIp + "，绑定端口：" + multicastPort);
+            System.out.println("等待接收组播数据...");
+
+            // 4. 封装接收数据报
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
+            // 5. 阻塞接收组播数据
+            socket.receive(packet);
+
+            // 6. 解析数据
+            String receiveData = new String(
+                    packet.getData(),
+                    0,
+                    packet.getLength(),
+                    StandardCharsets.UTF_8
+            );
+            String senderIp = packet.getAddress().getHostAddress();
+            int senderPort = packet.getPort();
+
+            // 7. 打印结果
+            System.out.println("收到组播数据：" + receiveData);
+            System.out.println("发送端 IP：" + senderIp + "，发送端端口：" + senderPort);
+
+            // 可选：离开组播组（不再接收该组数据）
+            socket.leaveGroup(multicastInetAddress);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
 ```
 
 
