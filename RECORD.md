@@ -24,6 +24,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2026年1月22日
+  - style: ignore markdown prettier
+
 ## 2025年12月4日
   - style: ignore ts verification warning
 
