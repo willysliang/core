@@ -234,18 +234,6 @@ null 字面量：表示空引用，用于表示对象引用不指向任何有效
 字符编码字面量：表示字符的Unicode编码，以 \u 开头，后面跟着四个十六进制数字。例如：\u0041 表示字符 ‘A’
 ```
 
-```java
-public class Demo {
-    public static void main(String[] args) {
-        System.out.println(10); // 输出一个整数
-        System.out.println(5.5); // 输出一个小数
-        System.out.println('a'); // 输出一个字符
-        System.out.println(true); // 输出boolean值true
-        System.out.println("欢迎来到黑马程序员"); // 输出字符串
-    }
-}
-```
-
 
 
 ### 变量
@@ -5403,7 +5391,9 @@ public class UdpMulticastReceiver {
 
 
 
-## XML
+## 框架入门
+
+### XML
 
 ```bash
 XML（Extensible markup Language）可扩展标记语言
@@ -5534,7 +5524,102 @@ public class XMLParser {
 
 
 
-## MySQL
+### Maven
+
+```bash
+坐标
+	- Maven 中的坐标是资源(jar)的唯一标识，通过该坐标可以唯一定位资源位置。
+	- 使用坐标来定义项目或引用项目中需要的依赖。
+	- 坐标主要组成：
+			- groupId：项目隶属组织名称(通常是域名反写，如 com.willy)
+			- artifactId：项目名称(通常是模块名称，如 order-service、goods-service)
+			- version：项目版本号
+						- SNAPSHOT：快照版本，功能不稳定、尚在开发中
+						- RELEASE：发行版本，功能趋于稳定、当前更新停止
+
+依赖配置
+	- 依赖配置信息搜索地址：https://mvnrepository.com/
+	1. 在 pom.xml 中编写 <dependencies> 标签
+	2. 在 <dependencies> 标签中使用 <dependency> 引入坐标
+	3. 定义坐标 groupId、artifactId、version
+	4. 点击刷新按钮，引入最新加入的坐标(一般更改后没有引入最新的，依赖项会出现红色下划线)
+
+
+maven 有三套相互独立的生命周期：
+	- clean：清理工作
+	- default：核心工作，如编译、测试、打包、安装、部署等
+	- site：生成报告、发布站点等
+	注意：在同一套生命周期中，当运行后面的阶段时，前面的阶段也会执行。
+
+	- clean(清理)、compile(编译)、test(测试)、package(打包)、install(安装)
+```
+
+```xml
+<dependencies>
+    <!-- Source: https://mvnrepository.com/artifact/org.springframework/spring-context -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>6.1.4</version>
+        <scope>compile</scope>
+
+        <!-- 排除依赖 -->
+        <exclusions>
+            <exclusion>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-observation</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+
+    <!-- junit依赖-->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.9.1</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+#### 依赖没下载成功问题
+
+```bash
+由于网络原因，依赖没有下载完整导致在 maven 仓库中生成 xxx.lastUpdate 文件，该文件不删除，不会再重新下载。
+解决方案：
+	1. 根据 maven 依赖的坐标，找到仓库中对应的 xxx.lastUpdate 文件删除，再重新加载项目依赖
+	2. 通过命令 `$ del /s *.lastUpdate` 批量递归删除指令目录下的 xxx.lastUpdate 文件，再重新加载项目依赖
+```
+
+
+
+### 单元测试 Junit
+
+```bash
+- Junit 单元测试：测试类中方法的正确性
+
+Junit 单元测试的优点：
+	- 测试代码与应用程序代码分开，便于维护
+  - 可以自动生成测试报告(通过:绿色、失败:红色)
+  - 一个测试方法执行失败，不会影响其他测试方法
+  - 通过断言检测方法结果是否与预期一致，从而判断
+
+Junit 单元测试命名规范：
+	- 类：XxxxTest
+  - 方法：public void testXxx() {}
+
+
+依赖范围：依赖的jar包，默认情况下可在任何地方使用，可通过 `<scope><scope>`设置其作用范围
+	- 主程序范围有效(main文件夹范围内)
+	- 测试程序范围有效(test文件夹范围内)
+	- 是否参与打包运行(package指令范围内)
+
+      scope值	主程序	测试程序	打包(运行)	范例
+      compile		Y			Y				Y					log4j
+      test			-			Y				-					junit
+      provided	Y			Y				-					servlet-api
+      runtime		-			Y				Y					jdbc驱动
+```
 
 
 
@@ -5556,3 +5641,122 @@ java guide———— github项目
 
 
 ## Spring Boot
+
+```bash
+静态资源存放位置：resources/static
+
+@Response注解的作用：
+		- 将 controller 方法的返回值直接写入 HTTP 响应体
+		- 如果是对象或集合，会先转为 json 再响应
+		- @RestController = @Controller + @ResponseBody
+
+三层架构：dao数据访问 -> service逻辑处理 -> controller处理请求
+	- controller：控制层，接收前端发送请求，对请求做处理，并响应数据
+	- service：业务逻辑层，处理具体的业务逻辑
+	- dao：数据访问层(Data Access Object)(持久层)，负责数据访问操作-增删改查
+
+```
+
+#### 分层耦合 IOC/DI
+
+```bash
+- 控制反转(IOC - Inversion Of Control) 对象的创建控制权由程序自身转移到外部(容器)，这种思想称为控制反转。
+- 依赖注入(DI - Dependency Injection) 容器为应用程序提供运行时所依赖的资源，称为依赖注入。
+- Bean对象：IOC容器中创建、管理的对象，称为 Bean。
+
+实现分层解耦思路：
+	- 将项目中的类转移给 IOC 容器管理：@Component
+	- 应用程序运行时需要什么对象，直接依赖容器为其提供（从IOC容器中找到对应的bean并依赖注入）：@Autowired
+
+
+#### IOC
+把某个对象交给 IOC 容器管理：
+	- @Component：声明bean的基础注解，不属于以下三类时用此注解
+	- @Controller：标注在控制层类上，衍生注解
+	- @Service：标注在业务层类上，衍生注解
+	- @Repository：标注在数据访问层类上(与mybatis整合)，衍生注解
+
+注意：声明 bean 的注解想生效，需要被组件扫描注解 @ComponentScan 扫描，该注解虽然没有显示配置，但实际已包含在启动类声明注解 @SpringBootApplication 中，默认扫描范围是启动类所在包及其子包（所以启动类需要在根目录下）
+
+
+#### DI
+依赖注入的注解
+	- @Autowired 注解默认是按照类型进行注入，所以如果存在多个相同类型的 bean 将会报错
+	- 如果同类型的 bean 存在多个：
+			- @Primary
+			- @Autowired + @Qualifier
+			- @Resource
+
+@Resource 与 @Autowired 区别
+	- @Autowired 是 Spring 提供的注解，@Resource 是 JavaEE 规范提供
+	- @Autowired 默认按类型注入，@Resource 默认按名称注入
+```
+
+```java
+private final UserService userService = new UserServiceImpl(); // 紧耦合
+
+/**
+ * 方式1：属性注入
+ * 优点：代码简洁
+ * 缺点：隐藏类之间的依赖关系、可能破坏类的封装性
+ */
+@Autowired // 应用程序运行时，会自动查询该类型的 bean 对象，并赋值给该成员变量
+private UserService userService;
+
+/**
+ * 方式2：构造方法注入
+ * 优点：明确类的依赖关系，提高代码安全性
+ * 缺点：代码繁杂，如果构造参数过多，可能导致构造函数臃肿
+ * 注意：如果只有一个构造方法，则 @Autowired 可省略
+ */
+private final UserService userService;
+@Autowired // 如果当前类中只有一个构造方法，则 @Autowired 可省略
+public UserController(UserService userService) {
+    this.userService = userService;
+}
+
+/**
+ * 方式3：setter 注入
+ * 优点：保持类的封装性
+ * 缺点：需要额外设置 setter 方法
+ */
+private UserService userService;
+@Autowired
+public void setUserService(UserService userService) {
+    this.userService = userService;
+}
+```
+
+![image-20260123093708648](./image/image-20260123093708648.png)
+
+![image-20260123093813559](./image/image-20260123093813559.png)
+
+
+
+## 数据库存储
+
+```bash
+NoSQL与SQ
+CAP定理
+RDBMS
+MongoDB语法
+指令
+监控与GUI
+MongoDb驱动
+Mongoose应用
+数据库创建
+集合增删改查
+文档增删改查
+数据库查询
+高级查询操作
+通道查询
+多条件查询
+反向筛选
+索引处理
+aggregate聚合管道
+validation验证
+population联表
+middleware中间件处理
+查询ERROR类二次封装
+```
+
