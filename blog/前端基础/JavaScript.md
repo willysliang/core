@@ -584,15 +584,15 @@ WebAssembly 目前有四个主要的入口：
 ### 宏任务 & 微任务
 
 > ```bash
-> ### 浏览器事件循环`Event Loop`
+> ### 浏览器事件循环 Event Loop
 > 1. 不同的任务源会被分配到不同的`Task`队列中，任务源分为微任务(task)和宏任务(jobs)
 > 2. 首先 '执行同步代码'，这属于宏任务(`script、setTimeout、setInterval、setImmediate、I/O、UI rendering`)
 > 3. 当执行完所有'同步代码'后，执行栈为空，查询是否有异步代码需要执行
 > 4. '执行所有微任务'(`process.nextTick、promise、MutationObserver`)
 > 5. 当执行完所有微任务后，如有必要，会'渲染页面'
 > 6. 然后开始下一轮`Event Loop`，'执行宏任务的异步代码'，即`setTimeout、setInterval`中的回调事件。
->
->
+> 
+> 
 > #### 宏任务（macrotask）
 > - 在 ECMAScript 中，macrotask 也被称为 task，发起者为宿主（Node、浏览器）。
 > - 我们可以将每次执行栈执行的代码当做是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行），每一个宏任务会从头到尾执行完毕，不会执行其他。
@@ -605,8 +605,8 @@ WebAssembly 目前有四个主要的入口：
 > 		4.  postMessage，MessageChannel
 > 		5. Node的setImmediate，I/O
 > 		6. 浏览器的requestAnimationFrame
->
->
+> 
+> 
 > #### 微任务（maicrotask）
 > - 在ECMAScript中，`maicrotask` 也称为 `jobs`，发起者为JS自身发起（JS引擎）。
 > - 当'宏任务'结束后，会执行渲染，然后执行下一个'宏任务'，而'微任务'可以理解成在当前'宏任务'执行后立即执行的任务。
@@ -617,83 +617,35 @@ WebAssembly 目前有四个主要的入口：
 > 		2. MutaionObserver
 > 		3. Object.observe（已废弃；Proxy 对象替代）
 > 		4. Node的process.nextTick()
->
->
+> 
+> 
 > #### 宏任务微任务注意点
 > - 浏览器会先执行一个宏任务，紧接着执行当前执行栈产生的微任务，再进行渲染，然后再执行下一个宏任务。
 > - 微任务和宏任务不在一个任务队列。
-> - 例如 setTimeout 是一个宏任务，它的事件回调在宏任务队列；Promise.then() 是一个微任务，它的事件回调在微任务队列，二者并不是一个任务队列。
+> - 例如 setTimeout 是一个宏任务，它的事件回调在宏任务队列；Promise.then() 是一个微任务，它的事件回调在微任务队列。
 > - 以 Chrome 为例，有关渲染的都是在渲染进程中执行，渲染进程中的任务（DOM树构建、jS解析等）需要主线程执行的任务都会在主线程中执行，而浏览器维护了一套事件循环机制，主线程上的任务都会放到消息队列中执行，主线程会循环消息队列，并从头部取出任务进行执行，如果执行过程中产生其他任务需要主线程执行的，渲染进程中的其他线程会把该任务塞入到消息队列的尾部，消息队列中的任务都是宏任务。
 > - 微任务的产生：当执行到 script 脚本时，JS 引擎会为全局创建一个执行上下文，在该执行上下文中维护了一个微任务队列，当遇到微任务，就会把微任务回调放在微任务队列，当所有的js代码执行完毕，在退出全局上下文之前引擎会去检查该队列，有回调就执行，没有就退出执行上下文。这就是微任务要早于宏任务的原因，即是说每个宏任务都有一个微任务队列（由于定时器是浏览器的API，所以定时器是宏任务，在js中遇x到定时器也是放在浏览器的队列中）。
 > ```
 >
 > ![image-20211017214635189](./image/image-20211017214635189.png)
 >
-> ```js
-> console.log('script start')
-> async function async1() {
->   await async2()
->   console.log('async1 end')
-> }
-> async function async2() {
->   console.log('async2 end')
-> }
-> async1()
-> setTimeout(function () {
->   console.log('setTimeout 1')
-> }, 0)
-> setInterval(() => {
->   console.log('setInterval 1')
-> })
-> new Promise(resolve => {
->   console.log('Promise')
->   resolve()
-> }).then(function () {
->   console.log('promise1')
-> }).then(function () {
->   console.log('promise2')
->
->   setTimeout(() => {
->     console.log('setTimeout 2')
->   }, 0)
->
->   setInterval(() => {
->     console.log('setInterval 2')
->   })
-> })
-> console.log('script end')
->
-> /*
-> script start
-> async2 end
-> Promise
-> script end
-> async1 end
-> promise1
-> promise2
-> setTimeout 1
-> setTimeout 2
-> setInterval 1
-> setInterval 2*/
-> ```
 
 ### 完整的事件循环 Event Loop
 
 > ```bash
-> ### 完整的事件循环 Event Loop
 > 先执行同步代码，遇到异步宏任务则将异步宏任务放入宏任务队列中，遇到异步微任务则将异步微任务放入微任务队列中。
 > 当所有同步代码执行完毕后，再将异步微任务从队列中调入主线程执行，微任务执行完毕后，再将异步宏任务从队列中调入主线程执行，一直循环直至所有任务执行完毕。
+> 
 >
->
-> #### 事件循环的简洁版
+>#### 事件循环的简洁版
 > 1. 先执行宏任务的同步代码
 > 2. 再执行所有的微任务
 > 3. 如果可能会渲染页面
 > 4. 再执行宏任务的异步代码
 > 5. 进入下一轮 Tick
+> 
 >
->
-> #### EventLoop 详细版
+>#### EventLoop 详细版
 > 1. 首先，整体的 script 作为第一个宏任务开始执行时，会把所有代码分为 '同步任务、异步任务' 两部分。
 > 2. 同步任务会直接进入主线程依次执行。
 > 3. 异步任务会再分为异步宏任务和异步微任务。
@@ -703,15 +655,15 @@ WebAssembly 目前有四个主要的入口：
 > 5. 如果宿主为浏览器，可能会渲染页面
 > 6. 开始下一轮tick，执行宏任务中的异步代码（setTimeout等回调）
 > 7. 上述事件过程会不断重复（例如进入下一个 script 标签执行），这就是 Event Loop。
+> 
 >
 >
->
-> #### 关于 Promise
+>#### 关于 Promise
 > - 如 `new Promise(() => ()).then()`
 > 		- 前面的 `new Promise()` 这一部分是一个构造函数，这是一个同步任务。
 > 		- 后面的 `.then()` 才是一个异步任务。
->
->       new Promise((resolve) => {
+> 
+>      new Promise((resolve) => {
 >         console.log(1)
 >         resolve()
 >       }).then(() => {
@@ -719,15 +671,15 @@ WebAssembly 目前有四个主要的入口：
 >       })
 >       console.log(3)
 >       // 会输出：1 3 2
+> 
 >
 >
->
-> #### 关于 async/await 函数
+>#### 关于 async/await 函数
 > - async/await 本质上是基于 Promise 的一些封装，而 Promise 是属于微任务的一种。
 > 		所以在使用 await 关键字与 Promise.then() 效果类似。
 > 		await 关键字之前的代码，相当于 new Promise() 的同步代码，await 以后的代码相当于 Promise.then() 的异步。
->
->     setTimeout(() => console.log(1))
+> 
+>    setTimeout(() => console.log(1))
 >     async function test() {
 >       console.log(2)
 >       await Promise.resolve()
@@ -737,36 +689,115 @@ WebAssembly 目前有四个主要的入口：
 >     console.log(4)
 >     // 会输出： 2 4 3 1
 > ```
->
-> ![image-20230221095738520](./image/image-20230221095738520.png)
+> 
+>![image-20230221095738520](./image/image-20230221095738520.png)
+
+### EventLoop demo
+
+```js
+console.log('script start')
+async function async1() {
+  await async2()
+  console.log('async1 end')
+}
+async function async2() {
+  console.log('async2 end')
+}
+async1()
+
+setTimeout(function () {
+  console.log('setTimeout 1')
+
+  new Promise((resolve) => {
+    console.log('setTimeout Promise 1')
+    resolve('')
+  }).then(() => {
+    console.log('setTimeout Promise then 1')
+  })
+}, 0)
+setTimeout(function () {
+  console.log('setTimeout 2')
+
+  new Promise((resolve) => {
+    console.log('setTimeout Promise 2')
+    resolve('')
+  }).then(() => {
+    console.log('setTimeout Promise then 2')
+  })
+}, 0)
+const timer = setInterval(() => {
+  console.log('setInterval 1')
+  clearInterval(timer)
+})
+new Promise((resolve) => {
+  console.log('Promise')
+  resolve('')
+})
+  .then(function () {
+    console.log('promise1')
+  })
+  .then(function () {
+    console.log('promise2')
+
+    setTimeout(() => {
+      console.log('setTimeout 3')
+    }, 0)
+
+    const timer2 = setInterval(() => {
+      console.log('setInterval 2')
+      clearInterval(timer2)
+    })
+  })
+console.log('script end')
+
+
+/*
+script start
+async2 end
+Promise
+script end
+async1 end
+promise1
+promise2
+setTimeout 1
+setTimeout Promise 1
+setTimeout Promise then 1
+setTimeout 2
+setTimeout Promise 2
+setTimeout Promise then 2
+setInterval 1
+setTimeout 3
+setInterval 2*/
+```
+
+
 
 ### NodeJS中的运行机制
 
 > ```bash
-> ## NodeJS 中的运行机制
 > - 虽然 NodeJS 中的 JavaScript 运行环境也是 V8 引擎，也是单线程，但还是有些与浏览器中的表现是不一样的。
 > - nodejs 与浏览器的区别是，nodejs 的宏任务分好几种类型，而这号几种又有不同的任务队列，而不同的任务队列又有顺序区别，而微任务是穿插在每一种宏任务之间的。
 > - 在 node 环境下，process.nextTick 的优先级高于 Promise，可以简单理解为在宏任务结束后会先执行微任务队列中的 nextTickQueue 部分，然后才执行微任务中的 Promise 部分。
 > - 浏览器和 Node 环境下，microtask 任务队列的执行时机不同
 >     - Node 端，microtask 在事件循环的各个阶段之间执行
 >     - 浏览器端，microtask 在事件循环的 macrotask 执行完之后执行
+> 
 >
->
-> ### NodeJS 的 EventLoop
+>### NodeJS 的 EventLoop
 > 1. node 会执行所有类型为 timers 的 MacroTask，然后执行所有的 MicroTask（NextTick例外）
 > 2. 进入 poll 阶段，执行几乎所有 MacroTask，然后执行所有的 MicroTask。
 > 3. 再执行所有类型为 check 的 MacroTask，然后执行所有的 MicroTask。
 > 4. 再执行所有类型为 close callbacks 的 MacroTask，然后执行所有的 MicroTask。
 > 5. 至此，完成一个 Tick，回到 timers 阶段，不断的进行循环执行。
+> 
 >
->
-> ### 浏览器中的 EventLoop
+>### 浏览器中的 EventLoop
 > 1. 先执行一个 MacroTask，然后执行所有的 MicroTask。
 > 2. 再执行一个 MacroTask，然后执行所有的 MrcroTask。
 > 3. 不断地循环执行上述的过程。
+> 
 >
->
-> ### NodeJS 的执行过程
+>### NodeJS 的执行过程
 > 外部输入数据 –> 轮询阶段(poll) –> 检查阶段(check) –> 关闭事件回调阶段(close callback) –> 定时器检测阶段(timers) –> I/O事件回调阶段(I/O callbacks) –> 闲置阶段(idle, prepare) –> 轮询阶段（按照该顺序反复运行）…
 > - timers 阶段：这个阶段执行 timer（setTimeout、setInterval）的回调
 > - I/O callbacks 阶段：处理一些上一轮循环中的少数未执行的 I/O 回调
@@ -775,10 +806,10 @@ WebAssembly 目前有四个主要的入口：
 > - check 阶段：执行 setImmediate() 的回调
 > - close callbacks 阶段：执行 socket 的 close 事件回调
 > ```
->
-> ![img](./image/2019-01-14-006.png)
->
-> ```bash
+> 
+>![img](./image/2019-01-14-006.png)
+> 
+>```bash
 > ### 浏览器与nodejs 事件循环执行案例
 > setTimeout(()=>{
 >   console.log('timer1')
@@ -792,24 +823,24 @@ WebAssembly 目前有四个主要的入口：
 >     console.log('promise2')
 >   })
 > }, 0)
+> 
 >
+>### 浏览器端运行结果：timer1 => promise1 => timer2 => promise2
+> 
 >
-> ### 浏览器端运行结果：timer1 => promise1 => timer2 => promise2
->
->
-> ### Node 端运行结果：timer1 => timer2 => promise1 => promise2
+>### Node 端运行结果：timer1 => timer2 => promise1 => promise2
 > 全局脚本（main()）执行，将 2 个 timer 依次放入 timer 队列，main()执行完毕，调用栈空闲，任务队列开始执行；
 > 首先进入 timers 阶段，执行 timer1 的回调函数，打印 timer1，并将 promise1.then 回调放入 microtask 队列，同样的步骤执行 timer2，打印 timer2；
 > 至此，timer 阶段执行结束，event loop 进入下一个阶段之前，执行 microtask 队列的所有任务，依次打印 promise1、promise2
 > ```
->
-> **浏览器处理结果**
->
-> ![img](./image/2019-01-14-007.gif)
->
-> **Nodejs处理结果**
->
-> ![img](./image/2019-01-14-008.gif)
+> 
+>**浏览器处理结果**
+> 
+>![img](./image/2019-01-14-007.gif)
+> 
+>**Nodejs处理结果**
+> 
+>![img](./image/2019-01-14-008.gif)
 
 ### 浏览器渲染原理
 

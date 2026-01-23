@@ -648,6 +648,23 @@ Boolean('') // false
 > var num = foo(1, 2)
 > ```
 
+```bash
+function outter () {
+    return inner;
+    function inner () {}
+    var inner;
+    inner = 9;
+}
+//问题是下面代码执行输出值是什么：
+typeof outter(); // 'function'
+
+
+说明：
+js 引擎在解释代码前会先进行编译，编译阶段会将所有的变量声明和函数声明相关作用域关联起来，并且将这些声明提升到作用域顶部，然后到代码执行阶段才会进行变量赋值。
+虽然第一行代码是 `return inner`，但 `var inner` 的变量声明和 `function inner(){}` 的函数声明会第一时间被提升到顶部。
+函数提升优先于变量提升，在函数优先提升后，由于 inner 已经被声明为函数变量，后面 `var inner` 时编译器进行左查询(LHS)，发现同一作用域已经有该值会忽略该变量声明。
+```
+
 
 
 ### var、let、const的区别

@@ -2641,8 +2641,10 @@ const promise2 = new Promise((resolve, reject) => { setTimeout(reject, 100, 'pro
 const promise3 = new Promise((resolve, reject) => { setTimeout(resolve, 200, 'promise 3 resolved') })
 (async () => {
   try {
+    const startTime = new Date / 1;
     const result = await Promise.race([promise1, promise2, promise3]);
-    console.log(result);
+    const endTime = new Date / 1;
+    console.log("响应结果：" + result + ", 响应时间：" + endTime - startTime);
   } catch (err) {
     console.error(err);
   }
