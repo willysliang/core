@@ -629,12 +629,21 @@ Boolean('') // false
 >         console.log(delete a) // false
 >
 >
->### 函数与变量提升
+> ### 函数与变量提升
 > - 变量声明、函数声明都会被提升到作用域顶处。
 > - 当出现相同名称时，优先级为：'变量/函数赋值 > 函数声明 > 变量声明'
+>
+>
+> #### 全局与局部用 var 定义的变量同名
+> 当全局作用域和函数局部作用域同时用 var 定义同名的变量时，不会出现变量覆盖、赋值互相影响的情况。
+> 假设同时定义 `var inner;`
+> 		函数内(局部)的 inner 会通过变量遮蔽全局的变量 inner，函数内对变量 inner 的所有声明、赋值、返回操作仅作用于局部的变量 inner；
+> 		全局的变量 inner 是完全独立的变量，其取值、类型不会受到函数内任何操作的影响；
+> 		二者属于不同作用域的同名标识符，互不干扰。
+> 		仅在无声明才会找全局。
 > ```
 >
->```js
+> ```js
 > /** js编译器处理过程 */
 > var foo;	// foo#1
 > var num;
@@ -642,11 +651,13 @@ Boolean('') // false
 > var foo = function(x, y) { return x - y }	// foo#3
 > num = foo(1, 2)	// foo#4
 >
->/* ---------------------- */
+> /* ---------------------- */
 > var foo = function(x, y) { return x - y }	// 函数赋值不会提升
 > function foo(x, y) { return x + y; }	// 函数声明会提升
 > var num = foo(1, 2)
 > ```
+
+#### 声明提升
 
 ```bash
 function outter () {
@@ -665,12 +676,31 @@ js 引擎在解释代码前会先进行编译，编译阶段会将所有的变�
 函数提升优先于变量提升，在函数优先提升后，由于 inner 已经被声明为函数变量，后面 `var inner` 时编译器进行左查询(LHS)，发现同一作用域已经有该值会忽略该变量声明。
 ```
 
+#### 全局与局部同名
+
+```js
+// 全局作用域定义 var inner
+var inner = "全局变量";
+var b = '1';
+console.log(inner, b); // 全局变量 '1'
+
+function outter () {
+    function inner () {} // 局部函数声明
+    var inner; // 局部var声明
+    inner = 9; // 局部赋值（执行完所有代码，覆盖局部inner）
+    b = 2;
+    console.log(inner, b); //  9 2
+}
+outter();
+
+console.log(inner, b); // 全局变量 2
+```
+
 
 
 ### var、let、const的区别
 
 > ```bash
-> ## var、let、const 的区别
 > 1. var定义的变量，其作用域为该语句所在的函数内，会挂在window，且存在变量提升现象。
 > 			没有块的概念，可以跨块访问，不能跨函数访问。
 > 	let定义的变量，其作用域为该语句所在的代码块内，不存在变量提升。
@@ -680,31 +710,31 @@ js 引擎在解释代码前会先进行编译，编译阶段会将所有的变�
 > 			 常量的含义是指向的对象不能修改，但是可以改变对象内部的属性-->即保存的只是内存的地址，而不是保存内容。
 > 			 栈有地址的指向，堆存放数据。
 >
-> 2. var 可以先使用，后声明，因为存在变量提升；let 必须先声明后使用。
+>2. var 可以先使用，后声明，因为存在变量提升；let 必须先声明后使用。
 >
-> 3. var 允许在相同作用域内重复声明同一个变量，而let与const不允许这一现象。
+>3. var 允许在相同作用域内重复声明同一个变量，而let与const不允许这一现象。
 >
-> 4. 在全局上下文中，基于 let 声明的全局变量和全局对象 GO(window) 没有任何关系，var 声明的变量会和 GO 有映射关系。
+>4. 在全局上下文中，基于 let 声明的全局变量和全局对象 GO(window) 没有任何关系，var 声明的变量会和 GO 有映射关系。
 >
-> 5. 会产生暂时性死区：
+>5. 会产生暂时性死区：
 > 		暂时性死区：检测一个未被声明的变量类型时，不会返回undefined，会报错。
 >           console.log(typeof a) // undefined
 >           console.log(typeof b)	// 未被声明之前不能使用
 >           var a
 >           let b
 >
-> 6. let/const/function 会把当前所在的大括号(除函数之外)作为一个全新的块级上下文。
+>6. let/const/function 会把当前所在的大括号(除函数之外)作为一个全新的块级上下文。
 > 	应用这个机制，在遇到循环事件绑定等类似的需求，无需再自己构建闭包来存储，只要基于let的块作用域特征即可解决。
 > ```
 >
-> ```js
+>```js
 > var a = 100;
 > let b = 10;
 >
-> // 1. var声明的变量会挂载在window上，而let和const声明的变量不会
+>// 1. var声明的变量会挂载在window上，而let和const声明的变量不会
 > console.log(a, window.a, b, window.b);    // 100 100 10 undefined
 >
-> // 2. var声明变量存在变量提升，let和const不存在变量提升
+>// 2. var声明变量存在变量提升，let和const不存在变量提升
 > (function() {
 >   console.log(a); // undefined  ===>  a已声明还没赋值，默认得到undefined值
 >   var a = 100;
@@ -712,12 +742,12 @@ js 引擎在解释代码前会先进行编译，编译阶段会将所有的变�
 >   let b = 10;
 > })()
 >
-> // 3. let和const声明形成块作用域
+>// 3. let和const声明形成块作用域
 > if(1){ var a = 100; let b = 10; const c = 1; }
 > console.log(a); // 100
 > console.log(b)  // b is not defined
 >
-> // 4. 同一作用域下let和const不能声明同名变量，而var可以
+>// 4. 同一作用域下let和const不能声明同名变量，而var可以
 > (function() {
 >   var a = 100;
 >   var a = 10;
@@ -725,7 +755,7 @@ js 引擎在解释代码前会先进行编译，编译阶段会将所有的变�
 >   let a = 10; // 报错：识符a已经被声明
 > })
 >
-> // 5. let/const有暂存性死区
+>// 5. let/const有暂存性死区
 > var a = 100;
 > if(1){
 >   a = 10;	// Error:a is not defined，当前块作用域存在a量在此语句调用之后声明
@@ -764,7 +794,6 @@ js 引擎在解释代码前会先进行编译，编译阶段会将所有的变�
 ### 作用域链
 
 ```bash
-### 作用域链
 当该作用域内本身不存在该变量，就会**逐级向上寻找**，直至找到全局作用域还是没找到，就宣布放弃。这种逐级查找过程形成的链条就叫做作用域链。
 
 1. 每当编译器遇到变量或对象时，它都会遍历当前执行上下文的整个作用域链（Scope chain），以查找它。
@@ -960,7 +989,7 @@ F1()
 >
 >
 > ### 词法作用域和 this 的区别
-> - 此法作用域是由你在写代码时将变量和块作用域写在哪里来决定的。
+> - 词法作用域是由你在写代码时将变量和块作用域写在哪里来决定的。
 > - this 是在调用时被绑定的，this 指向什么，完全取决于函数的调用位置。
 > ```
 
@@ -972,7 +1001,6 @@ F1()
 this 关键字是指当前代码正在运行时所在的环境对象。
 
 
-
 ## this 的指向
 this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new绑定
 1. 函数是否在 new 中调用(new 绑定)，如果是，则 this 绑定的是 new 中新创建的对象。
@@ -981,7 +1009,6 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 4. 如果以上都不是，那么使用默认绑定。如果在严格模式下，则绑定到 undefined，否则绑定到全局对象。
 5. 如果把 null 或 undefined 作为 this 的绑定对象传入 call、apply 或 bind，这些值在调用时会被忽略，实际应用的是默认绑定规则。
 6. 箭头函数没有自身的 this，它的 this 继承于上一层代码块的 this。
-
 
 
 ### 常规 this 指向
@@ -1048,18 +1075,17 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > // 因为第一个函数是由object对象调用，this指向object对象；第二个是普通函数调用，指向window
 > ```
 
-### 改变函数内部`this`指向
+### 改变函数内部 this 指向
 
 > ````bash
-> # 改变函数内部`this`指向
->     1. 借用构造函数继承父类型属性、方法-->`call()`
->         - ES6之前并没有`extends`继承，我们可以通过构造函数+原型对象模拟实现继承，被称为组合继承。
->         - 核心原理：通过`call()`把父类型的`this`指向子类型的`this`，这样就可实现子类型继承父类型的属性。
+> 1. 借用构造函数继承父类型属性、方法-->`call()`
+>   - ES6前并没有`extends`继承，但可通过 构造函数+原型对象 模拟实现继承，被称为组合继承。
+>   - 核心原理：通过`call()`把父类型的`this`指向子类型的`this`，这样就可实现子类型继承父类型的属性。
 >
->     2. ES6后通过`extends、super()`来实现继承。
+>2. ES6后通过`extends、super()`来实现继承。
 > ````
 >
-> ````js
+>````js
 > function Father(name, age){
 >   //this指向父构造函数的对象实例
 >   this.name = name;
@@ -1075,25 +1101,25 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > // 继承父构造函数的方法->直接赋值：（通过让父子共用相同地址来实现），如果修改子原型对象，父原型对象会跟着改变
 > //Son.prototype = Father.prototype;
 >
-> //继承父构造函数的方法->new：不会共用相同地址，修改子原型对象，父原型对象不会改变
+>//继承父构造函数的方法->new：不会共用相同地址，修改子原型对象，父原型对象不会改变
 > Son.prototype = new Father();
 > Son.prototype.constructor = Son;    //利用对象形式修改原型对象，需利用constructor指回原来的构造函数
 >
-> Son.prototype.exam = function() {
+>Son.prototype.exam = function() {
 >   //子构造函数专门的方法
 >   console.log('儿子要考试~');
 > }
 >
-> let son = new Son('willy',11);
+>let son = new Son('willy',11);
 > console.log(son);
 > console.log(Father.prototype);
 > console.log(Son.prototype.constructor);
 > ````
 
-### call、bind、apply 改变 this 指向
+### call、bind、apply
 
 > ```bash
-> # call、bind、apply ：改变函数内部的`this`指向
+> # call、bind、apply ：改变函数内部 this 指向
 > - call() ：立即调用函数，并可改变函数的this指向，主要作用是实现继承
 > - apply()：立即调用函数，并可改变函数的this指向， 但apply()的参数必须是数组（伪数组），主要用作数学内置对象运用
 > - bind()：不会立即调用函数，但能改变函数内部this指向
@@ -1170,7 +1196,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > ```
 >
 
-### 【call】实现
+#### 【call】实现
 
 > ```bash
 > ## 模拟实现 call()
@@ -1227,7 +1253,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > ```
 >
 
-### 【apply】实现
+#### 【apply】实现
 
 > ```js
 > /**
@@ -1273,7 +1299,7 @@ this 的绑定规则有四种：默认绑定、隐式绑定、显式绑定、new
 > // 浏览器环境: Chirs programmer 20; node 环境: undefined teacher 25
 > ```
 
-### 【bind】实现
+#### 【bind】实现
 
 > ```bash
 > ## 模拟 bind 实现

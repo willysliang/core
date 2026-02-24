@@ -12,16 +12,16 @@ Description: JavaScript
 
 > ```bash
 > ### JS 是什么？
-> - 解析执行，轻量级解析型，一行一行解析的。
+> - 轻量级解析型，解析执行，逐行解析。
 > - 是一种运行在客户端的脚本语言，不需编译，运行过程中由js解释器(js引擎)逐行进行解释并执行；
 > - js来源：借鉴了c语言、java语言等 --> (简化式)函数式编程 +（简化式）面向对象编程；
 > - ES6既是一个历史名词，也是泛指5.1版本后的js的下一个标准。
 >
 >
 > ### JS 的组成
-> JS严格意义上来说分为：语言标准部分（ESCMAScript）+ 宿主环境部分。
+> JS严格意义上分为：语言标准部分（ESCMAScript）+ 宿主环境部分。
 > 	- 在浏览器中，宿主环境包括 DOM + BOM 等。
-> 	- 在 Nod 中，宿主环境包括一些文件、数据库、网络、操作系统的交互等。
+> 	- 在 Node 中，宿主环境包括一些文件、数据库、网络、操作系统的交互等。
 > 1. ECMAScript(js语法规范)：包括变量、表达式、运算符、函数、if语句、for语句等。
 > 2. BOM:文档对象模型(Document object Model)：onload页面加载事件、window顶级对象；定时器；location、history
 > 3. DOM:浏览器对象模型(Browser Object Model)：获取页面元素、注册事件；属性、样式操作；节点属性、节点层级；动态创建元素
@@ -63,7 +63,7 @@ Description: JavaScript
 
 ```bash
 - IE支持`currentStyle`，FIrefox使用`getComputStyle`
-- IE  使用`innerText`，Firefox使用`textContent`
+- IE使用`innerText`，Firefox使用`textContent`
 - 滤镜方面：IE:`filter:alpha(opacity= num)`；Firefox：`-moz-opacity:num`
 - 事件方面：IE：`attachEvent`：火狐是`addEventListener`
 - 鼠标位置：IE是`event.clientX`；火狐是`event.pageX`
@@ -78,7 +78,7 @@ Description: JavaScript
 
 ```bash
 ### V8 引擎是什么
- V8是由Google开发的JavaScript和WebAssembly引擎，他是用C++开发的。目前他主要应用于Chrome浏览器和NodeJS上。
+ V8是由Google 用C++开发的JavaScript和WebAssembly引擎，主要应用于Chrome浏览器和NodeJS上。
  他是参照ECMAScript和WebAssembly规范进行实现，并支持跨平台使用。他可以独立运行，也可以嵌入其他由C++实现的应用中。
 
 
@@ -410,7 +410,7 @@ WebAssembly 目前有四个主要的入口：
 
 
 
-#### 编译 `.wasm` 文件
+#### 编译 .wasm 文件
 当前对 WebAssembly 支持最多的编译器工具链为 LLVM。大多数使用 C 和 Rust 来开发编译成 WebAssembly 模块。
 ```
 
@@ -539,7 +539,6 @@ WebAssembly 目前有四个主要的入口：
 ### 事件循环 Event Loop
 
 > ```bash
-> ## 事件循环 Event Loop
 > JS 分为同步任务和异步任务。
 > 同步任务都在主线程（JS引擎线程）上执行，会形成一个执行栈；
 > 主线程之外，事件触发线程管理着一个任务队列，只要异步任务有了运行结果，就在任务队列之中放一个事件回调；
@@ -563,20 +562,17 @@ WebAssembly 目前有四个主要的入口：
 > 3. 接着执行 http 请求，会移交给 '异步http请求线程' 发送网络请求，请求成功后将 httpCallback 这个回调交由事件触发线程处理， '事件触发线程' 收到 httpCallback 这个回调后把它加入到 '事件触发线程' 所管理的事件队列中等待执行。
 > 4. 再接着执行 `console.log('同步任务2')`
 > 5. 至此主线程执行栈中执行完毕，'JS引擎线程' 已经空闲，开始向 '事件触发线程' 发起询问，询问'事件触发线程'的事件队列中是否有需要执行的回调函数，如果有将'事件队列'中的回调事件加入执行栈中，开始执行回调，如果事件队列中没有回调，'JS引擎线程'会一直发起询问，直到有为止。
-> ```
 >
-> ```bash
-> ### 事件执行案例
-> let setTimeoutCallback = function () {
-> 	console.log('定时器回调')
-> }
-> let httpCallback = function () {
-> 	console.log('http请求回调')
-> }
-> console.log('同步任务1')
-> setTimeout(setTimeoutCallback, 0)
-> Promise.resolve().then(httpCallback)
-> console.log('同步任务2')
+>     let setTimeoutCallback = function () {
+>       console.log('定时器回调')
+>     }
+>     let httpCallback = function () {
+>       console.log('http请求回调')
+>     }
+>     console.log('同步任务1')
+>     setTimeout(setTimeoutCallback, 0)
+>     Promise.resolve().then(httpCallback)
+>     console.log('同步任务2')
 > ```
 >
 > ![image-20230220184442313](./image/image-20230220184442313.png)
@@ -594,7 +590,7 @@ WebAssembly 目前有四个主要的入口：
 > 
 > 
 > #### 宏任务（macrotask）
-> - 在 ECMAScript 中，macrotask 也被称为 task，发起者为宿主（Node、浏览器）。
+> - 在 ECMAScript 中，macrotask 又称 task，发起者为宿主（Node、浏览器）。
 > - 我们可以将每次执行栈执行的代码当做是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行），每一个宏任务会从头到尾执行完毕，不会执行其他。
 > - 由于 'JS引擎线程' 和 'GUI渲染线程' 是互斥关系，浏览器为了能够使 '宏任务' 和 'DOM任务' 有序进行，会在一个 '宏任务' 执行结果后，在下一个 '宏任务' 执行前，'GUI渲染线程' 开始工作，对页面进行渲染。
 > - 执行顺序：'宏任务 -> GUI渲染 -> 宏任务 -> ...'
@@ -602,14 +598,15 @@ WebAssembly 目前有四个主要的入口：
 > 		1. script 标签的代码(可以理解为外层同步代码 / 主代码块)
 > 		2. setTimeout、setInterval
 > 		3. UI rendering/UI事件
-> 		4.  postMessage，MessageChannel
+> 		4. postMessage，MessageChannel
 > 		5. Node的setImmediate，I/O
 > 		6. 浏览器的requestAnimationFrame
+> 注意：同步代码不属于独立任务类型，是「当前宏任务执行栈」的核心内容
 > 
 > 
 > #### 微任务（maicrotask）
-> - 在ECMAScript中，`maicrotask` 也称为 `jobs`，发起者为JS自身发起（JS引擎）。
-> - 当'宏任务'结束后，会执行渲染，然后执行下一个'宏任务'，而'微任务'可以理解成在当前'宏任务'执行后立即执行的任务。
+> - 在ECMAScript中，maicrotask 又称 jobs，发起者为JS引擎自身。
+> - 当前的'宏任务'结束后，会执行渲染，然后执行下一个'宏任务'，而'微任务'可以理解成在当前'宏任务'执行后立即执行的任务。
 > - 当一个'宏任务'执行完，会在渲染前，将执行期间所产生的所有'微任务'都执行完。
 > - 执行顺序：'宏任务 -> 微任务 -> GUI渲染 -> 宏任务 -> ...'
 > - 常见微任务：
@@ -618,13 +615,15 @@ WebAssembly 目前有四个主要的入口：
 > 		3. Object.observe（已废弃；Proxy 对象替代）
 > 		4. Node的process.nextTick()
 > 
+> 微任务先于执行宏任务执行的说法：因为宏任务是在下一个事件循环才执行，微任务在当前任务执行后立即执行
+> 
 > 
 > #### 宏任务微任务注意点
 > - 浏览器会先执行一个宏任务，紧接着执行当前执行栈产生的微任务，再进行渲染，然后再执行下一个宏任务。
 > - 微任务和宏任务不在一个任务队列。
 > - 例如 setTimeout 是一个宏任务，它的事件回调在宏任务队列；Promise.then() 是一个微任务，它的事件回调在微任务队列。
 > - 以 Chrome 为例，有关渲染的都是在渲染进程中执行，渲染进程中的任务（DOM树构建、jS解析等）需要主线程执行的任务都会在主线程中执行，而浏览器维护了一套事件循环机制，主线程上的任务都会放到消息队列中执行，主线程会循环消息队列，并从头部取出任务进行执行，如果执行过程中产生其他任务需要主线程执行的，渲染进程中的其他线程会把该任务塞入到消息队列的尾部，消息队列中的任务都是宏任务。
-> - 微任务的产生：当执行到 script 脚本时，JS 引擎会为全局创建一个执行上下文，在该执行上下文中维护了一个微任务队列，当遇到微任务，就会把微任务回调放在微任务队列，当所有的js代码执行完毕，在退出全局上下文之前引擎会去检查该队列，有回调就执行，没有就退出执行上下文。这就是微任务要早于宏任务的原因，即是说每个宏任务都有一个微任务队列（由于定时器是浏览器的API，所以定时器是宏任务，在js中遇x到定时器也是放在浏览器的队列中）。
+> - 微任务的产生：当执行到 script 脚本时，JS 引擎会为全局创建一个执行上下文，在该执行上下文中维护一个微任务队列，当遇到微任务，就会把微任务回调放在微任务队列，当所有的js代码执行完毕，在退出全局上下文之前引擎会去检查该队列，有回调就执行，没有就退出执行上下文。这就是微任务要早于宏任务的原因，即是说每个宏任务都有一个微任务队列（由于定时器是浏览器的API，所以定时器是宏任务，在js中遇到定时器也是放在浏览器的队列中）。
 > ```
 >
 > ![image-20211017214635189](./image/image-20211017214635189.png)
@@ -635,7 +634,7 @@ WebAssembly 目前有四个主要的入口：
 > ```bash
 > 先执行同步代码，遇到异步宏任务则将异步宏任务放入宏任务队列中，遇到异步微任务则将异步微任务放入微任务队列中。
 > 当所有同步代码执行完毕后，再将异步微任务从队列中调入主线程执行，微任务执行完毕后，再将异步宏任务从队列中调入主线程执行，一直循环直至所有任务执行完毕。
-> 
+>
 >
 >#### 事件循环的简洁版
 > 1. 先执行宏任务的同步代码
@@ -643,7 +642,7 @@ WebAssembly 目前有四个主要的入口：
 > 3. 如果可能会渲染页面
 > 4. 再执行宏任务的异步代码
 > 5. 进入下一轮 Tick
-> 
+>
 >
 >#### EventLoop 详细版
 > 1. 首先，整体的 script 作为第一个宏任务开始执行时，会把所有代码分为 '同步任务、异步任务' 两部分。
@@ -655,14 +654,14 @@ WebAssembly 目前有四个主要的入口：
 > 5. 如果宿主为浏览器，可能会渲染页面
 > 6. 开始下一轮tick，执行宏任务中的异步代码（setTimeout等回调）
 > 7. 上述事件过程会不断重复（例如进入下一个 script 标签执行），这就是 Event Loop。
-> 
+>
 >
 >
 >#### 关于 Promise
 > - 如 `new Promise(() => ()).then()`
 > 		- 前面的 `new Promise()` 这一部分是一个构造函数，这是一个同步任务。
 > 		- 后面的 `.then()` 才是一个异步任务。
-> 
+>
 >      new Promise((resolve) => {
 >         console.log(1)
 >         resolve()
@@ -671,14 +670,14 @@ WebAssembly 目前有四个主要的入口：
 >       })
 >       console.log(3)
 >       // 会输出：1 3 2
-> 
+>
 >
 >
 >#### 关于 async/await 函数
 > - async/await 本质上是基于 Promise 的一些封装，而 Promise 是属于微任务的一种。
 > 		所以在使用 await 关键字与 Promise.then() 效果类似。
 > 		await 关键字之前的代码，相当于 new Promise() 的同步代码，await 以后的代码相当于 Promise.then() 的异步。
-> 
+>
 >    setTimeout(() => console.log(1))
 >     async function test() {
 >       console.log(2)
@@ -689,7 +688,7 @@ WebAssembly 目前有四个主要的入口：
 >     console.log(4)
 >     // 会输出： 2 4 3 1
 > ```
-> 
+>
 >![image-20230221095738520](./image/image-20230221095738520.png)
 
 ### EventLoop demo
@@ -781,7 +780,7 @@ setInterval 2*/
 > - 浏览器和 Node 环境下，microtask 任务队列的执行时机不同
 >     - Node 端，microtask 在事件循环的各个阶段之间执行
 >     - 浏览器端，microtask 在事件循环的 macrotask 执行完之后执行
-> 
+>
 >
 >### NodeJS 的 EventLoop
 > 1. node 会执行所有类型为 timers 的 MacroTask，然后执行所有的 MicroTask（NextTick例外）
@@ -789,13 +788,13 @@ setInterval 2*/
 > 3. 再执行所有类型为 check 的 MacroTask，然后执行所有的 MicroTask。
 > 4. 再执行所有类型为 close callbacks 的 MacroTask，然后执行所有的 MicroTask。
 > 5. 至此，完成一个 Tick，回到 timers 阶段，不断的进行循环执行。
-> 
+>
 >
 >### 浏览器中的 EventLoop
 > 1. 先执行一个 MacroTask，然后执行所有的 MicroTask。
 > 2. 再执行一个 MacroTask，然后执行所有的 MrcroTask。
 > 3. 不断地循环执行上述的过程。
-> 
+>
 >
 >### NodeJS 的执行过程
 > 外部输入数据 –> 轮询阶段(poll) –> 检查阶段(check) –> 关闭事件回调阶段(close callback) –> 定时器检测阶段(timers) –> I/O事件回调阶段(I/O callbacks) –> 闲置阶段(idle, prepare) –> 轮询阶段（按照该顺序反复运行）…
@@ -806,9 +805,9 @@ setInterval 2*/
 > - check 阶段：执行 setImmediate() 的回调
 > - close callbacks 阶段：执行 socket 的 close 事件回调
 > ```
-> 
+>
 >![img](./image/2019-01-14-006.png)
-> 
+>
 >```bash
 > ### 浏览器与nodejs 事件循环执行案例
 > setTimeout(()=>{
@@ -823,23 +822,23 @@ setInterval 2*/
 >     console.log('promise2')
 >   })
 > }, 0)
-> 
+>
 >
 >### 浏览器端运行结果：timer1 => promise1 => timer2 => promise2
-> 
+>
 >
 >### Node 端运行结果：timer1 => timer2 => promise1 => promise2
 > 全局脚本（main()）执行，将 2 个 timer 依次放入 timer 队列，main()执行完毕，调用栈空闲，任务队列开始执行；
 > 首先进入 timers 阶段，执行 timer1 的回调函数，打印 timer1，并将 promise1.then 回调放入 microtask 队列，同样的步骤执行 timer2，打印 timer2；
 > 至此，timer 阶段执行结束，event loop 进入下一个阶段之前，执行 microtask 队列的所有任务，依次打印 promise1、promise2
 > ```
-> 
+>
 >**浏览器处理结果**
-> 
+>
 >![img](./image/2019-01-14-007.gif)
-> 
+>
 >**Nodejs处理结果**
-> 
+>
 >![img](./image/2019-01-14-008.gif)
 
 ### 浏览器渲染原理

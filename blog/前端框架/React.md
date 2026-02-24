@@ -2641,6 +2641,8 @@ export default UseEffectExample;
   		- setXxx(newValue)：参数为非函数值，直接指定新的状态值，内部用其覆盖原来的状态值
   		- setXxx(val => newVal)：参数为函数，接收原本状态值，返回新状态值，内部用其覆盖原来的状态值
 
+	- 让 useState 变成同步的方式：使用 setTimeout 或 Promise.then() 转变时机
+
 
 #### useState 回调函数的参数
 参数只会在初始化渲染中起作用，后续渲染时会被忽略。如果初始 state 需要通过计算才能获得，则可以传入一个函数，在函数中计算并返回初始的 state
@@ -3354,9 +3356,8 @@ ReactDOM.render(<App />, document.getElementById('root'))
 ### useContext 上下文
 
 ```bash
-### useContext Hooks
 React Context 是一种全局管理状态的方法。
-与单独使用 `useState` 相比，它可以与 `useState` 钩子一起使用，在深度嵌套的组件之间更容易地共享状态。
+它可与 useState 钩子一起使用，在深度嵌套的组件之间更容易地共享状态。
 
 #### 作用
 获取上层组件传递下来的上下文对象（一般是获取通过 Provider 提供的数据）
@@ -3376,6 +3377,11 @@ React Context 是一种全局管理状态的方法。
 
 #### 替代 redux
 可以使用 useReducer + useContext 来替代 redux
+
+
+#### zustand 与 useContext
+1. zustand 与 useContext 的区别
+2. zustand 怎么触发数据变更，是否可获取单个值
 ```
 
 ```jsx
