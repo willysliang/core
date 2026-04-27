@@ -24,6 +24,9 @@ Description: 日志记录
 
 # 更新记录
 
+## 2026年4月27日
+  - style: 只格式化修改行代码
+
 ## 2026年1月22日
   - style: ignore markdown prettier
 
