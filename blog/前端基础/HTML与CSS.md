@@ -291,10 +291,22 @@ content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 al
 #### http-equiv
 
 ​	http-equiv类似于HTTP的头部协议，它回应给浏览器一些有用的信息，以帮助正确和精确地显示网页内容。
-​	与之对应的属性值为content，content中的内容其实就是各个参数的变量值。
 
 ```html
 语法：<meta http-equiv="参数"  content="参数值"/>
+
+
+1、优先使用 IE 最新版本和 Chrome
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<!-- 关于X-UA-Compatible -->
+<meta http-equiv="X-UA-Compatible" content="IE=6" ><!-- 使用IE6 -->
+<meta http-equiv="X-UA-Compatible" content="IE=7" ><!-- 用于在IE8版本浏览器中使用IE7渲染来避免出错 -->
+<meta http-equiv="X-UA-Compatible" content="IE=8" ><!-- 使用IE8 -->
+
+
+2、转码申明：用百度打开网页可能会对其进行转码（比如贴广告），避免转码可添加如下meta
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 ```
 
 **参数说明：**
@@ -304,12 +316,12 @@ content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 al
 说明：指定网页在缓存中的过期时间，一旦网页过期，必须到服务器上重新传输。
 语法：<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
 
-注意：必须使用GMT的时间格式，或者直接设为0（数字表示多久后过期
+注意：必须使用GMT的时间格式，或者直接设为0（数字表示多久后过期）
 ````
 
 2.Pragma（cache模式）
 
-```
+```html
 说明：禁止浏览器从本地计算机的缓存中访问页面内容。
 语法：<meta http-equiv="Pragma" content="no-cache"/>
 
@@ -318,14 +330,14 @@ content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 al
 
 3.Refresh（自动刷新并指向新页面）
 
-```
+```html
 <meta http-equiv="refresh"content="5; url=http://www.baidu.com/"/>
-	其中的5表示5秒后自动刷新并调整到URL新页面。
+	5表示5秒后自动刷新并调整到URL新页面。
 ```
 
 4.Set-Cookie（cookie设定）
 
-```
+```html
 说明：浏览器访问某个页面时会将它存在缓存中，下次再次访问时就可从缓存中读取，以提高速度。
 当你希望访问者每次都刷新你广告的图标，或每次都刷新你的计数器，就要禁用缓存了。
 如果网页过期，那么存盘的cookie将被删除。
@@ -337,7 +349,7 @@ content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 al
 
 5.Window-target（显示窗口的设定）
 
-```
+```html
 说明：强制页面在当前窗口以独立页面显示
 语法：<meta http-equiv="Window-target" content="_top"/>
 可以用来防止别人在框架里调用你的页面。
@@ -345,7 +357,7 @@ content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 al
 
 6.content-Type（显示设定页面使用的字符集）
 
-```
+```html
 <meta http-equiv="content-Type" content="text/html;charset=utf-8"/>
 
 其他参数值：
@@ -360,13 +372,13 @@ content 的参数值有 all,none,index,noindex,follow,nofollow，默认值是 al
 
 7.content-Language（显示语言的设定）
 
-```
+```html
 <meta http-equiv="Content-Language" content="zh-cn"/>
 ```
 
 8.http-equiv="imagetoolbar"
 
-```
+```html
 <meta http-equiv="imagetoolbar" content="false"/>
 指定是否显示图片工具栏，当为false代表不显示，当为true代表显示。
 ```
@@ -477,38 +489,23 @@ ActiveX控件支持	   NO		 			YES	   		YES
 <meta name="msapplication-tap-highlight" content="no">
 ```
 
-#### http-equiv
 
-```html
-1、优先使用 IE 最新版本和 Chrome
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
-<!-- 关于X-UA-Compatible -->
-<meta http-equiv="X-UA-Compatible" content="IE=6" ><!-- 使用IE6 -->
-<meta http-equiv="X-UA-Compatible" content="IE=7" ><!-- 用于在IE8版本浏览器中使用IE7渲染来避免出错 -->
-<meta http-equiv="X-UA-Compatible" content="IE=8" ><!-- 使用IE8 -->
-
-
-2、转码申明：用百度打开网页可能会对其进行转码（比如贴广告），避免转码可添加如下meta
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-```
 
 #### 字符编码设置 charset
 
 ```html
 字符编码是一种将字节转换为字符的方法。为了正确地验证或显示 HTML 文档，程序必须选择适当的字符编码。这是在标签中指定的。
-
 在HTML5中，一般使用：<meta charset="UTF-8">
 
 UTF-8：Unicode 转换格式，以 8 位为单位，即以字节为单位。UTF8 中的字符长度可以从 1 到 4 个字节，从而使 UTF8 的宽度可变。
 
 其他参数值：
-GB2312				简体中文
-BIG5					繁体中文
-iso-2022-jp		日文
-ks_c_5601			韩文
-ISO-8859-1		英文
-UTF-8					世界通用的语言编码
+    GB2312				简体中文
+    BIG5					繁体中文
+    iso-2022-jp		日文
+    ks_c_5601			韩文
+    ISO-8859-1		英文
+    UTF-8					世界通用的语言编码
 ```
 
 
@@ -622,7 +619,6 @@ FOUC（Flash of Unstyled Content）是指在网页加载过程中，由于样式
 ### 超链接 a
 
 ```bash
-## 锚链接 a
 - 给超链接起一个名字，作用是 在本页面或者其他页面的的不同位置进行跳转。
 - 比如说，在网页底部有一个向上箭头，点击箭头后回到顶部，这个就可以利用锚链接。
 
@@ -648,7 +644,6 @@ FOUC（Flash of Unstyled Content）是指在网页加载过程中，由于样式
 #### 所有链接都在新标签打开
 
 ```bash
-### 所有链接都在新标签打开
 将 `target="_blank"` 属性设置为单个链接将在新选项卡中打开它。
 在一个真实的用例中，您希望在一个新选项卡中打开页面上的所有链接，这是很少见的。一个只收集外部资源链接的网站可能就是一个例子。
 在这种情况下，您只需将其设置为 `base` 标签，而不是将属性添加到所有链接：
@@ -802,12 +797,11 @@ img {
 #### alt 和 title 的区别
 
 ```bash
-### alt 和 title 的区别
-- `alt` 属性是当元素不能正常呈现时用作元素内容的替代文本。
-		- img 标签是使用 `alt` 属性的最常用标签。当无法加载图像时，浏览器将在其位置显示 `alt` 文本，以便用户了解包含图像的含义。
-- `title` 属性是将鼠标悬停在元素上时看到的工具提示文本，是对图片的描述和进一步的说明。
+- alt 属性是当元素不能正常呈现时用作元素内容的替代文本。
+		- 当无法加载图像时，浏览器将在其位置显示 alt 文本，以便用户了解包含图像的含义。
+- title 属性是将鼠标悬停在元素上时看到的工具提示文本，是对图片的描述和进一步的说明。
 
-注意：浏览器并非总是会显示图像。当有下列情况时，`alt` 属性可以为图像提供替代的信息：
+注意：浏览器并非总是会显示图像。当有下列情况时，alt 属性可以为图像提供替代的信息：
 	- 非可视化浏览器（Non-visual browsers）（比如有视力障碍的人使用的音频浏览器）
 	- 用户选择不显示图像（比如为了节省带宽，或出于隐私等考虑不加载包括图片在内的第三方资源文件）
 	- 图像文件无效，或是使用了不支持的格式
@@ -818,10 +812,9 @@ img {
 通常不会为 `<img>` 设置 `title` 属性，除非它确实提供了有关图像的更多信息。
 
 
-#### 确保在 `img` 标签上始终包含 `alt` 属性
+#### 确保在 img 标签上始终包含 alt 属性
 使用 CSS 为任何缺少或空白 `alt` 属性的 `img` 提供红色轮廓：
 img:not([alt]), img[alt=''] { outline: 8px solid red; }
-
 ```
 
 ```html
@@ -845,8 +838,6 @@ img:not([alt]), img[alt=''] { outline: 8px solid red; }
 		- 在请求src资源时会将其指向的资源下载并应用到文档内，例如js脚本、img图片和 frame 等元素。
 		- 当浏览器解析到该元素时，会暂停其他资源的下载和处理，直到将该资源加载、编译、执行完毕，图片和框架等元素也如此，类似于将所指向资源嵌入当前标签内，这也是为什么将 js 脚本引入放在底部而不是头部的原因。
 ```
-
-
 
 
 

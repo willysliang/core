@@ -96,6 +96,9 @@ footer: MIT Licensed | Copyright ©2025 willysliang@qq.com
 
 # 2026
 
+## 2026年4月27日
+  - docs: organize note content
+
 ## 2026年2月24日
   - docs: organize note content
 
